@@ -1,0 +1,16 @@
+{
+    "extends": [
+        "stylelint-config-standard",
+        "stylelint-order-config-standard",
+        "stylelint-config-prettier",
+        "stylelint-config-css-modules"
+    ],
+    "plugins": ["stylelint-order"],
+    "customSyntax": "postcss-jsx",
+    "rules": {
+        "color-hex-case": "lower",
+        "indentation": 4,
+        "selector-class-pattern": null,
+        "custom-property-pattern": null
+    }
+}
