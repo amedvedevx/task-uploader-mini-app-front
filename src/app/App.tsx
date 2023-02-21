@@ -5,7 +5,6 @@ import { RouterContext } from '@happysanta/router';
 import bridge from '@vkontakte/vk-bridge';
 import { useEffect, useRef, useCallback } from 'react';
 
-import { ApiWrapper } from '@/api';
 import { GlobalStyles } from '@/styles';
 import { AppPages } from '@/app/AppPages';
 import { useCustomEventsLog, useTheme } from '@/hooks';
@@ -40,17 +39,15 @@ const App: FC = () => {
     return (
         <ErrorBoundary FallbackComponent={FallbackComponent}>
             <RouterContext.Provider value={appRouter}>
-                <ApiWrapper>
-                    <ConfigProvider appearance={theme}>
-                        <AdaptivityProvider>
-                            <AppRoot>
-                                <GlobalStyles theme={theme} />
+                <ConfigProvider appearance={theme}>
+                    <AdaptivityProvider>
+                        <AppRoot>
+                            <GlobalStyles theme={theme} />
 
-                                <AppPages />
-                            </AppRoot>
-                        </AdaptivityProvider>
-                    </ConfigProvider>
-                </ApiWrapper>
+                            <AppPages />
+                        </AppRoot>
+                    </AdaptivityProvider>
+                </ConfigProvider>
             </RouterContext.Provider>
         </ErrorBoundary>
     );
