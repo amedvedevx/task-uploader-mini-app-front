@@ -7,6 +7,7 @@ import '@vkontakte/vkui/dist/vkui.css';
 import { PreloadScreen } from '@/components';
 import { useCustomEventsLog } from '@/hooks';
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
+import { CreatePage } from '@/pages/create/CreatePage';
 
 export const AppPages: FC = () => {
     const location = useLocation();
@@ -27,6 +28,8 @@ export const AppPages: FC = () => {
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <PanelHeaderCentered>Test Uploader</PanelHeaderCentered>
+
+            <CreatePage />
         </Suspense>
     );
 };
