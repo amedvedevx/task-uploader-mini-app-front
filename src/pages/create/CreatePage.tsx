@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { Button, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
+import styled from 'styled-components';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PAGE_CREATE_COLLECTION } from '@/app/router';
@@ -31,7 +32,7 @@ export const CreatePage: FC = () => {
             />
 
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Placeholder
+                <PlaceholderCreate
                     header='Придумайте название'
                     action={
                         <Button
@@ -49,8 +50,15 @@ export const CreatePage: FC = () => {
                         label='Название'
                         placeholder='Документы в лагерь'
                     />
-                </Placeholder>
+                </PlaceholderCreate>
             </form>
         </Panel>
     );
 };
+
+const PlaceholderCreate = styled(Placeholder)`
+    .vkuiPlaceholder__in {
+        max-width: 560px;
+        width: 100%;
+    }
+`;
