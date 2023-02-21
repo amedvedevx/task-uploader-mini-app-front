@@ -1,11 +1,16 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-const rootReducer = combineReducers({});
+import { apiSlice } from '@/api/slice/apiSlice';
+
+const rootReducer = combineReducers({
+    [apiSlice.reducerPath]: apiSlice.reducer,
+});
 
 export const store = configureStore({
     reducer: rootReducer,
+    devTools: process.env.NODE_ENV !== 'production',
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,
-        }).concat(),
+        }).concat(apiSlice.middleware),
 });

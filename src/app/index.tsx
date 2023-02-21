@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 
 import { PreloadScreen } from '@/components';
 
-import { store } from './store';
+import { store } from './store/store';
 
 const App = lazy(() => import('./App'));
 
