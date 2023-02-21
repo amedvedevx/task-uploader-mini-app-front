@@ -6,8 +6,9 @@ import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
 import { PreloadScreen } from '@/components';
+import { CreatePage } from '@/pages/create';
 
-import { PANEL_COLLECTION_HOME, VIEW_CREATE } from './router';
+import { PANEL_COLLECTION_HOME, PANEL_CREATE_COLLECTION, VIEW_CREATE } from './router';
 
 const HomePage = lazy(() =>
     import('@/pages/home/HomePage').then((module) => ({
@@ -28,11 +29,15 @@ export const AppPages: FC = () => {
             <SplitLayout>
                 <SplitCol>
                     <Root activeView={location.getViewId()}>
+                        <CreatePage />
+
                         <View
                             id={VIEW_CREATE}
                             activePanel={location.getViewActivePanel(VIEW_CREATE)}
                         >
                             <HomePage id={PANEL_COLLECTION_HOME} />
+
+                            <CreatePage id={PANEL_CREATE_COLLECTION} />
                         </View>
                     </Root>
                 </SplitCol>

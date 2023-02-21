@@ -13,7 +13,7 @@ export const CreateInput: FC<CreateInputProps> = ({ label, value, placeholder, o
     <CreateInputContainer>
         <FormItem
             top={label}
-            style={{ padding: 0 }}
+            style={{ padding: 0, textAlign: 'left' }}
         >
             <Input
                 type='text'
