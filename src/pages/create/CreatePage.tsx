@@ -1,7 +1,6 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Button, Panel, PanelHeaderBack, Title as TitleRoot } from '@vkontakte/vkui';
-import styled from 'styled-components';
+import { Button, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 
@@ -17,38 +16,24 @@ export const CreatePage: FC = () => {
                 before={<PanelHeaderBack />}
             />
 
-            <CreateWrapper>
-                <div>
-                    <Title level='2'>Придумайте название</Title>
-
-                    <CreateInput
-                        label='Название сбора'
-                        placeholder='Например «Документы для поездки»'
-                        value={collectionName}
-                        onChange={setCollectionName}
-                    />
-
+            <Placeholder
+                header='Придумайте название'
+                action={
                     <Button
                         stretched
                         size='l'
                     >
                         Продолжить
                     </Button>
-                </div>
-            </CreateWrapper>
+                }
+            >
+                <CreateInput
+                    label='Название сбора'
+                    placeholder='Например «Документы для поездки»'
+                    value={collectionName}
+                    onChange={setCollectionName}
+                />
+            </Placeholder>
         </Panel>
     );
 };
-
-const CreateWrapper = styled.div`
-    padding: 0 94px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100vh;
-`;
-
-const Title = styled(TitleRoot)`
-    text-align: center;
-    margin-bottom: 30px;
-`;

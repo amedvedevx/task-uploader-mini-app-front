@@ -1,35 +1,42 @@
 import type { FC } from 'react';
-import { useEffect, Suspense } from 'react';
-import { useLocation, useRouter } from '@happysanta/router';
-import bridge from '@vkontakte/vk-bridge';
+import { lazy, useEffect, Suspense } from 'react';
+import { useFirstPageCheck, useLocation } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
+import bridge from '@vkontakte/vk-bridge';
+import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
 import { PreloadScreen } from '@/components';
-import { useCustomEventsLog } from '@/hooks';
-import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { CreatePage } from '@/pages/create/CreatePage';
+
+import { PANEL_COLLECTION_HOME, VIEW_CREATE } from './router';
+
+const HomePage = lazy(() =>
+    import('@/pages/home/HomePage').then((module) => ({
+        default: module.HomePage,
+    })),
+);
 
 export const AppPages: FC = () => {
     const location = useLocation();
-    const router = useRouter();
-    const isFirst = location.state.length === 1;
-    const { sendActionToCustomEvent } = useCustomEventsLog();
-
-    const changePage = (e: string) => {
-        router.pushPage(e);
-
-        sendActionToCustomEvent('open tab', e);
-    };
+    const isFirst = useFirstPageCheck();
 
     useEffect(() => {
         bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
     }, [isFirst]);
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <PanelHeaderCentered>Test Uploader</PanelHeaderCentered>
-
-            <CreatePage />
+        <Suspense fallback={<PreloadScreen />}>
+            <SplitLayout>
+                <SplitCol>
+                    <Root activeView={location.getViewId()}>
+                        <View
+                            id={VIEW_CREATE}
+                            activePanel={location.getViewActivePanel(VIEW_CREATE)}
+                        >
+                            <HomePage id={PANEL_COLLECTION_HOME} />
+                        </View>
+                    </Root>
+                </SplitCol>
+            </SplitLayout>
         </Suspense>
     );
 };
