@@ -1,0 +1,98 @@
+{
+    "parser": "@typescript-eslint/parser",
+
+    "plugins": ["prettier", "@typescript-eslint", "import"],
+
+    "extends": [
+        "airbnb",
+        "airbnb-typescript",
+        "airbnb/hooks",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "prettier"
+    ],
+
+    "rules": {
+        "class-methods-use-this": "off",
+        "prettier/prettier": ["error"],
+        "react/react-in-jsx-scope": "off",
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "no-console": "warn",
+        "no-debugger": "warn",
+        "no-void": "off",
+        "padding-line-between-statements":["warn",
+        {"blankLine": "always", "prev": "*", "next": "if" },
+        {"blankLine": "always", "prev": "*", "next": "return" }],
+        "react/prop-types": "off",
+        "no-plusplus": "off",
+        "react/jsx-newline": ["error", { "prevent": false }],
+        "@typescript-eslint/indent": "off",
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4],
+        "jsx-quotes": ["error", "prefer-single"],
+        "object-curly-newline": "off",
+        "@typescript-eslint/no-floating-promises": "off",
+        "import/prefer-default-export": "off",
+        "no-param-reassign": [2, { "props": false }],
+        "import/no-cycle": "off",
+        "@typescript-eslint/no-use-before-define": "off",
+        "react/require-default-props": "off",
+        "@typescript-eslint/no-empty-interface": [
+            "error",
+            {
+                "allowSingleExtends": true
+            }
+        ],
+
+        "react/jsx-sort-props": [
+            "error",
+            {
+                "callbacksLast": true,
+                "shorthandFirst": true,
+                "shorthandLast": false,
+                "ignoreCase": false,
+                "noSortAlphabetically": true,
+                "reservedFirst": true
+            }
+        ],
+        "import/order": [
+            "error",
+            {
+                "groups": [
+                    "builtin",
+                    "external",
+                    "internal",
+                    ["parent", "sibling"],
+                    "index",
+                    "unknown"
+                ],
+                "pathGroups": [
+                    {
+                        "pattern": "@app/",
+                        "group": "internal",
+                        "position": "after"
+                    }
+                ],
+                "pathGroupsExcludedImportTypes": ["@app/"],
+                "newlines-between": "always"
+            }
+        ]
+    },
+
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "paths": ["src"]
+            },
+            "typescript": {
+                "project": "./tsconfig.json"
+            }
+        }
+    },
+
+    "ignorePatterns": ["dist/**/*.js"]
+}
