@@ -10,25 +10,29 @@ import {
     Separator,
     SimpleCell,
     Spacing,
+    Div,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
-import { PAGE_COLLECTION_HOME, PAGE_CREATE_COLLECTION } from '@/app/router';
+import { PAGE_COLLECTION_ID, PAGE_CREATE_COLLECTION, PANEL_COLLECTION_HOME } from '@/app/router';
 import DocAndImageIcon from '@/assets/docAndImgIcon.svg';
 
 const collectionsMock = [
     { id: 1, title: 'Документы в лагерь', isOpen: false, completion: 2 },
     { id: 2, title: 'Справки', isOpen: true, completion: 21 },
     { id: 3, title: 'Домашнее задание', isOpen: true, completion: 18 },
+    { id: 4, title: 'Документы в лагерь', isOpen: false, completion: 2 },
+    { id: 5, title: 'Справки', isOpen: true, completion: 21 },
+    { id: 6, title: 'Домашнее задание', isOpen: true, completion: 18 },
 ];
 
 export const HomePage: FC = () => {
     const router = useRouter();
 
     return (
-        <Panel id={PAGE_COLLECTION_HOME}>
+        <Panel id={PANEL_COLLECTION_HOME}>
             <CollectionsContainer>
                 <Placeholder
                     icon={
@@ -59,7 +63,7 @@ export const HomePage: FC = () => {
                     </Spacing>
 
                     <List>
-                        {collectionsMock.map(({ id, title, completion, isOpen }) => (
+                        {collectionsMock.slice(-3).map(({ id, title, completion, isOpen }) => (
                             <SimpleCell
                                 key={id}
                                 after={
@@ -70,6 +74,9 @@ export const HomePage: FC = () => {
                                     )
                                 }
                                 subtitle={`Прислали ${completion}`}
+                                onClick={() =>
+                                    router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${id}` })
+                                }
                             >
                                 {title}
                             </SimpleCell>
@@ -81,12 +88,12 @@ export const HomePage: FC = () => {
     );
 };
 
-const CollectionsContainer = styled.div`
+const CollectionsContainer = styled(Div)`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    flex-grow: 1;
 `;
 
 const GroupWide = styled(Group)`

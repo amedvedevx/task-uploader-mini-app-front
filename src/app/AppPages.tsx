@@ -8,11 +8,17 @@ import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 import { PreloadScreen } from '@/components';
 import { CreatePage } from '@/pages/create';
 
-import { PANEL_COLLECTION_HOME, PANEL_CREATE_COLLECTION, VIEW_CREATE } from './router';
+import { PANEL_COLLECTION_HOME, PANEL_UPLOAD_ID, VIEW_CREATE, VIEW_UPLOAD } from './router';
 
 const HomePage = lazy(() =>
     import('@/pages/home/HomePage').then((module) => ({
         default: module.HomePage,
+    })),
+);
+
+const UploadPage = lazy(() =>
+    import('@/pages/upload/UploadPage').then((module) => ({
+        default: module.UploadPage,
     })),
 );
 
@@ -38,6 +44,13 @@ export const AppPages: FC = () => {
                             <HomePage id={PANEL_COLLECTION_HOME} />
 
                             <CreatePage id={PANEL_CREATE_COLLECTION} />
+                        </View>
+
+                        <View
+                            id={VIEW_UPLOAD}
+                            activePanel={location.getViewActivePanel(VIEW_UPLOAD)}
+                        >
+                            <UploadPage id={PANEL_UPLOAD_ID} />
                         </View>
                     </Root>
                 </SplitCol>
