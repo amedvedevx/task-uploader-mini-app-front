@@ -1,43 +1,32 @@
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Button,
     Image,
     Panel,
     PanelHeaderBack,
     Placeholder,
+    Search,
     Separator,
     Spacing,
 } from '@vkontakte/vkui';
 import { Icon20ShareExternalOutline } from '@vkontakte/icons';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
 
 import PeaopleIcon from '@/assets/peopleIcon.svg';
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PANEL_COLLECTION_ID } from '@/app/router';
+import { PAGE_COLLECTION_ID } from '@/app/router';
 
 import { Snackbar } from './components/Snackbar/Snackbar';
-import { InputSearch } from './components/InputSearch';
 
 export const CollectionLink: FC = () => {
-    const { control } = useForm({
-        defaultValues: {
-            search: '',
-        },
-    });
-
     const [snackbar, setSnackbar] = useState(null);
 
     const openBaseWithAction = () => {
         if (snackbar) return;
         setSnackbar((): any => <Snackbar onClose={() => setSnackbar(null)} />);
     };
-
-    useEffect(() => {
-        openBaseWithAction();
-    }, []);
 
     const router = useRouter();
 
@@ -46,7 +35,7 @@ export const CollectionLink: FC = () => {
     };
 
     return (
-        <Panel id={PANEL_COLLECTION_ID}>
+        <Panel id={PAGE_COLLECTION_ID}>
             <PanelHeaderCentered
                 separator={false}
                 before={<PanelHeaderBack onClick={goBack} />}
@@ -54,12 +43,7 @@ export const CollectionLink: FC = () => {
                 Документы в лагерь
             </PanelHeaderCentered>
 
-            <ActionWrapper>
-                <InputSearch
-                    control={control}
-                    placeholder='Поиск'
-                />
-            </ActionWrapper>
+            <Search />
 
             <CollectionLinkContainer>
                 <Placeholder

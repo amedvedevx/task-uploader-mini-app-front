@@ -39,7 +39,7 @@ export const CreatePage: FC = () => {
                             stretched
                             type='submit'
                             size='l'
-                            onClick={() => router.pushPage(PAGE_COLLECTION_ID)}
+                            onClick={() => router.pushPage(PAGE_COLLECTION_ID, { id: '1' })}
                         >
                             Продолжить
                         </Button>

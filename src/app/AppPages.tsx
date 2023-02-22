@@ -12,7 +12,7 @@ import { CollectionLink } from '@/pages/collectionLink/CollectionLink';
 import {
     PANEL_COLLECTION_HOME,
     PANEL_CREATE_COLLECTION,
-    PAGE_COLLECTION_ID,
+    PANEL_COLLECTION_ID,
     VIEW_CREATE,
 } from './router';
 
@@ -45,7 +45,7 @@ export const AppPages: FC = () => {
 
                             <CreatePage id={PANEL_CREATE_COLLECTION} />
 
-                            <CollectionLink id={PAGE_COLLECTION_ID} />
+                            <CollectionLink id={PANEL_COLLECTION_ID} />
                         </View>
                     </Root>
                 </SplitCol>

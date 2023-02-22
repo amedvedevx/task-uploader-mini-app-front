@@ -17,10 +17,7 @@ interface CreateInputProps {
 
 export const CreateInput: FC<CreateInputProps> = ({ label, control, placeholder }) => (
     <CreateInputContainer>
-        <FormItem
-            top={label}
-            style={{ padding: 0, textAlign: 'left' }}
-        >
+        <FormItemRoot top={label}>
             <Controller
                 render={({ field: { onChange, onBlur, value, ref } }) => (
                     <Input
@@ -35,10 +32,15 @@ export const CreateInput: FC<CreateInputProps> = ({ label, control, placeholder 
                 control={control}
                 rules={{ required: true }}
             />
-        </FormItem>
+        </FormItemRoot>
     </CreateInputContainer>
 );
 
 const CreateInputContainer = styled.div`
     margin-bottom: 24px;
+`;
+
+const FormItemRoot = styled(FormItem)`
+    padding: 0;
+    text-align: left;
 `;
