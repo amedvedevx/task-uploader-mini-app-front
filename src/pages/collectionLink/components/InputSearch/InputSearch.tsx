@@ -3,11 +3,12 @@ import { FormItem, Input } from '@vkontakte/vkui';
 import styled from 'styled-components';
 import type { Control } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
+import { Icon16SearchOutline } from '@vkontakte/icons';
 
-interface CreateInputProps {
+interface InputSearchProps {
     control: Control<
         {
-            collectionName: string;
+            search: string;
         },
         any
     >;
@@ -15,15 +16,16 @@ interface CreateInputProps {
     placeholder: string;
 }
 
-export const CreateInput: FC<CreateInputProps> = ({ label, control, placeholder }) => (
+export const InputSearch: FC<InputSearchProps> = ({ label, control, placeholder }) => (
     <CreateInputContainer>
         <FormItem
             top={label}
-            style={{ padding: 0, textAlign: 'left' }}
+            style={{ padding: 0 }}
         >
             <Controller
                 render={({ field: { onChange, onBlur, value, ref } }) => (
                     <Input
+                        before={<Icon16SearchOutline />}
                         getRootRef={ref}
                         placeholder={placeholder}
                         value={value}
@@ -31,7 +33,7 @@ export const CreateInput: FC<CreateInputProps> = ({ label, control, placeholder 
                         onBlur={onBlur}
                     />
                 )}
-                name='collectionName'
+                name='search'
                 control={control}
                 rules={{ required: true }}
             />

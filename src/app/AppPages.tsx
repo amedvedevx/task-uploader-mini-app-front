@@ -7,8 +7,14 @@ import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
 import { PreloadScreen } from '@/components';
 import { CreatePage } from '@/pages/create';
+import { CollectionLink } from '@/pages/collectionLink/CollectionLink';
 
-import { PANEL_COLLECTION_HOME, PANEL_CREATE_COLLECTION, VIEW_CREATE } from './router';
+import {
+    PANEL_COLLECTION_HOME,
+    PANEL_CREATE_COLLECTION,
+    PAGE_COLLECTION_ID,
+    VIEW_CREATE,
+} from './router';
 
 const HomePage = lazy(() =>
     import('@/pages/home/HomePage').then((module) => ({
@@ -38,6 +44,8 @@ export const AppPages: FC = () => {
                             <HomePage id={PANEL_COLLECTION_HOME} />
 
                             <CreatePage id={PANEL_CREATE_COLLECTION} />
+
+                            <CollectionLink id={PAGE_COLLECTION_ID} />
                         </View>
                     </Root>
                 </SplitCol>

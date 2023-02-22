@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Button, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
+import { Button, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
@@ -31,7 +31,7 @@ export const CreatePage: FC = () => {
                 before={<PanelHeaderBack onClick={goBack} />}
             />
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <FormLayout onSubmit={handleSubmit(onSubmit)}>
                 <PlaceholderCreate
                     header='Придумайте название'
                     action={
@@ -51,7 +51,7 @@ export const CreatePage: FC = () => {
                         placeholder='Документы в лагерь'
                     />
                 </PlaceholderCreate>
-            </form>
+            </FormLayout>
         </Panel>
     );
 };
