@@ -7,12 +7,14 @@ import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
 import { PreloadScreen } from '@/components';
 import { CreatePage } from '@/pages/create';
-import { CollectionLink } from '@/pages/collectionLink/CollectionLink';
+import { ShareLink } from '@/pages/share';
+import { SentList } from '@/pages/list';
 
 import {
     PANEL_COLLECTION_HOME,
     PANEL_CREATE_COLLECTION,
     PANEL_COLLECTION_ID,
+    PANEL_COLLECTION_LIST,
     VIEW_CREATE,
 } from './router';
 
@@ -45,7 +47,9 @@ export const AppPages: FC = () => {
 
                             <CreatePage id={PANEL_CREATE_COLLECTION} />
 
-                            <CollectionLink id={PANEL_COLLECTION_ID} />
+                            <ShareLink id={PANEL_COLLECTION_ID} />
+
+                            <SentList id={PANEL_COLLECTION_LIST} />
                         </View>
                     </Root>
                 </SplitCol>
