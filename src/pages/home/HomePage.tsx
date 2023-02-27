@@ -16,8 +16,10 @@ import type { FC } from 'react';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
-import { PAGE_COLLECTION_ID, PAGE_CREATE_COLLECTION, PANEL_COLLECTION_HOME } from '@/app/router';
+import { PAGE_CREATE_COLLECTION, PANEL_COLLECTION_HOME } from '@/app/router';
 import DocAndImageIcon from '@/assets/docAndImgIcon.svg';
+
+import { CollectionHistory } from './components/CollectionHistory';
 
 const collectionsMock = [
     { id: 1, title: 'Документы в лагерь', isOpen: false, completion: 2 },
@@ -62,26 +64,7 @@ export const HomePage: FC = () => {
                         <Separator />
                     </Spacing>
 
-                    <List>
-                        {collectionsMock.slice(-3).map(({ id, title, completion, isOpen }) => (
-                            <SimpleCell
-                                key={id}
-                                after={
-                                    isOpen ? (
-                                        <GrayText>завершен</GrayText>
-                                    ) : (
-                                        <GreenText>открыт</GreenText>
-                                    )
-                                }
-                                subtitle={`Прислали ${completion}`}
-                                onClick={() =>
-                                    router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${id}` })
-                                }
-                            >
-                                {title}
-                            </SimpleCell>
-                        ))}
-                    </List>
+                    <CollectionHistory collections={collectionsMock} />
                 </GroupWide>
             </CollectionsContainer>
         </Panel>
@@ -105,12 +88,4 @@ const ImageWithSizes = styled(Image)`
     width: 140px !important;
     height: 100px !important;
     background-color: transparent;
-`;
-
-const GreenText = styled(Text)`
-    color: var(--vkui--color_text_positive);
-`;
-
-const GrayText = styled(Text)`
-    color: var(--vkui--color_text_secondary);
 `;

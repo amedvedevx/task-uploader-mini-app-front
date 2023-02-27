@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 
-import DocAndImageIcon from '@/assets/DocAndImgIcon.svg';
+import DocAndImageIcon from '@/assets/docAndImgIcon.svg';
 
 export const PreloadScreen: FC = () => (
     <div id='preload-screen'>

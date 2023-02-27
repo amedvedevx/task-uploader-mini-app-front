@@ -8,7 +8,7 @@ import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 import { PreloadScreen } from '@/components';
 import { CreatePage } from '@/pages/create';
 
-import { PANEL_COLLECTION_HOME, PANEL_UPLOAD_ID, VIEW_CREATE, VIEW_UPLOAD } from './router';
+import { PANEL_COLLECTION_HOME, PANEL_CREATE_COLLECTION, PANEL_UPLOAD_ID, VIEW_CREATE, VIEW_UPLOAD } from './router';
 
 const HomePage = lazy(() =>
     import('@/pages/home/HomePage').then((module) => ({
