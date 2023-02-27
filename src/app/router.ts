@@ -10,7 +10,7 @@ export const PANEL_UPLOAD_ID = 'panel_upload_id';
 
 export const PAGE_COLLECTION_HOME = '/';
 export const PAGE_CREATE_COLLECTION = '/collection';
-export const PAGE_COLLECTION_ID = '/create/:collectionId([0-9]+)';
+export const PAGE_COLLECTION_ID = '/:collectionId([0-9]+)';
 export const PAGE_UPLOAD_ID = '/:uploadId([0-9]+)';
 
 export const POPOUT_FEEDBACK = 'popout_feedback';
