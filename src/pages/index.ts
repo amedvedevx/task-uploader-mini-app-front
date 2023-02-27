@@ -1,4 +1,3 @@
 export * from './home';
 export * from './create';
-export * from './share';
-export * from './list';
+export * from './collectionId';

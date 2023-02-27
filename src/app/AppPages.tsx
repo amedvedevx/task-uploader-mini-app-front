@@ -6,21 +6,37 @@ import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
 import { PreloadScreen } from '@/components';
-import { CreatePage } from '@/pages/create';
-import { ShareLink } from '@/pages/share';
-import { SentList } from '@/pages/list';
 
 import {
     PANEL_COLLECTION_HOME,
-    PANEL_CREATE_COLLECTION,
     PANEL_COLLECTION_ID,
-    PANEL_COLLECTION_LIST,
+    PANEL_CREATE_COLLECTION,
+    PANEL_UPLOAD_ID,
     VIEW_CREATE,
+    VIEW_UPLOAD,
 } from './router';
 
 const HomePage = lazy(() =>
     import('@/pages/home/HomePage').then((module) => ({
         default: module.HomePage,
+    })),
+);
+
+const UploadPage = lazy(() =>
+    import('@/pages/upload/UploadPage').then((module) => ({
+        default: module.UploadPage,
+    })),
+);
+
+const CreatePage = lazy(() =>
+    import('@/pages/create/CreatePage').then((module) => ({
+        default: module.CreatePage,
+    })),
+);
+
+const CollectionIdPage = lazy(() =>
+    import('@/pages/collectionId/CollectionIdPage').then((module) => ({
+        default: module.CollectionIdPage,
     })),
 );
 
@@ -37,8 +53,6 @@ export const AppPages: FC = () => {
             <SplitLayout>
                 <SplitCol>
                     <Root activeView={location.getViewId()}>
-                        <CreatePage />
-
                         <View
                             id={VIEW_CREATE}
                             activePanel={location.getViewActivePanel(VIEW_CREATE)}
@@ -47,9 +61,14 @@ export const AppPages: FC = () => {
 
                             <CreatePage id={PANEL_CREATE_COLLECTION} />
 
-                            <ShareLink id={PANEL_COLLECTION_ID} />
+                            <CollectionIdPage id={PANEL_COLLECTION_ID} />
+                        </View>
 
-                            <SentList id={PANEL_COLLECTION_LIST} />
+                        <View
+                            id={VIEW_UPLOAD}
+                            activePanel={location.getViewActivePanel(VIEW_UPLOAD)}
+                        >
+                            <UploadPage id={PANEL_UPLOAD_ID} />
                         </View>
                     </Root>
                 </SplitCol>

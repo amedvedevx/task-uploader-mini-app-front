@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const SkeletonAnimation = styled.div`
-    background: var(--skeleton_block_color);
+    background: linear-gradient(90deg, #BBB7F8 0%, #E4E5F7 97.08%);
 
     animation: wave 2s infinite ease-out;
 

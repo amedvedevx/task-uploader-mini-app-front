@@ -5,7 +5,7 @@ import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PAGE_CREATE_COLLECTION } from '@/app/router';
+import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 
 import { CreateInput } from './components';
 
@@ -16,7 +16,9 @@ export const CreatePage: FC = () => {
         },
     });
 
-    const onSubmit = (data: { collectionName: string }) => console.log(data);
+    const onSubmit = (data: { collectionName: string }) => {
+        router.pushPage(PAGE_COLLECTION_ID, { collectiondId: '123' });
+    };
 
     const router = useRouter();
 
@@ -25,7 +27,7 @@ export const CreatePage: FC = () => {
     };
 
     return (
-        <Panel id={PAGE_CREATE_COLLECTION}>
+        <Panel id={PANEL_CREATE_COLLECTION}>
             <PanelHeaderCentered
                 separator={false}
                 before={<PanelHeaderBack onClick={goBack} />}
@@ -39,7 +41,9 @@ export const CreatePage: FC = () => {
                             stretched
                             type='submit'
                             size='l'
-                            onClick={() => router.pushPage(PAGE_COLLECTION_ID, { id: '1' })}
+                            onClick={() =>
+                                router.pushPage(PAGE_COLLECTION_ID, { collectionId: '123' })
+                            }
                         >
                             Продолжить
                         </Button>
