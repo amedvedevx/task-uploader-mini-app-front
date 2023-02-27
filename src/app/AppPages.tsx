@@ -6,9 +6,15 @@ import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
 import { PreloadScreen } from '@/components';
-import { CreatePage } from '@/pages/create';
 
-import { PANEL_COLLECTION_HOME, PANEL_CREATE_COLLECTION, PANEL_UPLOAD_ID, VIEW_CREATE, VIEW_UPLOAD } from './router';
+import {
+    PANEL_COLLECTION_HOME,
+    PANEL_COLLECTION_ID,
+    PANEL_CREATE_COLLECTION,
+    PANEL_UPLOAD_ID,
+    VIEW_CREATE,
+    VIEW_UPLOAD,
+} from './router';
 
 const HomePage = lazy(() =>
     import('@/pages/home/HomePage').then((module) => ({
@@ -19,6 +25,18 @@ const HomePage = lazy(() =>
 const UploadPage = lazy(() =>
     import('@/pages/upload/UploadPage').then((module) => ({
         default: module.UploadPage,
+    })),
+);
+
+const CreatePage = lazy(() =>
+    import('@/pages/create/CreatePage').then((module) => ({
+        default: module.CreatePage,
+    })),
+);
+
+const CollectionLink = lazy(() =>
+    import('@/pages/collectionLink/CollectionLink').then((module) => ({
+        default: module.CollectionLink,
     })),
 );
 
@@ -35,8 +53,6 @@ export const AppPages: FC = () => {
             <SplitLayout>
                 <SplitCol>
                     <Root activeView={location.getViewId()}>
-                        <CreatePage />
-
                         <View
                             id={VIEW_CREATE}
                             activePanel={location.getViewActivePanel(VIEW_CREATE)}
@@ -44,6 +60,8 @@ export const AppPages: FC = () => {
                             <HomePage id={PANEL_COLLECTION_HOME} />
 
                             <CreatePage id={PANEL_CREATE_COLLECTION} />
+
+                            <CollectionLink id={PANEL_COLLECTION_ID} />
                         </View>
 
                         <View
