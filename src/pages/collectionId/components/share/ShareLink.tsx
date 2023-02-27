@@ -1,48 +1,24 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import {
-    Button,
-    Image,
-    Panel,
-    PanelHeaderBack,
-    Placeholder,
-    Search,
-    Separator,
-    Spacing,
-} from '@vkontakte/vkui';
+import { Button, Image, Placeholder, Search } from '@vkontakte/vkui';
 import { Icon20ShareExternalOutline } from '@vkontakte/icons';
-import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
 import PeaopleIcon from '@/assets/peopleIcon.svg';
-import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID } from '@/app/router';
 
-import { Snackbar } from './components/Snackbar/Snackbar';
+import { Snackbar } from './components';
+import { FooterWithButton } from '../../../components';
 
-export const CollectionLink: FC = () => {
+export const ShareLink: FC = () => {
     const [snackbar, setSnackbar] = useState(null);
 
-    const openBaseWithAction = () => {
+    const openSnackbar = () => {
         if (snackbar) return;
         setSnackbar((): any => <Snackbar onClose={() => setSnackbar(null)} />);
     };
 
-    const router = useRouter();
-
-    const goBack = () => {
-        router.popPage();
-    };
-
     return (
-        <Panel id={PAGE_COLLECTION_ID}>
-            <PanelHeaderCentered
-                separator={false}
-                before={<PanelHeaderBack onClick={goBack} />}
-            >
-                Документы в лагерь
-            </PanelHeaderCentered>
-
+        <>
             <Search />
 
             <CollectionLinkContainer>
@@ -68,31 +44,12 @@ export const CollectionLink: FC = () => {
                 </Placeholder>
             </CollectionLinkContainer>
 
-            <Separator wide />
-
-            <Spacing size={16} />
-
-            <ActionWrapper>
-                <Button
-                    stretched
-                    size='l'
-                    mode='secondary'
-                    appearance='negative'
-                >
-                    Завешрить сбор
-                </Button>
-            </ActionWrapper>
-
-            <Spacing size={16} />
+            <FooterWithButton text='Завершить сбор' />
 
             {snackbar}
-        </Panel>
+        </>
     );
 };
-
-const ActionWrapper = styled.div`
-    padding: 0 20px;
-`;
 
 const CollectionLinkContainer = styled.div`
     display: flex;

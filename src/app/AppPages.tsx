@@ -34,9 +34,9 @@ const CreatePage = lazy(() =>
     })),
 );
 
-const CollectionLink = lazy(() =>
-    import('@/pages/collectionLink/CollectionLink').then((module) => ({
-        default: module.CollectionLink,
+const CollectionIdPage = lazy(() =>
+    import('@/pages/collectionId/CollectionIdPage').then((module) => ({
+        default: module.CollectionIdPage,
     })),
 );
 
@@ -61,7 +61,7 @@ export const AppPages: FC = () => {
 
                             <CreatePage id={PANEL_CREATE_COLLECTION} />
 
-                            <CollectionLink id={PANEL_COLLECTION_ID} />
+                            <CollectionIdPage id={PANEL_COLLECTION_ID} />
                         </View>
 
                         <View

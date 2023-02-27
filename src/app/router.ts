@@ -13,6 +13,8 @@ export const PAGE_CREATE_COLLECTION = '/collection';
 export const PAGE_COLLECTION_ID = '/create/:collectionId([0-9]+)';
 export const PAGE_UPLOAD_ID = '/:uploadId([0-9]+)';
 
+export const POPOUT_FEEDBACK = 'popout_feedback';
+
 const routes = {
     [PAGE_COLLECTION_HOME]: new Page(PANEL_COLLECTION_HOME, VIEW_CREATE),
     [PAGE_CREATE_COLLECTION]: new Page(PANEL_CREATE_COLLECTION, VIEW_CREATE),
