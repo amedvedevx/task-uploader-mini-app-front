@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import PeaopleIcon from '@/assets/peopleIcon.svg';
 
 import { Snackbar } from './components';
-import { FooterWithButton } from '../../../components';
 
 export const ShareLink: FC = () => {
     const [snackbar, setSnackbar] = useState(null);
@@ -19,9 +18,7 @@ export const ShareLink: FC = () => {
 
     return (
         <>
-            <Search />
-
-            <CollectionLinkContainer>
+            <ShareLinkContainer>
                 <Placeholder
                     header='Ссылка создана'
                     icon={
@@ -42,21 +39,19 @@ export const ShareLink: FC = () => {
                 >
                     Отправьте её в групповой чат или пользователю
                 </Placeholder>
-            </CollectionLinkContainer>
-
-            <FooterWithButton text='Завершить сбор' />
+            </ShareLinkContainer>
 
             {snackbar}
         </>
     );
 };
 
-const CollectionLinkContainer = styled.div`
+const ShareLinkContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    flex-grow: 1;
 `;
 
 const ImageWithSizes = styled(Image)`
