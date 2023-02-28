@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-import { apiSlice } from '@/api/slice/apiSlice';
+import { apiSlice } from '@/api/query/apiSlice';
+import authorizationReducer from '@/api/state/authorizationSlice';
 
 const rootReducer = combineReducers({
     [apiSlice.reducerPath]: apiSlice.reducer,
+    authorization: authorizationReducer,
 });
 
 export const store = configureStore({
@@ -14,3 +16,6 @@ export const store = configureStore({
             serializableCheck: false,
         }).concat(apiSlice.middleware),
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

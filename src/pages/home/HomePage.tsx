@@ -9,12 +9,13 @@ import {
     Spacing,
     Div,
 } from '@vkontakte/vkui';
-import type { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PAGE_CREATE_COLLECTION, PANEL_COLLECTION_HOME } from '@/app/router';
 import DocAndImageIcon from '@/assets/docAndImgIcon.svg';
+import { useGetTasksQuery } from '@/api';
 
 import { CollectionHistory } from './components/CollectionHistory';
 
@@ -29,6 +30,8 @@ const collectionsMock = [
 
 export const HomePage: FC = () => {
     const router = useRouter();
+
+    const { data } = useGetTasksQuery({});
 
     return (
         <Panel id={PANEL_COLLECTION_HOME}>
