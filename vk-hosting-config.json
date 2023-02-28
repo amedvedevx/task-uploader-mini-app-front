@@ -1,7 +1,7 @@
 {
     "noprompt": true,
     "static_path": "dist",
-    "app_id": 51464551,
+    "app_id": 51548357,
     "endpoints": {
         "mobile": "index.html",
         "mvk": "index.html",

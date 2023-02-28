@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import { PreloadScreen } from '@/components';
-
-import { store } from './store/store';
+import { store } from '@/api';
 
 const App = lazy(() => import('./App'));
 
