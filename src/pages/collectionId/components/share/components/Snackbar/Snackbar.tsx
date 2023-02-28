@@ -10,7 +10,7 @@ export const Snackbar: FC<SnackbarProps> = ({ onClose }) => (
     <SnackbarRoot
         before={
             <Icon28CheckCircleOutline
-                color='#4BB34B'
+                color='var(--vkui--color_text_positive)'
                 width={24}
                 height={24}
             />

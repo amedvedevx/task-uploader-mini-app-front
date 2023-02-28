@@ -1,5 +1,5 @@
 import { useRouter } from '@happysanta/router';
-import { Panel, PanelHeaderBack } from '@vkontakte/vkui';
+import { Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
@@ -9,6 +9,7 @@ import { PANEL_COLLECTION_ID } from '@/app/router';
 
 import { SentList } from './components/list';
 import { ShareLink } from './components/share';
+import { FooterWithButton } from '../components';
 
 const sentListMock = [
     { id: 1, name: 'Алексей Чайников', icon: Avatar1 },
@@ -31,7 +32,11 @@ export const CollectionIdPage: FC = () => {
                 Документы в лагерь
             </PanelHeaderCentered>
 
-            {sentListMock ? <SentList sentListMock={sentListMock} /> : <ShareLink />}
+            <Search />
+
+            {!sentListMock ? <SentList sentListMock={sentListMock} /> : <ShareLink />}
+
+            <FooterWithButton text='Завершить сбор' />
         </Panel>
     );
 };

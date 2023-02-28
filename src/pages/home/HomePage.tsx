@@ -3,12 +3,9 @@ import {
     Group,
     Header,
     Image,
-    List,
     Panel,
-    Text,
     Placeholder,
     Separator,
-    SimpleCell,
     Spacing,
     Div,
 } from '@vkontakte/vkui';

@@ -1,33 +1,19 @@
 import type { FC } from 'react';
-import {
-    Avatar,
-    Button,
-    CellButton,
-    Group,
-    Header,
-    List,
-    Search,
-    Separator,
-    SimpleCell,
-    Spacing,
-} from '@vkontakte/vkui';
+import { Avatar, ButtonGroup, CellButton, Separator, Spacing } from '@vkontakte/vkui';
 import { Icon24Linked, Icon24DownloadOutline } from '@vkontakte/icons';
 
-import { FooterWithButton } from '../../../components';
+import { CollectionMembers } from './components/CollectionMembers';
 
 interface SentListProps {
-    sentListMock: Array<Record<string, unknown>>;
+    sentListMock: { id: number; name: string; icon: string }[];
 }
 
 export const SentList: FC<SentListProps> = ({ sentListMock }) => (
     <>
-        <Group
-            padding='s'
-            separator='hide'
-            mode='plain'
+        <ButtonGroup
+            mode='vertical'
+            gap='s'
         >
-            <Search />
-
             <CellButton
                 before={
                     <Avatar
@@ -53,44 +39,12 @@ export const SentList: FC<SentListProps> = ({ sentListMock }) => (
             >
                 Скачать все файлы
             </CellButton>
+        </ButtonGroup>
 
-            <Spacing size={36}>
-                <Separator />
-            </Spacing>
-        </Group>
+        <Spacing size={36}>
+            <Separator />
+        </Spacing>
 
-        <Group
-            padding='s'
-            separator='hide'
-            mode='plain'
-            header={<Header mode='tertiary'>Прислали 2 участника</Header>}
-        >
-            <List>
-                {sentListMock.map(({ id, name, icon }) => (
-                    <SimpleCell
-                        key={id}
-                        before={
-                            <Avatar
-                                src={icon}
-                                size={40}
-                            />
-                        }
-                        after={
-                            <Button
-                                appearance='accent'
-                                size='s'
-                                mode='secondary'
-                            >
-                                Скачать
-                            </Button>
-                        }
-                    >
-                        {name}
-                    </SimpleCell>
-                ))}
-            </List>
-        </Group>
-
-        <FooterWithButton text='Завершить сбор' />
+        <CollectionMembers collection={sentListMock} />
     </>
 );
