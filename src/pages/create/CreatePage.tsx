@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Button, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
+import { Button, Div, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
@@ -34,31 +34,40 @@ export const CreatePage: FC = () => {
             />
 
             <FormLayout onSubmit={handleSubmit(onSubmit)}>
-                <PlaceholderCreate
-                    header='Придумайте название'
-                    action={
-                        <Button
-                            stretched
-                            type='submit'
-                            size='l'
-                            onClick={() =>
-                                router.pushPage(PAGE_COLLECTION_ID, { collectionId: '123' })
-                            }
-                        >
-                            Продолжить
-                        </Button>
-                    }
-                >
-                    <CreateInput
-                        control={control}
-                        label='Название'
-                        placeholder='Документы в лагерь'
-                    />
-                </PlaceholderCreate>
+                <CreateContainer>
+                    <PlaceholderCreate
+                        header='Придумайте название'
+                        action={
+                            <Button
+                                stretched
+                                type='submit'
+                                size='l'
+                                onClick={() =>
+                                    router.pushPage(PAGE_COLLECTION_ID, { collectionId: '123' })
+                                }
+                            >
+                                Продолжить
+                            </Button>
+                        }
+                    >
+                        <CreateInput
+                            control={control}
+                            label='Название'
+                            placeholder='Документы в лагерь'
+                        />
+                    </PlaceholderCreate>
+                </CreateContainer>
             </FormLayout>
         </Panel>
     );
 };
+
+const CreateContainer = styled(Div)`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+`;
 
 const PlaceholderCreate = styled(Placeholder)`
     .vkuiPlaceholder__in {

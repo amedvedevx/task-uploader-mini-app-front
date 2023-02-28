@@ -34,7 +34,7 @@ export const CollectionIdPage: FC = () => {
 
             <Search />
 
-            {sentListMock ? <SentList sentListMock={sentListMock} /> : <ShareLink />}
+            {!sentListMock ? <SentList sentListMock={sentListMock} /> : <ShareLink />}
 
             <FooterWithButton text='Завершить сбор' />
         </Panel>
