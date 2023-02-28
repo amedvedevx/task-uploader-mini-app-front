@@ -16,30 +16,32 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections }) =
     const router = useRouter();
 
     return (
-        <List>
-            {collections?.length ? (
-                collections.slice(-3).map(({ id, name, status }) => (
-                    <SimpleCell
-                        key={id}
-                        after={
-                            status === 'DONE' ? (
-                                <GrayText>завершен</GrayText>
-                            ) : (
-                                <GreenText>открыт</GreenText>
-                            )
-                        }
-                        subtitle='Прислали ??'
-                        onClick={() =>
-                            router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${id}` })
-                        }
-                    >
-                        {name}
-                    </SimpleCell>
-                ))
-            ) : (
-                <CollectionHistorySkeleton />
-            )}
-        </List>
+        <CollectionHistoryWrapper>
+            <List>
+                {collections?.length ? (
+                    collections.slice(-3).map(({ id, name, status }) => (
+                        <SimpleCell
+                            key={id}
+                            after={
+                                status === 'DONE' ? (
+                                    <GrayText>завершен</GrayText>
+                                ) : (
+                                    <GreenText>открыт</GreenText>
+                                )
+                            }
+                            subtitle='Прислали ??'
+                            onClick={() =>
+                                router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${id}` })
+                            }
+                        >
+                            {name}
+                        </SimpleCell>
+                    ))
+                ) : (
+                    <CollectionHistorySkeleton />
+                )}
+            </List>
+        </CollectionHistoryWrapper>
     );
 };
 
@@ -49,4 +51,8 @@ const GreenText = styled(Text)`
 
 const GrayText = styled(Text)`
     color: var(--vkui--color_text_secondary);
+`;
+
+const CollectionHistoryWrapper = styled.div`
+    min-height: 190px;
 `;
