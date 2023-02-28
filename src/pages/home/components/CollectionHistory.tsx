@@ -4,18 +4,12 @@ import styled from 'styled-components';
 import { useRouter } from '@happysanta/router';
 
 import { PAGE_COLLECTION_ID } from '@/app/router';
+import type { TaskType } from '@/app/types';
 
 import { CollectionHistorySkeleton } from './skeleton';
 
-type Collection = {
-    id: number;
-    title: string;
-    isOpen: boolean;
-    completion: number;
-};
-
 interface CollectionHistoryProps {
-    collections: Collection[];
+    collections: TaskType[];
 }
 
 export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections }) => {
@@ -24,18 +18,22 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections }) =
     return (
         <List>
             {collections?.length ? (
-                collections.slice(-3).map(({ id, title, completion, isOpen }) => (
+                collections.slice(-3).map(({ id, name, status }) => (
                     <SimpleCell
                         key={id}
                         after={
-                            isOpen ? <GrayText>завершен</GrayText> : <GreenText>открыт</GreenText>
+                            status === 'DONE' ? (
+                                <GrayText>завершен</GrayText>
+                            ) : (
+                                <GreenText>открыт</GreenText>
+                            )
                         }
-                        subtitle={`Прислали ${completion}`}
+                        subtitle='Прислали ??'
                         onClick={() =>
                             router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${id}` })
                         }
                     >
-                        {title}
+                        {name}
                     </SimpleCell>
                 ))
             ) : (
