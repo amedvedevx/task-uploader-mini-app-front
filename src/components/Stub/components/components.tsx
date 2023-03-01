@@ -26,21 +26,17 @@ export const StubImageContainer = styled.div`
     height: 180px;
     margin-bottom: 10px;
 
-    background: linear-gradient(135deg, #a393f5 0%, #735ce6 100%);
+    background: linear-gradient(135deg, #eef4ff 0%, #70a2ff 100%);
 
     border-radius: 50%;
 
     position: relative;
+
+    display: contents;
 `;
 
 export const StubImage = styled.img<StubImageProps>`
-    display: block;
-
-    position: absolute;
-    bottom: -1px;
-
-    border: ${({ border }) => `${border}`};
-    border-radius: ${({ border }) => (border ? '50%' : 0)};
+    margin: 18px;
 `;
 
 export const StubTitle = styled(Text)<StubTitleProps>`

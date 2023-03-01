@@ -9,7 +9,7 @@ import {
     Spacing,
     Div,
 } from '@vkontakte/vkui';
-import { FC, useEffect } from 'react';
+import type { FC } from 'react';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
@@ -18,15 +18,6 @@ import DocAndImageIcon from '@/assets/docAndImgIcon.svg';
 import { useGetTasksQuery } from '@/api';
 
 import { CollectionHistory } from './components/CollectionHistory';
-
-const collectionsMock = [
-    { id: 1, title: 'Документы в лагерь', isOpen: false, completion: 2 },
-    { id: 2, title: 'Справки', isOpen: true, completion: 21 },
-    { id: 3, title: 'Домашнее задание', isOpen: true, completion: 18 },
-    { id: 4, title: 'Документы в лагерь', isOpen: false, completion: 2 },
-    { id: 5, title: 'Справки', isOpen: true, completion: 21 },
-    { id: 6, title: 'Домашнее задание', isOpen: true, completion: 18 },
-];
 
 export const HomePage: FC = () => {
     const router = useRouter();
@@ -64,7 +55,7 @@ export const HomePage: FC = () => {
                         <Separator />
                     </Spacing>
 
-                    <CollectionHistory collections={collectionsMock} />
+                    <CollectionHistory collections={data?.tasks} />
                 </GroupWide>
             </CollectionsContainer>
         </Panel>

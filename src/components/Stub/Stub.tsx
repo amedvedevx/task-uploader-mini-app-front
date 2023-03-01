@@ -1,5 +1,7 @@
 import type { FC, ReactNode } from 'react';
 
+import DocAndImageIcon from '@/assets/docAndImgIcon.svg';
+
 import {
     StubContainer,
     StubImageContainer,
@@ -19,7 +21,7 @@ export const Stub: FC<StubProps> = ({ children, title, subtitle, image }) => (
     <StubContainer>
         <StubImageContainer>
             <StubImage
-                src={image}
+                src={image || DocAndImageIcon}
                 border='2px solid white'
             />
         </StubImageContainer>
@@ -31,7 +33,7 @@ export const Stub: FC<StubProps> = ({ children, title, subtitle, image }) => (
             {title}
         </StubTitle>
 
-        <StubSubtitle color='var(--vkui--color_text_tertiary)'>{subtitle}</StubSubtitle>
+        <StubSubtitle color='#000'>{subtitle}</StubSubtitle>
 
         {children}
     </StubContainer>
