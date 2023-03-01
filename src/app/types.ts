@@ -66,9 +66,19 @@ export interface DeleteTaskResultProps {
     subTaskId: number;
 }
 
-export interface CompleteSubTaskProps {
-    taskResultId: number;
+export interface UploadFilesProps {
+    taskId: number;
     subTaskId: number;
+    files: FormData;
+}
+
+export interface GetFilesProps {
+    taskId: number;
+    subTaskId?: number;
+    userId?: number;
+}
+
+export interface GetFilesResponce {
     files: Record<string, unknown>;
 }
 
@@ -120,18 +130,18 @@ export interface DeleteSubTaskProps {
 
 enum TaskStatusTypesForOrganizer {
     'NEW' = 'NEW',
-    'IN_PROGRESS'= 'IN_PROGRESS',
-    'DONE'= 'DONE',
+    'IN_PROGRESS' = 'IN_PROGRESS',
+    'DONE' = 'DONE',
 }
 
 enum TaskStatusTypesForTestee {
     'UPLOAD_IN_PROGRESS' = 'UPLOAD_IN_PROGRESS',
-    'REQUIRES_UPLOAD'= 'REQUIRES_UPLOAD',
-    'UPLOADED'= 'UPLOADED',
-    'UNDER_REVIEW'= 'UNDER_REVIEW',
-    'COMPLETED'= 'COMPLETED',
-    'OVERDUE_COMPLETED'= 'OVERDUE_COMPLETED',
-    'NOT_COMPLETED'= 'NOT_COMPLETED',
+    'REQUIRES_UPLOAD' = 'REQUIRES_UPLOAD',
+    'UPLOADED' = 'UPLOADED',
+    'UNDER_REVIEW' = 'UNDER_REVIEW',
+    'COMPLETED' = 'COMPLETED',
+    'OVERDUE_COMPLETED' = 'OVERDUE_COMPLETED',
+    'NOT_COMPLETED' = 'NOT_COMPLETED',
 }
 
 enum FileTypes {

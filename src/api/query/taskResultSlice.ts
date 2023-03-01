@@ -1,5 +1,4 @@
 import type {
-    CompleteSubTaskProps,
     DeleteTaskResultProps,
     GetTaskResultsProps,
     GetTaskResultsResponce,
@@ -22,16 +21,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] 
             }),
             invalidatesTags: (result, error, arg) => [{ type: 'TaskResult', id: arg.taskResultId }],
         }),
-        completeSubTask: builder.mutation<void, CompleteSubTaskProps>({
-            query: ({ taskResultId, subTaskId, files }) => ({
-                url: `/task-result/files?taskId=${taskResultId}&subTaskId=${subTaskId}`,
-                method: 'POST',
-                body: files,
-            }),
-            invalidatesTags: (result, error, arg) => [{ type: 'TaskResult', id: arg.taskResultId }],
-        }),
     }),
 });
 
-export const { useGetTaskResultsQuery, useDeleteTaskResultMutation, useCompleteSubTaskMutation } =
-    taskResultSlice;
+export const { useGetTaskResultsQuery, useDeleteTaskResultMutation } = taskResultSlice;

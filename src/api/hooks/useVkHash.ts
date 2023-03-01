@@ -15,16 +15,13 @@ export interface VKWebAppCreateHashResult {
 
 export const useVkHash = (): boolean => {
     const [status, setStatus] = useState(false);
-    const [userType, setUserType] = useState<UserTypes>(UserTypes.ORGANIZER);
 
     const dispatch = useDispatch();
     const location = useLocation();
 
-    useEffect(() => {
-        if (location.getPageId().includes('upload')) {
-            setUserType(UserTypes.TESTEE);
-        }
-    }, [location]);
+    const userType = location.getPageId().includes('upload')
+        ? UserTypes.TESTEE
+        : UserTypes.ORGANIZER;
 
     const fetchVkHash = useCallback(async () => {
         const vkHash = await bridge
@@ -60,7 +57,7 @@ export const useVkHash = (): boolean => {
         } else {
             fetchVkHash();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fetchVkHash]);
 
     return status;

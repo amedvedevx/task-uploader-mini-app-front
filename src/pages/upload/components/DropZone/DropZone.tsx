@@ -1,19 +1,30 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Icon56DocumentOutline } from '@vkontakte/icons';
-import { Div, Placeholder, File, Group, Separator } from '@vkontakte/vkui';
+import { Icon28CheckCircleOutline, Icon56DocumentOutline } from '@vkontakte/icons';
+import { Div, Placeholder, File, Group, Separator, Spinner, Snackbar } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
+
+import { useUploadFilesMutation } from '@/api/query/filesSlice';
 
 import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
 
+interface DropZoneProps {
+    taskId: number;
+    subTaskId: number;
+}
+
 // 200 MB
 const maxFileSize = 209715200;
 
-export const DropZone: FC = () => {
+export const DropZone: FC<DropZoneProps> = ({ taskId, subTaskId }) => {
     const [files, setFiles] = useState<File[]>([]);
+
+    const [uploadFiles, status] = useUploadFilesMutation();
+
+    const [snackbar, setSnackbar] = useState(false);
 
     const onDrop = useCallback((acceptedFile: File[]) => {
         setFiles((prevState) => [...prevState, ...acceptedFile]);
@@ -30,22 +41,36 @@ export const DropZone: FC = () => {
     const clearState = () => setFiles([]);
 
     const sendFiles = () => {
-        // eslint-disable-next-line no-console
-        console.log('SendFiles to Backend');
+        const filesToSend = new FormData();
+        files.forEach((file) => filesToSend.append('files', file));
+
+        uploadFiles({ taskId, subTaskId, files: filesToSend });
     };
+
+    useEffect(() => {
+        setSnackbar(status.isSuccess);
+    }, [status.isSuccess]);
 
     return (
         <DropZoneWrapper>
             <DivStretched>
                 <DropZoneContainer {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
-                    <input {...getInputProps()} />
+                    <input
+                        type='file'
+                        {...getInputProps()}
+                        disabled={status.isLoading}
+                    />
 
-                    <PlaceholderCentered
-                        icon={<Icon56DocumentOutline color='var(--vkui--color_icon_accent)' />}
-                        action={!isDragActive && <File>Выбрать файл</File>}
-                    >
-                        Для загрузки файла перенесите его в эту область
-                    </PlaceholderCentered>
+                    {status.isLoading ? (
+                        <Spinner size='large' />
+                    ) : (
+                        <PlaceholderCentered
+                            icon={<Icon56DocumentOutline color='var(--vkui--color_icon_accent)' />}
+                            action={!isDragActive && <File>Выбрать файл</File>}
+                        >
+                            Для загрузки файла перенесите его в эту область
+                        </PlaceholderCentered>
+                    )}
                 </DropZoneContainer>
             </DivStretched>
 
@@ -61,8 +86,25 @@ export const DropZone: FC = () => {
                     <UploadPageActions
                         clearState={clearState}
                         sendFiles={sendFiles}
+                        isLoading={status.isLoading}
                     />
                 </Group>
+            )}
+
+            {/* TODO ME-38134 - needed to show upload files status from vk server */}
+            {snackbar && (
+                <Snackbar
+                    before={
+                        <Icon28CheckCircleOutline
+                            color='var(--vkui--color_text_positive)'
+                            width={24}
+                            height={24}
+                        />
+                    }
+                    onClose={() => setSnackbar(false)}
+                >
+                    Файлы загружены
+                </Snackbar>
             )}
         </DropZoneWrapper>
     );
