@@ -114,9 +114,27 @@ export interface CreateSubTaskProps {
         rows: Array<{
             name: string;
             description: string;
-            sortOrder: number;
             subTaskType: string;
         }>;
+    };
+}
+
+export interface UpdateTaskProps {
+    taskId: number;
+    payload: {
+        fields: Array<{
+            fieldName: string;
+            value: string;
+        }>;
+    };
+}
+
+export interface CreateWideTask {
+    payload: {
+        name: string;
+        description: string;
+        unlimited: boolean;
+        deadLine: string;
     };
 }
 

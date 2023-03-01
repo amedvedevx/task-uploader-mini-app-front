@@ -33,7 +33,7 @@ export const ShareLink: FC = () => {
                             before={<Icon20ShareExternalOutline />}
                             size='l'
                         >
-                            Поделиться ссылкой
+                            Скопировать ссылку на сбор
                         </Button>
                     }
                 >

@@ -2,12 +2,14 @@ import type {
     AppointTaskProps,
     CreateSubTaskProps,
     CreateTaskProps,
+    CreateWideTask,
     DeleteSubTaskProps,
     DeleteTaskProps,
     GetTaskIdProps,
     GetTaskIdResponce,
     GetTasksProps,
     GetTasksResponce,
+    UpdateTaskProps,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
@@ -35,19 +37,19 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
             }),
             invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.payload.taskId }],
         }),
-        createTask: builder.mutation<void, CreateTaskProps>({
+        createTask: builder.mutation<{ taskId: number }, CreateTaskProps>({
             query: ({ payload }) => ({
                 url: `/task`,
                 method: 'POST',
-                body: { payload },
+                body: { ...payload },
             }),
             invalidatesTags: () => [{ type: 'Task' }],
         }),
         createSubTask: builder.mutation<void, CreateSubTaskProps>({
             query: ({ taskId, payload }) => ({
-                url: `/task/sub-task/${taskId}`,
+                url: `/task/subTask/${taskId}`,
                 method: 'POST',
-                body: { payload },
+                body: { ...payload },
             }),
             invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
         }),
@@ -65,6 +67,45 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
             }),
             invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
         }),
+
+        updateTask: builder.mutation<void, UpdateTaskProps>({
+            query: ({ taskId, payload }) => ({
+                url: `/task/${taskId}`,
+                method: 'PATCH',
+                body: { ...payload },
+            }),
+            invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
+        }),
+
+        createWideTask: builder.mutation<any, CreateWideTask>({
+            queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+                const createTaskResponse = await fetchWithBQ({
+                    url: `/task`,
+                    method: 'POST',
+                    body: { ...payload },
+                });
+
+                const { taskId } = createTaskResponse.data as { taskId: number };
+
+                await fetchWithBQ({
+                    url: `/task/subTask/${taskId}`,
+                    method: 'POST',
+                    body: {
+                        rows: [
+                            {
+                                name: 'Подназвание',
+                                description: 'Описание',
+                                sortOrder: 1,
+                                subTaskType: 'FILE',
+                            },
+                        ],
+                    },
+                });
+
+                return { taskId };
+            },
+            invalidatesTags: () => [{ type: 'Task' }],
+        }),
     }),
 });
 
@@ -74,6 +115,8 @@ export const {
     useCreateTaskMutation,
     useDeleteSubTaskMutation,
     useDeleteTaskMutation,
+    useUpdateTaskMutation,
+    useCreateWideTaskMutation,
     useGetTaskIdQuery,
     useGetTasksQuery,
 } = taskResultSlice;

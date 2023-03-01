@@ -1,4 +1,4 @@
-import { useRouter } from '@happysanta/router';
+import { useParams, useRouter } from '@happysanta/router';
 import { Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
@@ -18,6 +18,7 @@ const sentListMock = [
 
 export const CollectionIdPage: FC = () => {
     const router = useRouter();
+    const { collectionId } = useParams();
 
     const goBack = () => {
         router.popPage();
@@ -34,9 +35,12 @@ export const CollectionIdPage: FC = () => {
 
             <Search />
 
-            {!sentListMock ? <SentList sentListMock={sentListMock} /> : <ShareLink />}
+            {sentListMock ? <SentList sentListMock={sentListMock} /> : <ShareLink />}
 
-            <FooterWithButton text='Завершить сбор' />
+            <FooterWithButton
+                collectionId={collectionId}
+                text='Завершить сбор'
+            />
         </Panel>
     );
 };
