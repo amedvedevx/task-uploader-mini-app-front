@@ -28,7 +28,7 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
                         type='button'
                         onClick={resetErrorBoundary}
                     >
-                        Try again
+                        Попробывать еще раз
                     </Button>
                 </Stub>
             )}
@@ -37,6 +37,6 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
 );
 
 const StubWrapper = styled.div`
-    background: linear-gradient(135deg, #a393f5 0%, #735ce6 100%);
+    background: linear-gradient(135deg, #eef4ff 0%, #70a2ff 100%);
     height: 100%;
 `;
