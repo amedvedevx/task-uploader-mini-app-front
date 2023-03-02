@@ -58,18 +58,45 @@ export type TaskType = {
 };
 
 export interface GetTaskResultsProps {
-    taskResultId: number;
+    taskId: number;
 }
 
 export interface DeleteTaskResultProps {
-    taskResultId: number;
+    taskId: number;
     subTaskId: number;
 }
 
-export interface CompleteSubTaskProps {
-    taskResultId: number;
+export interface UploadFilesProps {
+    taskId: number;
     subTaskId: number;
+    files: FormData;
+}
+
+export interface UploadFilesResponce {
+    taskId: number;
+    subTaskId: number;
+    status: AddResultStatusTypes;
+}
+
+export interface GetFilesProps {
+    taskId: number;
+    subTaskId?: number;
+    userId?: number;
+}
+
+export interface GetFilesResponce {
     files: Record<string, unknown>;
+}
+
+export interface GetSubTaskResultStatusProps {
+    taskId: number;
+    subTaskId: number;
+}
+
+export interface GetSubTaskResultStatusResponce {
+    taskResultId: number;
+    subtaskId: number;
+    status: AddResultStatusTypes;
 }
 
 export interface GetTaskIdProps {
@@ -120,18 +147,18 @@ export interface DeleteSubTaskProps {
 
 enum TaskStatusTypesForOrganizer {
     'NEW' = 'NEW',
-    'IN_PROGRESS'= 'IN_PROGRESS',
-    'DONE'= 'DONE',
+    'IN_PROGRESS' = 'IN_PROGRESS',
+    'DONE' = 'DONE',
 }
 
 enum TaskStatusTypesForTestee {
     'UPLOAD_IN_PROGRESS' = 'UPLOAD_IN_PROGRESS',
-    'REQUIRES_UPLOAD'= 'REQUIRES_UPLOAD',
-    'UPLOADED'= 'UPLOADED',
-    'UNDER_REVIEW'= 'UNDER_REVIEW',
-    'COMPLETED'= 'COMPLETED',
-    'OVERDUE_COMPLETED'= 'OVERDUE_COMPLETED',
-    'NOT_COMPLETED'= 'NOT_COMPLETED',
+    'REQUIRES_UPLOAD' = 'REQUIRES_UPLOAD',
+    'UPLOADED' = 'UPLOADED',
+    'UNDER_REVIEW' = 'UNDER_REVIEW',
+    'COMPLETED' = 'COMPLETED',
+    'OVERDUE_COMPLETED' = 'OVERDUE_COMPLETED',
+    'NOT_COMPLETED' = 'NOT_COMPLETED',
 }
 
 enum FileTypes {
@@ -141,4 +168,10 @@ enum FileTypes {
 export enum UserTypes {
     'ORGANIZER' = 'ORGANIZER',
     'TESTEE' = 'TESTEE',
+}
+
+export enum AddResultStatusTypes {
+    'IN_PROGRESS' = 'IN_PROGRESS',
+    'LOADED' = 'LOADED',
+    'NOT_LOADED' = 'NOT_LOADED',
 }

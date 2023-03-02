@@ -9,11 +9,12 @@ export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
         baseUrl: API_BASE_URL,
-        headers: {
-            'Content-type': 'application/json',
-        },
-        prepareHeaders: (headers, { getState }) => {
+        prepareHeaders: (headers, { getState, endpoint }) => {
             const bearer = (getState() as RootState).authorization.value;
+
+            if (!endpoint.includes('uploadFiles')) {
+                headers.set('Content-type', 'application/json');
+            }
 
             if (bearer) {
                 headers.set('Authorization', bearer);

@@ -4,9 +4,14 @@ import type { FC } from 'react';
 interface UploadPageActionsProps {
     clearState: () => void;
     sendFiles: () => void;
+    isLoading: boolean;
 }
 
-export const UploadPageActions: FC<UploadPageActionsProps> = ({ clearState, sendFiles }) => (
+export const UploadPageActions: FC<UploadPageActionsProps> = ({
+    clearState,
+    sendFiles,
+    isLoading,
+}) => (
     <Div>
         <ButtonGroup
             stretched
@@ -18,6 +23,7 @@ export const UploadPageActions: FC<UploadPageActionsProps> = ({ clearState, send
                 size='l'
                 mode='secondary'
                 appearance='accent'
+                disabled={isLoading}
                 onClick={() => clearState()}
             >
                 Отменить
@@ -28,6 +34,7 @@ export const UploadPageActions: FC<UploadPageActionsProps> = ({ clearState, send
                 size='l'
                 appearance='accent'
                 mode='primary'
+                disabled={isLoading}
                 onClick={() => sendFiles()}
             >
                 Отправить
