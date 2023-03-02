@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Button, Image, Placeholder, Search } from '@vkontakte/vkui';
+import { Button, Image, Placeholder } from '@vkontakte/vkui';
 import { Icon20ShareExternalOutline } from '@vkontakte/icons';
 import styled from 'styled-components';
 
@@ -8,13 +8,21 @@ import PeaopleIcon from '@/assets/peopleIcon.svg';
 
 import { Snackbar } from './components';
 
-export const ShareLink: FC = () => {
+interface ShareLinkProps {
+    collectionId: string;
+}
+
+export const ShareLink: FC<ShareLinkProps> = ({ collectionId }) => {
     const [snackbar, setSnackbar] = useState(null);
 
     const openSnackbar = () => {
         if (snackbar) return;
         setSnackbar((): any => <Snackbar onClose={() => setSnackbar(null)} />);
     };
+
+    // const createLink = (id: string) => {
+    //     return
+    // }
 
     return (
         <>

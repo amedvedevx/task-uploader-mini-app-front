@@ -41,7 +41,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
             query: ({ payload }) => ({
                 url: `/task`,
                 method: 'POST',
-                body: { ...payload },
+                body: { payload },
             }),
             invalidatesTags: () => [{ type: 'Task' }],
         }),
@@ -77,7 +77,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
             invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
         }),
 
-        createWideTask: builder.mutation<any, CreateWideTask>({
+        createWideTask: builder.mutation<{ taskId: number }, CreateWideTask>({
             queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
                 const createTaskResponse = await fetchWithBQ({
                     url: `/task`,
@@ -93,8 +93,8 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
                     body: {
                         rows: [
                             {
-                                name: 'Подназвание',
-                                description: 'Описание',
+                                name: `Подзадание ${payload.name}`,
+                                description: payload.description,
                                 sortOrder: 1,
                                 subTaskType: 'FILE',
                             },
@@ -102,7 +102,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
                     },
                 });
 
-                return { taskId };
+                return { data: taskId };
             },
             invalidatesTags: () => [{ type: 'Task' }],
         }),

@@ -1,29 +1,29 @@
 export interface GetTaskResultsResponce {
-    taskResults: [
+    taskResults: TaskResults[];
+}
+
+export type TaskResults = {
+    id: number;
+    taskId: number;
+    completeDate: string;
+    assignDate: string;
+    taskResultStatus: TaskStatusTypesForTestee;
+    taskDetailResults: [
         {
-            id: number;
-            taskId: number;
+            resultId: number;
+            taskDetailId: number;
             completeDate: string;
-            assignDate: string;
-            taskResultStatus: TaskStatusTypesForTestee;
-            taskDetailResults: [
-                {
-                    resultId: number;
-                    taskDetailId: number;
-                    completeDate: string;
-                    status: 'LOADED';
-                    content: Array<Record<string, unknown>>;
-                },
-            ];
-            testee: {
-                id: number;
-                firstName: string;
-                lastName: string;
-                createDate: string;
-            };
+            status: 'LOADED';
+            content: Array<Record<string, unknown>>;
         },
     ];
-}
+    testee: {
+        id: number;
+        firstName: string;
+        lastName: string;
+        createDate: string;
+    };
+};
 
 export interface GetTasksResponce {
     tasks: TaskType[];
@@ -72,15 +72,12 @@ export interface UploadFilesProps {
     files: FormData;
 }
 
-<<<<<<< HEAD
-=======
 export interface UploadFilesResponce {
     taskId: number;
     subTaskId: number;
     status: AddResultStatusTypes;
 }
 
->>>>>>> task/ME-37744-Create-collection-flow
 export interface GetFilesProps {
     taskId: number;
     subTaskId?: number;

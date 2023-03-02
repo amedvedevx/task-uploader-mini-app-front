@@ -2,16 +2,12 @@ import type { FC } from 'react';
 import { Avatar, Button, Group, List, SimpleCell } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
+import type { TaskResults } from '@/app/types';
+
 import { SkeletonMembers } from './SkeletonMembers';
 
-type Collection = {
-    id: number;
-    name: string;
-    icon: string;
-};
-
 interface CollectionMembersProps {
-    collection: Collection[];
+    collection: TaskResults[];
 }
 
 export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) => (
@@ -23,13 +19,14 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) =>
                 mode='plain'
             >
                 <List>
-                    {collection.map(({ id, name, icon }) => (
+                    {collection.map(({ id, testee }) => (
                         <Members
                             key={id}
                             before={
                                 <Avatar
-                                    src={icon}
+                                    // src={icon}
                                     size={40}
+                                    alt='icon'
                                 />
                             }
                             after={
@@ -42,7 +39,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) =>
                                 </Button>
                             }
                         >
-                            {name}
+                            {`${testee.firstName} ${testee.lastName}`}
                         </Members>
                     ))}
                 </List>

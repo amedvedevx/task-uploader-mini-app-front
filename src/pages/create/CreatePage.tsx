@@ -11,6 +11,8 @@ import { useCreateWideTaskMutation } from '@/api';
 
 import { CreateInput } from './components';
 
+const deadLineDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+
 export const CreatePage: FC = () => {
     const { control, handleSubmit } = useForm({
         defaultValues: {
@@ -20,12 +22,10 @@ export const CreatePage: FC = () => {
 
     const [createWideTask] = useCreateWideTaskMutation();
 
-    const deadLineDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
-
     const onSubmit = async (data: { collectionName: string }) => {
         const payload = {
             name: data.collectionName,
-            description: 'Описание',
+            description: `Описание - ${data.collectionName}`,
             unlimited: true,
             deadLine: deadLineDate,
         };

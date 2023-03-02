@@ -3,22 +3,18 @@ import { Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import Avatar1 from '@/assets/avatar1.svg';
-import Avatar2 from '@/assets/avatar2.svg';
 import { PANEL_COLLECTION_ID } from '@/app/router';
+import { useGetTaskResultsQuery } from '@/api';
 
 import { SentList } from './components/list';
 import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
 
-const sentListMock = [
-    { id: 1, name: 'Алексей Чайников', icon: Avatar1 },
-    { id: 2, name: 'Иван Черный', icon: Avatar2 },
-];
-
 export const CollectionIdPage: FC = () => {
     const router = useRouter();
     const { collectionId } = useParams();
+
+    const { data } = useGetTaskResultsQuery({ taskId: Number(collectionId) });
 
     const goBack = () => {
         router.popPage();
@@ -35,7 +31,11 @@ export const CollectionIdPage: FC = () => {
 
             <Search />
 
-            {sentListMock ? <SentList sentListMock={sentListMock} /> : <ShareLink />}
+            {data?.taskResults.length ? (
+                <SentList collection={data?.taskResults} />
+            ) : (
+                <ShareLink collectionId={collectionId} />
+            )}
 
             <FooterWithButton
                 collectionId={collectionId}

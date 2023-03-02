@@ -2,13 +2,15 @@ import type { FC } from 'react';
 import { Avatar, ButtonGroup, CellButton, Separator, Spacing } from '@vkontakte/vkui';
 import { Icon24Linked, Icon24DownloadOutline } from '@vkontakte/icons';
 
+import type { TaskResults } from '@/app/types';
+
 import { CollectionMembers } from './components/CollectionMembers';
 
 interface SentListProps {
-    sentListMock: { id: number; name: string; icon: string }[];
+    collection: TaskResults[];
 }
 
-export const SentList: FC<SentListProps> = ({ sentListMock }) => (
+export const SentList: FC<SentListProps> = ({ collection }) => (
     <>
         <ButtonGroup
             mode='vertical'
@@ -45,6 +47,6 @@ export const SentList: FC<SentListProps> = ({ sentListMock }) => (
             <Separator />
         </Spacing>
 
-        <CollectionMembers collection={sentListMock} />
+        <CollectionMembers collection={collection} />
     </>
 );
