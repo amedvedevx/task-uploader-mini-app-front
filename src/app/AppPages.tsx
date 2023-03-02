@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { lazy, useEffect, Suspense } from 'react';
+import { lazy, useEffect } from 'react';
 import { useFirstPageCheck, useLocation } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import bridge from '@vkontakte/vk-bridge';
@@ -52,9 +52,8 @@ export const AppPages: FC = () => {
     }, [isFirst]);
 
     return (
-        <Suspense fallback={<PreloadScreen />}>
-            {/* TODO ME-38106 - Somehow suspence app while bearer is still proceed */}
-            {bearer && (
+        <>
+            {bearer ? (
                 <SplitLayout>
                     <SplitCol>
                         <Root activeView={location.getViewId()}>
@@ -78,7 +77,9 @@ export const AppPages: FC = () => {
                         </Root>
                     </SplitCol>
                 </SplitLayout>
+            ) : (
+                <PreloadScreen />
             )}
-        </Suspense>
+        </>
     );
 };

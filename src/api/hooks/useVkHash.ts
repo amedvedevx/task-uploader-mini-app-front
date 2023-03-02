@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { ErrorData } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
-import { useLocation } from '@happysanta/router';
 import { useDispatch } from 'react-redux';
 
 import { APP_DEV_AUTH, APP_ID, IS_DEV } from '@/app/config';
 import { setBearer } from '@/api/state/authorizationSlice';
-import { UserTypes } from '@/app/types';
+
 import { useUserRole } from './useUserRole';
 
 export interface VKWebAppCreateHashResult {

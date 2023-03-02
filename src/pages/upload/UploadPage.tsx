@@ -24,6 +24,7 @@ import { AddResultStatusTypes } from '@/app/types';
 import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
+import { UploadPageSkeleton } from './skeleton';
 
 export const UploadPage: FC = () => {
     const router = useRouter();
@@ -93,15 +94,17 @@ export const UploadPage: FC = () => {
 
     return (
         <Panel id={PANEL_UPLOAD_ID}>
-            <PanelHeader before={<PanelHeaderClose onClick={() => router.popPage()} />}>
-                {data && (
+            {data ? (
+                <PanelHeader before={<PanelHeaderClose onClick={() => router.popPage()} />}>
                     <PanelHeaderContent
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
                         {data?.name}
                     </PanelHeaderContent>
-                )}
-            </PanelHeader>
+                </PanelHeader>
+            ) : (
+                <UploadPageSkeleton />
+            )}
 
             <UploadPageWrapper>
                 <DropZone
