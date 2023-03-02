@@ -58,11 +58,11 @@ export type TaskType = {
 };
 
 export interface GetTaskResultsProps {
-    taskResultId: number;
+    taskId: number;
 }
 
 export interface DeleteTaskResultProps {
-    taskResultId: number;
+    taskId: number;
     subTaskId: number;
 }
 
@@ -72,6 +72,15 @@ export interface UploadFilesProps {
     files: FormData;
 }
 
+<<<<<<< HEAD
+=======
+export interface UploadFilesResponce {
+    taskId: number;
+    subTaskId: number;
+    status: AddResultStatusTypes;
+}
+
+>>>>>>> task/ME-37744-Create-collection-flow
 export interface GetFilesProps {
     taskId: number;
     subTaskId?: number;
@@ -80,6 +89,17 @@ export interface GetFilesProps {
 
 export interface GetFilesResponce {
     files: Record<string, unknown>;
+}
+
+export interface GetSubTaskResultStatusProps {
+    taskId: number;
+    subTaskId: number;
+}
+
+export interface GetSubTaskResultStatusResponce {
+    taskResultId: number;
+    subtaskId: number;
+    status: AddResultStatusTypes;
 }
 
 export interface GetTaskIdProps {
@@ -169,4 +189,10 @@ enum FileTypes {
 export enum UserTypes {
     'ORGANIZER' = 'ORGANIZER',
     'TESTEE' = 'TESTEE',
+}
+
+export enum AddResultStatusTypes {
+    'IN_PROGRESS' = 'IN_PROGRESS',
+    'LOADED' = 'LOADED',
+    'NOT_LOADED' = 'NOT_LOADED',
 }

@@ -1,4 +1,13 @@
+<<<<<<< HEAD
 import type { UploadFilesProps, GetFilesProps, GetFilesResponce } from '@/app/types';
+=======
+import type {
+    UploadFilesProps,
+    GetFilesProps,
+    GetFilesResponce,
+    UploadFilesResponce,
+} from '@/app/types';
+>>>>>>> task/ME-37744-Create-collection-flow
 
 import { apiSlice } from './apiSlice';
 
@@ -10,7 +19,11 @@ const filesSlice = apiSlice.injectEndpoints({
                 params: { subTaskId, userId },
             }),
         }),
+<<<<<<< HEAD
         uploadFiles: builder.mutation<void, UploadFilesProps>({
+=======
+        uploadFiles: builder.mutation<UploadFilesResponce, UploadFilesProps>({
+>>>>>>> task/ME-37744-Create-collection-flow
             query: ({ taskId, subTaskId, files }) => ({
                 url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
                 method: 'PUT',
