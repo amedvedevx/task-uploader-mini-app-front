@@ -43,7 +43,7 @@ export const CollectionIdPage: FC = () => {
                 <SentList
                     collectionId={collectionId}
                     shareLink={copy}
-                    collection={data?.taskResults}
+                    collection={data.taskResults}
                 />
             ) : (
                 <ShareLink shareLink={copy} />

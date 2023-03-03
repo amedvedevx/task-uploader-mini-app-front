@@ -16,25 +16,6 @@ bridge.send('VKWebAppInit');
 
 const App: FC = () => {
     const { theme } = useTheme();
-    const { sendActionToCustomEvent } = useCustomEventsLog();
-    const firstClick = useRef<boolean>(false);
-
-    const onDocumentClick = useCallback(() => {
-        if (!firstClick.current) {
-            sendActionToCustomEvent('first click', 'document');
-            document.removeEventListener('click', onDocumentClick);
-        }
-
-        firstClick.current = true;
-    }, [sendActionToCustomEvent]);
-
-    useEffect(() => {
-        document.addEventListener('click', onDocumentClick);
-
-        return () => {
-            document.removeEventListener('click', onDocumentClick);
-        };
-    }, [onDocumentClick]);
 
     return (
         <ErrorBoundary FallbackComponent={FallbackComponent}>
