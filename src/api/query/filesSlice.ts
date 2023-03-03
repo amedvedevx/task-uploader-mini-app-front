@@ -25,4 +25,4 @@ const filesSlice = apiSlice.injectEndpoints({
     }),
 });
 
-export const { useGetFilesQuery, useUploadFilesMutation } = filesSlice;
+export const { useLazyGetFilesQuery, useUploadFilesMutation } = filesSlice;

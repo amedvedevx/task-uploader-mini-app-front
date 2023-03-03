@@ -1,29 +1,29 @@
 export interface GetTaskResultsResponce {
-    taskResults: [
+    taskResults: TaskResults[];
+}
+
+export type TaskResults = {
+    id: number;
+    taskId: number;
+    completeDate: string;
+    assignDate: string;
+    taskResultStatus: TaskStatusTypesForTestee;
+    taskDetailResults: [
         {
-            id: number;
-            taskId: number;
+            resultId: number;
+            taskDetailId: number;
             completeDate: string;
-            assignDate: string;
-            taskResultStatus: TaskStatusTypesForTestee;
-            taskDetailResults: [
-                {
-                    resultId: number;
-                    taskDetailId: number;
-                    completeDate: string;
-                    status: 'LOADED';
-                    content: Array<Record<string, unknown>>;
-                },
-            ];
-            testee: {
-                id: number;
-                firstName: string;
-                lastName: string;
-                createDate: string;
-            };
+            status: 'LOADED';
+            content: Array<Record<string, unknown>>;
         },
     ];
-}
+    testee: {
+        id: number;
+        firstName: string;
+        lastName: string;
+        createDate: string;
+    };
+};
 
 export interface GetTasksResponce {
     tasks: TaskType[];
@@ -131,9 +131,27 @@ export interface CreateSubTaskProps {
         rows: Array<{
             name: string;
             description: string;
-            sortOrder: number;
             subTaskType: string;
         }>;
+    };
+}
+
+export interface UpdateTaskProps {
+    taskId: number;
+    payload: {
+        fields: Array<{
+            fieldName: string;
+            value: string;
+        }>;
+    };
+}
+
+export interface CreateWideTask {
+    payload: {
+        name: string;
+        description: string;
+        unlimited: boolean;
+        deadLine: string;
     };
 }
 

@@ -2,49 +2,60 @@ import type { FC } from 'react';
 import { Avatar, ButtonGroup, CellButton, Separator, Spacing } from '@vkontakte/vkui';
 import { Icon24Linked, Icon24DownloadOutline } from '@vkontakte/icons';
 
+import type { TaskResults } from '@/app/types';
+
 import { CollectionMembers } from './components/CollectionMembers';
+import { useDownloadFile } from '../../hooks/useDownloadFile';
 
 interface SentListProps {
-    sentListMock: { id: number; name: string; icon: string }[];
+    collection: TaskResults[];
+    collectionId: string;
+    shareLink: () => void;
 }
 
-export const SentList: FC<SentListProps> = ({ sentListMock }) => (
-    <>
-        <ButtonGroup
-            mode='vertical'
-            gap='s'
-        >
-            <CellButton
-                before={
-                    <Avatar
-                        withBorder={false}
-                        size={40}
-                    >
-                        <Icon24Linked />
-                    </Avatar>
-                }
+export const SentList: FC<SentListProps> = ({ collection, collectionId, shareLink }) => {
+    const { download } = useDownloadFile(collectionId);
+
+    return (
+        <>
+            <ButtonGroup
+                mode='vertical'
+                gap='s'
             >
-                Поделиться ссылкой на сбор
-            </CellButton>
+                <CellButton
+                    before={
+                        <Avatar
+                            withBorder={false}
+                            size={40}
+                        >
+                            <Icon24Linked />
+                        </Avatar>
+                    }
+                    onClick={() => shareLink()}
+                >
+                    Поделиться ссылкой на сбор
+                </CellButton>
 
-            <CellButton
-                before={
-                    <Avatar
-                        withBorder={false}
-                        size={40}
-                    >
-                        <Icon24DownloadOutline />
-                    </Avatar>
-                }
-            >
-                Скачать все файлы
-            </CellButton>
-        </ButtonGroup>
+                <CellButton
+                    before={
+                        <Avatar
+                            withBorder={false}
+                            size={40}
+                        >
+                            <Icon24DownloadOutline />
+                        </Avatar>
+                    }
+                    onClick={() => download()}
+                >
+                    Скачать все файлы
+                </CellButton>
+            </ButtonGroup>
 
-        <Spacing size={36}>
-            <Separator />
-        </Spacing>
+            <Spacing size={36}>
+                <Separator />
+            </Spacing>
 
-        <CollectionMembers collection={sentListMock} />
-    </>
-);
+            <CollectionMembers collection={collection} />
+        </>
+    );
+};

@@ -1,34 +1,55 @@
 import { Button, Separator } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import styled from 'styled-components';
+import { useRouter } from '@happysanta/router';
+
+import { useUpdateTaskMutation } from '@/api';
+import { PAGE_COLLECTION_HOME } from '@/app/router';
 
 interface FooterWithButtonProps {
-    onClick?: React.MouseEventHandler<HTMLElement>;
+    collectionId: string;
     text: string;
 }
 
-export const FooterWithButton: FC<FooterWithButtonProps> = ({ onClick, text }) => (
-    <FooterContainer>
-        <Separator wide />
+export const FooterWithButton: FC<FooterWithButtonProps> = ({ text, collectionId }) => {
+    const router = useRouter();
 
-        <ActionWrapper>
-            <Button
-                stretched
-                size='l'
-                mode='secondary'
-                appearance='negative'
-                onClick={onClick}
-            >
-                {text}
-            </Button>
-        </ActionWrapper>
-    </FooterContainer>
-);
+    const [updateTask] = useUpdateTaskMutation();
+
+    const handleUpdateTask = async (id: string) => {
+        const payload = {
+            fields: [{ fieldName: 'status', value: 'DONE' }],
+        };
+
+        await updateTask({ taskId: Number(id), payload });
+
+        router.pushPage(PAGE_COLLECTION_HOME);
+    };
+
+    return (
+        <FooterContainer>
+            <Separator wide />
+
+            <ActionWrapper>
+                <Button
+                    stretched
+                    size='l'
+                    mode='secondary'
+                    appearance='negative'
+                    onClick={(): Promise<void> => handleUpdateTask(collectionId)}
+                >
+                    {text}
+                </Button>
+            </ActionWrapper>
+        </FooterContainer>
+    );
+};
 
 const FooterContainer = styled.div`
     position: fixed;
     bottom: 0;
     width: 100%;
+    background: var(--vkui--color_background_content);
 `;
 
 const ActionWrapper = styled.div`
