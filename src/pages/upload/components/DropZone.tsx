@@ -11,6 +11,11 @@ interface DropZoneProps {
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
+interface DropZoneProps {
+    taskId: number;
+    subTaskId: number;
+}
+
 // 200 MB
 const maxFileSize = 209715200;
 
