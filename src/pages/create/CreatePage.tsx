@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { format } from 'date-fns';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
+import { PAGE_COLLECTION_ID, PAGE_UPLOAD_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateWideTaskMutation } from '@/api';
 
 import { CreateInput } from './components';

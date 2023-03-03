@@ -1,8 +1,10 @@
 import type { FC } from 'react';
 import { Avatar, Button, Group, List, SimpleCell } from '@vkontakte/vkui';
 import styled from 'styled-components';
+import { useParams } from '@happysanta/router';
 
 import type { TaskResults } from '@/app/types';
+import { useDownloadFile } from '@/pages/collectionId/hooks/useDownloadFile';
 
 import { SkeletonMembers } from './SkeletonMembers';
 
@@ -10,45 +12,51 @@ interface CollectionMembersProps {
     collection: TaskResults[];
 }
 
-export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) => (
-    <>
-        {collection.length ? (
-            <GroupWide
-                header={<HeaderList>{`Прислали ${collection.length} участника`}</HeaderList>}
-                padding='s'
-                mode='plain'
-            >
-                <List>
-                    {collection.map(({ id, testee }) => (
-                        <Members
-                            key={id}
-                            before={
-                                <Avatar
-                                    // src={icon}
-                                    size={40}
-                                    alt='icon'
-                                />
-                            }
-                            after={
-                                <Button
-                                    appearance='accent'
-                                    size='s'
-                                    mode='secondary'
-                                >
-                                    Скачать
-                                </Button>
-                            }
-                        >
-                            {`${testee.firstName} ${testee.lastName}`}
-                        </Members>
-                    ))}
-                </List>
-            </GroupWide>
-        ) : (
-            <SkeletonMembers />
-        )}
-    </>
-);
+export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) => {
+    const { collectionId } = useParams();
+
+    const { download } = useDownloadFile(collectionId);
+
+    return (
+        <>
+            {collection.length ? (
+                <GroupWide
+                    header={<HeaderList>{`Прислали ${collection.length} участника`}</HeaderList>}
+                    padding='s'
+                    mode='plain'
+                >
+                    <List>
+                        {collection.map(({ testee }) => (
+                            <Members
+                                key={testee.id}
+                                before={
+                                    <Avatar
+                                        size={40}
+                                        alt='icon'
+                                    />
+                                }
+                                after={
+                                    <Button
+                                        appearance='accent'
+                                        size='s'
+                                        mode='secondary'
+                                        onClick={() => download()}
+                                    >
+                                        Скачать
+                                    </Button>
+                                }
+                            >
+                                {`${testee.firstName} ${testee.lastName}`}
+                            </Members>
+                        ))}
+                    </List>
+                </GroupWide>
+            ) : (
+                <SkeletonMembers />
+            )}
+        </>
+    );
+};
 
 const GroupWide = styled(Group)`
     .vkuiGroup__inner {
