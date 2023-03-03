@@ -6,10 +6,10 @@ import styled from 'styled-components';
 import PeaopleIcon from '@/assets/peopleIcon.svg';
 
 interface ShareLinkProps {
-    clipboardLink: () => void;
+    shareLink: () => void;
 }
 
-export const ShareLink: FC<ShareLinkProps> = ({ clipboardLink }) => (
+export const ShareLink: FC<ShareLinkProps> = ({ shareLink }) => (
     <>
         <ShareLinkContainer>
             <Placeholder
@@ -26,7 +26,7 @@ export const ShareLink: FC<ShareLinkProps> = ({ clipboardLink }) => (
                         before={<Icon20ShareExternalOutline />}
                         size='l'
                         onClick={() => {
-                            clipboardLink();
+                            shareLink();
                         }}
                     >
                         Скопировать ссылку на сбор

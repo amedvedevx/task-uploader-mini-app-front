@@ -10,10 +10,10 @@ import { useDownloadFile } from '../../hooks/useDownloadFile';
 interface SentListProps {
     collection: TaskResults[];
     collectionId: string;
-    clipboardLink: () => void;
+    shareLink: () => void;
 }
 
-export const SentList: FC<SentListProps> = ({ collection, collectionId, clipboardLink }) => {
+export const SentList: FC<SentListProps> = ({ collection, collectionId, shareLink }) => {
     const { download } = useDownloadFile(collectionId);
 
     return (
@@ -31,7 +31,7 @@ export const SentList: FC<SentListProps> = ({ collection, collectionId, clipboar
                             <Icon24Linked />
                         </Avatar>
                     }
-                    onClick={() => clipboardLink()}
+                    onClick={() => shareLink()}
                 >
                     Поделиться ссылкой на сбор
                 </CellButton>

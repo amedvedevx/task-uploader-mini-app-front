@@ -1,32 +1,46 @@
-import { API_BASE_URL, APP_DEV_AUTH } from '@/app/config';
+import { useSelector } from 'react-redux';
+
+import { API_BASE_URL } from '@/app/config';
+import type { RootState } from '@/api';
 
 interface UseDownloadFileResult {
-    download: () => Promise<void>;
+    download: () => void;
 }
 
 export const useDownloadFile = (taskId: string, userId?: string): UseDownloadFileResult => {
-    const download = async () => {
-        await fetch(`${API_BASE_URL}/files/${taskId}`, {
+    const { value } = useSelector((state: RootState) => state.authorization);
+
+    const download = () => {
+        fetch(`${API_BASE_URL}/files/${taskId}`, {
             method: 'GET',
             headers: {
-                Authorization: `${APP_DEV_AUTH}`,
+                Authorization: `${value}`,
             },
         })
-            .then((response) =>
-                response.blob().then((data) => ({
-                    data,
-                    filename: response.headers.get('Content-Disposition'),
-                })),
-            )
+            .then((response) => {
+                let fileName = '';
+                const disposition = response.headers.get('Content-disposition');
 
-            .then(({ data, filename }) => {
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    const matches = filenameRegex.exec(disposition);
+
+                    if (matches != null && matches[1]) {
+                        fileName = matches[1].replace(/['"]/g, '');
+                    }
+                }
+
+                return { textblob: response.blob(), fileName: decodeURI(fileName.substring(5)) };
+            })
+
+            .then(async ({ textblob, fileName }) => {
                 let dwnlnk = document.createElement('a');
-                dwnlnk.download = filename;
+                dwnlnk.download = fileName;
 
                 if (window.webkitURL != null) {
-                    dwnlnk.href = window.webkitURL.createObjectURL(data);
+                    dwnlnk.href = window.webkitURL.createObjectURL(await textblob);
                 } else {
-                    dwnlnk.href = window.URL.createObjectURL(data);
+                    dwnlnk.href = window.URL.createObjectURL(await textblob);
                 }
                 dwnlnk.click();
             });

@@ -5,10 +5,11 @@ import { APP_ID } from '@/app/config';
 interface CopyFnResult {
     copy: () => Promise<boolean>;
     text?: string;
+    setText: (text: string) => void;
 }
 
 export const useCopyToClipboard = (collectionId: string): CopyFnResult => {
-    const [text, setText] = useState<string>();
+    const [text, setText] = useState<string>('');
     const link = `https://vk.com/${APP_ID}/upload/${collectionId}`;
 
     const copy = async () => {
@@ -22,9 +23,10 @@ export const useCopyToClipboard = (collectionId: string): CopyFnResult => {
 
             return true;
         } catch (error) {
+            setText('');
             return false;
         }
     };
 
-    return { copy, text };
+    return { copy, text, setText };
 };

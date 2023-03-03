@@ -1,7 +1,6 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { Panel, PanelHeaderBack, Search, Snackbar } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useState } from 'react';
 import { Icon28CheckCircleOutline } from '@vkontakte/icons';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
@@ -23,9 +22,7 @@ export const CollectionIdPage: FC = () => {
         router.popPage();
     };
 
-    const [snackbar, setSnackbar] = useState('');
-
-    const { copy, text } = useCopyToClipboard(collectionId);
+    const { copy, text, setText } = useCopyToClipboard(collectionId);
 
     return (
         <Panel id={PANEL_COLLECTION_ID}>
@@ -41,17 +38,17 @@ export const CollectionIdPage: FC = () => {
             {data?.taskResults.length ? (
                 <SentList
                     collectionId={collectionId}
-                    clipboardLink={copy}
+                    shareLink={copy}
                     collection={data?.taskResults}
                 />
             ) : (
-                <ShareLink clipboardLink={copy} />
+                <ShareLink shareLink={copy} />
             )}
 
             {text && (
                 <Snackbar
                     before={<Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />}
-                    onClose={() => setSnackbar('')}
+                    onClose={() => setText('')}
                 >
                     {text}
                 </Snackbar>

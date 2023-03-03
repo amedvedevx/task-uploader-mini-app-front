@@ -17,44 +17,44 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) =>
 
     const { download } = useDownloadFile(collectionId);
 
+    const membersCount = collection.length;
+
+    if (!collection?.length) {
+        return <SkeletonMembers />;
+    }
+
     return (
-        <>
-            {collection.length ? (
-                <GroupWide
-                    header={<HeaderList>{`Прислали ${collection.length} участника`}</HeaderList>}
-                    padding='s'
-                    mode='plain'
-                >
-                    <List>
-                        {collection.map(({ testee }) => (
-                            <Members
-                                key={testee.id}
-                                before={
-                                    <Avatar
-                                        size={40}
-                                        alt='icon'
-                                    />
-                                }
-                                after={
-                                    <Button
-                                        appearance='accent'
-                                        size='s'
-                                        mode='secondary'
-                                        onClick={() => download()}
-                                    >
-                                        Скачать
-                                    </Button>
-                                }
+        <GroupWide
+            header={<HeaderList>{`Прислали ${membersCount} участника`}</HeaderList>}
+            padding='s'
+            mode='plain'
+        >
+            <List>
+                {collection.map(({ testee }) => (
+                    <Members
+                        key={testee.id}
+                        before={
+                            <Avatar
+                                size={40}
+                                alt='icon'
+                            />
+                        }
+                        after={
+                            <Button
+                                appearance='accent'
+                                size='s'
+                                mode='secondary'
+                                onClick={() => download()}
                             >
-                                {`${testee.firstName} ${testee.lastName}`}
-                            </Members>
-                        ))}
-                    </List>
-                </GroupWide>
-            ) : (
-                <SkeletonMembers />
-            )}
-        </>
+                                Скачать
+                            </Button>
+                        }
+                    >
+                        {`${testee.firstName} ${testee.lastName}`}
+                    </Members>
+                ))}
+            </List>
+        </GroupWide>
     );
 };
 
