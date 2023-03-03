@@ -47,7 +47,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
         }),
         createSubTask: builder.mutation<void, CreateSubTaskProps>({
             query: ({ taskId, payload }) => ({
-                url: `/task/subTask/${taskId}`,
+                url: `/task/sub-task/${taskId}`,
                 method: 'POST',
                 body: { ...payload },
             }),
@@ -88,7 +88,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
                 const { taskId } = createTaskResponse.data as { taskId: number };
 
                 await fetchWithBQ({
-                    url: `/task/subTask/${taskId}`,
+                    url: `/task/sub-task/${taskId}`,
                     method: 'POST',
                     body: {
                         rows: [
