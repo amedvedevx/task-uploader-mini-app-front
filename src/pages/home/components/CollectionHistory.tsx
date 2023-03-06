@@ -2,11 +2,9 @@ import { List, SimpleCell, Text } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import styled from 'styled-components';
 import { useRouter } from '@happysanta/router';
-import { useDispatch } from 'react-redux';
 
 import { PAGE_COLLECTION_ID } from '@/app/router';
 import type { TaskType } from '@/app/types';
-import { setCollectionHeader } from '@/api/state';
 
 import { CollectionHistorySkeleton } from './skeleton';
 
@@ -16,7 +14,6 @@ interface CollectionHistoryProps {
 
 export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections }) => {
     const router = useRouter();
-    const dispatch = useDispatch();
 
     return (
         <CollectionHistoryWrapper>
@@ -32,11 +29,10 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections }) =
                                     <GreenText>открыт</GreenText>
                                 )
                             }
-                            subtitle='Прислали ??'
-                            onClick={() => {
-                                dispatch(setCollectionHeader(name));
-                                router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${id}` });
-                            }}
+                            subtitle={`Прислали ${consolidatedData.executedUsersCount}`}
+                            onClick={() =>
+                                router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${id}` })
+                            }
                         >
                             {name}
                         </SimpleCell>

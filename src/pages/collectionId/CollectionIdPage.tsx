@@ -2,12 +2,10 @@ import { useParams, useRouter } from '@happysanta/router';
 import { Panel, PanelHeaderBack, Search, Snackbar } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { Icon28CheckCircleOutline } from '@vkontakte/icons';
-import { useSelector } from 'react-redux';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PANEL_COLLECTION_ID } from '@/app/router';
-import type { RootState } from '@/api';
-import { useGetTaskResultsQuery } from '@/api';
+import { useGetTaskIdQuery, useGetTaskResultsQuery } from '@/api';
 
 import { SentList } from './components/list';
 import { ShareLink } from './components/share';
@@ -18,9 +16,9 @@ export const CollectionIdPage: FC = () => {
     const router = useRouter();
     const { collectionId } = useParams();
 
-    const { collectionHeader } = useSelector((state: RootState) => state.layout);
-
     const { data } = useGetTaskResultsQuery({ taskId: Number(collectionId) });
+
+    const { data: currentTask } = useGetTaskIdQuery({ taskId: Number(collectionId) });
 
     const goBack = () => {
         router.popPage();
@@ -34,7 +32,7 @@ export const CollectionIdPage: FC = () => {
                 separator={false}
                 before={<PanelHeaderBack onClick={goBack} />}
             >
-                {collectionHeader}
+                {currentTask?.name}
             </PanelHeaderCentered>
 
             <Search />

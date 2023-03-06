@@ -4,12 +4,10 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 import { format } from 'date-fns';
-import { useDispatch } from 'react-redux';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateWideTaskMutation } from '@/api';
-import { setCollectionHeader } from '@/api/state';
 
 import { CreateInput } from './components';
 
@@ -22,8 +20,6 @@ export const CreatePage: FC = () => {
         },
     });
 
-    const dispatch = useDispatch();
-
     const [createWideTask] = useCreateWideTaskMutation();
 
     const onSubmit = async (data: { collectionName: string }) => {
@@ -35,8 +31,6 @@ export const CreatePage: FC = () => {
         };
 
         const taskId: number = await createWideTask({ payload }).unwrap();
-
-        dispatch(setCollectionHeader(data.collectionName));
 
         router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${taskId}` });
     };

@@ -2,11 +2,9 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import { apiSlice } from '@/api/query/apiSlice';
 import authorizationReducer from '@/api/state/authorizationSlice';
-import layoutReducer from '@/api/state/layoutSlice';
 
 const rootReducer = combineReducers({
     [apiSlice.reducerPath]: apiSlice.reducer,
-    layout: layoutReducer,
     authorization: authorizationReducer,
 });
 
