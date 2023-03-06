@@ -7,7 +7,8 @@ interface UseDownloadFileResult {
     download: () => void;
 }
 
-export const useDownloadFile = (taskId: string, userId?: string): UseDownloadFileResult => {
+// TODO - ME-38120 - скачать файл конкретного учатсника сбора
+export const useDownloadFile = (taskId: string): UseDownloadFileResult => {
     const { value } = useSelector((state: RootState) => state.authorization);
 
     const download = () => {

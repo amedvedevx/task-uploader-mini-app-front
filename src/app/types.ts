@@ -141,6 +141,7 @@ export interface CreateSubTaskProps {
 }
 
 export interface UpdateTaskProps {
+    id: number;
     taskId: number;
     payload: {
         fields: Array<{

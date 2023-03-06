@@ -44,7 +44,9 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) =>
                                 appearance='accent'
                                 size='s'
                                 mode='secondary'
-                                onClick={() => download()}
+                                onClick={() => {
+                                    download();
+                                }}
                             >
                                 Скачать
                             </Button>

@@ -1,24 +1,25 @@
 import { useState } from 'react';
+import copy from 'copy-to-clipboard';
 
 import { APP_ID } from '@/app/config';
 
 interface CopyFnResult {
-    copy: () => Promise<boolean>;
+    copyLink: () => boolean;
     text?: string;
     setText: (text: string) => void;
 }
 
 export const useCopyToClipboard = (collectionId: string): CopyFnResult => {
     const [text, setText] = useState<string>('');
-    const link = `https://vk.com/${APP_ID}/upload/${collectionId}`;
+    const link = `https://vk.com/app${APP_ID}/#/upload/${collectionId}`;
 
-    const copy = async () => {
+    const copyLink = () => {
         if (!navigator?.clipboard) {
             return false;
         }
 
         try {
-            await navigator.clipboard.writeText(link);
+            copy(link);
             setText('Ссылка скопирована');
 
             return true;
@@ -28,5 +29,5 @@ export const useCopyToClipboard = (collectionId: string): CopyFnResult => {
         }
     };
 
-    return { copy, text, setText };
+    return { copyLink, text, setText };
 };
