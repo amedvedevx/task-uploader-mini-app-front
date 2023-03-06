@@ -55,6 +55,10 @@ export type TaskType = {
         },
     ];
     unlimited: boolean;
+    consolidatedData: {
+        executedUsersCount: number;
+        partiallyExecutedUsersCount: number;
+    };
 };
 
 export interface GetTaskResultsProps {

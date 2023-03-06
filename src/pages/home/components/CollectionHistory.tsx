@@ -19,7 +19,7 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections }) =
         <CollectionHistoryWrapper>
             <List>
                 {collections?.length ? (
-                    collections.slice(-3).map(({ id, name, status }) => (
+                    collections.slice(-3).map(({ id, name, status, consolidatedData }) => (
                         <SimpleCell
                             key={id}
                             after={
@@ -29,7 +29,7 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections }) =
                                     <GreenText>открыт</GreenText>
                                 )
                             }
-                            subtitle='Прислали ??'
+                            subtitle={`Прислали ${consolidatedData.executedUsersCount}`}
                             onClick={() =>
                                 router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${id}` })
                             }
