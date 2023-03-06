@@ -10,33 +10,31 @@ interface ShareLinkProps {
 }
 
 export const ShareLink: FC<ShareLinkProps> = ({ shareLink }) => (
-    <>
-        <ShareLinkContainer>
-            <Placeholder
-                header='Ссылка создана'
-                icon={
-                    <ImageWithSizes
-                        borderRadius='s'
-                        withBorder={false}
-                        src={PeaopleIcon}
-                    />
-                }
-                action={
-                    <Button
-                        before={<Icon20ShareExternalOutline />}
-                        size='l'
-                        onClick={() => {
-                            shareLink();
-                        }}
-                    >
-                        Скопировать ссылку на сбор
-                    </Button>
-                }
-            >
-                Отправьте её в групповой чат или пользователю
-            </Placeholder>
-        </ShareLinkContainer>
-    </>
+    <ShareLinkContainer>
+        <Placeholder
+            header='Ссылка создана'
+            icon={
+                <ImageWithSizes
+                    borderRadius='s'
+                    withBorder={false}
+                    src={PeaopleIcon}
+                />
+            }
+            action={
+                <Button
+                    before={<Icon20ShareExternalOutline />}
+                    size='l'
+                    onClick={() => {
+                        shareLink();
+                    }}
+                >
+                    Скопировать ссылку на сбор
+                </Button>
+            }
+        >
+            Отправьте её в групповой чат или пользователю
+        </Placeholder>
+    </ShareLinkContainer>
 );
 
 const ShareLinkContainer = styled.div`

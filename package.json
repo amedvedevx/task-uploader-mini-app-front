@@ -25,6 +25,7 @@
     "@vkontakte/icons": "^2.15.0",
     "@vkontakte/vk-bridge": "^2.7.2",
     "@vkontakte/vkui": "^5.1.0",
+    "copy-to-clipboard": "^3.3.3",
     "cypress": "^11.1.0",
     "date-fns": "^2.29.3",
     "react": "18.2.0",
