@@ -45,7 +45,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) =>
                                 size='s'
                                 mode='secondary'
                                 onClick={() => {
-                                    download();
+                                    download(String(testee.id));
                                 }}
                             >
                                 Скачать
