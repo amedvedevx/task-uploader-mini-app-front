@@ -64,6 +64,8 @@ export const UploadPage: FC = () => {
         setLoading(false);
         setSnackbar(result);
         subscribeUploadStatus({ taskId, subTaskId }).unsubscribe();
+
+        if (result === 'success') clearState();
     };
 
     useEffect(() => {
@@ -79,11 +81,10 @@ export const UploadPage: FC = () => {
                 break;
 
             default:
-                setLoading(false);
                 break;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [statusFromVk.data?.status]);
+    }, [statusFromVk]);
 
     useEffect(() => {
         if (statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED) {

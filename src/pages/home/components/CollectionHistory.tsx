@@ -10,15 +10,16 @@ import { CollectionHistorySkeleton } from './skeleton';
 
 interface CollectionHistoryProps {
     collections: TaskType[];
+    isLoading: boolean;
 }
 
-export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections }) => {
+export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections, isLoading }) => {
     const router = useRouter();
 
     return (
         <CollectionHistoryWrapper>
             <List>
-                {collections?.length ? (
+                {!isLoading ? (
                     collections.slice(-3).map(({ id, name, status, consolidatedData }) => (
                         <SimpleCell
                             key={id}
