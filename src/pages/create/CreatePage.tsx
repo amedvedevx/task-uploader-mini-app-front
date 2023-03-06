@@ -34,9 +34,9 @@ export const CreatePage: FC = () => {
             deadLine: deadLineDate,
         };
 
-        dispatch(setCollectionHeader(data.collectionName));
-
         const taskId: number = await createWideTask({ payload }).unwrap();
+
+        dispatch(setCollectionHeader(data.collectionName));
 
         router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${taskId}` });
     };
