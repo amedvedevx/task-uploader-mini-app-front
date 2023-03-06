@@ -54,8 +54,8 @@ export const CreatePage: FC = () => {
                 before={<PanelHeaderBack onClick={goBack} />}
             />
 
-            <FormLayout onSubmit={handleSubmit(onSubmit)}>
-                <CreateContainer>
+            <CreateContainer>
+                <FormLayoutWide onSubmit={handleSubmit(onSubmit)}>
                     <PlaceholderCreate
                         header='Придумайте название'
                         action={
@@ -74,8 +74,8 @@ export const CreatePage: FC = () => {
                             placeholder='Документы в лагерь'
                         />
                     </PlaceholderCreate>
-                </CreateContainer>
-            </FormLayout>
+                </FormLayoutWide>
+            </CreateContainer>
         </Panel>
     );
 };
@@ -83,8 +83,9 @@ export const CreatePage: FC = () => {
 const CreateContainer = styled(Div)`
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
-    height: 100vh;
+    flex-grow: 1;
 `;
 
 const PlaceholderCreate = styled(Placeholder)`
@@ -92,4 +93,13 @@ const PlaceholderCreate = styled(Placeholder)`
         max-width: 560px;
         width: 100%;
     }
+    .vkuiPlaceholder__header + .vkuiPlaceholder__text {
+        margin-top: 20px;
+    }
+`;
+
+const FormLayoutWide = styled(FormLayout)`
+    width: 100%;
+    //remove header height;
+    margin-bottom: 56px;
 `;
