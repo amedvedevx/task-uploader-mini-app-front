@@ -26,7 +26,7 @@ export const CollectionIdPage: FC = () => {
         router.popPage();
     };
 
-    const { copy, text, setText } = useCopyToClipboard(collectionId);
+    const { copyLink, text, setText } = useCopyToClipboard(collectionId);
 
     return (
         <Panel id={PANEL_COLLECTION_ID}>
@@ -42,11 +42,11 @@ export const CollectionIdPage: FC = () => {
             {data?.taskResults.length ? (
                 <SentList
                     collectionId={collectionId}
-                    shareLink={copy}
+                    shareLink={copyLink}
                     collection={data.taskResults}
                 />
             ) : (
-                <ShareLink shareLink={copy} />
+                <ShareLink shareLink={copyLink} />
             )}
 
             {text && (
