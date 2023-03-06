@@ -4,15 +4,14 @@ import { API_BASE_URL } from '@/app/config';
 import type { RootState } from '@/api';
 
 interface UseDownloadFileResult {
-    download: () => void;
+    download: (value?: string) => void;
 }
 
-// TODO - ME-38120 - скачать файл конкретного учатсника сбора
 export const useDownloadFile = (taskId: string): UseDownloadFileResult => {
     const { value } = useSelector((state: RootState) => state.authorization);
 
-    const download = () => {
-        fetch(`${API_BASE_URL}/files/${taskId}`, {
+    const download = (userId?: string) => {
+        fetch(`${API_BASE_URL}/files/${taskId}?userId=${userId || ''}`, {
             method: 'GET',
             headers: {
                 Authorization: `${value}`,
