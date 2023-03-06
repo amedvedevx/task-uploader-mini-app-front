@@ -22,7 +22,7 @@ import { CollectionHistory } from './components/CollectionHistory';
 export const HomePage: FC = () => {
     const router = useRouter();
 
-    const { data } = useGetTasksQuery({});
+    const { data, isLoading } = useGetTasksQuery({});
 
     return (
         <Panel id={PANEL_COLLECTION_HOME}>
@@ -55,7 +55,10 @@ export const HomePage: FC = () => {
                         <Separator />
                     </Spacing>
 
-                    <CollectionHistory collections={data?.tasks} />
+                    <CollectionHistory
+                        collections={data?.tasks}
+                        isLoading={isLoading}
+                    />
                 </GroupWide>
             </CollectionsContainer>
         </Panel>

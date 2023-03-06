@@ -11,17 +11,13 @@ interface DropZoneProps {
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
-interface DropZoneProps {
-    taskId: number;
-    subTaskId: number;
-}
-
 // 200 MB
 const maxFileSize = 209715200;
 
 export const DropZone: FC<DropZoneProps> = ({ isLoading, setFiles }) => {
     const onDrop = useCallback((acceptedFile: File[]) => {
         setFiles((prevState) => [...prevState, ...acceptedFile]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept, isDragReject } =
@@ -41,7 +37,18 @@ export const DropZone: FC<DropZoneProps> = ({ isLoading, setFiles }) => {
                 ) : (
                     <PlaceholderCentered
                         icon={<Icon56DocumentOutline color='var(--vkui--color_icon_accent)' />}
-                        action={!isDragActive && <File>Выбрать файл</File>}
+                        action={
+                            !isDragActive && (
+                                <File
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                    }}
+                                >
+                                    Выбрать файл
+                                </File>
+                            )
+                        }
                     >
                         Для загрузки файла перенесите его в эту область
                     </PlaceholderCentered>
@@ -91,7 +98,7 @@ const DropZoneContainer = styled.div`
     border-color: ${(props) => getColor(props)};
     border-style: dashed;
 
-    background-color: #fafafa;
+    background-color: var(--vkui--color_background_content);
     color: #bdbdbd;
     outline: none;
     transition: border 0.24s ease-in-out;
