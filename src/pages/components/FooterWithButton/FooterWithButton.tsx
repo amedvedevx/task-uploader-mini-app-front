@@ -1,4 +1,4 @@
-import { Button, Separator } from '@vkontakte/vkui';
+import { Button, FixedLayout, Separator } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import styled from 'styled-components';
 import { useRouter } from '@happysanta/router';
@@ -27,7 +27,10 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ text, collectionId
     };
 
     return (
-        <FooterContainer>
+        <FixedLayout
+            filled
+            vertical='bottom'
+        >
             <Separator wide />
 
             <ActionWrapper>
@@ -41,7 +44,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ text, collectionId
                     {text}
                 </Button>
             </ActionWrapper>
-        </FooterContainer>
+        </FixedLayout>
     );
 };
 
