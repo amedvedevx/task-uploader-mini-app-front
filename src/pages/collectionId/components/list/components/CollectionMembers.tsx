@@ -1,41 +1,39 @@
 import type { FC } from 'react';
 import { Avatar, Button, Group, List, SimpleCell } from '@vkontakte/vkui';
 import styled from 'styled-components';
-import { useParams } from '@happysanta/router';
 
 import type { TaskResults } from '@/app/types';
-import { useDownloadFile } from '@/pages/collectionId/hooks/useDownloadFile';
+import { useDownloadFile } from '@/pages/collectionId/hooks';
 
 import { SkeletonMembers } from './SkeletonMembers';
 
 interface CollectionMembersProps {
-    collection: TaskResults[];
+    collection: TaskResults['testee'][];
+    collectionId: string;
 }
 
-export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) => {
-    const { collectionId } = useParams();
-
+export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
     const { download } = useDownloadFile(collectionId);
 
-    const membersCount = collection.length;
+    const membersCount = collection?.length;
 
-    if (!collection?.length) {
+    if (!collection.length) {
         return <SkeletonMembers />;
     }
 
     return (
         <GroupWide
             header={<HeaderList>{`Прислали ${membersCount} участника`}</HeaderList>}
-            padding='s'
             mode='plain'
         >
             <List>
-                {collection.map(({ testee }) => (
+                {collection.map(({ id, firstName, lastName, photo }) => (
                     <Members
-                        key={testee.id}
+                        key={id}
                         before={
                             <Avatar
                                 size={40}
+                                src={photo}
                                 alt='icon'
                             />
                         }
@@ -45,14 +43,14 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) =>
                                 size='s'
                                 mode='secondary'
                                 onClick={() => {
-                                    download(String(testee.id));
+                                    download(String(id));
                                 }}
                             >
                                 Скачать
                             </Button>
                         }
                     >
-                        {`${testee.firstName} ${testee.lastName}`}
+                        {`${firstName} ${lastName}`}
                     </Members>
                 ))}
             </List>
@@ -61,6 +59,8 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) =>
 };
 
 const GroupWide = styled(Group)`
+    padding-top: 180px;
+
     .vkuiGroup__inner {
         padding: 0 !important;
     }
