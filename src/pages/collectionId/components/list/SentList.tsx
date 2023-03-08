@@ -11,9 +11,9 @@ import {
 import { Icon24Linked, Icon24DownloadOutline } from '@vkontakte/icons';
 
 import type { TaskResults } from '@/app/types';
+import { useDownloadFile, useSearch } from '@/pages';
 
 import { CollectionMembers } from './components/CollectionMembers';
-import { useDownloadFile, useSearch } from '../../hooks';
 
 interface SentListProps {
     collection: TaskResults[];

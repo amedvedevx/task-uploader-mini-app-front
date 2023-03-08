@@ -20,11 +20,11 @@ import {
     useUploadFilesMutation,
 } from '@/api';
 import { AddResultStatusTypes } from '@/app/types';
+import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 
 import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
-import { UploadPageSkeleton } from './skeleton';
 
 export const UploadPage: FC = () => {
     const router = useRouter();
@@ -104,7 +104,7 @@ export const UploadPage: FC = () => {
                     </PanelHeaderContent>
                 </PanelHeader>
             ) : (
-                <UploadPageSkeleton />
+                <PanelHeaderSkeleton />
             )}
 
             <UploadPageWrapper>

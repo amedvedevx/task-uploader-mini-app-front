@@ -12,10 +12,11 @@ import {
     Spacing,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { useEffect } from 'react';
 import { Icon24DownloadOutline, Icon24Linked, Icon28CheckCircleOutline } from '@vkontakte/icons';
 
-import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PANEL_COLLECTION_ID } from '@/app/router';
+import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
+import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetTaskResultsQuery } from '@/api';
 
 import { ShareLink } from './components/share';
@@ -27,7 +28,7 @@ export const CollectionIdPage: FC = () => {
     const router = useRouter();
     const { collectionId } = useParams();
 
-    const { data } = useGetTaskResultsQuery({
+    const { data: taskResults, isLoading } = useGetTaskResultsQuery({
         taskId: Number(collectionId),
     });
 
@@ -35,12 +36,12 @@ export const CollectionIdPage: FC = () => {
 
     const { download } = useDownloadFile(collectionId);
 
-    const testee = data?.taskResults.map((el) => el.testee);
+    const testees = taskResults?.taskResults.map((el) => el.testee);
 
-    const { filteredData, search, changeSearch } = useSearch(testee, 'firstName');
+    const { filteredData, search, changeSearch } = useSearch(testees, 'firstName');
 
     const goBack = () => {
-        router.popPage();
+        router.pushPage(PAGE_COLLECTION_HOME);
     };
 
     const { copyLink, text, setText } = useCopyToClipboard(collectionId);
@@ -51,7 +52,7 @@ export const CollectionIdPage: FC = () => {
                 separator={false}
                 before={<PanelHeaderBack onClick={goBack} />}
             >
-                {currentTask?.name}
+                {currentTask ? currentTask.name : <PanelHeaderSkeleton />}
             </PanelHeaderCentered>
 
             <FixedLayout
@@ -63,55 +64,63 @@ export const CollectionIdPage: FC = () => {
                     onChange={changeSearch}
                 />
 
-                {!!data?.taskResults.length && (
+                {!isLoading && (
                     <>
-                        <ButtonGroup
-                            mode='vertical'
-                            gap='s'
-                        >
-                            <CellButton
-                                before={
-                                    <Avatar
-                                        withBorder={false}
-                                        size={40}
+                        {taskResults?.taskResults?.length > 0 && (
+                            <>
+                                <ButtonGroup
+                                    mode='vertical'
+                                    gap='s'
+                                >
+                                    <CellButton
+                                        before={
+                                            <Avatar
+                                                withBorder={false}
+                                                size={40}
+                                            >
+                                                <Icon24Linked />
+                                            </Avatar>
+                                        }
+                                        onClick={() => copyLink()}
                                     >
-                                        <Icon24Linked />
-                                    </Avatar>
-                                }
-                                onClick={() => copyLink()}
-                            >
-                                Поделиться ссылкой на сбор
-                            </CellButton>
+                                        Поделиться ссылкой на сбор
+                                    </CellButton>
 
-                            <CellButton
-                                before={
-                                    <Avatar
-                                        withBorder={false}
-                                        size={40}
+                                    <CellButton
+                                        before={
+                                            <Avatar
+                                                withBorder={false}
+                                                size={40}
+                                            >
+                                                <Icon24DownloadOutline />
+                                            </Avatar>
+                                        }
+                                        onClick={() => download()}
                                     >
-                                        <Icon24DownloadOutline />
-                                    </Avatar>
-                                }
-                                onClick={() => download()}
-                            >
-                                Скачать все файлы
-                            </CellButton>
-                        </ButtonGroup>
+                                        Скачать все файлы
+                                    </CellButton>
+                                </ButtonGroup>
 
-                        <Spacing size={36}>
-                            <Separator />
-                        </Spacing>
+                                <Spacing size={36}>
+                                    <Separator />
+                                </Spacing>
+                            </>
+                        )}
                     </>
                 )}
             </FixedLayout>
 
-            {data?.taskResults.length ? (
-                <CollectionMembers
-                    collectionId={collectionId}
-                    collection={filteredData}
-                />
-            ) : (
-                <ShareLink shareLink={copyLink} />
+            {!isLoading && (
+                <>
+                    {taskResults?.taskResults?.length > 0 ? (
+                        <CollectionMembers
+                            collectionId={collectionId}
+                            collection={filteredData}
+                        />
+                    ) : (
+                        <ShareLink shareLink={copyLink} />
+                    )}
+                </>
             )}
 
             {text && (

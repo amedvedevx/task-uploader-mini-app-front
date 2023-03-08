@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { SkeletonRectangle } from '@/components/Skeletons';
 
-export const UploadPageSkeleton: FC = () => (
+export const PanelHeaderSkeleton: FC = () => (
     <SkeletonWrapper>
         <SkeletonRectangle
             height='37px'
