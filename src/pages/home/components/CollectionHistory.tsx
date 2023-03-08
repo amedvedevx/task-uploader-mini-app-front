@@ -20,7 +20,7 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections, isL
         <CollectionHistoryWrapper>
             <List>
                 {!isLoading ? (
-                    collections.slice(-3).map(({ id, name, status, consolidatedData }) => (
+                    collections.map(({ id, name, status, consolidatedData }) => (
                         <SimpleCell
                             key={id}
                             after={
