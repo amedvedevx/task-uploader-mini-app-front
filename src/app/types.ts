@@ -22,6 +22,7 @@ export type TaskResults = {
         firstName: string;
         lastName: string;
         createDate: string;
+        photo: string;
     };
 };
 
