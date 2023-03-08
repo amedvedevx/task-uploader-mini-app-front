@@ -5,6 +5,7 @@ import {
     PanelHeaderContent,
     Group,
     Separator,
+    Spacing,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
@@ -14,7 +15,7 @@ import styled from 'styled-components';
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
 import { AddResultStatusTypes } from '@/app/types';
-import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
+import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 
 import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
@@ -118,15 +119,19 @@ export const UploadPage: FC = () => {
     return (
         <Panel id={PANEL_UPLOAD_ID}>
             {data ? (
-                <PanelHeader before={<PanelHeaderClose onClick={() => router.popPage()} />}>
-                    <PanelHeaderContent
+                <PanelHeaderCentered before={<PanelHeaderClose onClick={() => router.popPage()} />}>
+                    <PanelHeaderContentCentered
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
                         {data?.name}
-                    </PanelHeaderContent>
-                </PanelHeader>
+                    </PanelHeaderContentCentered>
+                </PanelHeaderCentered>
             ) : (
-                <PanelHeaderSkeleton />
+                <>
+                    <PanelHeaderSkeleton />
+
+                    <Spacing size={16} />
+                </>
             )}
 
             <UploadPageWrapper>
@@ -168,4 +173,10 @@ const UploadPageWrapper = styled.div`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+`;
+
+const PanelHeaderContentCentered = styled(PanelHeaderContent)`
+    .vkuiPanelHeaderContent__in {
+        align-items: center;
+    }
 `;
