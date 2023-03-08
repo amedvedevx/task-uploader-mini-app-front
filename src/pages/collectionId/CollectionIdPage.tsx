@@ -12,7 +12,6 @@ import {
     Spacing,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect } from 'react';
 import { Icon24DownloadOutline, Icon24Linked, Icon28CheckCircleOutline } from '@vkontakte/icons';
 
 import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';

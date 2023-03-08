@@ -102,6 +102,7 @@ export interface GetSubTaskResultStatusResponce {
     taskResultId: number;
     subtaskId: number;
     status: AddResultStatusTypes;
+    exception: string;
 }
 
 export interface GetTaskIdProps {

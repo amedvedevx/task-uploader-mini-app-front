@@ -30,6 +30,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] 
             query: ({ taskId, subTaskId }) => ({
                 url: `/task-result/${taskId}/${subTaskId}`,
             }),
+            keepUnusedDataFor: 0,
         }),
     }),
 });
@@ -37,5 +38,5 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] 
 export const {
     useGetTaskResultsQuery,
     useDeleteTaskResultMutation,
-    useLazyGetSubTaskResultStatusQuery,
+    useGetSubTaskResultStatusQuery,
 } = taskResultSlice;
