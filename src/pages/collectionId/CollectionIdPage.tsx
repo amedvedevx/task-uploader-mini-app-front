@@ -21,7 +21,7 @@ import { useGetTaskIdQuery, useGetTaskResultsQuery } from '@/api';
 import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
 import { useCopyToClipboard, useDownloadFile, useSearch } from './hooks';
-import { CollectionMembers } from './components/list/components/CollectionMembers';
+import { CollectionMembers } from './components/list';
 
 export const CollectionIdPage: FC = () => {
     const router = useRouter();
