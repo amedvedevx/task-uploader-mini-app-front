@@ -1,7 +1,6 @@
 import {
     Panel,
     PanelHeaderClose,
-    PanelHeader,
     PanelHeaderContent,
     Group,
     Separator,

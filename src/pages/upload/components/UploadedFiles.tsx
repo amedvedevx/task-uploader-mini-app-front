@@ -1,8 +1,14 @@
-import { Icon32Document } from '@vkontakte/icons';
-import { Header, List, Cell } from '@vkontakte/vkui';
+import { Header, List, Cell, Avatar, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import styled from 'styled-components';
 
-import { inclinationWord, getFileExtension, formatFileDate, parseFileSize } from '@/lib';
+import {
+    inclinationWord,
+    getFileExtension,
+    formatFileDate,
+    parseFileSize,
+    getExtenstionInitials,
+} from '@/lib';
 
 interface UploadedFilesProps {
     files: File[];
@@ -24,7 +30,12 @@ export const UploadedFiles: FC<UploadedFilesProps> = ({ files, removeFile }) => 
                     subtitle={`${getFileExtension(name)} - ${formatFileDate(
                         lastModified,
                     )} - ${parseFileSize(size)}`}
-                    before={<Icon32Document />}
+                    before={
+                        <AvatarSquared
+                            initials={getExtenstionInitials(name)}
+                            gradientColor={calcInitialsAvatarColor(size)}
+                        />
+                    }
                     onRemove={() => removeFile(lastModified)}
                 >
                     {name}
@@ -33,3 +44,7 @@ export const UploadedFiles: FC<UploadedFilesProps> = ({ files, removeFile }) => 
         </List>
     </>
 );
+
+const AvatarSquared = styled(Avatar)`
+    border-radius: 4px;
+`;
