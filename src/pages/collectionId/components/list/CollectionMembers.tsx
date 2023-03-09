@@ -1,6 +1,15 @@
 import type { FC } from 'react';
-import { Avatar, Button, Group, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import {
+    Avatar,
+    Button,
+    Group,
+    List,
+    SimpleCell,
+    calcInitialsAvatarColor,
+    Placeholder,
+} from '@vkontakte/vkui';
 import styled from 'styled-components';
+import { Icon56BlockOutline } from '@vkontakte/icons';
 
 import type { TaskResults } from '@/app/types';
 import { getInitials, inclinationWord } from '@/lib/utils';
@@ -18,7 +27,7 @@ const avatarStub = 'https://vk.com/images/camera_100.png';
 export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
     const [downloadFiles, { isLoading, originalArgs }] = useLazyDownloadFilesQuery();
 
-    const membersCount = collection?.length;
+    const membersCount = collection.length;
 
     if (!collection.length) {
         return <SkeletonMembers />;
@@ -36,34 +45,45 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
             mode='plain'
         >
             <List>
-                {collection.map(({ vkUserId, firstName, lastName, photo }) => (
-                    <Members
-                        key={vkUserId}
-                        before={
-                            <Avatar
-                                size={40}
-                                src={photo === avatarStub ? '#' : photo}
-                                alt='icon'
-                                gradientColor={calcInitialsAvatarColor(vkUserId)}
-                                initials={getInitials(`${firstName} ${lastName}`)}
-                            />
-                        }
-                        after={
-                            <Button
-                                appearance='accent'
-                                size='s'
-                                mode='secondary'
-                                disabled={originalArgs?.vkUserId === vkUserId && isLoading}
-                                loading={originalArgs?.vkUserId === vkUserId && isLoading}
-                                onClick={() => downloadFiles({ taskId: collectionId, vkUserId })}
-                            >
-                                Скачать
-                            </Button>
-                        }
+                {collection.length ? (
+                    collection.map(({ vkUserId, firstName, lastName, fullName, photo }) => (
+                        <Members
+                            key={vkUserId}
+                            before={
+                                <Avatar
+                                    size={40}
+                                    src={photo === avatarStub ? '#' : photo}
+                                    alt='icon'
+                                    gradientColor={calcInitialsAvatarColor(vkUserId)}
+                                    initials={getInitials(`${firstName} ${lastName}`)}
+                                />
+                            }
+                            after={
+                                <Button
+                                    appearance='accent'
+                                    size='s'
+                                    mode='secondary'
+                                    disabled={originalArgs?.vkUserId === vkUserId && isLoading}
+                                    loading={originalArgs?.vkUserId === vkUserId && isLoading}
+                                    onClick={() =>
+                                        downloadFiles({ taskId: collectionId, vkUserId })
+                                    }
+                                >
+                                    Скачать
+                                </Button>
+                            }
+                        >
+                            {fullName}
+                        </Members>
+                    ))
+                ) : (
+                    <Placeholder
+                        style={{ paddingTop: '600px' }}
+                        icon={<Icon56BlockOutline />}
                     >
-                        {`${firstName} ${lastName}`}
-                    </Members>
-                ))}
+                        Участники не найдены
+                    </Placeholder>
+                )}
             </List>
         </GroupWide>
     );

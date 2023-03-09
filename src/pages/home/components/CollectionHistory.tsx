@@ -31,9 +31,9 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections, isL
                                 )
                             }
                             subtitle={`Прислали ${consolidatedData.executedUsersCount}`}
-                            onClick={() =>
-                                router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${id}` })
-                            }
+                            onClick={() => {
+                                router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
+                            }}
                         >
                             {name}
                         </SimpleCell>

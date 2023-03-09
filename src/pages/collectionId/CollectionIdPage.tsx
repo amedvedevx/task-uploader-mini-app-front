@@ -28,17 +28,19 @@ export const CollectionIdPage: FC = () => {
     const router = useRouter();
     const { collectionId } = useParams();
 
-    const { data: taskResults, isLoading } = useGetTaskResultsQuery({
+    const { data = { taskResults: [] }, isLoading } = useGetTaskResultsQuery({
         taskId: collectionId,
     });
+
+    const { taskResults } = data;
 
     const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
 
     const [downloadFiles, { isFetching }] = useLazyDownloadFilesQuery();
 
-    const testees = taskResults?.taskResults.map((el) => el.testee);
+    const testees = taskResults.map((el) => el.testee);
 
-    const { filteredData, search, changeSearch } = useSearch(testees, 'firstName');
+    const { filteredData, search, changeSearch } = useSearch(testees, 'fullName');
 
     const goBack = () => {
         router.pushPage(PAGE_COLLECTION_HOME);
@@ -66,7 +68,7 @@ export const CollectionIdPage: FC = () => {
 
                 {!isLoading && (
                     <>
-                        {taskResults?.taskResults?.length > 0 && (
+                        {taskResults.length > 0 && (
                             <>
                                 <ButtonGroup
                                     stretched
@@ -115,7 +117,7 @@ export const CollectionIdPage: FC = () => {
 
             {!isLoading && (
                 <>
-                    {taskResults?.taskResults?.length > 0 ? (
+                    {taskResults.length > 0 ? (
                         <CollectionMembers
                             collectionId={collectionId}
                             collection={filteredData}
