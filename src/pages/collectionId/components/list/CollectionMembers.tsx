@@ -16,17 +16,7 @@ interface CollectionMembersProps {
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
 export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
-    const [downloadFiles, { isLoading }] = useLazyDownloadFilesQuery();
-
-    const handleClick = async (
-        e: React.MouseEvent<HTMLElement, MouseEvent>,
-        taskId: string,
-        vkUserId: number,
-    ) => {
-        if (e.currentTarget.id === String(vkUserId)) {
-            await downloadFiles({ taskId, vkUserId });
-        }
-    };
+    const [downloadFiles, { isLoading, originalArgs }] = useLazyDownloadFilesQuery();
 
     const membersCount = collection?.length;
 
@@ -46,28 +36,26 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
             mode='plain'
         >
             <List>
-                {collection.map(({ id, firstName, lastName, photo }) => (
+                {collection.map(({ vkUserId, firstName, lastName, photo }) => (
                     <Members
-                        key={id}
+                        key={vkUserId}
                         before={
                             <Avatar
                                 size={40}
                                 src={photo === avatarStub ? '#' : photo}
                                 alt='icon'
-                                gradientColor={calcInitialsAvatarColor(id)}
+                                gradientColor={calcInitialsAvatarColor(vkUserId)}
                                 initials={getInitials(`${firstName} ${lastName}`)}
                             />
                         }
                         after={
                             <Button
-                                key={String(id)}
-                                id={String(id)}
                                 appearance='accent'
                                 size='s'
                                 mode='secondary'
-                                disabled={isLoading}
-                                loading={isLoading}
-                                onClick={(e) => handleClick(e, collectionId, id)}
+                                disabled={originalArgs?.vkUserId === vkUserId && isLoading}
+                                loading={originalArgs?.vkUserId === vkUserId && isLoading}
+                                onClick={() => downloadFiles({ taskId: collectionId, vkUserId })}
                             >
                                 Скачать
                             </Button>
