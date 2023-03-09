@@ -117,21 +117,17 @@ export const UploadPage: FC = () => {
 
     return (
         <Panel id={PANEL_UPLOAD_ID}>
-            {data ? (
-                <PanelHeaderCentered before={<PanelHeaderClose onClick={() => router.popPage()} />}>
+            <PanelHeaderCentered>
+                {data ? (
                     <PanelHeaderContentCentered
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
                         {data?.name}
                     </PanelHeaderContentCentered>
-                </PanelHeaderCentered>
-            ) : (
-                <>
+                ) : (
                     <PanelHeaderSkeleton />
-
-                    <Spacing size={16} />
-                </>
-            )}
+                )}
+            </PanelHeaderCentered>
 
             <UploadPageWrapper>
                 <DropZone

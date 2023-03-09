@@ -19,7 +19,7 @@ export const UploadedFiles: FC<UploadedFilesProps> = ({ files, removeFile }) => 
     <>
         <Header mode='secondary'>
             {`Загружено ${files.length} 
-                    ${inclinationWord(files.length)}`}
+                    ${inclinationWord(files.length, ['файл', 'файла', 'файлов'])}`}
         </Header>
 
         <List>

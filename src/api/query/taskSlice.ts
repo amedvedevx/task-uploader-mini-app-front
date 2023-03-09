@@ -13,6 +13,7 @@ import type {
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
+import { tasksDateSorting } from './mappers';
 
 const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).injectEndpoints({
     endpoints: (builder) => ({
@@ -21,6 +22,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
                 url: `/task`,
                 params: { name, statuses, sort },
             }),
+            transformResponse: tasksDateSorting,
             providesTags: () => [{ type: 'Task' }],
         }),
         getTaskId: builder.query<GetTaskIdResponce, GetTaskIdProps>({

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import type { TaskResults } from '@/app/types';
 import { useDownloadFile } from '@/pages/collectionId/hooks';
-import { getInitials } from '@/lib/utils';
+import { getInitials, inclinationWord } from '@/lib/utils';
 
 import { SkeletonMembers } from './SkeletonMembers';
 
@@ -26,7 +26,13 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
 
     return (
         <GroupWide
-            header={<HeaderList>{`Прислали ${membersCount} участника`}</HeaderList>}
+            header={
+                <HeaderList>{`Прислали ${membersCount} ${inclinationWord(membersCount, [
+                    'участник',
+                    'участника',
+                    'участников',
+                ])}`}</HeaderList>
+            }
             mode='plain'
         >
             <List>
@@ -65,10 +71,6 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
 
 const GroupWide = styled(Group)`
     padding-top: 180px;
-
-    .vkuiGroup__inner {
-        padding: 0 !important;
-    }
 `;
 
 const HeaderList = styled.div`
