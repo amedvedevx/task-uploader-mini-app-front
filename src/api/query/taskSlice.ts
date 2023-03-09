@@ -13,6 +13,7 @@ import type {
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
+import { tasksDateSorting } from './mappers';
 
 const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).injectEndpoints({
     endpoints: (builder) => ({
@@ -21,6 +22,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
                 url: `/task`,
                 params: { name, statuses, sort },
             }),
+            transformResponse: tasksDateSorting,
             providesTags: () => [{ type: 'Task' }],
         }),
         getTaskId: builder.query<GetTaskIdResponce, GetTaskIdProps>({
@@ -77,7 +79,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
             invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.id }],
         }),
 
-        createWideTask: builder.mutation<number, CreateWideTask>({
+        createWideTask: builder.mutation<string, CreateWideTask>({
             queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
                 const createTaskResponse = await fetchWithBQ({
                     url: `/task`,
@@ -85,7 +87,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
                     body: { ...payload },
                 });
 
-                const { taskId } = createTaskResponse.data as { taskId: number };
+                const { taskId } = createTaskResponse.data as { taskId: string };
 
                 await fetchWithBQ({
                     url: `/task/sub-task/${taskId}`,

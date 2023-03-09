@@ -21,7 +21,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ text, collectionId
             fields: [{ fieldName: 'status', value: 'DONE' }],
         };
 
-        await updateTask({ taskId: Number(id), payload });
+        await updateTask({ taskId: id, payload });
 
         router.pushPage(PAGE_COLLECTION_HOME);
     };

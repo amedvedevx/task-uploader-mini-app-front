@@ -28,7 +28,7 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
                         type='button'
                         onClick={resetErrorBoundary}
                     >
-                        Попробывать еще раз
+                        Попробовать еще раз
                     </Button>
                 </Stub>
             )}

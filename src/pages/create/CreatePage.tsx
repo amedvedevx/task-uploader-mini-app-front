@@ -3,7 +3,6 @@ import { Button, Div, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@v
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
-import { format } from 'date-fns';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
@@ -11,7 +10,8 @@ import { useCreateWideTaskMutation } from '@/api';
 
 import { CreateInput } from './components';
 
-const deadLineDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+const monthIsSec = 2592000;
+const deadLineDate = Math.ceil(new Date().getTime() / 1000 + monthIsSec);
 
 export const CreatePage: FC = () => {
     const { control, handleSubmit } = useForm({
@@ -30,9 +30,9 @@ export const CreatePage: FC = () => {
             deadLine: deadLineDate,
         };
 
-        const taskId: number = await createWideTask({ payload }).unwrap();
+        const taskId: string = await createWideTask({ payload }).unwrap();
 
-        router.pushPage(PAGE_COLLECTION_ID, { collectionId: `${taskId}` });
+        router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
     };
 
     const router = useRouter();

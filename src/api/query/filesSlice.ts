@@ -1,10 +1,15 @@
-import type { UploadFilesProps, DownloadFilesProps, UploadFilesResponce } from '@/app/types';
+import type {
+    UploadFilesProps,
+    DownloadFilesProps,
+    UploadFilesResponce,
+    DownloadFilesResponce,
+} from '@/app/types';
 
 import { apiSlice } from './apiSlice';
 
 const filesSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        downloadFiles: builder.query<void, DownloadFilesProps>({
+        downloadFiles: builder.query<DownloadFilesResponce, DownloadFilesProps>({
             queryFn: async (
                 { taskId, subTaskId, userId },
                 _queryApi,
@@ -34,7 +39,7 @@ const filesSlice = apiSlice.injectEndpoints({
                     fileName: decodeURI(fileName.substring(5)),
                 };
 
-                let dwnlnk = document.createElement('a');
+                const dwnlnk = document.createElement('a');
                 dwnlnk.download = result.fileName;
 
                 if (window.webkitURL != null) {

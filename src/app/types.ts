@@ -4,15 +4,15 @@ export interface GetTaskResultsResponce {
 
 export type TaskResults = {
     id: number;
-    taskId: number;
-    completeDate: string;
+    taskId: string;
+    completeDate: number;
     assignDate: string;
     taskResultStatus: TaskStatusTypesForTestee;
     taskDetailResults: [
         {
-            resultId: number;
-            taskDetailId: number;
-            completeDate: string;
+            resultId: string;
+            taskDetailId: string;
+            completeDate: number;
             status: 'LOADED';
             content: Array<Record<string, unknown>>;
         },
@@ -21,7 +21,7 @@ export type TaskResults = {
         id: number;
         firstName: string;
         lastName: string;
-        createDate: string;
+        createDate: number;
         photo: string;
     };
 };
@@ -33,7 +33,7 @@ export interface GetTasksResponce {
 export interface GetTaskIdResponce extends TaskType {}
 
 export type TaskType = {
-    id: number;
+    id: string;
     owner: {
         id: number;
         firstName: string;
@@ -43,8 +43,8 @@ export type TaskType = {
     status: TaskStatusTypesForOrganizer & TaskStatusTypesForTestee;
     name: string;
     description: string;
-    dateCreate: string;
-    deadLine: string;
+    dateCreate: number;
+    deadLine: number;
     subTasks: [
         {
             id: number;
@@ -52,7 +52,7 @@ export type TaskType = {
             description: string;
             sortOrder: number;
             subTaskType: FileTypes;
-            dateCreate: string;
+            dateCreate: number;
         },
     ];
     unlimited: boolean;
@@ -63,30 +63,30 @@ export type TaskType = {
 };
 
 export interface GetTaskResultsProps {
-    taskId: number;
+    taskId: string;
 }
 
 export interface DeleteTaskResultProps {
-    taskId: number;
-    subTaskId: number;
+    taskId: string;
+    subTaskId: string;
 }
 
 export interface UploadFilesProps {
-    taskId: number;
-    subTaskId: number;
+    taskId: string;
+    subTaskId: string;
     files: FormData;
 }
 
 export interface UploadFilesResponce {
-    taskId: number;
-    subTaskId: number;
+    taskId: string;
+    subTaskId: string;
     status: AddResultStatusTypes;
 }
 
 export interface DownloadFilesProps {
-    taskId: number;
-    subTaskId?: number;
-    userId?: number;
+    taskId: string;
+    subTaskId?: string;
+    vkUserId?: number;
 }
 
 export interface DownloadFilesResponce {
@@ -94,19 +94,19 @@ export interface DownloadFilesResponce {
 }
 
 export interface GetSubTaskResultStatusProps {
-    taskId: number;
-    subTaskId: number;
+    taskId: string;
+    subTaskId: string;
 }
 
 export interface GetSubTaskResultStatusResponce {
-    taskResultId: number;
-    subtaskId: number;
+    taskResultId: string;
+    subtaskId: string;
     status: AddResultStatusTypes;
     exception: string;
 }
 
 export interface GetTaskIdProps {
-    taskId: number;
+    taskId: string;
 }
 
 export interface GetTasksProps {
@@ -117,8 +117,8 @@ export interface GetTasksProps {
 
 export interface AppointTaskProps {
     payload: {
-        taskId: number;
-        userIds: number[];
+        taskId: string;
+        vkUserIds: number[];
     };
 }
 
@@ -127,12 +127,12 @@ export interface CreateTaskProps {
         name: string;
         description: string;
         unlimited: boolean;
-        deadLine: string;
+        deadLine: number;
     };
 }
 
 export interface CreateSubTaskProps {
-    taskId: number;
+    taskId: string;
     payload: {
         rows: Array<{
             name: string;
@@ -143,8 +143,8 @@ export interface CreateSubTaskProps {
 }
 
 export interface UpdateTaskProps {
-    id: number;
-    taskId: number;
+    id: string;
+    taskId: string;
     payload: {
         fields: Array<{
             fieldName: string;
@@ -158,16 +158,16 @@ export interface CreateWideTask {
         name: string;
         description: string;
         unlimited: boolean;
-        deadLine: string;
+        deadLine: number;
     };
 }
 
 export interface DeleteTaskProps {
-    taskId: number;
+    taskId: string;
 }
 export interface DeleteSubTaskProps {
-    taskId: number;
-    subTaskId: number;
+    taskId: string;
+    subTaskId: string;
 }
 
 enum TaskStatusTypesForOrganizer {

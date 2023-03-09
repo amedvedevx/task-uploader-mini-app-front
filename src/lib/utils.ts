@@ -4,12 +4,12 @@ import { ru } from 'date-fns/locale';
 export const capitalizeString = (stringToCap: string): string =>
     stringToCap[0].toUpperCase() + stringToCap.slice(1);
 
-export const inclinationWord = (quanty: number): string => {
-    if (quanty === 1) return 'файл';
+export const inclinationWord = (quanty: number, words: string[]): string => {
+    if (quanty === 1) return words[0];
 
-    if (quanty <= 4) return 'файла';
+    if (quanty <= 4) return words[1];
 
-    if (quanty > 4) return 'файлов';
+    if (quanty > 4) return words[2];
 
     return '';
 };
@@ -42,7 +42,7 @@ export const getInitials = (string: string): string => {
         .split(' ')
         .map((word) => word.toLocaleUpperCase().substring(0, 1))
         .slice(0, 2)
-        .join(' ');
+        .join('');
 
     return result;
 };

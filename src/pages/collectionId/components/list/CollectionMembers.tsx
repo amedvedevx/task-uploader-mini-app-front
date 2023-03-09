@@ -3,7 +3,7 @@ import { Avatar, Button, Group, List, SimpleCell, calcInitialsAvatarColor } from
 import styled from 'styled-components';
 
 import type { TaskResults } from '@/app/types';
-import { getInitials } from '@/lib/utils';
+import { getInitials, inclinationWord } from '@/lib/utils';
 import { useLazyDownloadFilesQuery } from '@/api';
 
 import { SkeletonMembers } from './components/SkeletonMembers';
@@ -16,15 +16,15 @@ interface CollectionMembersProps {
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
 export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
-    const [downloadFiles, { isLoading, isFetching }, lastInfo] = useLazyDownloadFilesQuery();
+    const [downloadFiles, { isLoading }] = useLazyDownloadFilesQuery();
 
     const handleClick = async (
         e: React.MouseEvent<HTMLElement, MouseEvent>,
-        taskId: number,
-        userId: number,
+        taskId: string,
+        vkUserId: number,
     ) => {
-        if (e.currentTarget.id === String(userId)) {
-            await downloadFiles({ taskId, userId });
+        if (e.currentTarget.id === String(vkUserId)) {
+            await downloadFiles({ taskId, vkUserId });
         }
     };
 
@@ -36,7 +36,13 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
 
     return (
         <GroupWide
-            header={<HeaderList>{`Прислали ${membersCount} участника`}</HeaderList>}
+            header={
+                <HeaderList>{`Прислали ${membersCount} ${inclinationWord(membersCount, [
+                    'участник',
+                    'участника',
+                    'участников',
+                ])}`}</HeaderList>
+            }
             mode='plain'
         >
             <List>
@@ -61,7 +67,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
                                 mode='secondary'
                                 disabled={isLoading}
                                 loading={isLoading}
-                                onClick={(e) => handleClick(e, Number(collectionId), id)}
+                                onClick={(e) => handleClick(e, collectionId, id)}
                             >
                                 Скачать
                             </Button>
@@ -77,10 +83,6 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
 
 const GroupWide = styled(Group)`
     padding-top: 180px;
-
-    .vkuiGroup__inner {
-        padding: 0 !important;
-    }
 `;
 
 const HeaderList = styled.div`

@@ -10,8 +10,8 @@ interface UseDownloadFileResult {
 export const useDownloadFile = (taskId: string): UseDownloadFileResult => {
     const { value } = useSelector((state: RootState) => state.authorization);
 
-    const download = (userId?: string) => {
-        fetch(`${API_BASE_URL}/files/${taskId}?userId=${userId || ''}`, {
+    const download = (vkUserId?: string) => {
+        fetch(`${API_BASE_URL}/files/${taskId}?userId=${vkUserId || ''}`, {
             method: 'GET',
             headers: {
                 Authorization: `${value}`,
@@ -34,7 +34,7 @@ export const useDownloadFile = (taskId: string): UseDownloadFileResult => {
             })
 
             .then(async ({ textblob, fileName }) => {
-                let dwnlnk = document.createElement('a');
+                const dwnlnk = document.createElement('a');
                 dwnlnk.download = fileName;
 
                 if (window.webkitURL != null) {
