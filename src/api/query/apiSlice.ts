@@ -12,7 +12,7 @@ export const apiSlice = createApi({
         prepareHeaders: (headers, { getState, endpoint }) => {
             const bearer = (getState() as RootState).authorization.value;
 
-            if (!endpoint.includes('uploadFiles')) {
+            if (!endpoint.includes('uploadFiles' || 'downloadFiles')) {
                 headers.set('Content-type', 'application/json');
             }
 

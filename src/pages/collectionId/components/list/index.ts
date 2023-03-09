@@ -1,1 +1,1 @@
-export * from './SentList';
+export * from './CollectionMembers';

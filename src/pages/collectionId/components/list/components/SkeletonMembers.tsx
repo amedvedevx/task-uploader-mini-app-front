@@ -40,5 +40,4 @@ const SkeletonWrapper = styled.div`
 const SkeletonCard = styled.div`
     display: flex;
     gap: 12px;
-    /* padding: 0 16px; */
 `;
