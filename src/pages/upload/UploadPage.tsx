@@ -1,14 +1,7 @@
-import {
-    Panel,
-    PanelHeaderClose,
-    PanelHeaderContent,
-    Group,
-    Separator,
-    Spacing,
-} from '@vkontakte/vkui';
+import { Panel, PanelHeaderContent, Group, Separator } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from '@happysanta/router';
+import { useParams } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
@@ -27,20 +20,19 @@ export type SnackBarType = {
 };
 
 export const UploadPage: FC = () => {
-    const router = useRouter();
     const { uploadId } = useParams();
 
-    const { data } = useGetTaskIdQuery({ taskId: Number(uploadId) });
+    const { data } = useGetTaskIdQuery({ taskId: uploadId });
     const [uploadFiles, statusFromServer] = useUploadFilesMutation();
 
     const [isLoading, setLoading] = useState(false);
     const [isUploading, setUploading] = useState(false);
-    const taskId = Number(data?.id);
-    const subTaskId = Number(data?.subTasks[0].id);
+    const taskId = data?.id;
+    const subTaskId = data?.subTasks[0].id;
 
     const { currentData: statusFromVk } = useGetSubTaskResultStatusQuery(
         {
-            taskId: Number(uploadId),
+            taskId: uploadId,
             subTaskId: data?.subTasks[0].id,
         },
         { skip: !isUploading, pollingInterval: 5000 },

@@ -16,15 +16,15 @@ interface CollectionMembersProps {
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
 export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
-    const [downloadFiles, { isLoading, isFetching }, lastInfo] = useLazyDownloadFilesQuery();
+    const [downloadFiles, { isLoading }] = useLazyDownloadFilesQuery();
 
     const handleClick = async (
         e: React.MouseEvent<HTMLElement, MouseEvent>,
-        taskId: number,
-        userId: number,
+        taskId: string,
+        vkUserId: number,
     ) => {
-        if (e.currentTarget.id === String(userId)) {
-            await downloadFiles({ taskId, userId });
+        if (e.currentTarget.id === String(vkUserId)) {
+            await downloadFiles({ taskId, vkUserId });
         }
     };
 
@@ -67,7 +67,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
                                 mode='secondary'
                                 disabled={isLoading}
                                 loading={isLoading}
-                                onClick={(e) => handleClick(e, Number(collectionId), id)}
+                                onClick={(e) => handleClick(e, collectionId, id)}
                             >
                                 Скачать
                             </Button>

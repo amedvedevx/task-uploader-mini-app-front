@@ -28,10 +28,10 @@ export const CollectionIdPage: FC = () => {
     const { collectionId } = useParams();
 
     const { data: taskResults, isLoading } = useGetTaskResultsQuery({
-        taskId: Number(collectionId),
+        taskId: collectionId,
     });
 
-    const { data: currentTask } = useGetTaskIdQuery({ taskId: Number(collectionId) });
+    const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
 
     const { download } = useDownloadFile(collectionId);
 

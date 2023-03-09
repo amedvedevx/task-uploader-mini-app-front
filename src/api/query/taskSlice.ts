@@ -79,7 +79,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
             invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.id }],
         }),
 
-        createWideTask: builder.mutation<number, CreateWideTask>({
+        createWideTask: builder.mutation<string, CreateWideTask>({
             queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
                 const createTaskResponse = await fetchWithBQ({
                     url: `/task`,
@@ -87,7 +87,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
                     body: { ...payload },
                 });
 
-                const { taskId } = createTaskResponse.data as { taskId: number };
+                const { taskId } = createTaskResponse.data as { taskId: string };
 
                 await fetchWithBQ({
                     url: `/task/sub-task/${taskId}`,
