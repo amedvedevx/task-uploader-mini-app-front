@@ -83,13 +83,13 @@ export interface UploadFilesResponce {
     status: AddResultStatusTypes;
 }
 
-export interface GetFilesProps {
+export interface DownloadFilesProps {
     taskId: number;
     subTaskId?: number;
     userId?: number;
 }
 
-export interface GetFilesResponce {
+export interface DownloadFilesResponce {
     files: Record<string, unknown>;
 }
 

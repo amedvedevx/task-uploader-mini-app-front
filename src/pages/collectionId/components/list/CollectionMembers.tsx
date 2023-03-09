@@ -3,10 +3,10 @@ import { Avatar, Button, Group, List, SimpleCell, calcInitialsAvatarColor } from
 import styled from 'styled-components';
 
 import type { TaskResults } from '@/app/types';
-import { useDownloadFile } from '@/pages/collectionId/hooks';
 import { getInitials } from '@/lib/utils';
+import { useLazyDownloadFilesQuery } from '@/api';
 
-import { SkeletonMembers } from './SkeletonMembers';
+import { SkeletonMembers } from './components/SkeletonMembers';
 
 interface CollectionMembersProps {
     collection: TaskResults['testee'][];
@@ -16,7 +16,17 @@ interface CollectionMembersProps {
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
 export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
-    const { download } = useDownloadFile(collectionId);
+    const [downloadFiles, { isLoading, isFetching }, lastInfo] = useLazyDownloadFilesQuery();
+
+    const handleClick = async (
+        e: React.MouseEvent<HTMLElement, MouseEvent>,
+        taskId: number,
+        userId: number,
+    ) => {
+        if (e.currentTarget.id === String(userId)) {
+            await downloadFiles({ taskId, userId });
+        }
+    };
 
     const membersCount = collection?.length;
 
@@ -44,12 +54,14 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
                         }
                         after={
                             <Button
+                                key={String(id)}
+                                id={String(id)}
                                 appearance='accent'
                                 size='s'
                                 mode='secondary'
-                                onClick={() => {
-                                    download(String(id));
-                                }}
+                                disabled={isLoading}
+                                loading={isLoading}
+                                onClick={(e) => handleClick(e, Number(collectionId), id)}
                             >
                                 Скачать
                             </Button>
