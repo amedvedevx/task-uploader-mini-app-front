@@ -18,7 +18,7 @@ const avatarStub = 'https://vk.com/images/camera_100.png';
 export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
     const [downloadFiles, { isLoading, originalArgs }] = useLazyDownloadFilesQuery();
 
-    const membersCount = collection?.length;
+    const membersCount = collection.length;
 
     if (!collection.length) {
         return <SkeletonMembers />;
@@ -36,7 +36,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
             mode='plain'
         >
             <List>
-                {collection.map(({ vkUserId, firstName, lastName, photo }) => (
+                {collection.map(({ vkUserId, firstName, lastName, fullName, photo }) => (
                     <Members
                         key={vkUserId}
                         before={
@@ -61,7 +61,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
                             </Button>
                         }
                     >
-                        {`${firstName} ${lastName}`}
+                        {fullName}
                     </Members>
                 ))}
             </List>
