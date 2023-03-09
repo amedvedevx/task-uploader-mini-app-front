@@ -6,22 +6,45 @@ import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 
+import type { SnackBarType } from '../UploadPage';
+
 interface DropZoneProps {
     isLoading: boolean;
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
+    setSnackbar: React.Dispatch<React.SetStateAction<SnackBarType>>;
 }
 
 // 200 MB
 const maxFileSize = 209715200;
+const forbiddenFileExtension = ['.exe', '.app'];
+const rejectFileMessage = { code: 'reject', message: 'wrong-file' };
 
-export const DropZone: FC<DropZoneProps> = ({ isLoading, setFiles }) => {
-    const onDrop = useCallback((acceptedFile: File[]) => {
-        setFiles((prevState) => [...prevState, ...acceptedFile]);
+export const DropZone: FC<DropZoneProps> = ({ isLoading, setFiles, setSnackbar }) => {
+    const filesValidator = (file: File) => {
+        const fileExt = file.name.slice(file.name.lastIndexOf('.'));
+
+        if (file.size > maxFileSize) {
+            setSnackbar({ type: 'error', message: 'Размер файла слишком большой' });
+
+            return rejectFileMessage;
+        }
+
+        if (forbiddenFileExtension.includes(fileExt)) {
+            setSnackbar({ type: 'error', message: 'Не подходящий тип файла' });
+
+            return rejectFileMessage;
+        }
+
+        return null;
+    };
+
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        setFiles((prevState) => [...prevState, ...acceptedFiles]);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept, isDragReject } =
-        useDropzone({ onDrop, maxSize: maxFileSize });
+        useDropzone({ onDrop, validator: filesValidator });
 
     return (
         <DivStretched>

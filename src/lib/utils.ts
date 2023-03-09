@@ -36,3 +36,13 @@ export const getFileExtension = (fileName: string): string =>
 
 export const formatFileDate = (unixTime: number): string =>
     format(fromUnixTime(unixTime / 1000), 'd MMM', { locale: ru });
+
+export const getInitials = (string: string) => {
+    const result = string
+        .split(' ')
+        .map((word) => word.toLocaleUpperCase().substring(0, 1))
+        .slice(0, 2)
+        .join(' ');
+
+    return result;
+};

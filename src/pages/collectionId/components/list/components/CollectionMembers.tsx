@@ -1,9 +1,10 @@
 import type { FC } from 'react';
-import { Avatar, Button, Group, List, SimpleCell } from '@vkontakte/vkui';
+import { Avatar, Button, Group, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
 import type { TaskResults } from '@/app/types';
 import { useDownloadFile } from '@/pages/collectionId/hooks';
+import { getInitials } from '@/lib/utils';
 
 import { SkeletonMembers } from './SkeletonMembers';
 
@@ -11,6 +12,8 @@ interface CollectionMembersProps {
     collection: TaskResults['testee'][];
     collectionId: string;
 }
+
+const avatarStub = 'https://vk.com/images/camera_100.png';
 
 export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
     const { download } = useDownloadFile(collectionId);
@@ -33,8 +36,10 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
                         before={
                             <Avatar
                                 size={40}
-                                src={photo}
+                                src={photo === avatarStub ? '#' : photo}
                                 alt='icon'
+                                gradientColor={calcInitialsAvatarColor(id)}
+                                initials={getInitials(`${firstName} ${lastName}`)}
                             />
                         }
                         after={

@@ -5,26 +5,27 @@ import {
     PanelHeaderContent,
     Group,
     Separator,
-    Snackbar,
+    Spacing,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from '@happysanta/router';
-import { Icon28CheckCircleOutline, Icon28CancelCircleFillRed } from '@vkontakte/icons';
 import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
-import {
-    useGetTaskIdQuery,
-    useLazyGetSubTaskResultStatusQuery,
-    useUploadFilesMutation,
-} from '@/api';
+import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
 import { AddResultStatusTypes } from '@/app/types';
+import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 
 import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
-import { UploadPageSkeleton } from './skeleton';
+import { UploadResultMessage } from './components/UploadResultMessage';
+
+export type SnackBarType = {
+    type: 'error' | 'success' | false;
+    message: string;
+};
 
 export const UploadPage: FC = () => {
     const router = useRouter();
@@ -32,17 +33,23 @@ export const UploadPage: FC = () => {
 
     const { data } = useGetTaskIdQuery({ taskId: Number(uploadId) });
     const [uploadFiles, statusFromServer] = useUploadFilesMutation();
-    const [subscribeUploadStatus, statusFromVk] = useLazyGetSubTaskResultStatusQuery({
-        pollingInterval: 5000,
-    });
 
+    const [isLoading, setLoading] = useState(false);
+    const [isUploading, setUploading] = useState(false);
     const taskId = Number(data?.id);
     const subTaskId = Number(data?.subTasks[0].id);
 
+    const { currentData: statusFromVk } = useGetSubTaskResultStatusQuery(
+        {
+            taskId: Number(uploadId),
+            subTaskId: data?.subTasks[0].id,
+        },
+        { skip: !isUploading, pollingInterval: 5000 },
+    );
+
     const [files, setFiles] = useState<File[]>([]);
 
-    const [snackbar, setSnackbar] = useState<string>('');
-    const [isLoading, setLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState<SnackBarType>({ type: false, message: '' });
 
     const removeFile = (lastModified: number) => {
         const filteredState = files.filter((file) => file.lastModified !== lastModified);
@@ -54,30 +61,43 @@ export const UploadPage: FC = () => {
     const sendFiles = () => {
         const filesToSend = new FormData();
         files.forEach((file) => filesToSend.append('files', file));
-
-        uploadFiles({ taskId, subTaskId, files: filesToSend });
-        subscribeUploadStatus({ taskId, subTaskId });
         setLoading(true);
+        uploadFiles({ taskId, subTaskId, files: filesToSend }).then(() => {
+            setUploading(true);
+        });
     };
 
-    const finalizeUpload = (result: 'success' | 'error') => {
+    const finalizeUpload = (result: SnackBarType) => {
         setLoading(false);
         setSnackbar(result);
-        subscribeUploadStatus({ taskId, subTaskId }).unsubscribe();
+        setUploading(false);
 
-        if (result === 'success') clearState();
+        if (result.type === 'success') clearState();
     };
 
     useEffect(() => {
-        switch (statusFromVk.data?.status) {
+        const errorMessage = statusFromVk?.exception;
+
+        if (statusFromVk?.isError) {
+            finalizeUpload({
+                type: 'error',
+                message: errorMessage || 'Загрузка файлов не удалась',
+            });
+
+            return;
+        }
+        switch (statusFromVk?.status) {
             case AddResultStatusTypes.IN_PROGRESS:
                 setLoading(true);
                 break;
             case AddResultStatusTypes.NOT_LOADED:
-                finalizeUpload('error');
+                finalizeUpload({
+                    type: 'error',
+                    message: errorMessage || 'Загрузка файлов не удалась',
+                });
                 break;
             case AddResultStatusTypes.LOADED:
-                finalizeUpload('success');
+                finalizeUpload({ type: 'success', message: 'Файлы загружены' });
                 break;
 
             default:
@@ -87,30 +107,38 @@ export const UploadPage: FC = () => {
     }, [statusFromVk]);
 
     useEffect(() => {
-        if (statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED) {
-            finalizeUpload('error');
+        if (
+            statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED ||
+            statusFromServer.isError
+        ) {
+            finalizeUpload({ type: 'error', message: 'Загрузка файлов не удалась' });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [statusFromServer.data?.status]);
+    }, [statusFromServer]);
 
     return (
         <Panel id={PANEL_UPLOAD_ID}>
             {data ? (
-                <PanelHeader before={<PanelHeaderClose onClick={() => router.popPage()} />}>
-                    <PanelHeaderContent
+                <PanelHeaderCentered before={<PanelHeaderClose onClick={() => router.popPage()} />}>
+                    <PanelHeaderContentCentered
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
                         {data?.name}
-                    </PanelHeaderContent>
-                </PanelHeader>
+                    </PanelHeaderContentCentered>
+                </PanelHeaderCentered>
             ) : (
-                <UploadPageSkeleton />
+                <>
+                    <PanelHeaderSkeleton />
+
+                    <Spacing size={16} />
+                </>
             )}
 
             <UploadPageWrapper>
                 <DropZone
                     isLoading={isLoading}
                     setFiles={setFiles}
+                    setSnackbar={setSnackbar}
                 />
 
                 {!!files.length && (
@@ -130,19 +158,11 @@ export const UploadPage: FC = () => {
                     </Group>
                 )}
 
-                {snackbar && (
-                    <Snackbar
-                        before={
-                            snackbar === 'success' ? (
-                                <Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />
-                            ) : (
-                                <Icon28CancelCircleFillRed />
-                            )
-                        }
-                        onClose={() => setSnackbar('')}
-                    >
-                        {snackbar === 'success' ? 'Файлы загружены' : 'Загрузка файлов не удалась'}
-                    </Snackbar>
+                {snackbar.type && (
+                    <UploadResultMessage
+                        result={snackbar}
+                        setSnackbar={setSnackbar}
+                    />
                 )}
             </UploadPageWrapper>
         </Panel>
@@ -153,4 +173,10 @@ const UploadPageWrapper = styled.div`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+`;
+
+const PanelHeaderContentCentered = styled(PanelHeaderContent)`
+    .vkuiPanelHeaderContent__in {
+        align-items: center;
+    }
 `;
