@@ -6,6 +6,8 @@ import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 
+import { getFileExtension } from '@/lib/utils';
+
 import type { SnackBarType } from '../UploadPage';
 
 interface DropZoneProps {
@@ -16,12 +18,12 @@ interface DropZoneProps {
 
 // 200 MB
 const maxFileSize = 209715200;
-const forbiddenFileExtension = ['.exe', '.app'];
+const forbiddenFileExtension = ['exe', 'app'];
 const rejectFileMessage = { code: 'reject', message: 'wrong-file' };
 
 export const DropZone: FC<DropZoneProps> = ({ isLoading, setFiles, setSnackbar }) => {
     const filesValidator = (file: File) => {
-        const fileExt = file.name.slice(file.name.lastIndexOf('.'));
+        const fileExt = getFileExtension(file.name);
 
         if (file.size > maxFileSize) {
             setSnackbar({ type: 'error', message: 'Размер файла слишком большой' });

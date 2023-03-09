@@ -32,12 +32,12 @@ export const parseFileSize = (size: number): string => {
 };
 
 export const getFileExtension = (fileName: string): string =>
-    fileName.substring(fileName.indexOf('.') + 1).toUpperCase();
+    fileName.substring(fileName.indexOf('.') + 1).toLowerCase();
 
 export const formatFileDate = (unixTime: number): string =>
     format(fromUnixTime(unixTime / 1000), 'd MMM', { locale: ru });
 
-export const getInitials = (string: string) => {
+export const getInitials = (string: string): string => {
     const result = string
         .split(' ')
         .map((word) => word.toLocaleUpperCase().substring(0, 1))
@@ -46,3 +46,6 @@ export const getInitials = (string: string) => {
 
     return result;
 };
+
+export const getExtenstionInitials = (fileName: string): string =>
+    getFileExtension(fileName).slice(0, 3).toUpperCase();
