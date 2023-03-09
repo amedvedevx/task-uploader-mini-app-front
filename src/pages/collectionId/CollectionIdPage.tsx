@@ -10,17 +10,18 @@ import {
     Separator,
     Snackbar,
     Spacing,
+    Spinner,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { Icon24DownloadOutline, Icon24Linked, Icon28CheckCircleOutline } from '@vkontakte/icons';
 
 import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
-import { useGetTaskIdQuery, useGetTaskResultsQuery } from '@/api';
+import { useGetTaskIdQuery, useGetTaskResultsQuery, useLazyDownloadFilesQuery } from '@/api';
 
 import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
-import { useCopyToClipboard, useDownloadFile, useSearch } from './hooks';
+import { useCopyToClipboard, useSearch } from './hooks';
 import { CollectionMembers } from './components/list';
 
 export const CollectionIdPage: FC = () => {
@@ -33,7 +34,7 @@ export const CollectionIdPage: FC = () => {
 
     const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
 
-    const { download } = useDownloadFile(collectionId);
+    const [downloadFiles, { isFetching }] = useLazyDownloadFilesQuery();
 
     const testees = taskResults?.taskResults.map((el) => el.testee);
 
@@ -68,6 +69,7 @@ export const CollectionIdPage: FC = () => {
                         {taskResults?.taskResults?.length > 0 && (
                             <>
                                 <ButtonGroup
+                                    stretched
                                     mode='vertical'
                                     gap='s'
                                 >
@@ -94,7 +96,9 @@ export const CollectionIdPage: FC = () => {
                                                 <Icon24DownloadOutline />
                                             </Avatar>
                                         }
-                                        onClick={() => download()}
+                                        after={isFetching && <Spinner />}
+                                        disabled={isFetching}
+                                        onClick={() => downloadFiles({ taskId: collectionId })}
                                     >
                                         Скачать все файлы
                                     </CellButton>

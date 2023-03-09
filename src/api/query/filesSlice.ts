@@ -1,17 +1,12 @@
-import type {
-    UploadFilesProps,
-    DownloadFilesProps,
-    UploadFilesResponce,
-    DownloadFilesResponce,
-} from '@/app/types';
+import type { UploadFilesProps, DownloadFilesProps, UploadFilesResponce } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
 
 const filesSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        downloadFiles: builder.query<DownloadFilesResponce, DownloadFilesProps>({
+        downloadFiles: builder.query<void, DownloadFilesProps>({
             queryFn: async (
-                { taskId, subTaskId, userId },
+                { taskId, subTaskId, vkUserId },
                 _queryApi,
                 _extraOptions,
                 fetchWithBQ,
@@ -19,7 +14,7 @@ const filesSlice = apiSlice.injectEndpoints({
                 const response = await fetchWithBQ({
                     url: `/files/${taskId}`,
                     responseHandler: (res) => res.blob(),
-                    params: { subTaskId, userId },
+                    params: { subTaskId, vkUserId },
                 });
 
                 let fileName = '';

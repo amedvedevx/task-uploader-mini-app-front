@@ -18,9 +18,10 @@ export type TaskResults = {
         },
     ];
     testee: {
-        id: number;
+        vkUserId: number;
         firstName: string;
         lastName: string;
+        fullName: string;
         createDate: number;
         photo: string;
     };
