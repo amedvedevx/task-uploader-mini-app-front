@@ -23,13 +23,17 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
                 params: { name, statuses, sort },
             }),
             transformResponse: tasksDateSorting,
-            providesTags: () => [{ type: 'Task' }],
+
+            providesTags: (result) =>
+                result
+                    ? [...result.tasks.map(({ id }) => ({ type: 'Task' as const, id })), 'Task']
+                    : ['Task'],
         }),
         getTaskId: builder.query<GetTaskIdResponce, GetTaskIdProps>({
             query: ({ taskId }) => ({
                 url: `/task/${taskId}`,
             }),
-            providesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
+            providesTags: (result) => [{ type: 'Task', id: result?.id }],
         }),
         apointTask: builder.mutation<void, AppointTaskProps>({
             query: ({ payload }) => ({

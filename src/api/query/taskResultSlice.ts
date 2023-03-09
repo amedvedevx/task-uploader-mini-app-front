@@ -4,6 +4,7 @@ import type {
     GetSubTaskResultStatusResponce,
     GetTaskResultsProps,
     GetTaskResultsResponce,
+    TaskResults,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
@@ -15,6 +16,9 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] 
                 url: `/task-result/${taskId}`,
             }),
             providesTags: (result, error, arg) => [{ type: 'TaskResult', id: arg.taskId }],
+            transformResponse: (response: { taskResults: TaskResults[] }) => ({
+                taskResults: response.taskResults,
+            }),
         }),
         deleteTaskResult: builder.mutation<void, DeleteTaskResultProps>({
             query: ({ taskId, subTaskId }) => ({
