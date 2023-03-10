@@ -13,6 +13,7 @@ import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
 import { UploadResultMessage } from './components/UploadResultMessage';
+import { FallbackComponent } from '@/app/FallbackComponent';
 
 export type SnackBarType = {
     type: 'error' | 'success' | false;
@@ -22,7 +23,7 @@ export type SnackBarType = {
 export const UploadPage: FC = () => {
     const { uploadId } = useParams();
 
-    const { data } = useGetTaskIdQuery({ taskId: uploadId });
+    const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
     const [uploadFiles, statusFromServer] = useUploadFilesMutation();
 
     const [isLoading, setLoading] = useState(false);
@@ -106,6 +107,17 @@ export const UploadPage: FC = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [statusFromServer]);
+
+    if (error?.status === 400) {
+        const errorMessage = { name: 'wrong link', message: 'Такого сбора не существует' };
+
+        return (
+            <FallbackComponent
+                error={errorMessage}
+                resetErrorBoundary={false}
+            />
+        );
+    }
 
     return (
         <Panel id={PANEL_UPLOAD_ID}>
