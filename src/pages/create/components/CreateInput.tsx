@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import type { Control } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
+import { InputLabel } from './InputLabel';
+
 interface CreateInputProps {
     control: Control<
         {
@@ -11,28 +13,36 @@ interface CreateInputProps {
         },
         any
     >;
-    label?: string;
+    label: string;
     placeholder: string;
 }
 
 export const CreateInput: FC<CreateInputProps> = ({ label, control, placeholder }) => (
     <CreateInputContainer>
-        <FormItemRoot top={label}>
-            <Controller
-                render={({ field: { onChange, onBlur, value, ref } }) => (
+        <Controller
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+                <FormItemRoot
+                    top={
+                        <InputLabel
+                            label={label}
+                            curLength={value.length}
+                        />
+                    }
+                >
                     <Input
+                        maxLength={48}
                         getRootRef={ref}
                         placeholder={placeholder}
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
                     />
-                )}
-                name='collectionName'
-                control={control}
-                rules={{ required: true }}
-            />
-        </FormItemRoot>
+                </FormItemRoot>
+            )}
+            name='collectionName'
+            control={control}
+            rules={{ required: true }}
+        />
     </CreateInputContainer>
 );
 
