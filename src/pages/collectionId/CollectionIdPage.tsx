@@ -14,11 +14,16 @@ import {
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
-import { Icon24DownloadOutline, Icon24Linked, Icon28CheckCircleOutline } from '@vkontakte/icons';
+import {
+    Icon24DownloadOutline,
+    Icon24CopyOutline,
+    Icon28CheckCircleOutline,
+} from '@vkontakte/icons';
 
 import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetTaskResultsQuery, useLazyDownloadFilesQuery } from '@/api';
+import type { TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { FallbackComponent } from '@/app/FallbackComponent';
 
@@ -26,6 +31,18 @@ import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
 import { useCopyToClipboard, useSearch } from './hooks';
 import { CollectionMembers } from './components/list';
+
+const getHeaderTitle = (task: TaskType) => {
+    if (task.status === TaskStatusTypesForOrganizer.DONE) {
+        return 'Сбор завершен';
+    }
+
+    if (task.name) {
+        return task.name;
+    }
+
+    return <PanelHeaderSkeleton />;
+};
 
 export const CollectionIdPage: FC = () => {
     const router = useRouter();
@@ -43,13 +60,17 @@ export const CollectionIdPage: FC = () => {
 
     const [isCompleteCollection, setIsCompleteCollection] = useState(false);
 
-    const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
+    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
+
+    const [title, setTitle] = useState<string | JSX.Element>('');
 
     useEffect(() => {
-        if (currentTask?.status === TaskStatusTypesForOrganizer.DONE) {
+        if (currentTask.status === TaskStatusTypesForOrganizer.DONE) {
             setIsCompleteCollection(true);
         }
-    }, [currentTask?.status]);
+
+        setTitle(() => getHeaderTitle(currentTask));
+    }, [currentTask]);
 
     const [downloadFiles, { isFetching }] = useLazyDownloadFilesQuery();
 
@@ -80,7 +101,7 @@ export const CollectionIdPage: FC = () => {
                 separator={false}
                 before={<PanelHeaderBack onClick={goBack} />}
             >
-                {currentTask ? currentTask.name : <PanelHeaderSkeleton />}
+                {title}
             </PanelHeaderCentered>
 
             <FixedLayout
@@ -101,20 +122,22 @@ export const CollectionIdPage: FC = () => {
                                     mode='vertical'
                                     gap='s'
                                 >
-                                    <CellButton
-                                        disabled={isCompleteCollection}
-                                        before={
-                                            <Avatar
-                                                withBorder={false}
-                                                size={40}
-                                            >
-                                                <Icon24Linked />
-                                            </Avatar>
-                                        }
-                                        onClick={() => copyLink()}
-                                    >
-                                        Поделиться ссылкой на сбор
-                                    </CellButton>
+                                    {!isCompleteCollection && (
+                                        <CellButton
+                                            disabled={isCompleteCollection}
+                                            before={
+                                                <Avatar
+                                                    withBorder={false}
+                                                    size={40}
+                                                >
+                                                    <Icon24CopyOutline />
+                                                </Avatar>
+                                            }
+                                            onClick={() => copyLink()}
+                                        >
+                                            Скопировать ссылку на сбор
+                                        </CellButton>
+                                    )}
 
                                     <CellButton
                                         before={
@@ -165,11 +188,13 @@ export const CollectionIdPage: FC = () => {
                 </Snackbar>
             )}
 
-            <FooterWithButton
-                isCompleteCollection={isCompleteCollection}
-                collectionId={collectionId}
-                text='Завершить сбор'
-            />
+            {!isCompleteCollection && (
+                <FooterWithButton
+                    isCompleteCollection={isCompleteCollection}
+                    collectionId={collectionId}
+                    text='Завершить сбор'
+                />
+            )}
         </Panel>
     );
 };

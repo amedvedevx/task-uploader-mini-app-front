@@ -31,6 +31,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
 
     return (
         <GroupWide
+            $isComplete={isCompleteCollection}
             header={
                 <HeaderList>{`Прислали ${membersCount} ${inclinationWord(membersCount, [
                     'участник',
@@ -39,6 +40,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                 ])}`}</HeaderList>
             }
             mode='plain'
+            padding='s'
         >
             <List>
                 {collection.map(({ vkUserId, firstName, lastName, fullName, photo }) => (
@@ -77,8 +79,8 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
     );
 };
 
-const GroupWide = styled(Group)`
-    padding-top: 180px;
+const GroupWide = styled(Group)<{ $isComplete: boolean }>`
+    padding-top: ${({ $isComplete }) => ($isComplete ? '125px' : '180px')};
 `;
 
 const HeaderList = styled.div`
