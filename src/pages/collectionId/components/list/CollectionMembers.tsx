@@ -11,11 +11,16 @@ import { SkeletonMembers } from './components/SkeletonMembers';
 interface CollectionMembersProps {
     collection: TaskResults['testee'][];
     collectionId: string;
+    isCompleteCollection: boolean;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
-export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
+export const CollectionMembers: FC<CollectionMembersProps> = ({
+    collection,
+    collectionId,
+    isCompleteCollection,
+}) => {
     const [downloadFiles, { isLoading, originalArgs }] = useLazyDownloadFilesQuery();
 
     const membersCount = collection.length;
@@ -53,7 +58,10 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
                                 appearance='accent'
                                 size='s'
                                 mode='secondary'
-                                disabled={originalArgs?.vkUserId === vkUserId && isLoading}
+                                disabled={
+                                    (originalArgs?.vkUserId === vkUserId && isLoading) ||
+                                    isCompleteCollection
+                                }
                                 loading={originalArgs?.vkUserId === vkUserId && isLoading}
                                 onClick={() => downloadFiles({ taskId: collectionId, vkUserId })}
                             >

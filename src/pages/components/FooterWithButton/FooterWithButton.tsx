@@ -8,10 +8,15 @@ import { PAGE_COLLECTION_HOME } from '@/app/router';
 
 interface FooterWithButtonProps {
     collectionId: string;
+    isCompleteCollection: boolean;
     text: string;
 }
 
-export const FooterWithButton: FC<FooterWithButtonProps> = ({ text, collectionId }) => {
+export const FooterWithButton: FC<FooterWithButtonProps> = ({
+    text,
+    collectionId,
+    isCompleteCollection,
+}) => {
     const router = useRouter();
 
     const [updateTask] = useUpdateTaskMutation();
@@ -39,6 +44,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ text, collectionId
                     size='l'
                     mode='secondary'
                     appearance='negative'
+                    disabled={isCompleteCollection}
                     onClick={(): Promise<void> => handleUpdateTask(collectionId)}
                 >
                     {text}
@@ -47,13 +53,6 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ text, collectionId
         </FixedLayout>
     );
 };
-
-const FooterContainer = styled.div`
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: var(--vkui--color_background_content);
-`;
 
 const ActionWrapper = styled.div`
     padding: 16px 20px;

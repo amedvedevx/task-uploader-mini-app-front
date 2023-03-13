@@ -13,11 +13,13 @@ import {
     Spinner,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon24DownloadOutline, Icon24Linked, Icon28CheckCircleOutline } from '@vkontakte/icons';
 
 import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetTaskResultsQuery, useLazyDownloadFilesQuery } from '@/api';
+import { TaskStatusTypesForOrganizer } from '@/app/types';
 
 import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
@@ -34,7 +36,15 @@ export const CollectionIdPage: FC = () => {
 
     const { taskResults } = data;
 
+    const [isCompleteCollection, setIsCompleteCollection] = useState(false);
+
     const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
+
+    useEffect(() => {
+        if (currentTask?.status === TaskStatusTypesForOrganizer.DONE) {
+            setIsCompleteCollection(true);
+        }
+    }, [currentTask?.status]);
 
     const [downloadFiles, { isFetching }] = useLazyDownloadFilesQuery();
 
@@ -76,6 +86,7 @@ export const CollectionIdPage: FC = () => {
                                     gap='s'
                                 >
                                     <CellButton
+                                        disabled={isCompleteCollection}
                                         before={
                                             <Avatar
                                                 withBorder={false}
@@ -99,7 +110,7 @@ export const CollectionIdPage: FC = () => {
                                             </Avatar>
                                         }
                                         after={isFetching && <Spinner />}
-                                        disabled={isFetching}
+                                        disabled={isFetching || isCompleteCollection}
                                         onClick={() => downloadFiles({ taskId: collectionId })}
                                     >
                                         Скачать все файлы
@@ -119,6 +130,7 @@ export const CollectionIdPage: FC = () => {
                 <>
                     {taskResults.length > 0 ? (
                         <CollectionMembers
+                            isCompleteCollection={isCompleteCollection}
                             collectionId={collectionId}
                             collection={filteredData}
                         />
@@ -138,6 +150,7 @@ export const CollectionIdPage: FC = () => {
             )}
 
             <FooterWithButton
+                isCompleteCollection={isCompleteCollection}
                 collectionId={collectionId}
                 text='Завершить сбор'
             />

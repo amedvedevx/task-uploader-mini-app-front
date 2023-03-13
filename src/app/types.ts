@@ -144,7 +144,6 @@ export interface CreateSubTaskProps {
 }
 
 export interface UpdateTaskProps {
-    id: string;
     taskId: string;
     payload: {
         fields: Array<{
@@ -171,7 +170,7 @@ export interface DeleteSubTaskProps {
     subTaskId: string;
 }
 
-enum TaskStatusTypesForOrganizer {
+export enum TaskStatusTypesForOrganizer {
     'NEW' = 'NEW',
     'IN_PROGRESS' = 'IN_PROGRESS',
     'DONE' = 'DONE',
