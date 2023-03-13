@@ -29,7 +29,7 @@ export const HomePage: FC = () => {
     return (
         <Panel id={PANEL_COLLECTION_HOME}>
             <CollectionsContainer>
-                <Placeholder
+                <PlaceholderWidth
                     icon={
                         <ImageWithSizes
                             borderRadius='s'
@@ -49,19 +49,21 @@ export const HomePage: FC = () => {
                     }
                 />
 
-                <GroupWide
-                    header={<Header mode='primary'>История</Header>}
-                    mode='plain'
-                >
-                    <Spacing size={36}>
-                        <Separator />
-                    </Spacing>
+                {tasks && (
+                    <GroupWide
+                        header={<Header mode='primary'>История</Header>}
+                        mode='plain'
+                    >
+                        <Spacing size={32}>
+                            <Separator />
+                        </Spacing>
 
-                    <CollectionHistory
-                        collections={tasks}
-                        isLoading={isLoading}
-                    />
-                </GroupWide>
+                        <CollectionHistory
+                            collections={tasks}
+                            isLoading={isLoading}
+                        />
+                    </GroupWide>
+                )}
             </CollectionsContainer>
         </Panel>
     );
@@ -75,8 +77,28 @@ const CollectionsContainer = styled(Div)`
     flex-grow: 1;
 `;
 
+const PlaceholderWidth = styled(Placeholder)`
+    .vkuiPlaceholder__header {
+        max-width: 372px;
+    }
+    .vkuiPlaceholder__in {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        gap: 24px;
+    }
+    .vkuiPlaceholder__icon {
+        margin: unset;
+    }
+    .vkuiPlaceholder__action:not(:first-child) {
+        width: 100%;
+        margin: unset;
+    }
+`;
+
 const GroupWide = styled(Group)`
-    max-width: 560px;
+    max-width: 372px;
     width: 100%;
 `;
 

@@ -1,4 +1,4 @@
-import { Panel, PanelHeaderContent, Group, Separator } from '@vkontakte/vkui';
+import { Panel, PanelHeaderContent, Group, Separator, Spacing } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from '@happysanta/router';
@@ -8,12 +8,12 @@ import { PANEL_UPLOAD_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
 import { AddResultStatusTypes } from '@/app/types';
 import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
+import { FallbackComponent } from '@/app/FallbackComponent';
 
 import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
 import { UploadResultMessage } from './components/UploadResultMessage';
-import { FallbackComponent } from '@/app/FallbackComponent';
 
 export type SnackBarType = {
     type: 'error' | 'success' | false;
@@ -146,6 +146,8 @@ export const UploadPage: FC = () => {
                             files={files}
                             removeFile={removeFile}
                         />
+
+                        <Spacing size={24} />
 
                         <Separator wide />
 
