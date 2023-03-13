@@ -70,7 +70,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
 };
 
 const GroupWide = styled(Group)`
-    padding-top: 180px;
+    padding-top: 188px;
 `;
 
 const HeaderList = styled.div`

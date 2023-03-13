@@ -65,6 +65,7 @@ export const DropZone: FC<DropZoneProps> = ({ isLoading, setFiles, setSnackbar }
                         action={
                             !isDragActive && (
                                 <File
+                                    size='m'
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         e.preventDefault();

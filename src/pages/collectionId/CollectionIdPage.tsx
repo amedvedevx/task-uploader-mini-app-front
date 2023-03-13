@@ -13,8 +13,11 @@ import {
     Spinner,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect } from 'react';
-import { Icon24DownloadOutline, Icon24Linked, Icon28CheckCircleOutline } from '@vkontakte/icons';
+import {
+    Icon24DownloadOutline,
+    Icon28CheckCircleOutline,
+    Icon24CopyOutline,
+} from '@vkontakte/icons';
 
 import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
@@ -83,6 +86,8 @@ export const CollectionIdPage: FC = () => {
                     onChange={changeSearch}
                 />
 
+                <Spacing size={2} />
+
                 {!isLoading && (
                     <>
                         {taskResults.length > 0 && (
@@ -98,12 +103,12 @@ export const CollectionIdPage: FC = () => {
                                                 withBorder={false}
                                                 size={40}
                                             >
-                                                <Icon24Linked />
+                                                <Icon24CopyOutline />
                                             </Avatar>
                                         }
                                         onClick={() => copyLink()}
                                     >
-                                        Поделиться ссылкой на сбор
+                                        Скопировать ссылку на сбор
                                     </CellButton>
 
                                     <CellButton
