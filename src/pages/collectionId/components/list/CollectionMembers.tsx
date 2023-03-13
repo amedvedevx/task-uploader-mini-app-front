@@ -11,7 +11,7 @@ import { SkeletonMembers } from './components/SkeletonMembers';
 interface CollectionMembersProps {
     collection: TaskResults['testee'][];
     collectionId: string;
-    isCompleteCollection: boolean;
+    isComplete: boolean;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
@@ -19,7 +19,7 @@ const avatarStub = 'https://vk.com/images/camera_100.png';
 export const CollectionMembers: FC<CollectionMembersProps> = ({
     collection,
     collectionId,
-    isCompleteCollection,
+    isComplete,
 }) => {
     const [downloadFiles, { isLoading, originalArgs }] = useLazyDownloadFilesQuery();
 
@@ -31,7 +31,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
 
     return (
         <GroupWide
-            $isComplete={isCompleteCollection}
+            $isComplete={isComplete}
             header={
                 <HeaderList>{`Прислали ${membersCount} ${inclinationWord(membersCount, [
                     'участник',

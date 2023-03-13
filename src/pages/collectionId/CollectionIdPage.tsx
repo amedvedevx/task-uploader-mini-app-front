@@ -13,7 +13,6 @@ import {
     Spinner,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
 import {
     Icon24DownloadOutline,
     Icon24CopyOutline,
@@ -50,15 +49,9 @@ export const CollectionIdPage: FC = () => {
 
     const { taskResults } = data;
 
-    const [isCompleteCollection, setIsCompleteCollection] = useState(false);
-
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
 
-    useEffect(() => {
-        if (currentTask.status === TaskStatusTypesForOrganizer.DONE) {
-            setIsCompleteCollection(true);
-        }
-    }, [currentTask]);
+    const isComplete = currentTask.status === TaskStatusTypesForOrganizer.DONE;
 
     const [downloadFiles, { isFetching }] = useLazyDownloadFilesQuery();
 
@@ -90,12 +83,7 @@ export const CollectionIdPage: FC = () => {
                 before={<PanelHeaderBack onClick={goBack} />}
             >
                 {currentTask ? (
-                    <PanelHeaderContentCentered
-                        status={
-                            currentTask.status === TaskStatusTypesForOrganizer.DONE &&
-                            'Сбор завершен'
-                        }
-                    >
+                    <PanelHeaderContentCentered status={isComplete && 'Сбор завершен'}>
                         {currentTask.name}
                     </PanelHeaderContentCentered>
                 ) : (
@@ -123,9 +111,9 @@ export const CollectionIdPage: FC = () => {
                                     mode='vertical'
                                     gap='s'
                                 >
-                                    {!isCompleteCollection && (
+                                    {!isComplete && (
                                         <CellButton
-                                            disabled={isCompleteCollection}
+                                            disabled={isComplete}
                                             before={
                                                 <Avatar
                                                     withBorder={false}
@@ -170,7 +158,7 @@ export const CollectionIdPage: FC = () => {
                 <>
                     {taskResults.length > 0 ? (
                         <CollectionMembers
-                            isCompleteCollection={isCompleteCollection}
+                            isComplete={isComplete}
                             collectionId={collectionId}
                             collection={filteredData}
                         />
@@ -189,7 +177,7 @@ export const CollectionIdPage: FC = () => {
                 </Snackbar>
             )}
 
-            {!isCompleteCollection && (
+            {!isComplete && (
                 <FooterWithButton
                     collectionId={collectionId}
                     text='Завершить сбор'
