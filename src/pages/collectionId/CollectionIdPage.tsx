@@ -113,6 +113,8 @@ export const CollectionIdPage: FC = () => {
                     onChange={changeSearch}
                 />
 
+                <Spacing size={2} />
+
                 {!isLoading && (
                     <>
                         {taskResults.length > 0 && (

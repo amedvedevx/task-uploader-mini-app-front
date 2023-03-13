@@ -50,7 +50,7 @@ export const CreatePage: FC = () => {
 
             <CreateContainer>
                 <FormLayoutWide onSubmit={handleSubmit(onSubmit)}>
-                    <PlaceholderCreate
+                    <PlaceholderWidth
                         header='Придумайте название'
                         action={
                             <Button
@@ -66,9 +66,9 @@ export const CreatePage: FC = () => {
                         <CreateInput
                             control={control}
                             label='Название'
-                            placeholder='Документы в лагерь'
+                            placeholder='Например "Документы в лагерь"'
                         />
-                    </PlaceholderCreate>
+                    </PlaceholderWidth>
                 </FormLayoutWide>
             </CreateContainer>
         </Panel>
@@ -83,10 +83,11 @@ const CreateContainer = styled(Div)`
     flex-grow: 1;
 `;
 
-const PlaceholderCreate = styled(Placeholder)`
+const PlaceholderWidth = styled(Placeholder)`
     .vkuiPlaceholder__in {
-        max-width: 560px;
+        max-width: 320px;
         width: 100%;
+        padding: unset;
     }
     .vkuiPlaceholder__header + .vkuiPlaceholder__text {
         margin-top: 20px;
@@ -95,6 +96,5 @@ const PlaceholderCreate = styled(Placeholder)`
 
 const FormLayoutWide = styled(FormLayout)`
     width: 100%;
-    //remove header height;
     margin-bottom: 56px;
 `;

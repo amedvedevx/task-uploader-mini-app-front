@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { Button, Image, Placeholder } from '@vkontakte/vkui';
-import { Icon20ShareExternalOutline } from '@vkontakte/icons';
+import { Icon24CopyOutline } from '@vkontakte/icons';
 import styled from 'styled-components';
 
 import PeaopleIcon from '@/assets/peopleIcon.svg';
@@ -22,7 +22,7 @@ export const ShareLink: FC<ShareLinkProps> = ({ shareLink }) => (
             }
             action={
                 <Button
-                    before={<Icon20ShareExternalOutline />}
+                    before={<Icon24CopyOutline />}
                     size='l'
                     onClick={() => {
                         shareLink();
@@ -46,7 +46,7 @@ const ShareLinkContainer = styled.div`
 `;
 
 const ImageWithSizes = styled(Image)`
-    width: 170px !important;
-    height: 100px !important;
+    width: 160px !important;
+    height: 94px !important;
     background-color: transparent;
 `;
