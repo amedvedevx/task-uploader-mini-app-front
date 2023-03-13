@@ -20,7 +20,7 @@ export const CreatePage: FC = () => {
         },
     });
 
-    const [createWideTask] = useCreateWideTaskMutation();
+    const [createWideTask, { isLoading }] = useCreateWideTaskMutation();
 
     const onSubmit = async (data: { collectionName: string }) => {
         const payload = {
@@ -57,6 +57,7 @@ export const CreatePage: FC = () => {
                                 stretched
                                 type='submit'
                                 size='l'
+                                disabled={isLoading}
                             >
                                 Продолжить
                             </Button>

@@ -20,6 +20,7 @@ import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHead
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetTaskResultsQuery, useLazyDownloadFilesQuery } from '@/api';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
+import { FallbackComponent } from '@/app/FallbackComponent';
 
 import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
@@ -30,7 +31,11 @@ export const CollectionIdPage: FC = () => {
     const router = useRouter();
     const { collectionId } = useParams();
 
-    const { data = { taskResults: [] }, isLoading } = useGetTaskResultsQuery({
+    const {
+        data = { taskResults: [] },
+        isLoading,
+        error,
+    } = useGetTaskResultsQuery({
         taskId: collectionId,
     });
 
@@ -57,6 +62,17 @@ export const CollectionIdPage: FC = () => {
     };
 
     const { copyLink, text, setText } = useCopyToClipboard(collectionId);
+
+    if (error?.status === 400) {
+        const errorMessage = { name: 'wrong link', message: 'Такого сбора не существует' };
+
+        return (
+            <FallbackComponent
+                error={errorMessage}
+                resetErrorBoundary={false}
+            />
+        );
+    }
 
     return (
         <Panel id={PANEL_COLLECTION_ID}>
