@@ -20,7 +20,11 @@ import {
     Icon28CheckCircleOutline,
 } from '@vkontakte/icons';
 
-import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
+import {
+    PanelHeaderCentered,
+    PanelHeaderContentCentered,
+    PanelHeaderSkeleton,
+} from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetTaskResultsQuery, useLazyDownloadFilesQuery } from '@/api';
 import type { TaskType } from '@/app/types';
@@ -31,18 +35,6 @@ import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
 import { useCopyToClipboard, useSearch } from './hooks';
 import { CollectionMembers } from './components/list';
-
-const getHeaderTitle = (task: TaskType) => {
-    if (task.status === TaskStatusTypesForOrganizer.DONE) {
-        return 'Сбор завершен';
-    }
-
-    if (task.name) {
-        return task.name;
-    }
-
-    return <PanelHeaderSkeleton />;
-};
 
 export const CollectionIdPage: FC = () => {
     const router = useRouter();
@@ -62,14 +54,10 @@ export const CollectionIdPage: FC = () => {
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
 
-    const [title, setTitle] = useState<string | JSX.Element>('');
-
     useEffect(() => {
         if (currentTask.status === TaskStatusTypesForOrganizer.DONE) {
             setIsCompleteCollection(true);
         }
-
-        setTitle(() => getHeaderTitle(currentTask));
     }, [currentTask]);
 
     const [downloadFiles, { isFetching }] = useLazyDownloadFilesQuery();
@@ -101,7 +89,18 @@ export const CollectionIdPage: FC = () => {
                 separator={false}
                 before={<PanelHeaderBack onClick={goBack} />}
             >
-                {title}
+                {currentTask ? (
+                    <PanelHeaderContentCentered
+                        status={
+                            currentTask.status === TaskStatusTypesForOrganizer.DONE &&
+                            'Сбор завершен'
+                        }
+                    >
+                        {currentTask.name}
+                    </PanelHeaderContentCentered>
+                ) : (
+                    <PanelHeaderSkeleton />
+                )}
             </PanelHeaderCentered>
 
             <FixedLayout
@@ -151,7 +150,7 @@ export const CollectionIdPage: FC = () => {
                                             </Avatar>
                                         }
                                         after={isFetching && <Spinner />}
-                                        disabled={isFetching || isCompleteCollection}
+                                        disabled={isFetching}
                                         onClick={() => downloadFiles({ taskId: collectionId })}
                                     >
                                         Скачать все файлы
@@ -192,7 +191,6 @@ export const CollectionIdPage: FC = () => {
 
             {!isCompleteCollection && (
                 <FooterWithButton
-                    isCompleteCollection={isCompleteCollection}
                     collectionId={collectionId}
                     text='Завершить сбор'
                 />

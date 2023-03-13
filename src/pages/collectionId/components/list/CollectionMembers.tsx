@@ -31,6 +31,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
 
     return (
         <GroupWide
+            $isComplete={isCompleteCollection}
             header={
                 <HeaderList>{`Прислали ${membersCount} ${inclinationWord(membersCount, [
                     'участник',
@@ -59,10 +60,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                                 appearance='accent'
                                 size='s'
                                 mode='secondary'
-                                disabled={
-                                    (originalArgs?.vkUserId === vkUserId && isLoading) ||
-                                    isCompleteCollection
-                                }
+                                disabled={originalArgs?.vkUserId === vkUserId && isLoading}
                                 loading={originalArgs?.vkUserId === vkUserId && isLoading}
                                 onClick={() => downloadFiles({ taskId: collectionId, vkUserId })}
                             >
@@ -78,8 +76,8 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
     );
 };
 
-const GroupWide = styled(Group)`
-    padding-top: 188px;
+const GroupWide = styled(Group)<{ $isComplete: boolean }>`
+    padding-top: ${({ $isComplete }) => ($isComplete ? '125px' : '188px')};
 `;
 
 const HeaderList = styled.div`

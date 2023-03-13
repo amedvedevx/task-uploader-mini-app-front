@@ -8,15 +8,10 @@ import { PAGE_COLLECTION_HOME } from '@/app/router';
 
 interface FooterWithButtonProps {
     collectionId: string;
-    isCompleteCollection: boolean;
     text: string;
 }
 
-export const FooterWithButton: FC<FooterWithButtonProps> = ({
-    text,
-    collectionId,
-    isCompleteCollection,
-}) => {
+export const FooterWithButton: FC<FooterWithButtonProps> = ({ text, collectionId }) => {
     const router = useRouter();
 
     const [updateTask] = useUpdateTaskMutation();
@@ -44,7 +39,6 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({
                     size='l'
                     mode='secondary'
                     appearance='negative'
-                    disabled={isCompleteCollection}
                     onClick={(): Promise<void> => handleUpdateTask(collectionId)}
                 >
                     {text}
