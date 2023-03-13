@@ -1,4 +1,4 @@
-import { Panel, PanelHeaderContent, Group, Separator, Spacing } from '@vkontakte/vkui';
+import { Panel, Group, Separator, Spacing } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from '@happysanta/router';
@@ -7,7 +7,11 @@ import styled from 'styled-components';
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
 import { AddResultStatusTypes } from '@/app/types';
-import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
+import {
+    PanelHeaderCentered,
+    PanelHeaderContentCentered,
+    PanelHeaderSkeleton,
+} from '@/components/PanelHeaderCentered';
 import { FallbackComponent } from '@/app/FallbackComponent';
 
 import { DropZone } from './components/DropZone';
@@ -174,10 +178,4 @@ const UploadPageWrapper = styled.div`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-`;
-
-const PanelHeaderContentCentered = styled(PanelHeaderContent)`
-    .vkuiPanelHeaderContent__in {
-        align-items: center;
-    }
 `;

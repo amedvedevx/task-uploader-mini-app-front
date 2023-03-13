@@ -80,7 +80,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
                 method: 'PATCH',
                 body: { ...payload },
             }),
-            invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.id }],
+            invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
         }),
 
         createWideTask: builder.mutation<string, CreateWideTask>({
