@@ -65,6 +65,20 @@ export const CollectionIdPage: FC = () => {
         );
     }
 
+    if (error?.status === 401) {
+        const errorMessage = {
+            name: 'access denied',
+            message: 'Вы не являетесь создаталем сбора. Доступ запрещен',
+        };
+
+        return (
+            <FallbackComponent
+                error={errorMessage}
+                resetErrorBoundary={false}
+            />
+        );
+    }
+
     return (
         <Panel id={PANEL_COLLECTION_ID}>
             <PanelHeaderCentered
