@@ -13,12 +13,21 @@ import {
     Spinner,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect } from 'react';
-import { Icon24DownloadOutline, Icon24Linked, Icon28CheckCircleOutline } from '@vkontakte/icons';
+import {
+    Icon24DownloadOutline,
+    Icon24CopyOutline,
+    Icon28CheckCircleOutline,
+} from '@vkontakte/icons';
 
-import { PanelHeaderCentered, PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
+import {
+    PanelHeaderCentered,
+    PanelHeaderContentCentered,
+    PanelHeaderSkeleton,
+} from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetTaskResultsQuery, useLazyDownloadFilesQuery } from '@/api';
+import type { TaskType } from '@/app/types';
+import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { FallbackComponent } from '@/app/FallbackComponent';
 
 import { ShareLink } from './components/share';
@@ -40,7 +49,9 @@ export const CollectionIdPage: FC = () => {
 
     const { taskResults } = data;
 
-    const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
+    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
+
+    const isComplete = currentTask.status === TaskStatusTypesForOrganizer.DONE;
 
     const [downloadFiles, { isFetching }] = useLazyDownloadFilesQuery();
 
@@ -85,7 +96,13 @@ export const CollectionIdPage: FC = () => {
                 separator={false}
                 before={<PanelHeaderBack onClick={goBack} />}
             >
-                {currentTask ? currentTask.name : <PanelHeaderSkeleton />}
+                {currentTask ? (
+                    <PanelHeaderContentCentered status={isComplete && 'Сбор завершен'}>
+                        {currentTask.name}
+                    </PanelHeaderContentCentered>
+                ) : (
+                    <PanelHeaderSkeleton />
+                )}
             </PanelHeaderCentered>
 
             <FixedLayout
@@ -97,6 +114,8 @@ export const CollectionIdPage: FC = () => {
                     onChange={changeSearch}
                 />
 
+                <Spacing size={2} />
+
                 {!isLoading && (
                     <>
                         {taskResults.length > 0 && (
@@ -106,19 +125,22 @@ export const CollectionIdPage: FC = () => {
                                     mode='vertical'
                                     gap='s'
                                 >
-                                    <CellButton
-                                        before={
-                                            <Avatar
-                                                withBorder={false}
-                                                size={40}
-                                            >
-                                                <Icon24Linked />
-                                            </Avatar>
-                                        }
-                                        onClick={() => copyLink()}
-                                    >
-                                        Поделиться ссылкой на сбор
-                                    </CellButton>
+                                    {!isComplete && (
+                                        <CellButton
+                                            disabled={isComplete}
+                                            before={
+                                                <Avatar
+                                                    withBorder={false}
+                                                    size={40}
+                                                >
+                                                    <Icon24CopyOutline />
+                                                </Avatar>
+                                            }
+                                            onClick={() => copyLink()}
+                                        >
+                                            Скопировать ссылку на сбор
+                                        </CellButton>
+                                    )}
 
                                     <CellButton
                                         before={
@@ -150,6 +172,7 @@ export const CollectionIdPage: FC = () => {
                 <>
                     {taskResults.length > 0 ? (
                         <CollectionMembers
+                            isComplete={isComplete}
                             collectionId={collectionId}
                             collection={filteredData}
                         />
@@ -168,10 +191,12 @@ export const CollectionIdPage: FC = () => {
                 </Snackbar>
             )}
 
-            <FooterWithButton
-                collectionId={collectionId}
-                text='Завершить сбор'
-            />
+            {!isComplete && (
+                <FooterWithButton
+                    collectionId={collectionId}
+                    text='Завершить сбор'
+                />
+            )}
         </Panel>
     );
 };

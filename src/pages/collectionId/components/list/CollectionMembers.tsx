@@ -11,11 +11,16 @@ import { SkeletonMembers } from './components/SkeletonMembers';
 interface CollectionMembersProps {
     collection: TaskResults['testee'][];
     collectionId: string;
+    isComplete: boolean;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
-export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, collectionId }) => {
+export const CollectionMembers: FC<CollectionMembersProps> = ({
+    collection,
+    collectionId,
+    isComplete,
+}) => {
     const [downloadFiles, { isLoading, originalArgs }] = useLazyDownloadFilesQuery();
 
     const membersCount = collection.length;
@@ -26,6 +31,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
 
     return (
         <GroupWide
+            $isComplete={isComplete}
             header={
                 <HeaderList>{`Прислали ${membersCount} ${inclinationWord(membersCount, [
                     'участник',
@@ -34,6 +40,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
                 ])}`}</HeaderList>
             }
             mode='plain'
+            padding='s'
         >
             <List>
                 {collection.map(({ vkUserId, firstName, lastName, fullName, photo }) => (
@@ -69,8 +76,8 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, coll
     );
 };
 
-const GroupWide = styled(Group)`
-    padding-top: 180px;
+const GroupWide = styled(Group)<{ $isComplete: boolean }>`
+    padding-top: ${({ $isComplete }) => ($isComplete ? '128px' : '188px')};
 `;
 
 const HeaderList = styled.div`

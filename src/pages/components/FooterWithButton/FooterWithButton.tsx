@@ -48,13 +48,6 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ text, collectionId
     );
 };
 
-const FooterContainer = styled.div`
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: var(--vkui--color_background_content);
-`;
-
 const ActionWrapper = styled.div`
     padding: 16px 20px;
 `;
