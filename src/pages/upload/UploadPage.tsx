@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
-import { AddResultStatusTypes } from '@/app/types';
+import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import {
     PanelHeaderCentered,
     PanelHeaderContentCentered,
@@ -28,6 +28,7 @@ export const UploadPage: FC = () => {
     const { uploadId } = useParams();
 
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
+    const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
     const [uploadFiles, statusFromServer] = useUploadFilesMutation();
 
     const [isLoading, setLoading] = useState(false);
@@ -139,6 +140,7 @@ export const UploadPage: FC = () => {
 
             <UploadPageWrapper>
                 <DropZone
+                    isTaskComplete={isTaskComplete}
                     isLoading={isLoading}
                     setFiles={setFiles}
                     setSnackbar={setSnackbar}

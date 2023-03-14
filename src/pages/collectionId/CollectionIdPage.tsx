@@ -65,7 +65,7 @@ export const CollectionIdPage: FC = () => {
 
     const { copyLink, text, setText } = useCopyToClipboard(collectionId);
 
-    if (error?.status === 400 || 401) {
+    if (error?.status) {
         const errorMessage =
             error?.status === 400
                 ? { name: 'wrong link', message: 'Такого сбора не существует' }
