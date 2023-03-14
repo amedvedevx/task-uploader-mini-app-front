@@ -67,7 +67,7 @@ export const CollectionIdPage: FC = () => {
 
     if (error?.status === 400 || 401) {
         const errorMessage =
-            error.status === 400
+            error?.status === 400
                 ? { name: 'wrong link', message: 'Такого сбора не существует' }
                 : {
                       name: 'access denied',
