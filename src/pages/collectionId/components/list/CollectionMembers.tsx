@@ -77,7 +77,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
 };
 
 const GroupWide = styled(Group)<{ $isComplete: boolean }>`
-    padding-top: ${({ $isComplete }) => ($isComplete ? '125px' : '188px')};
+    padding-top: ${({ $isComplete }) => ($isComplete ? '128px' : '188px')};
 `;
 
 const HeaderList = styled.div`
