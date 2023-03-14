@@ -54,22 +54,14 @@ export const CollectionIdPage: FC = () => {
 
     const { copyLink, text, setText } = useCopyToClipboard(collectionId);
 
-    if (error?.status === 400) {
-        const errorMessage = { name: 'wrong link', message: 'Такого сбора не существует' };
-
-        return (
-            <FallbackComponent
-                error={errorMessage}
-                resetErrorBoundary={false}
-            />
-        );
-    }
-
-    if (error?.status === 401) {
-        const errorMessage = {
-            name: 'access denied',
-            message: 'Вы не являетесь создаталем сбора. Доступ запрещен',
-        };
+    if (error?.status === 400 || 401) {
+        const errorMessage =
+            error?.status === 400
+                ? { name: 'wrong link', message: 'Такого сбора не существует' }
+                : {
+                      name: 'access denied',
+                      message: 'Вы не являетесь создаталем сбора. Доступ запрещен',
+                  };
 
         return (
             <FallbackComponent
