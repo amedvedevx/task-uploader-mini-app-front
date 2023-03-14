@@ -163,7 +163,7 @@ export const CollectionIdPage: FC = () => {
                             collection={filteredData}
                         />
                     ) : (
-                        <ShareLink shareLink={copyLink} />
+                        !isComplete && <ShareLink shareLink={copyLink} />
                     )}
                 </>
             )}
