@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Icon56DocumentOutline } from '@vkontakte/icons';
+import { Icon56CancelCircleOutline, Icon56DocumentOutline } from '@vkontakte/icons';
 import { Div, Placeholder, File, Spinner } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useCallback } from 'react';
@@ -12,6 +12,7 @@ import type { SnackBarType } from '../UploadPage';
 
 interface DropZoneProps {
     isLoading: boolean;
+    isTaskComplete: boolean;
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
     setSnackbar: React.Dispatch<React.SetStateAction<SnackBarType>>;
 }
@@ -21,7 +22,12 @@ const maxFileSize = 209715200;
 const forbiddenFileExtension = ['exe', 'app'];
 const rejectFileMessage = { code: 'reject', message: 'wrong-file' };
 
-export const DropZone: FC<DropZoneProps> = ({ isLoading, setFiles, setSnackbar }) => {
+export const DropZone: FC<DropZoneProps> = ({
+    isTaskComplete,
+    isLoading,
+    setFiles,
+    setSnackbar,
+}) => {
     const filesValidator = (file: File) => {
         const fileExt = getFileExtension(file.name);
 
@@ -50,36 +56,44 @@ export const DropZone: FC<DropZoneProps> = ({ isLoading, setFiles, setSnackbar }
 
     return (
         <DivStretched>
-            <DropZoneContainer {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
-                <input
-                    type='file'
-                    {...getInputProps()}
-                    disabled={isLoading}
-                />
-
-                {isLoading ? (
-                    <Spinner size='large' />
-                ) : (
-                    <PlaceholderCentered
-                        icon={<Icon56DocumentOutline color='var(--vkui--color_icon_accent)' />}
-                        action={
-                            !isDragActive && (
-                                <File
-                                    size='m'
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        e.preventDefault();
-                                    }}
-                                >
-                                    Выбрать файл
-                                </File>
-                            )
-                        }
-                    >
-                        Для загрузки файла перенесите его в эту область
+            {isTaskComplete ? (
+                <DropZoneContainer isDisabled>
+                    <PlaceholderCentered icon={<Icon56CancelCircleOutline />}>
+                        Сбор завершен
                     </PlaceholderCentered>
-                )}
-            </DropZoneContainer>
+                </DropZoneContainer>
+            ) : (
+                <DropZoneContainer {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
+                    <input
+                        type='file'
+                        {...getInputProps()}
+                        disabled={isLoading}
+                    />
+
+                    {isLoading ? (
+                        <Spinner size='large' />
+                    ) : (
+                        <PlaceholderCentered
+                            icon={<Icon56DocumentOutline color='var(--vkui--color_icon_accent)' />}
+                            action={
+                                !isDragActive && (
+                                    <File
+                                        size='m'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                        }}
+                                    >
+                                        Выбрать файл
+                                    </File>
+                                )
+                            }
+                        >
+                            Для загрузки файла перенесите его в эту область
+                        </PlaceholderCentered>
+                    )}
+                </DropZoneContainer>
+            )}
         </DivStretched>
     );
 };
@@ -103,7 +117,7 @@ const getColor = ({ isDragAccept, isDragReject, isFocused }: DropZoneColors) => 
         return 'var(--vkui--color_stroke_accent)';
     }
 
-    return '#DCE1E6';
+    return 'var(--vkui--color_icon_secondary)';
 };
 
 const DivStretched = styled(Div)`
@@ -111,7 +125,14 @@ const DivStretched = styled(Div)`
     flex-grow: 1;
 `;
 
-const DropZoneContainer = styled.div`
+interface DropZoneContainerProps {
+    isFocused?: boolean;
+    isDragAccept?: boolean;
+    isDragReject?: boolean;
+    isDisabled?: boolean;
+}
+
+const DropZoneContainer = styled.div<DropZoneContainerProps>`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -130,7 +151,8 @@ const DropZoneContainer = styled.div`
     transition: border 0.24s ease-in-out;
 
     &:hover {
-        border-color: var(--vkui--color_stroke_accent);
+        border-color: ${({ isDisabled }) =>
+        isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
     }
 `;
 
