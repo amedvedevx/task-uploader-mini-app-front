@@ -78,8 +78,6 @@ export const CollectionIdPage: FC = () => {
         };
 
         await updateTask({ taskId: id, payload });
-
-        router.pushPage(PAGE_COLLECTION_HOME);
     };
 
     if (error?.status) {

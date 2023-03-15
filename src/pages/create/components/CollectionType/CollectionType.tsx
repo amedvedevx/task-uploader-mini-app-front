@@ -5,12 +5,7 @@ import type { Control } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
 interface CollectionTypeProps {
-    control: Control<
-        {
-            collectionType: string;
-        },
-        any
-    >;
+    control: Control<{ collectionType: string }>;
 }
 
 const options = [
