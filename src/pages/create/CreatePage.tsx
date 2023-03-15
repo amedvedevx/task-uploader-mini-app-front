@@ -26,8 +26,6 @@ export const CreatePage: FC = () => {
     const [createWideTask] = useCreateWideTaskMutation();
 
     const onSubmit = async (data: { collectionName: string }) => {
-        console.log(data);
-
         const payload = {
             name: data.collectionName,
             description: `Описание - ${data.collectionName}`,
