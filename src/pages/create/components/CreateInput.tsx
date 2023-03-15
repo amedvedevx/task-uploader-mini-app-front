@@ -10,6 +10,7 @@ interface CreateInputProps {
     control: Control<
         {
             collectionName: string;
+            // collectionType: string;
         },
         any
     >;

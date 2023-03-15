@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Button, Div, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
+import { Div, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
@@ -9,20 +9,25 @@ import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateWideTaskMutation } from '@/api';
 
 import { CreateInput } from './components';
+import { FooterWithButton } from '../components';
+import { CollectionType } from './components/CollectionType';
 
 const monthIsSec = 2592000;
 const deadLineDate = Math.ceil(new Date().getTime() / 1000 + monthIsSec);
 
 export const CreatePage: FC = () => {
-    const { control, handleSubmit } = useForm({
+    const { control, handleSubmit, getValues } = useForm({
         defaultValues: {
             collectionName: '',
+            collectionType: 'members',
         },
     });
 
-    const [createWideTask, { isLoading }] = useCreateWideTaskMutation();
+    const [createWideTask] = useCreateWideTaskMutation();
 
     const onSubmit = async (data: { collectionName: string }) => {
+        console.log(data);
+
         const payload = {
             name: data.collectionName,
             description: `Описание - ${data.collectionName}`,
@@ -50,27 +55,23 @@ export const CreatePage: FC = () => {
 
             <CreateContainer>
                 <FormLayoutWide onSubmit={handleSubmit(onSubmit)}>
-                    <PlaceholderWidth
-                        header='Придумайте название'
-                        action={
-                            <Button
-                                stretched
-                                type='submit'
-                                size='l'
-                                disabled={isLoading}
-                            >
-                                Продолжить
-                            </Button>
-                        }
-                    >
+                    <PlaceholderWidth header='Придумайте название и выберите тип сбора'>
                         <CreateInput
                             control={control}
                             label='Название'
                             placeholder='Например "Документы в лагерь"'
                         />
+
+                        <CollectionType control={control} />
                     </PlaceholderWidth>
                 </FormLayoutWide>
             </CreateContainer>
+
+            <FooterWithButton
+                primary
+                text='Продолжить'
+                onClick={() => onSubmit(getValues())}
+            />
         </Panel>
     );
 };
