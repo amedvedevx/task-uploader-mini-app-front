@@ -25,7 +25,12 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
-import { useGetTaskIdQuery, useGetTaskResultsQuery, useLazyDownloadFilesQuery } from '@/api';
+import {
+    useGetTaskIdQuery,
+    useGetTaskResultsQuery,
+    useLazyDownloadFilesQuery,
+    useUpdateTaskMutation,
+} from '@/api';
 import type { TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { FallbackComponent } from '@/app/FallbackComponent';
@@ -64,6 +69,16 @@ export const CollectionIdPage: FC = () => {
     };
 
     const { copyLink, text, setText } = useCopyToClipboard(collectionId);
+
+    const [updateTask] = useUpdateTaskMutation();
+
+    const handleUpdateTask = async (id: string) => {
+        const payload = {
+            fields: [{ fieldName: 'status', value: 'DONE' }],
+        };
+
+        await updateTask({ taskId: id, payload });
+    };
 
     if (error?.status) {
         const errorMessage =
@@ -185,8 +200,8 @@ export const CollectionIdPage: FC = () => {
 
             {!isComplete && (
                 <FooterWithButton
-                    collectionId={collectionId}
                     text='Завершить сбор'
+                    onClick={() => handleUpdateTask(collectionId)}
                 />
             )}
         </Panel>
