@@ -7,12 +7,9 @@ import { Controller } from 'react-hook-form';
 import { InputLabel } from './InputLabel';
 
 interface CreateInputProps {
-    control: Control<
-        {
-            collectionName: string;
-        },
-        any
-    >;
+    control: Control<{
+        collectionName: string;
+    }>;
     label: string;
     placeholder: string;
 }
