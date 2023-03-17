@@ -1,4 +1,4 @@
-export * from './CopyLink';
+export * from './CopyUploadLink';
 export * from './DownloadAllFiles';
 export * from './AddTestees';
 export * from './RemindAll';
