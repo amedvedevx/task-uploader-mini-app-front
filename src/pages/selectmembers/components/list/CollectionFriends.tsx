@@ -1,9 +1,10 @@
 import type { FC } from 'react';
+import { useState } from 'react';
 import { Avatar, Group, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
 import { getInitials } from '@/lib/utils';
-import type { FriendsType } from '@/api';
+import type { FriendsType } from '@/app/types';
 
 import { useFriendsSelection } from '../../hooks';
 import { Checkbox, SkeletonFriends } from './components';
@@ -31,7 +32,7 @@ export const CollectionFriends: FC<CollectionFriendsProps> = ({ collection }) =>
             padding='s'
         >
             <List>
-                {collection.map(({ id, first_name, last_name, photo_50 }) => (
+                {collection.map(({ id, first_name, last_name, photo_100 }) => (
                     <Members
                         key={id}
                         before={
@@ -43,7 +44,7 @@ export const CollectionFriends: FC<CollectionFriendsProps> = ({ collection }) =>
 
                                 <Avatar
                                     size={40}
-                                    src={photo_50 === avatarStub ? '#' : photo_50}
+                                    src={photo_100 === avatarStub ? '#' : photo_100}
                                     alt='icon'
                                     gradientColor={calcInitialsAvatarColor(id)}
                                     initials={getInitials(`${first_name} ${last_name}`)}

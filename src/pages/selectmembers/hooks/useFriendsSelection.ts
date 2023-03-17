@@ -6,7 +6,7 @@ type HandleSelectRow = (e: React.ChangeEvent<HTMLInputElement>, rowId: string) =
 
 type IsRowActive = (rowId: string) => boolean;
 
-type UseTableSelection = (
+type UseFriendsSelection = (
     initialState: SelectedRowsType,
     allRowsIds: SelectedRowsType,
 ) => {
@@ -15,7 +15,7 @@ type UseTableSelection = (
     isRowActive: IsRowActive;
 };
 
-export const useFriendsSelection: UseTableSelection = (initialState = [], allRowsIds = []) => {
+export const useFriendsSelection: UseFriendsSelection = (initialState = [], allRowsIds = []) => {
     const [selectedRows, setSelectedRows] = useState<SelectedRowsType>(initialState);
 
     const handleSelectRow: HandleSelectRow = (e, rowId) => {

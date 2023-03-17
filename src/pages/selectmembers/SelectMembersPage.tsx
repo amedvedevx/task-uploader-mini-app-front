@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_SELECT_MEMBERS } from '@/app/router';
 import { useVkGetFriends } from '@/api';
+import { useSearch } from '@/hooks';
 
 import { FooterWithButton } from '../components';
 import { CollectionFriends } from './components';
@@ -19,6 +20,8 @@ export const SelectMembersPage: FC = () => {
 
     const { friends } = useVkGetFriends();
 
+    const { filteredData, search, changeSearch } = useSearch(friends, 'first_name');
+
     return (
         <Panel id={PANEL_SELECT_MEMBERS}>
             <FixedLayout
@@ -29,10 +32,13 @@ export const SelectMembersPage: FC = () => {
                     Выбор участников
                 </PanelHeaderCentered>
 
-                <SearchInput />
+                <SearchInput
+                    value={search}
+                    onChange={changeSearch}
+                />
             </FixedLayout>
 
-            {friends.length > 0 && <CollectionFriends collection={friends} />}
+            {friends.length > 0 && <CollectionFriends collection={filteredData} />}
 
             <FooterWithButton
                 primary

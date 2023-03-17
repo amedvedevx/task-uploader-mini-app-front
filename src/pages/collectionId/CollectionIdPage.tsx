@@ -34,10 +34,11 @@ import {
 import type { TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { FallbackComponent } from '@/app/FallbackComponent';
+import { useSearch } from '@/hooks';
 
 import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
-import { useCopyToClipboard, useSearch } from './hooks';
+import { useCopyToClipboard } from './hooks';
 import { CollectionMembers } from './components/list';
 
 export const CollectionIdPage: FC = () => {

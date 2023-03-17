@@ -28,7 +28,7 @@ export const SkeletonFriends: FC = () => (
 const SkeletonWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 110px 16px;
+    padding: 115px 16px;
     gap: 8px;
 `;
 

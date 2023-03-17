@@ -2,16 +2,7 @@ import bridge from '@vkontakte/vk-bridge';
 import { useState, useEffect, useRef } from 'react';
 
 import { useVkToken } from '@/hooks/useVkToken';
-
-export type FriendsType = {
-    id: number;
-    can_access_closed: boolean;
-    first_name: string;
-    is_closed: boolean;
-    last_name: string;
-    photo_50: string;
-    track_code: string;
-};
+import type { FriendsType } from '@/app/types';
 
 export interface UseVkGetFriendsResult {
     friends: FriendsType[];
@@ -22,8 +13,6 @@ export const useVkGetFriends = (): UseVkGetFriendsResult => {
     const [friends, setFriends] = useState<FriendsType[]>([]);
     const token = useVkToken();
     const isFetching = useRef<boolean>(false);
-
-    console.log(token);
 
     useEffect(() => {
         if (!token || isFetching.current) {
@@ -38,7 +27,7 @@ export const useVkGetFriends = (): UseVkGetFriendsResult => {
                 params: {
                     access_token: token,
                     v: '5.131',
-                    fields: 'photo_50',
+                    fields: 'photo_100',
                     count: 50,
                 },
             })
