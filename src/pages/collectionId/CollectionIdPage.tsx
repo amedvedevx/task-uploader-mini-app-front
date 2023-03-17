@@ -1,23 +1,8 @@
 import { useParams, useRouter } from '@happysanta/router';
-import {
-    Avatar,
-    ButtonGroup,
-    CellButton,
-    FixedLayout,
-    Panel,
-    PanelHeaderBack,
-    Search,
-    Separator,
-    Snackbar,
-    Spacing,
-    Spinner,
-} from '@vkontakte/vkui';
+import { FixedLayout, Panel, PanelHeaderBack, Search, Snackbar, Spacing } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import {
-    Icon24DownloadOutline,
-    Icon24CopyOutline,
-    Icon28CheckCircleOutline,
-} from '@vkontakte/icons';
+import { useState } from 'react';
+import { Icon28CheckCircleOutline } from '@vkontakte/icons';
 
 import {
     PanelHeaderCentered,
@@ -25,20 +10,18 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
-import {
-    useGetTaskIdQuery,
-    useGetTaskResultsQuery,
-    useLazyDownloadFilesQuery,
-    useUpdateTaskMutation,
-} from '@/api';
+import { useGetTaskIdQuery, useGetTaskResultsQuery, useUpdateTaskMutation } from '@/api';
 import type { TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
-import { FallbackComponent } from '@/app/FallbackComponent';
 
 import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
-import { useCopyToClipboard, useSearch } from './hooks';
+import { useSearch } from './hooks';
 import { CollectionMembers } from './components/list';
+import { CollectionTabs } from './components/tabs';
+import { HeaderButtons } from './components/headerButtons';
+
+export type TabType = 'completed' | 'notCompleted';
 
 export const CollectionIdPage: FC = () => {
     const router = useRouter();
@@ -51,24 +34,19 @@ export const CollectionIdPage: FC = () => {
     } = useGetTaskResultsQuery({
         taskId: collectionId,
     });
-
     const { taskResults } = data;
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
 
-    const isComplete = currentTask.status === TaskStatusTypesForOrganizer.DONE;
+    const { filteredData, search, changeSearch } = useSearch(taskResults, ['testee', 'fullName']);
 
-    const [downloadFiles, { isFetching }] = useLazyDownloadFilesQuery();
-
-    const testees = taskResults.map((el) => el.testee);
-
-    const { filteredData, search, changeSearch } = useSearch(testees, 'fullName');
+    const isTaskClosed = currentTask.status === TaskStatusTypesForOrganizer.DONE;
+    const [selectedTab, setSelectedTab] = useState<TabType>('completed');
+    const [snackbarText, setSnackbarText] = useState<string>('');
 
     const goBack = () => {
         router.pushPage(PAGE_COLLECTION_HOME);
     };
-
-    const { copyLink, text, setText } = useCopyToClipboard(collectionId);
 
     const [updateTask] = useUpdateTaskMutation();
 
@@ -80,21 +58,14 @@ export const CollectionIdPage: FC = () => {
         await updateTask({ taskId: id, payload });
     };
 
+    // TODO - remove error parser from here to api
     if (error?.status) {
         const errorMessage =
             error?.status === 400
-                ? { name: 'wrong link', message: 'Такого сбора не существует' }
-                : {
-                      name: 'access denied',
-                      message: 'Вы не являетесь создаталем сбора. Доступ запрещен',
-                  };
+                ? 'Такого сбора не существует'
+                : 'Вы не являетесь создаталем сбора. Доступ запрещен';
 
-        return (
-            <FallbackComponent
-                error={errorMessage}
-                resetErrorBoundary={false}
-            />
-        );
+        throw Error(errorMessage);
     }
 
     return (
@@ -104,7 +75,7 @@ export const CollectionIdPage: FC = () => {
                 before={<PanelHeaderBack onClick={goBack} />}
             >
                 {currentTask ? (
-                    <PanelHeaderContentCentered status={isComplete && 'Сбор завершен'}>
+                    <PanelHeaderContentCentered status={isTaskClosed && 'Сбор завершен'}>
                         {currentTask.name}
                     </PanelHeaderContentCentered>
                 ) : (
@@ -116,6 +87,14 @@ export const CollectionIdPage: FC = () => {
                 filled
                 vertical='top'
             >
+                {!currentTask.unlimited && (
+                    <CollectionTabs
+                        selectedTab={selectedTab}
+                        setSelectedTab={setSelectedTab}
+                        taskUsersConsolidated={currentTask.consolidatedData}
+                    />
+                )}
+
                 <Search
                     value={search}
                     onChange={changeSearch}
@@ -123,82 +102,71 @@ export const CollectionIdPage: FC = () => {
 
                 <Spacing size={2} />
 
-                {!isLoading && (
-                    <>
-                        {taskResults.length > 0 && (
-                            <>
-                                <ButtonGroup
-                                    stretched
-                                    mode='vertical'
-                                    gap='s'
-                                >
-                                    {!isComplete && (
-                                        <CellButton
-                                            disabled={isComplete}
-                                            before={
-                                                <Avatar
-                                                    withBorder={false}
-                                                    size={40}
-                                                >
-                                                    <Icon24CopyOutline />
-                                                </Avatar>
-                                            }
-                                            onClick={() => copyLink()}
-                                        >
-                                            Скопировать ссылку на сбор
-                                        </CellButton>
-                                    )}
-
-                                    <CellButton
-                                        before={
-                                            <Avatar
-                                                withBorder={false}
-                                                size={40}
-                                            >
-                                                <Icon24DownloadOutline />
-                                            </Avatar>
-                                        }
-                                        after={isFetching && <Spinner />}
-                                        disabled={isFetching}
-                                        onClick={() => downloadFiles({ taskId: collectionId })}
-                                    >
-                                        Скачать все файлы
-                                    </CellButton>
-                                </ButtonGroup>
-
-                                <Spacing size={36}>
-                                    <Separator />
-                                </Spacing>
-                            </>
-                        )}
-                    </>
+                {!isLoading && taskResults.length > 0 && (
+                    <HeaderButtons
+                        isTaskClosed={isTaskClosed}
+                        collectionId={collectionId}
+                        setSnackbarText={setSnackbarText}
+                        selectedTab={selectedTab}
+                        taskUnlimitedUsers={currentTask.unlimited}
+                    />
                 )}
             </FixedLayout>
 
             {!isLoading && (
                 <>
-                    {taskResults.length > 0 ? (
-                        <CollectionMembers
-                            isComplete={isComplete}
-                            collectionId={collectionId}
-                            collection={filteredData}
-                        />
-                    ) : (
-                        !isComplete && <ShareLink shareLink={copyLink} />
+                    {selectedTab === 'completed' && (
+                        <div
+                            id='tab-content-completedTasks'
+                            aria-labelledby='completedTasks'
+                            role='tabpanel'
+                        >
+                            {taskResults.length > 0 ? (
+                                <CollectionMembers
+                                    selectedTab={selectedTab}
+                                    isTaskClosed={isTaskClosed}
+                                    collectionId={collectionId}
+                                    taskResults={filteredData}
+                                />
+                            ) : (
+                                !isTaskClosed && (
+                                    <ShareLink
+                                        setSnackbarText={setSnackbarText}
+                                        collectionId={collectionId}
+                                    />
+                                )
+                            )}
+                        </div>
+                    )}
+
+                    {selectedTab === 'notCompleted' && (
+                        <div
+                            id='tab-content-notCompletedTasks'
+                            aria-labelledby='notCompletedTasks'
+                            role='tabpanel'
+                        >
+                            <CollectionMembers
+                                isTaskUnlimited
+                                selectedTab={selectedTab}
+                                isTaskClosed={isTaskClosed}
+                                collectionId={collectionId}
+                                taskResults={filteredData}
+                            />
+                        </div>
                     )}
                 </>
             )}
 
-            {text && (
+            {snackbarText && (
                 <Snackbar
                     before={<Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />}
-                    onClose={() => setText('')}
+                    onClose={() => setSnackbarText('')}
                 >
-                    {text}
+                    {snackbarText}
                 </Snackbar>
             )}
 
-            {!isComplete && (
+            {!isTaskClosed && (
                 <FooterWithButton
                     text='Завершить сбор'
                     onClick={() => handleUpdateTask(collectionId)}
