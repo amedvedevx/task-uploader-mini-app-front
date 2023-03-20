@@ -1,22 +1,21 @@
 import type { FC } from 'react';
-import { useState } from 'react';
 import { Avatar, Group, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
 import { getInitials } from '@/lib/utils';
 import type { FriendsType } from '@/app/types';
 
-import { useFriendsSelection } from '../../hooks';
+import { useMembersSelection } from '../../hooks';
 import { Checkbox, SkeletonFriends } from './components';
 
-interface CollectionFriendsProps {
+interface CollectionMembersProps {
     collection: FriendsType[];
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
-export const CollectionFriends: FC<CollectionFriendsProps> = ({ collection }) => {
-    const { isRowActive, handleSelectRow } = useFriendsSelection(
+export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) => {
+    const { handleSelectMember, isMemberActive } = useMembersSelection(
         [],
         collection.map((el): string => String(el.id)),
     );
@@ -38,8 +37,8 @@ export const CollectionFriends: FC<CollectionFriendsProps> = ({ collection }) =>
                         before={
                             <>
                                 <Checkbox
-                                    checked={isRowActive(String(id))}
-                                    onChange={(e) => handleSelectRow(e, String(id))}
+                                    checked={isMemberActive(String(id))}
+                                    onChange={(e) => handleSelectMember(e, String(id))}
                                 />
 
                                 <Avatar

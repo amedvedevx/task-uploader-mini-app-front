@@ -1,26 +1,26 @@
 import { useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_HOME, PANEL_SELECT_MEMBERS } from '@/app/router';
+import { PANEL_SELECT_MEMBERS } from '@/app/router';
 import { useVkGetFriends } from '@/api';
-import { useSearch } from '@/hooks';
 
 import { FooterWithButton } from '../components';
-import { CollectionFriends } from './components';
+import { CollectionMembers } from './components';
 
 export const SelectMembersPage: FC = () => {
+    const [search, setSearch] = useState('');
+
     const router = useRouter();
 
     const goBack = () => {
-        router.pushPage(PAGE_COLLECTION_HOME);
+        router.popPage();
     };
 
-    const { friends } = useVkGetFriends();
-
-    const { filteredData, search, changeSearch } = useSearch(friends, 'first_name');
+    const { friends, isLoading } = useVkGetFriends(search);
 
     return (
         <Panel id={PANEL_SELECT_MEMBERS}>
@@ -34,11 +34,11 @@ export const SelectMembersPage: FC = () => {
 
                 <SearchInput
                     value={search}
-                    onChange={changeSearch}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
             </FixedLayout>
 
-            {friends.length > 0 && <CollectionFriends collection={filteredData} />}
+            {isLoading && friends.length > 0 && <CollectionMembers collection={friends} />}
 
             <FooterWithButton
                 primary

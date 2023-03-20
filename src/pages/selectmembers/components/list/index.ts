@@ -1,1 +1,1 @@
-export * from './CollectionFriends';
+export * from './CollectionMembers';

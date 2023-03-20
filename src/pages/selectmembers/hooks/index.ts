@@ -1,1 +1,1 @@
-export * from './useFriendsSelection';
+export * from './useMembersSelection';

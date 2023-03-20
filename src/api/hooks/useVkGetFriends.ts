@@ -1,40 +1,47 @@
 import bridge from '@vkontakte/vk-bridge';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useVkToken } from '@/hooks/useVkToken';
 import type { FriendsType } from '@/app/types';
+import { useVkUserId } from '@/hooks';
 
 export interface UseVkGetFriendsResult {
     friends: FriendsType[];
-    isFetching: React.MutableRefObject<boolean>;
+    isLoading: boolean;
 }
 
-export const useVkGetFriends = (): UseVkGetFriendsResult => {
+export const useVkGetFriends = (search: string): UseVkGetFriendsResult => {
     const [friends, setFriends] = useState<FriendsType[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     const token = useVkToken();
-    const isFetching = useRef<boolean>(false);
+
+    const vkUserId = useVkUserId(token);
 
     useEffect(() => {
-        if (!token || isFetching.current) {
+        if (!token || !vkUserId) {
             return;
         }
 
-        isFetching.current = true;
-
         bridge
             .send('VKWebAppCallAPIMethod', {
-                method: 'friends.get',
+                method: 'friends.search',
                 params: {
                     access_token: token,
+                    user_id: vkUserId,
+                    q: search,
                     v: '5.131',
                     fields: 'photo_100',
                     count: 50,
                 },
             })
             .then((data: { response: { items: FriendsType[] } }) => {
+                setIsLoading(true);
                 setFriends(data.response.items);
-            });
-    }, [token]);
+            })
+            .catch((e) => setError(e));
+    }, [token, vkUserId, search]);
 
-    return { friends, isFetching };
+    return { friends, isLoading };
 };
