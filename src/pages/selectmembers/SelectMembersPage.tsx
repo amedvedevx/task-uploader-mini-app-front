@@ -33,6 +33,7 @@ export const SelectMembersPage: FC = () => {
                 </PanelHeaderCentered>
 
                 <SearchInput
+                    after=''
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
