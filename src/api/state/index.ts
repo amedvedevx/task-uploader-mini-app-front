@@ -1,2 +1,3 @@
 export * from './authorizationSlice';
-export * from './layoutSlice';
+export * from './membersSlice';
+export * from './taskSlice';

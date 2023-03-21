@@ -3,6 +3,7 @@ import { FixedLayout, Panel, PanelHeaderBack, Search, Snackbar, Spacing } from '
 import type { FC } from 'react';
 import { useState } from 'react';
 import { Icon28CheckCircleOutline } from '@vkontakte/icons';
+import { useSelector } from 'react-redux';
 
 import {
     PanelHeaderCentered,
@@ -10,6 +11,7 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
+import type { RootState } from '@/api';
 import { useGetTaskIdQuery, useGetTaskResultsQuery, useUpdateTaskMutation } from '@/api';
 import type { TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
@@ -26,6 +28,10 @@ export type TabType = 'completed' | 'notCompleted';
 export const CollectionIdPage: FC = () => {
     const router = useRouter();
     const { collectionId } = useParams();
+
+    const { selectedMembers } = useSelector((state: RootState) => state.members);
+
+    console.log(selectedMembers);
 
     const {
         data = { taskResults: [] },

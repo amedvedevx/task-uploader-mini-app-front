@@ -1,24 +1,28 @@
 import type { FC } from 'react';
 import { Avatar, Group, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Icon24Cancel } from '@vkontakte/icons';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { useLocation } from '@happysanta/router';
 
 import { getInitials } from '@/lib/utils';
 import type { FriendsType } from '@/app/types';
+import { deleteMember } from '@/api/state';
+import { PANEL_LIST_MEMBERS, PANEL_SELECT_MEMBERS } from '@/app/router';
 
-import { useMembersSelection } from '../../hooks';
+import type { UseMembersSelectionResult } from '../../hooks';
 import { Checkbox, SkeletonFriends } from './components';
 
 interface CollectionMembersProps {
     collection: FriendsType[];
+    selection: UseMembersSelectionResult;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
-export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) => {
-    const { handleSelectMember, isMemberActive } = useMembersSelection(
-        [],
-        collection.map((el): string => String(el.id)),
-    );
+export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, selection }) => {
+    const location = useLocation();
+    const dispatch = useDispatch();
 
     if (!collection.length) {
         return <SkeletonFriends />;
@@ -36,10 +40,14 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) =>
                         key={id}
                         before={
                             <>
-                                <Checkbox
-                                    checked={isMemberActive(String(id))}
-                                    onChange={(e) => handleSelectMember(e, String(id))}
-                                />
+                                {location.getPanelId() === PANEL_SELECT_MEMBERS && (
+                                    <Checkbox
+                                        checked={selection.isMemberActive(String(id))}
+                                        onChange={(e) => {
+                                            selection.handleSelectMember(e, String(id));
+                                        }}
+                                    />
+                                )}
 
                                 <Avatar
                                     size={40}
@@ -50,6 +58,15 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection }) =>
                                 />
                             </>
                         }
+                        after={
+                            location.getPanelId() === PANEL_LIST_MEMBERS && (
+                                <Icon24Cancel
+                                    fill='var(--vkui--color_text_tertiary)'
+                                    onClick={() => dispatch(deleteMember(id))}
+                                />
+                            )
+                        }
+                        onClick={(e) => selection.handleSelectMember(e as any, String(id))}
                     >
                         {`${first_name} ${last_name}`}
                     </Members>

@@ -3,7 +3,9 @@ import { Div, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
 
+import { setTaskName } from '@/api/state';
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PAGE_SELECT_MEMBERS, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateWideTaskMutation } from '@/api';
@@ -23,6 +25,8 @@ export const CreatePage: FC = () => {
         },
     });
 
+    const dispatch = useDispatch();
+
     const [createWideTask] = useCreateWideTaskMutation();
 
     const onSubmit = async (data: { collectionName: string; collectionType: string }) => {
@@ -34,6 +38,7 @@ export const CreatePage: FC = () => {
         };
 
         if (data.collectionType === 'members' && data.collectionName.length > 0) {
+            dispatch(setTaskName(data.collectionName));
             router.pushPage(PAGE_SELECT_MEMBERS);
         } else {
             const taskId: string = await createWideTask({ payload }).unwrap();
