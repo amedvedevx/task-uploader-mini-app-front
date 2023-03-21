@@ -13,10 +13,10 @@ import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetTaskResultsQuery, useUpdateTaskMutation } from '@/api';
 import type { TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
+import { useSearch } from '@/hooks';
 
-import { ShareLink } from './components/share';
 import { FooterWithButton } from '../components';
-import { useSearch } from './hooks';
+import { ShareLink } from './components/share';
 import { CollectionMembers } from './components/list';
 import { CollectionTabs } from './components/tabs';
 import { HeaderButtons } from './components/headerButtons';

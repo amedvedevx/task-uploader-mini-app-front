@@ -10,7 +10,7 @@ interface UseSearchResult<T> {
 export const useSearch = <T>(data: T, field: string | string[]): UseSearchResult<T> => {
     const [search, setSearch] = useState('');
 
-    const doSearch = (searchVal: string) => {
+    const doSearch = (searchVal: string[]) => {
         if (!searchVal) {
             return;
         }
