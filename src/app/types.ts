@@ -57,10 +57,13 @@ export type TaskType = {
         },
     ];
     unlimited: boolean;
-    consolidatedData: {
-        executedUsersCount: number;
-        partiallyExecutedUsersCount: number;
-    };
+    consolidatedData: TaskUserConsolidatedData;
+};
+
+export type TaskUserConsolidatedData = {
+    total: number;
+    executedUsersCount: number;
+    partiallyExecutedUsersCount: number;
 };
 
 export interface GetTaskResultsProps {
@@ -186,7 +189,7 @@ export enum TaskStatusTypesForOrganizer {
     'DONE' = 'DONE',
 }
 
-enum TaskStatusTypesForTestee {
+export enum TaskStatusTypesForTestee {
     'UPLOAD_IN_PROGRESS' = 'UPLOAD_IN_PROGRESS',
     'REQUIRES_UPLOAD' = 'REQUIRES_UPLOAD',
     'UPLOADED' = 'UPLOADED',

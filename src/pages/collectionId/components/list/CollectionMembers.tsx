@@ -3,37 +3,58 @@ import { Avatar, Button, Group, List, SimpleCell, calcInitialsAvatarColor } from
 import styled from 'styled-components';
 
 import type { TaskResults } from '@/app/types';
+import { TaskStatusTypesForTestee } from '@/app/types';
 import { getInitials, inclinationWord } from '@/lib/utils';
 import { useLazyDownloadFilesQuery } from '@/api';
+import type { TabType } from '@/pages';
 
 import { SkeletonMembers } from './components/SkeletonMembers';
 
 interface CollectionMembersProps {
-    collection: TaskResults['testee'][];
+    taskResults: TaskResults[];
     collectionId: string;
-    isComplete: boolean;
+    isTaskClosed: boolean;
+    isTaskUnlimited?: boolean;
+    selectedTab: TabType;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
 export const CollectionMembers: FC<CollectionMembersProps> = ({
-    collection,
+    taskResults,
     collectionId,
-    isComplete,
+    isTaskClosed,
+    isTaskUnlimited,
+    selectedTab,
 }) => {
     const [downloadFiles, { isLoading, originalArgs }] = useLazyDownloadFilesQuery();
 
-    const membersCount = collection.length;
+    const testees = isTaskUnlimited
+        ? taskResults.map((el) => el.testee)
+        : filterTestees(taskResults, selectedTab).map((el) => el.testee);
 
-    if (!collection.length) {
+    const membersCount = testees?.length;
+
+    const onClick = ({ taskId, vkUserId }: { taskId: string; vkUserId: number }) => {
+        if (selectedTab === 'completed') {
+            downloadFiles({ taskId, vkUserId });
+        } else {
+            // eslint-disable-next-line no-console
+            console.log('напомнить');
+        }
+    };
+
+    if (!testees?.length) {
         return <SkeletonMembers />;
     }
 
     return (
         <GroupWide
-            $isComplete={isComplete}
+            $isTaskClosed={isTaskClosed}
             header={
-                <HeaderList>{`Прислали ${membersCount} ${inclinationWord(membersCount, [
+                <HeaderList>{`${
+                    selectedTab === 'completed' ? 'Прислали' : 'Не прислали'
+                } ${membersCount} ${inclinationWord(membersCount, [
                     'участник',
                     'участника',
                     'участников',
@@ -43,7 +64,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
             padding='s'
         >
             <List>
-                {collection.map(({ vkUserId, firstName, lastName, fullName, photo }) => (
+                {testees.map(({ vkUserId, firstName, lastName, fullName, photo }) => (
                     <Members
                         key={vkUserId}
                         before={
@@ -62,9 +83,9 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                                 mode='secondary'
                                 disabled={originalArgs?.vkUserId === vkUserId && isLoading}
                                 loading={originalArgs?.vkUserId === vkUserId && isLoading}
-                                onClick={() => downloadFiles({ taskId: collectionId, vkUserId })}
+                                onClick={() => onClick({ taskId: collectionId, vkUserId })}
                             >
-                                Скачать
+                                {selectedTab === 'completed' ? 'Скачать' : 'Напомнить'}
                             </Button>
                         }
                     >
@@ -76,8 +97,24 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
     );
 };
 
-const GroupWide = styled(Group)<{ $isComplete: boolean }>`
-    padding-top: ${({ $isComplete }) => ($isComplete ? '128px' : '188px')};
+const filterTestees = (taskResultsArg: TaskResults[], selectedTab: string): TaskResults[] => {
+    if (selectedTab === 'completed') {
+        return taskResultsArg.filter(
+            (result) =>
+                result.taskResultStatus === TaskStatusTypesForTestee.UPLOADED ||
+                TaskStatusTypesForTestee.COMPLETED,
+        );
+    }
+
+    return taskResultsArg.filter(
+        (result) =>
+            result.taskResultStatus !== TaskStatusTypesForTestee.UPLOADED ||
+            TaskStatusTypesForTestee.COMPLETED,
+    );
+};
+
+const GroupWide = styled(Group)<{ $isTaskClosed: boolean }>`
+    padding-top: ${({ $isTaskClosed }) => ($isTaskClosed ? '128px' : '188px')};
 `;
 
 const HeaderList = styled.div`

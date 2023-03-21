@@ -1,5 +1,9 @@
 import { format, fromUnixTime } from 'date-fns';
 import { ru } from 'date-fns/locale';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import copy from 'copy-to-clipboard';
+
+import { APP_ID } from '@/app/config';
 
 export const capitalizeString = (stringToCap: string): string =>
     stringToCap[0].toUpperCase() + stringToCap.slice(1);
@@ -49,3 +53,19 @@ export const getInitials = (string: string): string => {
 
 export const getExtenstionInitials = (fileName: string): string =>
     getFileExtension(fileName).slice(0, 3).toUpperCase();
+
+export const copyUploadLinkToClipboard = (text: string): boolean => {
+    const link = `https://vk.com/app${APP_ID}/#/upload/${text}`;
+
+    if (!navigator?.clipboard) {
+        return false;
+    }
+
+    try {
+        copy(link);
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
