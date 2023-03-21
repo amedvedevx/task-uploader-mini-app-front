@@ -5,7 +5,7 @@ import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
+import { PAGE_COLLECTION_ID, PAGE_SELECT_MEMBERS, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateWideTaskMutation } from '@/api';
 
 import { CreateInput } from './components';
@@ -25,7 +25,7 @@ export const CreatePage: FC = () => {
 
     const [createWideTask] = useCreateWideTaskMutation();
 
-    const onSubmit = async (data: { collectionName: string }) => {
+    const onSubmit = async (data: { collectionName: string; collectionType: string }) => {
         const payload = {
             name: data.collectionName,
             description: `Описание - ${data.collectionName}`,
@@ -33,9 +33,12 @@ export const CreatePage: FC = () => {
             deadLine: deadLineDate,
         };
 
-        const taskId: string = await createWideTask({ payload }).unwrap();
-
-        router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
+        if (data.collectionType === 'members' && data.collectionName.length > 0) {
+            router.pushPage(PAGE_SELECT_MEMBERS);
+        } else {
+            const taskId: string = await createWideTask({ payload }).unwrap();
+            router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
+        }
     };
 
     const router = useRouter();

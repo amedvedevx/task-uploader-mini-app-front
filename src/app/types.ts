@@ -173,6 +173,16 @@ export interface DeleteSubTaskProps {
     subTaskId: string;
 }
 
+export type FriendsType = {
+    id: number;
+    can_access_closed: boolean;
+    first_name: string;
+    is_closed: boolean;
+    last_name: string;
+    photo_100: string;
+    track_code: string;
+};
+
 export enum TaskStatusTypesForOrganizer {
     'NEW' = 'NEW',
     'IN_PROGRESS' = 'IN_PROGRESS',

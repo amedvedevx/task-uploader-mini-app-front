@@ -12,6 +12,7 @@ import {
     PANEL_COLLECTION_HOME,
     PANEL_COLLECTION_ID,
     PANEL_CREATE_COLLECTION,
+    PANEL_SELECT_MEMBERS,
     PANEL_UPLOAD_ID,
     VIEW_CREATE,
     VIEW_UPLOAD,
@@ -32,6 +33,12 @@ const UploadPage = lazy(() =>
 const CreatePage = lazy(() =>
     import('@/pages/create/CreatePage').then((module) => ({
         default: module.CreatePage,
+    })),
+);
+
+const SelectMembersPage = lazy(() =>
+    import('@/pages/selectmembers/SelectMembersPage').then((module) => ({
+        default: module.SelectMembersPage,
     })),
 );
 
@@ -66,6 +73,8 @@ export const AppPages: FC = () => {
                                 <CreatePage id={PANEL_CREATE_COLLECTION} />
 
                                 <CollectionIdPage id={PANEL_COLLECTION_ID} />
+
+                                <SelectMembersPage id={PANEL_SELECT_MEMBERS} />
                             </View>
 
                             <View
