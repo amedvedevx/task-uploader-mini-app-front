@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { FormItem, Input } from '@vkontakte/vkui';
+import { FormItem, Input, Textarea } from '@vkontakte/vkui';
 import styled from 'styled-components';
 import type { Control } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
@@ -9,39 +9,66 @@ import { InputLabel } from './InputLabel';
 interface CreateInputProps {
     control: Control<{
         collectionName: string;
+        collectionDescription: string;
     }>;
     label: string;
     placeholder: string;
+    inputName: 'collectionName' | 'collectionDescription';
+    required?: boolean;
 }
 
-export const CreateInput: FC<CreateInputProps> = ({ label, control, placeholder }) => (
-    <CreateInputContainer>
-        <Controller
-            render={({ field: { onChange, onBlur, value, ref } }) => (
-                <FormItemRoot
-                    top={
-                        <InputLabel
-                            label={label}
-                            curLength={value.length}
-                        />
-                    }
-                >
-                    <Input
-                        maxLength={48}
-                        getRootRef={ref}
-                        placeholder={placeholder}
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                    />
-                </FormItemRoot>
-            )}
-            name='collectionName'
-            control={control}
-            rules={{ required: true }}
-        />
-    </CreateInputContainer>
-);
+export const CreateInput: FC<CreateInputProps> = ({
+    label,
+    control,
+    placeholder,
+    inputName,
+    required,
+}) => {
+    const maxLength = inputName === 'collectionName' ? 48 : 128;
+
+    return (
+        <CreateInputContainer>
+            <Controller
+                render={({ field: { onChange, onBlur, value, ref }, formState: { errors } }) => (
+                    <FormItemRoot
+                        top={
+                            <InputLabel
+                                label={label}
+                                curLength={value?.length || 0}
+                                maxLength={maxLength}
+                            />
+                        }
+                    >
+                        {inputName === 'collectionName' ? (
+                            <Input
+                                getRootRef={ref}
+                                placeholder={placeholder}
+                                value={value}
+                                status={errors.collectionName && 'error'}
+                                maxLength={maxLength}
+                                onChange={onChange}
+                                onBlur={onBlur}
+                            />
+                        ) : (
+                            <Textarea
+                                getRootRef={ref}
+                                placeholder={placeholder}
+                                value={value}
+                                status={errors.collectionDescription && 'error'}
+                                maxLength={maxLength}
+                                onChange={onChange}
+                                onBlur={onBlur}
+                            />
+                        )}
+                    </FormItemRoot>
+                )}
+                name={inputName}
+                control={control}
+                rules={{ required, maxLength }}
+            />
+        </CreateInputContainer>
+    );
+};
 
 const CreateInputContainer = styled.div`
     margin-bottom: 24px;
