@@ -25,10 +25,8 @@ export const useMembersSelection = (
     const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>(initialState);
 
     const handleSelectMember: HandleSelectMember = (e, rowId) => {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
+        e.preventDefault();
+        e.stopPropagation();
 
         setSelectedMembers((prevState) => {
             if (prevState.includes(rowId)) {
