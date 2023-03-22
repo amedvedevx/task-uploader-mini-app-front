@@ -3,50 +3,49 @@ import { Div, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
 
-import { setTaskName } from '@/api/state';
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PAGE_SELECT_MEMBERS, PANEL_CREATE_COLLECTION } from '@/app/router';
-import { useCreateWideTaskMutation } from '@/api';
+import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
+import { useCreateTaskMutation } from '@/api';
 
 import { CreateInput } from './components';
 import { FooterWithButton } from '../components';
-import { CollectionType } from './components/CollectionType';
 
 const monthIsSec = 2592000;
 const deadLineDate = Math.ceil(new Date().getTime() / 1000 + monthIsSec);
 
+type FormValues = {
+    collectionName: string;
+    collectionDescription: string;
+};
+
 export const CreatePage: FC = () => {
-    const { control, handleSubmit, getValues } = useForm({
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormValues>({
         defaultValues: {
             collectionName: '',
-            collectionType: 'members',
+            collectionDescription: '',
         },
     });
+    const router = useRouter();
 
-    const dispatch = useDispatch();
+    const [createTask] = useCreateTaskMutation();
 
-    const [createWideTask] = useCreateWideTaskMutation();
-
-    const onSubmit = async (data: { collectionName: string; collectionType: string }) => {
+    const onSubmit = async (data: { collectionName: string; collectionDescription: string }) => {
+        if (errors.root) return;
         const payload = {
             name: data.collectionName,
-            description: `Описание - ${data.collectionName}`,
+            description: data.collectionDescription,
             unlimited: true,
             deadLine: deadLineDate,
         };
 
-        if (data.collectionType === 'members' && data.collectionName.length > 0) {
-            dispatch(setTaskName(data.collectionName));
-            router.pushPage(PAGE_SELECT_MEMBERS);
-        } else {
-            const taskId: string = await createWideTask({ payload }).unwrap();
-            router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
-        }
+        const { taskId } = await createTask(payload).unwrap();
+        router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
     };
-
-    const router = useRouter();
 
     const goBack = () => {
         router.popPage();
@@ -60,23 +59,34 @@ export const CreatePage: FC = () => {
             />
 
             <CreateContainer>
-                <FormLayoutWide onSubmit={handleSubmit(onSubmit)}>
-                    <PlaceholderWidth header='Придумайте название и выберите тип сбора'>
+                <FormWrapper>
+                    <PlaceholderWidth header='Придумайте название'>
+                        Название поможет вам быстрее найти сбор среди других заданий
+                    </PlaceholderWidth>
+
+                    <FormLayoutWidth onSubmit={handleSubmit(onSubmit)}>
                         <CreateInput
+                            required
                             control={control}
-                            label='Название'
-                            placeholder='Например "Документы в лагерь"'
+                            label='Название*'
+                            placeholder='Например: "Документы в лагерь"'
+                            inputName='collectionName'
                         />
 
-                        <CollectionType control={control} />
-                    </PlaceholderWidth>
-                </FormLayoutWide>
+                        <CreateInput
+                            control={control}
+                            label='Описание задания'
+                            placeholder='Например: "до 3 апреля необходимо прислать документы в лагер о прививках"'
+                            inputName='collectionDescription'
+                        />
+                    </FormLayoutWidth>
+                </FormWrapper>
             </CreateContainer>
 
             <FooterWithButton
                 primary
-                text='Продолжить'
-                onClick={() => onSubmit(getValues())}
+                text='Готово'
+                onClick={handleSubmit(onSubmit)}
             />
         </Panel>
     );
@@ -90,10 +100,13 @@ const CreateContainer = styled(Div)`
     flex-grow: 1;
 `;
 
+const FormWrapper = styled.div`
+    max-width: 320px;
+    margin-bottom: 68px;
+`;
+
 const PlaceholderWidth = styled(Placeholder)`
     .vkuiPlaceholder__in {
-        max-width: 320px;
-        width: 100%;
         padding: unset;
     }
     .vkuiPlaceholder__header + .vkuiPlaceholder__text {
@@ -101,7 +114,7 @@ const PlaceholderWidth = styled(Placeholder)`
     }
 `;
 
-const FormLayoutWide = styled(FormLayout)`
+const FormLayoutWidth = styled(FormLayout)`
     width: 100%;
-    margin-bottom: 56px;
+    margin-top: 30px;
 `;
