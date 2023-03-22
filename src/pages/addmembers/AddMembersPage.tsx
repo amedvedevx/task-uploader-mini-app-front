@@ -1,5 +1,5 @@
 import { useParams, useRouter } from '@happysanta/router';
-import { Div, FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
+import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
