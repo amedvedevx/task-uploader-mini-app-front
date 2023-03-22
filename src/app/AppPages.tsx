@@ -4,9 +4,13 @@ import { useFirstPageCheck, useLocation } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
+import { useDispatch } from 'react-redux';
 
-import { PreloadScreen } from '@/components';
 import { useVkHash } from '@/api';
+import { useVkToken } from '@/hooks/useVkToken';
+import { setUserInfo } from '@/api/state';
+import { useVkUserId } from '@/hooks';
+import { PreloadScreen } from '@/components';
 
 import {
     PANEL_ADD_MEMBERS,
@@ -59,11 +63,19 @@ export const AppPages: FC = () => {
     const location = useLocation();
     const isFirst = useFirstPageCheck();
 
+    const dispatch = useDispatch();
+
     const bearer = useVkHash();
+    const token = useVkToken();
+    const userId = useVkUserId(token);
 
     useEffect(() => {
+        if (token && userId) {
+            dispatch(setUserInfo({ token, userId }));
+        }
+
         bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
-    }, [isFirst]);
+    }, [isFirst, token, userId]);
 
     return (
         <>

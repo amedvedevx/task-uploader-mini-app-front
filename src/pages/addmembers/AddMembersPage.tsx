@@ -10,9 +10,9 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import { useGetTaskIdQuery, useVkGetFriends } from '@/api';
+import { useGetMembersQuery, useGetTaskIdQuery, useVkGetFriends } from '@/api';
 import { setSelectedMembers } from '@/api/state';
-import type { TaskType } from '@/app/types';
+import type { FriendsType, TaskType } from '@/app/types';
 
 import { FooterWithButton } from '../components';
 import { MembersList } from './components';
@@ -32,7 +32,14 @@ export const AddMemmbersPage: FC = () => {
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
 
-    const { friends, isLoading } = useVkGetFriends(search);
+    const { data: friends = [] as FriendsType[] } = useGetMembersQuery({
+        search,
+        count: 50,
+    });
+
+    // const { friends, isLoading } = useVkGetFriends(search);
+
+    console.log('add members', friends);
 
     const selection = useMembersSelection(
         [],
@@ -66,7 +73,7 @@ export const AddMemmbersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {isLoading && friends.length > 0 && (
+            {friends.length > 0 && (
                 <MembersList
                     selection={selection}
                     collection={friends}
