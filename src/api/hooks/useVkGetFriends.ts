@@ -19,8 +19,6 @@ export const useVkGetFriends = (search: string): UseVkGetFriendsResult => {
 
     const vkUserId = useVkUserId(token);
 
-    console.log(token);
-
     useEffect(() => {
         if (!token || !vkUserId) {
             return;

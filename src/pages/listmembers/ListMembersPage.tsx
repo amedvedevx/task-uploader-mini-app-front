@@ -5,28 +5,33 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
+import { PAGE_COLLECTION_ID, PANEL_COLLECTION_ID, PANEL_LIST_MEMBERS_ID } from '@/app/router';
 import type { RootState } from '@/api';
 import { useCreateWideTaskMutation } from '@/api';
 import { useSearch } from '@/hooks';
 
 import { FooterWithButton } from '../components';
-import { CollectionMembers } from '../selectmembers/components';
-import { useMembersSelection } from '../selectmembers/hooks';
+import { CollectionMembers } from '../addmembers/components';
+import { useMembersSelection } from '../addmembers/hooks';
 
 const monthIsSec = 2592000;
 const deadLineDate = Math.ceil(new Date().getTime() / 1000 + monthIsSec);
 
 export const ListMembersPage: FC = () => {
     const { selectedMembers } = useSelector((state: RootState) => state.members);
-    const { taskName } = useSelector((state: RootState) => state.task);
+
+    const selection = useMembersSelection(
+        [],
+        selectedMembers.map((el): string => String(el.id)),
+        selectedMembers,
+    );
 
     const [createWideTask] = useCreateWideTaskMutation();
 
-    const createTask = async (name: string) => {
+    const assignVkUsers = async (name: string) => {
         const payload = {
-            name: taskName,
-            description: `Описание - ${taskName}`,
+            name: '',
+            description: `Описание - ${''}`,
             unlimited: false,
             deadLine: deadLineDate,
         };
@@ -34,12 +39,6 @@ export const ListMembersPage: FC = () => {
         const taskId: string = await createWideTask({ payload }).unwrap();
         router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
     };
-
-    const selection = useMembersSelection(
-        [],
-        selectedMembers.map((el): string => String(el.id)),
-        selectedMembers,
-    );
 
     const router = useRouter();
 
@@ -50,7 +49,7 @@ export const ListMembersPage: FC = () => {
     const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
 
     return (
-        <Panel id={PANEL_LIST_MEMBERS}>
+        <Panel id={PANEL_LIST_MEMBERS_ID}>
             <FixedLayout
                 filled
                 vertical='top'
@@ -75,8 +74,8 @@ export const ListMembersPage: FC = () => {
 
             <FooterWithButton
                 primary
-                text='Создать сбор'
-                onClick={() => createTask(taskName)}
+                text='Готово'
+                onClick={() => router.pushPage(PANEL_COLLECTION_ID)}
             />
         </Panel>
     );

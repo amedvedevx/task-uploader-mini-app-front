@@ -1,21 +1,26 @@
-import { useRouter } from '@happysanta/router';
+import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 
-import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PANEL_LIST_MEMBERS, PANEL_SELECT_MEMBERS } from '@/app/router';
-import { useVkGetFriends } from '@/api';
+import {
+    PanelHeaderCentered,
+    PanelHeaderContentCentered,
+    PanelHeaderSkeleton,
+} from '@/components/PanelHeaderCentered';
+import { PANEL_ADD_MEMBERS, PANEL_LIST_MEMBERS_ID } from '@/app/router';
+import { useGetTaskIdQuery, useVkGetFriends } from '@/api';
 import { setSelectedMembers } from '@/api/state';
+import type { TaskType } from '@/app/types';
 
 import { FooterWithButton } from '../components';
 import { CollectionMembers } from './components';
 import { useMembersSelection } from './hooks';
 
-export const SelectMembersPage: FC = () => {
-    const [search, setSearch] = useState('');
+export const AddMemmbersPage: FC = () => {
+    const { collectionId } = useParams();
 
     const dispatch = useDispatch();
 
@@ -24,6 +29,9 @@ export const SelectMembersPage: FC = () => {
     const goBack = () => {
         router.popPage();
     };
+    const [search, setSearch] = useState('');
+
+    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
 
     const { friends, isLoading } = useVkGetFriends(search);
 
@@ -34,13 +42,19 @@ export const SelectMembersPage: FC = () => {
     );
 
     return (
-        <Panel id={PANEL_SELECT_MEMBERS}>
+        <Panel id={PANEL_ADD_MEMBERS}>
             <FixedLayout
                 filled
                 vertical='top'
             >
                 <PanelHeaderCentered before={<PanelHeaderBack onClick={goBack} />}>
-                    Выбор участников
+                    {currentTask ? (
+                        <PanelHeaderContentCentered status={currentTask.name}>
+                            Выбор участников
+                        </PanelHeaderContentCentered>
+                    ) : (
+                        <PanelHeaderSkeleton />
+                    )}
                 </PanelHeaderCentered>
 
                 <SearchInput
@@ -62,7 +76,7 @@ export const SelectMembersPage: FC = () => {
                 text='Продолжить'
                 onClick={() => {
                     dispatch(setSelectedMembers(selection.selectedCollection));
-                    router.pushPage(PANEL_LIST_MEMBERS);
+                    router.pushPage(PANEL_LIST_MEMBERS_ID, { collectionId });
                 }}
             />
         </Panel>
