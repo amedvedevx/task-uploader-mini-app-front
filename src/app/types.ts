@@ -127,12 +127,10 @@ export interface AppointTaskProps {
 }
 
 export interface CreateTaskProps {
-    payload: {
-        name: string;
-        description: string;
-        unlimited: boolean;
-        deadLine: number;
-    };
+    name: string;
+    description: string;
+    unlimited: boolean;
+    deadLine: number;
 }
 
 export interface CreateSubTaskProps {

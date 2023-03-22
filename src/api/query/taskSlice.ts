@@ -43,11 +43,11 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
             }),
             invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.payload.taskId }],
         }),
-        createTask: builder.mutation<{ taskId: number }, CreateTaskProps>({
-            query: ({ payload }) => ({
+        createTask: builder.mutation<{ taskId: string }, CreateTaskProps>({
+            query: (payload) => ({
                 url: `/task`,
                 method: 'POST',
-                body: { payload },
+                body: { ...payload },
             }),
             invalidatesTags: () => [{ type: 'Task' }],
         }),
