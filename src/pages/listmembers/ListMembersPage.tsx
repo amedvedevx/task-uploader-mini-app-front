@@ -27,7 +27,7 @@ export const ListMembersPage: FC = () => {
         const payload = {
             name: taskName,
             description: `Описание - ${taskName}`,
-            unlimited: true,
+            unlimited: false,
             deadLine: deadLineDate,
         };
 

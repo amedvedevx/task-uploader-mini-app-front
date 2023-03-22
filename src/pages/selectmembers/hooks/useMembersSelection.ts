@@ -6,7 +6,7 @@ type SelectedMembersType = string[];
 
 type SelectedCollectionType = FriendsType[];
 
-type HandleSelectMember = (e?: React.ChangeEvent<HTMLInputElement>, rowId: string) => void;
+type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, rowId: string) => void;
 
 type IsMemberActive = (rowId: string) => boolean;
 
