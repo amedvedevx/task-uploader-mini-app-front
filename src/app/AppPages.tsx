@@ -9,11 +9,11 @@ import { PreloadScreen } from '@/components';
 import { useVkHash } from '@/api';
 
 import {
-    PANEL_ADD_MEMBERS_ID,
+    PANEL_ADD_MEMBERS,
     PANEL_COLLECTION_HOME,
     PANEL_COLLECTION_ID,
     PANEL_CREATE_COLLECTION,
-    PANEL_LIST_MEMBERS_ID,
+    PANEL_LIST_MEMBERS,
     PANEL_UPLOAD_ID,
     VIEW_CREATE,
     VIEW_UPLOAD,
@@ -81,9 +81,9 @@ export const AppPages: FC = () => {
 
                                 <CollectionIdPage id={PANEL_COLLECTION_ID} />
 
-                                <AddMembersPage id={PANEL_ADD_MEMBERS_ID} />
+                                <AddMembersPage id={PANEL_ADD_MEMBERS} />
 
-                                <ListMembersPage id={PANEL_LIST_MEMBERS_ID} />
+                                <ListMembersPage id={PANEL_LIST_MEMBERS} />
                             </View>
 
                             <View

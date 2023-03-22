@@ -1,8 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
-import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
+import { Div, FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useState } from 'react';
-import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -10,14 +9,14 @@ import {
     PanelHeaderContentCentered,
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
-import { PAGE_LIST_MEMBERS_ID, PANEL_ADD_MEMBERS_ID } from '@/app/router';
+import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
 import { useGetTaskIdQuery, useVkGetFriends } from '@/api';
 import { setSelectedMembers } from '@/api/state';
 import type { TaskType } from '@/app/types';
 
 import { FooterWithButton } from '../components';
-import { CollectionMembers } from './components';
-import { useMembersSelection } from './hooks';
+import { MembersList } from './components';
+import { useMembersSelection } from '../hooks';
 
 export const AddMemmbersPage: FC = () => {
     const { collectionId } = useParams();
@@ -42,12 +41,15 @@ export const AddMemmbersPage: FC = () => {
     );
 
     return (
-        <Panel id={PANEL_ADD_MEMBERS_ID}>
+        <Panel id={PANEL_ADD_MEMBERS}>
             <FixedLayout
                 filled
                 vertical='top'
             >
-                <PanelHeaderCentered before={<PanelHeaderBack onClick={goBack} />}>
+                <PanelHeaderCentered
+                    separator={false}
+                    before={<PanelHeaderBack onClick={goBack} />}
+                >
                     {currentTask ? (
                         <PanelHeaderContentCentered status={currentTask.name}>
                             Добавьте участников
@@ -57,7 +59,7 @@ export const AddMemmbersPage: FC = () => {
                     )}
                 </PanelHeaderCentered>
 
-                <SearchInput
+                <Search
                     after=''
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -65,7 +67,7 @@ export const AddMemmbersPage: FC = () => {
             </FixedLayout>
 
             {isLoading && friends.length > 0 && (
-                <CollectionMembers
+                <MembersList
                     selection={selection}
                     collection={friends}
                 />
@@ -76,13 +78,9 @@ export const AddMemmbersPage: FC = () => {
                 text='Продолжить'
                 onClick={() => {
                     dispatch(setSelectedMembers(selection.selectedCollection));
-                    router.pushPage(PAGE_LIST_MEMBERS_ID, { collectionId: currentTask.id });
+                    router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
                 }}
             />
         </Panel>
     );
 };
-
-const SearchInput = styled(Search)`
-    padding: 16px 16px 14px 16px;
-`;

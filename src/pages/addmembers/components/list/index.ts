@@ -1,3 +1,3 @@
-export * from './CollectionMembers';
+export * from './MembersList';
 
 export * from './components';

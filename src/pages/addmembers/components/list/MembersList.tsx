@@ -8,19 +8,19 @@ import { useLocation } from '@happysanta/router';
 import { getInitials } from '@/lib/utils';
 import type { FriendsType } from '@/app/types';
 import { deleteMember } from '@/api/state';
-import { PANEL_ADD_MEMBERS_ID, PANEL_LIST_MEMBERS_ID } from '@/app/router';
+import { PANEL_ADD_MEMBERS, PANEL_LIST_MEMBERS } from '@/app/router';
+import type { UseMembersSelectionResult } from '@/pages/hooks';
 
-import type { UseMembersSelectionResult } from '../../hooks';
 import { Checkbox, SkeletonFriends } from './components';
 
-interface CollectionMembersProps {
+interface MembersListProps {
     collection: FriendsType[];
     selection: UseMembersSelectionResult;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
 
-export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, selection }) => {
+export const MembersList: FC<MembersListProps> = ({ collection, selection }) => {
     const location = useLocation();
     const dispatch = useDispatch();
 
@@ -40,7 +40,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, sele
                         key={id}
                         before={
                             <>
-                                {location.getPanelId() === PANEL_ADD_MEMBERS_ID && (
+                                {location.getPanelId() === PANEL_ADD_MEMBERS && (
                                     <Checkbox
                                         checked={selection.isMemberActive(id)}
                                         onChange={(e) => {
@@ -59,7 +59,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, sele
                             </>
                         }
                         after={
-                            location.getPanelId() === PANEL_LIST_MEMBERS_ID && (
+                            location.getPanelId() === PANEL_LIST_MEMBERS && (
                                 <Icon24Cancel
                                     fill='var(--vkui--color_text_tertiary)'
                                     onClick={() => dispatch(deleteMember(id))}

@@ -1,7 +1,6 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
 import {
@@ -9,15 +8,15 @@ import {
     PanelHeaderContentCentered,
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS_ID } from '@/app/router';
+import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
 import { useGetTaskIdQuery, useApointTaskMutation } from '@/api';
 import { useSearch } from '@/hooks';
 import type { TaskType } from '@/app/types';
 
 import { FooterWithButton } from '../components';
-import { CollectionMembers } from '../addmembers/components';
-import { useMembersSelection } from '../addmembers/hooks';
+import { MembersList } from '../addmembers/components';
+import { useMembersSelection } from '../hooks';
 
 export const ListMembersPage: FC = () => {
     const { collectionId } = useParams();
@@ -55,12 +54,15 @@ export const ListMembersPage: FC = () => {
     const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
 
     return (
-        <Panel id={PANEL_LIST_MEMBERS_ID}>
+        <Panel id={PANEL_LIST_MEMBERS}>
             <FixedLayout
                 filled
                 vertical='top'
             >
-                <PanelHeaderCentered before={<PanelHeaderBack onClick={goBack} />}>
+                <PanelHeaderCentered
+                    separator={false}
+                    before={<PanelHeaderBack onClick={goBack} />}
+                >
                     {currentTask ? (
                         <PanelHeaderContentCentered status={currentTask.name}>
                             Список участников
@@ -70,7 +72,7 @@ export const ListMembersPage: FC = () => {
                     )}
                 </PanelHeaderCentered>
 
-                <SearchInput
+                <Search
                     after=''
                     value={search}
                     onChange={changeSearch}
@@ -78,7 +80,7 @@ export const ListMembersPage: FC = () => {
             </FixedLayout>
 
             {selectedMembers.length > 0 && (
-                <CollectionMembers
+                <MembersList
                     selection={selection}
                     collection={filteredData}
                 />
@@ -95,7 +97,3 @@ export const ListMembersPage: FC = () => {
         </Panel>
     );
 };
-
-const SearchInput = styled(Search)`
-    padding: 16px 16px 14px 16px;
-`;
