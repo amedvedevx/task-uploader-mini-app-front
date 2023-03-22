@@ -8,7 +8,7 @@ import { useLocation } from '@happysanta/router';
 import { getInitials } from '@/lib/utils';
 import type { FriendsType } from '@/app/types';
 import { deleteMember } from '@/api/state';
-import { PANEL_LIST_MEMBERS, PANEL_SELECT_MEMBERS } from '@/app/router';
+import { PANEL_ADD_MEMBERS_ID, PANEL_LIST_MEMBERS_ID } from '@/app/router';
 
 import type { UseMembersSelectionResult } from '../../hooks';
 import { Checkbox, SkeletonFriends } from './components';
@@ -40,11 +40,11 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, sele
                         key={id}
                         before={
                             <>
-                                {location.getPanelId() === PANEL_SELECT_MEMBERS && (
+                                {location.getPanelId() === PANEL_ADD_MEMBERS_ID && (
                                     <Checkbox
-                                        checked={selection.isMemberActive(String(id))}
+                                        checked={selection.isMemberActive(id)}
                                         onChange={(e) => {
-                                            selection.handleSelectMember(e, String(id));
+                                            selection.handleSelectMember(e, id);
                                         }}
                                     />
                                 )}
@@ -59,14 +59,14 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({ collection, sele
                             </>
                         }
                         after={
-                            location.getPanelId() === PANEL_LIST_MEMBERS && (
+                            location.getPanelId() === PANEL_LIST_MEMBERS_ID && (
                                 <Icon24Cancel
                                     fill='var(--vkui--color_text_tertiary)'
                                     onClick={() => dispatch(deleteMember(id))}
                                 />
                             )
                         }
-                        onClick={(e) => selection.handleSelectMember(e as any, String(id))}
+                        onClick={(e) => selection.handleSelectMember(e as any, id)}
                     >
                         {`${first_name} ${last_name}`}
                     </Members>

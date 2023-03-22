@@ -1,43 +1,49 @@
-import { useRouter } from '@happysanta/router';
+import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
-import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PANEL_COLLECTION_ID, PANEL_LIST_MEMBERS_ID } from '@/app/router';
+import {
+    PanelHeaderCentered,
+    PanelHeaderContentCentered,
+    PanelHeaderSkeleton,
+} from '@/components/PanelHeaderCentered';
+import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS_ID } from '@/app/router';
 import type { RootState } from '@/api';
-import { useCreateWideTaskMutation } from '@/api';
+import { useGetTaskIdQuery, useApointTaskMutation } from '@/api';
 import { useSearch } from '@/hooks';
+import type { TaskType } from '@/app/types';
 
 import { FooterWithButton } from '../components';
 import { CollectionMembers } from '../addmembers/components';
 import { useMembersSelection } from '../addmembers/hooks';
 
-const monthIsSec = 2592000;
-const deadLineDate = Math.ceil(new Date().getTime() / 1000 + monthIsSec);
-
 export const ListMembersPage: FC = () => {
+    const { collectionId } = useParams();
+
     const { selectedMembers } = useSelector((state: RootState) => state.members);
+
+    const vkUserIds = selectedMembers.map((el) => el.id);
+
+    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
 
     const selection = useMembersSelection(
         [],
-        selectedMembers.map((el): string => String(el.id)),
+        selectedMembers.map((el) => el.id),
         selectedMembers,
     );
 
-    const [createWideTask] = useCreateWideTaskMutation();
+    const [apointTask] = useApointTaskMutation();
 
-    const assignVkUsers = async (name: string) => {
+    const assignMembers = async (memberIds: number[]) => {
         const payload = {
-            name: '',
-            description: `Описание - ${''}`,
-            unlimited: false,
-            deadLine: deadLineDate,
+            taskId: collectionId,
+            vkUserIds,
         };
 
-        const taskId: string = await createWideTask({ payload }).unwrap();
-        router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
+        await apointTask({ payload }).unwrap();
+        router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
 
     const router = useRouter();
@@ -55,7 +61,13 @@ export const ListMembersPage: FC = () => {
                 vertical='top'
             >
                 <PanelHeaderCentered before={<PanelHeaderBack onClick={goBack} />}>
-                    Список участников
+                    {currentTask ? (
+                        <PanelHeaderContentCentered status={currentTask.name}>
+                            Список участников
+                        </PanelHeaderContentCentered>
+                    ) : (
+                        <PanelHeaderSkeleton />
+                    )}
                 </PanelHeaderCentered>
 
                 <SearchInput
@@ -75,7 +87,10 @@ export const ListMembersPage: FC = () => {
             <FooterWithButton
                 primary
                 text='Готово'
-                onClick={() => router.pushPage(PANEL_COLLECTION_ID)}
+                onClick={() => {
+                    assignMembers(vkUserIds);
+                    router.pushPage(PAGE_COLLECTION_ID, { collectionId: currentTask.id });
+                }}
             />
         </Panel>
     );

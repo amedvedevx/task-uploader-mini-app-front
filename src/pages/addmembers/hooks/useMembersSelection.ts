@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import type { FriendsType } from '@/app/types';
 
-type SelectedMembersType = string[];
+type SelectedMembersType = number[];
 
 type SelectedCollectionType = FriendsType[];
 
-type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, rowId: string) => void;
+type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, rowId: number) => void;
 
-type IsMemberActive = (rowId: string) => boolean;
+type IsMemberActive = (rowId: number) => boolean;
 
 export interface UseMembersSelectionResult {
     selectedMembers: SelectedMembersType;
@@ -42,7 +42,7 @@ export const useMembersSelection = (
     const isMemberActive: IsMemberActive = (rowId) => selectedMembers.includes(rowId);
 
     const selectedCollection: SelectedCollectionType = collection.filter((el) =>
-        selectedMembers.includes(String(el.id)),
+        selectedMembers.includes(el.id),
     );
 
     return {

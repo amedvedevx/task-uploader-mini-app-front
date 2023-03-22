@@ -39,7 +39,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['Task'] }).inj
             query: ({ payload }) => ({
                 url: `/task/assign`,
                 method: 'PUT',
-                body: { payload },
+                body: { ...payload },
             }),
             invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.payload.taskId }],
         }),

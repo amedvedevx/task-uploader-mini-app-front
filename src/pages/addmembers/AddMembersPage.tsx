@@ -10,7 +10,7 @@ import {
     PanelHeaderContentCentered,
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
-import { PANEL_ADD_MEMBERS, PANEL_LIST_MEMBERS_ID } from '@/app/router';
+import { PAGE_LIST_MEMBERS_ID, PANEL_ADD_MEMBERS_ID } from '@/app/router';
 import { useGetTaskIdQuery, useVkGetFriends } from '@/api';
 import { setSelectedMembers } from '@/api/state';
 import type { TaskType } from '@/app/types';
@@ -37,12 +37,12 @@ export const AddMemmbersPage: FC = () => {
 
     const selection = useMembersSelection(
         [],
-        friends.map((el): string => String(el.id)),
+        friends.map((el) => el.id),
         friends,
     );
 
     return (
-        <Panel id={PANEL_ADD_MEMBERS}>
+        <Panel id={PANEL_ADD_MEMBERS_ID}>
             <FixedLayout
                 filled
                 vertical='top'
@@ -50,7 +50,7 @@ export const AddMemmbersPage: FC = () => {
                 <PanelHeaderCentered before={<PanelHeaderBack onClick={goBack} />}>
                     {currentTask ? (
                         <PanelHeaderContentCentered status={currentTask.name}>
-                            Выбор участников
+                            Добавьте участников
                         </PanelHeaderContentCentered>
                     ) : (
                         <PanelHeaderSkeleton />
@@ -76,7 +76,7 @@ export const AddMemmbersPage: FC = () => {
                 text='Продолжить'
                 onClick={() => {
                     dispatch(setSelectedMembers(selection.selectedCollection));
-                    router.pushPage(PANEL_LIST_MEMBERS_ID, { collectionId });
+                    router.pushPage(PAGE_LIST_MEMBERS_ID, { collectionId: currentTask.id });
                 }}
             />
         </Panel>
