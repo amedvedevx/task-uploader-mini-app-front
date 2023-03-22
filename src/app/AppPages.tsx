@@ -9,10 +9,11 @@ import { PreloadScreen } from '@/components';
 import { useVkHash } from '@/api';
 
 import {
+    PANEL_ADD_MEMBERS,
     PANEL_COLLECTION_HOME,
     PANEL_COLLECTION_ID,
     PANEL_CREATE_COLLECTION,
-    PANEL_SELECT_MEMBERS,
+    PANEL_LIST_MEMBERS,
     PANEL_UPLOAD_ID,
     VIEW_CREATE,
     VIEW_UPLOAD,
@@ -36,9 +37,15 @@ const CreatePage = lazy(() =>
     })),
 );
 
-const SelectMembersPage = lazy(() =>
-    import('@/pages/selectmembers/SelectMembersPage').then((module) => ({
-        default: module.SelectMembersPage,
+const AddMembersPage = lazy(() =>
+    import('@/pages/addmembers/AddMembersPage').then((module) => ({
+        default: module.AddMemmbersPage,
+    })),
+);
+
+const ListMembersPage = lazy(() =>
+    import('@/pages/listmembers/ListMembersPage').then((module) => ({
+        default: module.ListMembersPage,
     })),
 );
 
@@ -74,7 +81,9 @@ export const AppPages: FC = () => {
 
                                 <CollectionIdPage id={PANEL_COLLECTION_ID} />
 
-                                <SelectMembersPage id={PANEL_SELECT_MEMBERS} />
+                                <AddMembersPage id={PANEL_ADD_MEMBERS} />
+
+                                <ListMembersPage id={PANEL_LIST_MEMBERS} />
                             </View>
 
                             <View

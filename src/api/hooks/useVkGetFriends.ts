@@ -9,7 +9,7 @@ export interface UseVkGetFriendsResult {
     friends: FriendsType[];
     isLoading: boolean;
 }
-
+// TODO ME-38865 - Refactor logic for getting friends in rtk
 export const useVkGetFriends = (search: string): UseVkGetFriendsResult => {
     const [friends, setFriends] = useState<FriendsType[]>([]);
     const [isLoading, setIsLoading] = useState(false);

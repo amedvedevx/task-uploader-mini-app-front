@@ -1,21 +1,27 @@
 import { useState } from 'react';
 
-type SelectedMembersType = string[];
+import type { FriendsType } from '@/app/types';
 
-type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, rowId: string) => void;
+type SelectedMembersType = number[];
 
-type IsMemberActive = (rowId: string) => boolean;
+type SelectedCollectionType = FriendsType[];
 
-type UseMembersSelection = (
-    initialState: SelectedMembersType,
-    allRowsIds: SelectedMembersType,
-) => {
+type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, rowId: number) => void;
+
+type IsMemberActive = (rowId: number) => boolean;
+
+export interface UseMembersSelectionResult {
     selectedMembers: SelectedMembersType;
+    selectedCollection: SelectedCollectionType;
     handleSelectMember: HandleSelectMember;
     isMemberActive: IsMemberActive;
-};
+}
 
-export const useMembersSelection: UseMembersSelection = (initialState = [], allRowsIds = []) => {
+export const useMembersSelection = (
+    initialState = [] as SelectedMembersType,
+    allRowsIds = [] as SelectedMembersType,
+    collection: SelectedCollectionType,
+): UseMembersSelectionResult => {
     const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>(initialState);
 
     const handleSelectMember: HandleSelectMember = (e, rowId) => {
@@ -26,14 +32,20 @@ export const useMembersSelection: UseMembersSelection = (initialState = [], allR
             if (prevState.includes(rowId)) {
                 return prevState.filter((i) => i !== rowId);
             }
+
             return [...prevState, rowId];
         });
     };
 
     const isMemberActive: IsMemberActive = (rowId) => selectedMembers.includes(rowId);
 
+    const selectedCollection: SelectedCollectionType = collection.filter((el) =>
+        selectedMembers.includes(el.id),
+    );
+
     return {
         selectedMembers,
+        selectedCollection,
         handleSelectMember,
         isMemberActive,
     };
