@@ -1,1 +1,0 @@
-export { FooterWithButton } from './FooterWithButton';

@@ -5,10 +5,6 @@ import { SkeletonCircular, SkeletonRectangle } from '@/components/Skeletons';
 
 export const SkeletonMembers: FC = () => (
     <SkeletonWrapper>
-        <SkeletonRectangle
-            width='200px'
-            height='16px'
-        />
 
         <SkeletonCard>
             <SkeletonCircular radius={40} />
@@ -33,7 +29,7 @@ export const SkeletonMembers: FC = () => (
 const SkeletonWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 0 16px;
+    padding: 12px 12px;
     gap: 8px;
 `;
 

@@ -5,16 +5,11 @@ import type { FC } from 'react';
 import { copyUploadLinkToClipboard } from '@/lib/utils';
 
 interface CopyUploadLinkProps {
-    isTaskClosed: boolean;
     collectionId: string;
     setSnackbarText: (arg: string) => void;
 }
 
-export const CopyUploadLink: FC<CopyUploadLinkProps> = ({
-    isTaskClosed,
-    collectionId,
-    setSnackbarText,
-}) => {
+export const CopyUploadLink: FC<CopyUploadLinkProps> = ({ collectionId, setSnackbarText }) => {
     const copyLink = (copyText: string) => {
         copyUploadLinkToClipboard(copyText);
         setSnackbarText('Ссылка скопирована');
@@ -22,7 +17,6 @@ export const CopyUploadLink: FC<CopyUploadLinkProps> = ({
 
     return (
         <CellButton
-            disabled={isTaskClosed}
             before={
                 <Avatar
                     withBorder={false}

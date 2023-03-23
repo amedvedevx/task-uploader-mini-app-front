@@ -20,18 +20,12 @@ import { useMembersSelection } from '../hooks';
 
 export const AddMemmbersPage: FC = () => {
     const { collectionId } = useParams();
-
     const dispatch = useDispatch();
-
     const router = useRouter();
 
-    const goBack = () => {
-        router.popPage();
-    };
     const [search, setSearch] = useState('');
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
-
     const { data: testees = [] as FriendsType[], isLoading } = useGetTesteesQuery({
         search,
         count: 50,
@@ -42,6 +36,10 @@ export const AddMemmbersPage: FC = () => {
         testees.map((el) => el.id),
         testees,
     );
+
+    const goBack = () => {
+        router.popPage();
+    };
 
     return (
         <Panel id={PANEL_ADD_MEMBERS}>
@@ -77,12 +75,16 @@ export const AddMemmbersPage: FC = () => {
             )}
 
             <FooterWithButton
-                primary
-                text='Продолжить'
-                onClick={() => {
-                    dispatch(setSelectedMembers(selection.selectedCollection));
-                    router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
-                }}
+                options={[
+                    {
+                        text: 'Продолжить',
+                        onClick: () => {
+                            dispatch(setSelectedMembers(selection.selectedCollection));
+                            router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
+                        },
+                        loading: false,
+                    },
+                ]}
             />
         </Panel>
     );
