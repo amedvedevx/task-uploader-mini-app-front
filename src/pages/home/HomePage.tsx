@@ -49,7 +49,7 @@ export const HomePage: FC = () => {
                     }
                 />
 
-                {tasks && (
+                {tasks.length > 0 && (
                     <GroupWide
                         header={<Header mode='primary'>История</Header>}
                         mode='plain'
