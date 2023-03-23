@@ -8,7 +8,7 @@ import { StubAuth } from '@/components/Stub/StubAuth';
 
 interface FallbackComponentProps {
     error: Error;
-    resetErrorBoundary?: ((...args: unknown[]) => void) | boolean;
+    resetErrorBoundary: (...args: unknown[]) => void;
 }
 
 export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErrorBoundary }) => (

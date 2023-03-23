@@ -6,10 +6,10 @@ import styled from 'styled-components';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
-import { useCreateTaskMutation } from '@/api';
+import { useCreateSubTaskMutation, useCreateTaskMutation } from '@/api';
+import { FooterWithButton } from '@/pages/components';
 
 import { CreateInput } from './components';
-import { FooterWithButton } from '../components';
 
 const monthIsSec = 2592000;
 const deadLineDate = Math.ceil(new Date().getTime() / 1000 + monthIsSec);
@@ -20,6 +20,11 @@ type FormValues = {
 };
 
 export const CreatePage: FC = () => {
+    const router = useRouter();
+
+    const [createTask, { isLoading: isTaskCreating }] = useCreateTaskMutation();
+    const [createSubTask, { isLoading: isSubTaskCreating }] = useCreateSubTaskMutation();
+
     const {
         control,
         handleSubmit,
@@ -30,9 +35,6 @@ export const CreatePage: FC = () => {
             collectionDescription: '',
         },
     });
-    const router = useRouter();
-
-    const [createTask] = useCreateTaskMutation();
 
     const onSubmit = async (data: { collectionName: string; collectionDescription: string }) => {
         if (errors.root) return;
@@ -44,6 +46,18 @@ export const CreatePage: FC = () => {
         };
 
         const { taskId } = await createTask(payload).unwrap();
+
+        const payloadSubTask = {
+            rows: [
+                {
+                    name: `Подзадание 1 задания ${data.collectionName}`,
+                    description: `Описание подзадания 1`,
+                    sortOrder: 1,
+                    subTaskType: 'FILE',
+                },
+            ],
+        };
+        await createSubTask({ taskId, payload: payloadSubTask });
         router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
     };
 
@@ -84,9 +98,13 @@ export const CreatePage: FC = () => {
             </CreateContainer>
 
             <FooterWithButton
-                primary
-                text='Готово'
-                onClick={handleSubmit(onSubmit)}
+                options={[
+                    {
+                        text: 'Готово',
+                        onClick: handleSubmit(onSubmit),
+                        loading: isTaskCreating || isSubTaskCreating,
+                    },
+                ]}
             />
         </Panel>
     );

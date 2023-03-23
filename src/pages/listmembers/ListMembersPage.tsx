@@ -20,38 +20,34 @@ import { useMembersSelection } from '../hooks';
 
 export const ListMembersPage: FC = () => {
     const { collectionId } = useParams();
-
-    const { selectedMembers } = useSelector((state: RootState) => state.members);
-
-    const vkUserIds = selectedMembers.map((el) => el.id);
+    const router = useRouter();
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
+    const [apointTask] = useApointTaskMutation();
 
+    const { selectedMembers } = useSelector((state: RootState) => state.members);
     const selection = useMembersSelection(
         [],
         selectedMembers.map((el) => el.id),
         selectedMembers,
     );
+    const vkUserIds = selectedMembers.map((el) => el.id);
 
-    const [apointTask] = useApointTaskMutation();
+    const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
 
     const assignMembers = async (memberIds: number[]) => {
         const payload = {
             taskId: collectionId,
-            vkUserIds,
+            vkUserIds: memberIds,
         };
 
         await apointTask({ payload }).unwrap();
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
 
-    const router = useRouter();
-
     const goBack = () => {
         router.popPage();
     };
-
-    const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
@@ -87,12 +83,16 @@ export const ListMembersPage: FC = () => {
             )}
 
             <FooterWithButton
-                primary
-                text='Готово'
-                onClick={() => {
-                    assignMembers(vkUserIds);
-                    router.pushPage(PAGE_COLLECTION_ID, { collectionId: currentTask.id });
-                }}
+                options={[
+                    {
+                        text: 'Готово',
+                        onClick: () => {
+                            assignMembers(vkUserIds);
+                            router.pushPage(PAGE_COLLECTION_ID, { collectionId: currentTask.id });
+                        },
+                        loading: false,
+                    },
+                ]}
             />
         </Panel>
     );

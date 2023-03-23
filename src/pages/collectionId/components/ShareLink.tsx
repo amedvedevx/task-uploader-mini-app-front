@@ -1,10 +1,14 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import type { FC } from 'react';
-import { Button, Image, Placeholder } from '@vkontakte/vkui';
+import { Button, Image, Link, Placeholder } from '@vkontakte/vkui';
 import { Icon24CopyOutline } from '@vkontakte/icons';
 import styled from 'styled-components';
+import { useRouter } from '@happysanta/router';
 
 import PeaopleIcon from '@/assets/peopleIcon.svg';
 import { copyUploadLinkToClipboard } from '@/lib/utils';
+import { PAGE_ADD_MEMBERS } from '@/app/router';
+import { PlaceholderWidth } from '@/pages/home/HomePage';
 
 interface ShareLinkProps {
     collectionId: string;
@@ -12,6 +16,7 @@ interface ShareLinkProps {
 }
 
 export const ShareLink: FC<ShareLinkProps> = ({ collectionId, setSnackbarText }) => {
+    const router = useRouter();
     const copyLink = (copyText: string) => {
         copyUploadLinkToClipboard(copyText);
         setSnackbarText('Ссылка скопирована');
@@ -19,8 +24,7 @@ export const ShareLink: FC<ShareLinkProps> = ({ collectionId, setSnackbarText })
 
     return (
         <ShareLinkContainer>
-            <Placeholder
-                header='Ссылка создана'
+            <PlaceholderWidth
                 icon={
                     <ImageWithSizes
                         borderRadius='s'
@@ -28,18 +32,17 @@ export const ShareLink: FC<ShareLinkProps> = ({ collectionId, setSnackbarText })
                         src={PeaopleIcon}
                     />
                 }
-                action={
-                    <Button
-                        before={<Icon24CopyOutline />}
-                        size='l'
-                        onClick={() => copyLink(collectionId)}
-                    >
-                        Скопировать ссылку на сбор
-                    </Button>
-                }
             >
-                Отправьте её в групповой чат или пользователю
-            </Placeholder>
+                <Link onClick={() => router.pushPage(PAGE_ADD_MEMBERS, { collectionId })}>
+                    Добавьте участников
+                </Link>
+
+                {` в задание по сбору файлов или `}
+
+                <Link onClick={() => copyLink(collectionId)}>поделитесь ссылкой</Link>
+
+                {` с нужными пользователями`}
+            </PlaceholderWidth>
         </ShareLinkContainer>
     );
 };
