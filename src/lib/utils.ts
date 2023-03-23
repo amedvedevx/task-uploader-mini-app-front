@@ -4,6 +4,7 @@ import { ru } from 'date-fns/locale';
 import copy from 'copy-to-clipboard';
 
 import { APP_ID } from '@/app/config';
+import { TaskResults, TaskStatusTypesForTestee } from '@/app/types';
 
 export const capitalizeString = (stringToCap: string): string =>
     stringToCap[0].toUpperCase() + stringToCap.slice(1);
@@ -68,4 +69,27 @@ export const copyUploadLinkToClipboard = (text: string): boolean => {
     } catch (error) {
         return false;
     }
+};
+
+export const normalizeTestees = (
+    taskResultsArg: TaskResults[],
+): { completed: TaskResults[]; notCompleted: TaskResults[] } => {
+    let testees = {
+        completed: [],
+        notCompleted: [],
+    };
+    taskResultsArg.forEach((result) => {
+        if (
+            result.taskResultStatus === TaskStatusTypesForTestee.UPLOADED ||
+            result.taskResultStatus === TaskStatusTypesForTestee.COMPLETED
+        ) {
+            testees.completed.push(result);
+
+            return;
+        }
+
+        testees.notCompleted.push(result);
+    });
+
+    return testees;
 };
