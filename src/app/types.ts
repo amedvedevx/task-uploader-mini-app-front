@@ -171,6 +171,15 @@ export interface DeleteSubTaskProps {
     subTaskId: string;
 }
 
+export interface GetMembersResponce {
+    friends: FriendsType[];
+}
+
+export interface GetTesteesProps {
+    search: string;
+    count: number;
+}
+
 export type FriendsType = {
     id: number;
     can_access_closed: boolean;
