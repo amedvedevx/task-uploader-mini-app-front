@@ -1,19 +1,17 @@
 import bridge from '@vkontakte/vk-bridge';
 
-import type { FriendsType, GetMembersProps } from '@/app/types';
+import type { FriendsType, GetTesteesProps } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
 import type { RootState } from '../store';
 
-const membersSlice = apiSlice.injectEndpoints({
+const testeesSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getMembers: builder.query<FriendsType[], GetMembersProps>({
+        getTestees: builder.query<FriendsType[], GetTesteesProps>({
             queryFn: async ({ search, count }, { getState }) => {
                 const { userInfo } = (getState() as RootState).authorization;
 
-                console.log(userInfo);
-
-                const friends = await bridge
+                const testees = await bridge
                     .send('VKWebAppCallAPIMethod', {
                         method: 'friends.search',
                         params: {
@@ -27,10 +25,10 @@ const membersSlice = apiSlice.injectEndpoints({
                     })
                     .then((data: { response: { items: FriendsType[] } }) => data.response.items);
 
-                return { data: friends };
+                return { data: testees };
             },
         }),
     }),
 });
 
-export const { useGetMembersQuery } = membersSlice;
+export const { useGetTesteesQuery } = testeesSlice;

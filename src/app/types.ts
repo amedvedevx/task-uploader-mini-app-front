@@ -175,7 +175,7 @@ export interface GetMembersResponce {
     friends: FriendsType[];
 }
 
-export interface GetMembersProps {
+export interface GetTesteesProps {
     search: string;
     count: number;
 }

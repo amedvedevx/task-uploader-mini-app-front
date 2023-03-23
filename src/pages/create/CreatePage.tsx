@@ -5,7 +5,7 @@ import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
-import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
+import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateTaskMutation } from '@/api';
 
 import { CreateInput } from './components';
@@ -44,7 +44,7 @@ export const CreatePage: FC = () => {
         };
 
         const { taskId } = await createTask(payload).unwrap();
-        router.pushPage(PAGE_ADD_MEMBERS, { collectionId: taskId });
+        router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
     };
 
     const goBack = () => {
