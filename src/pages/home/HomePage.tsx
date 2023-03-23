@@ -75,31 +75,23 @@ const CollectionsContainer = styled(Div)`
     align-items: center;
     justify-content: center;
     flex-grow: 1;
+
+    padding-top: 15vh;
 `;
 
-const PlaceholderWidth = styled(Placeholder)`
-    .vkuiPlaceholder__header {
-        max-width: 372px;
-    }
+export const PlaceholderWidth = styled(Placeholder)`
+    max-width: 372px;
     .vkuiPlaceholder__in {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        gap: 24px;
-    }
-    .vkuiPlaceholder__icon {
-        margin: unset;
-    }
-    .vkuiPlaceholder__action:not(:first-child) {
-        width: 100%;
-        margin: unset;
+        padding: 48px 0px;
     }
 `;
 
 const GroupWide = styled(Group)`
     max-width: 372px;
     width: 100%;
+    .vkuiGroup__inner {
+        padding: unset;
+    }
 `;
 
 const ImageWithSizes = styled(Image)`

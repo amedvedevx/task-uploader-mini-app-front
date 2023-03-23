@@ -64,6 +64,7 @@ export type TaskUserConsolidatedData = {
     total: number;
     executedUsersCount: number;
     partiallyExecutedUsersCount: number;
+    notExecutedUsersCounts: number;
 };
 
 export interface GetTaskResultsProps {

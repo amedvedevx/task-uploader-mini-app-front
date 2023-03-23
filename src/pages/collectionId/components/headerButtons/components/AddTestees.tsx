@@ -1,9 +1,16 @@
+import { useRouter } from '@happysanta/router';
 import { Icon24Add } from '@vkontakte/icons';
 import { CellButton, Avatar } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
-export const AddTestees: FC = () => {
-    const addTesteeFunc = () => {};
+import { PAGE_ADD_MEMBERS } from '@/app/router';
+
+interface AddTesteesProps {
+    collectionId: string;
+}
+
+export const AddTestees: FC<AddTesteesProps> = ({ collectionId }) => {
+    const router = useRouter();
 
     return (
         <CellButton
@@ -15,7 +22,7 @@ export const AddTestees: FC = () => {
                     <Icon24Add />
                 </Avatar>
             }
-            onClick={() => addTesteeFunc()}
+            onClick={() => router.pushPage(PAGE_ADD_MEMBERS, { collectionId })}
         >
             Добавить участников
         </CellButton>

@@ -5,7 +5,12 @@ import { useParams } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
-import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
+import {
+    useGetTaskIdQuery,
+    useGetSubTaskResultStatusQuery,
+    useUploadFilesMutation,
+    useApointTaskMutation,
+} from '@/api';
 import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import {
     PanelHeaderCentered,
@@ -13,6 +18,8 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { FallbackComponent } from '@/app/FallbackComponent';
+import { useVkUserId } from '@/hooks';
+import { useVkToken } from '@/hooks/useVkToken';
 
 import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
@@ -26,15 +33,18 @@ export type SnackBarType = {
 
 export const UploadPage: FC = () => {
     const { uploadId } = useParams();
+    const vkUserId = useVkUserId(useVkToken());
 
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
     const [uploadFiles, statusFromServer] = useUploadFilesMutation();
+    const [apointTask] = useApointTaskMutation();
 
     const [isLoading, setLoading] = useState(false);
     const [isUploading, setUploading] = useState(false);
+
     const taskId = data?.id;
-    const subTaskId = data?.subTasks[0].id;
+    const subTaskId = data?.subTasks[0]?.id;
 
     const { currentData: statusFromVk } = useGetSubTaskResultStatusQuery(
         {
@@ -70,6 +80,15 @@ export const UploadPage: FC = () => {
         setUploading(false);
 
         if (result.type === 'success') clearState();
+    };
+
+    const assignUserToTask = (vkId: number) => {
+        const payload = {
+            taskId: uploadId,
+            vkUserIds: [vkId],
+        };
+
+        apointTask({ payload });
     };
 
     useEffect(() => {
@@ -113,15 +132,17 @@ export const UploadPage: FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [statusFromServer]);
 
-    if (error?.status === 400) {
-        const errorMessage = { name: 'wrong link', message: 'Такого сбора не существует' };
+    useEffect(() => {
+        if (vkUserId) {
+            assignUserToTask(vkUserId);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [vkUserId]);
 
-        return (
-            <FallbackComponent
-                error={errorMessage}
-                resetErrorBoundary={false}
-            />
-        );
+    if (error?.status === 400) {
+        const errorMessage = 'Такого сбора не существует';
+
+        throw Error(errorMessage);
     }
 
     return (

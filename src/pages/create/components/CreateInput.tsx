@@ -51,6 +51,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                             />
                         ) : (
                             <Textarea
+                                grow
                                 getRootRef={ref}
                                 placeholder={placeholder}
                                 value={value}

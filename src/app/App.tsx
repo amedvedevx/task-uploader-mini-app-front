@@ -3,11 +3,10 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { AdaptivityProvider, AppRoot, ConfigProvider } from '@vkontakte/vkui';
 import { RouterContext } from '@happysanta/router';
 import bridge from '@vkontakte/vk-bridge';
-import { useEffect, useRef, useCallback } from 'react';
 
 import { GlobalStyles } from '@/styles';
 import { AppPages } from '@/app/AppPages';
-import { useCustomEventsLog, useTheme } from '@/hooks';
+import { useTheme } from '@/hooks';
 
 import { FallbackComponent } from './FallbackComponent';
 import { appRouter } from './router';
