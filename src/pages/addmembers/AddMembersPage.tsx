@@ -1,7 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useTransition, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -23,8 +23,8 @@ export const AddMemmbersPage: FC = () => {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    const [, startTransition] = useTransition();
     const [search, setSearch] = useState('');
+    const [timer, setTimer] = useState<NodeJS.Timeout>();
     const [seacrhQuery, setSearchQuery] = useState('');
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
@@ -36,9 +36,13 @@ export const AddMemmbersPage: FC = () => {
     const changeSeacrh = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
 
-        startTransition(() => {
+        clearTimeout(timer);
+
+        const newTimer = setTimeout(() => {
             setSearchQuery(e.target.value);
-        });
+        }, 500);
+
+        setTimer(newTimer);
     };
 
     const [allTestees, setAllTestees] = useState<FriendsType[]>([]);
