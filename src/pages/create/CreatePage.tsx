@@ -90,7 +90,7 @@ export const CreatePage: FC = () => {
                         <CreateInput
                             control={control}
                             label='Описание задания'
-                            placeholder='Например: "до 3 апреля необходимо прислать документы в лагер о прививках"'
+                            placeholder='Например: "до 3 апреля необходимо прислать документы в лагерь о прививках"'
                             inputName='collectionDescription'
                         />
                     </FormLayoutWidth>

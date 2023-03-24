@@ -20,6 +20,7 @@ import {
 import type { TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
+import { normalizeTestees } from '@/lib/utils';
 
 import { FooterWithButton } from '../components';
 import { CollectionMembers } from './components/collectionMembers';
@@ -28,6 +29,7 @@ import { CopyUploadLink } from './components/headerButtons/components';
 import type { ButtonOption } from '../components/FooterWithButton';
 import { CollectionTabs } from './components/CollectionTabs';
 import { SkeletonMembers } from './components/collectionMembers/components/SkeletonMembers';
+import { ShareLink } from './components/ShareLink';
 
 export type TabType = 'completed' | 'notCompleted';
 
@@ -48,10 +50,12 @@ export const CollectionIdPage: FC = () => {
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
     const [downloadFiles, { isLoading: isFileDownloading }] = useLazyDownloadFilesQuery();
 
-    const { filteredData, search, changeSearch } = useSearch(taskResults, ['testee', 'fullName']);
-
     const [selectedTab, setSelectedTab] = useState<TabType>('notCompleted');
     const [snackbarText, setSnackbarText] = useState<string>('');
+
+    const { filteredData, search, changeSearch } = useSearch(taskResults, ['testee', 'fullName']);
+
+    const normalizedTestees = normalizeTestees(filteredData);
 
     const isTaskClosed = currentTask.status === TaskStatusTypesForOrganizer.DONE;
 
@@ -146,13 +150,12 @@ export const CollectionIdPage: FC = () => {
                     <>
                         {selectedTab === 'completed' && (
                             <>
-                                {taskResults.length > 0 && (
+                                {normalizedTestees.completed.length > 0 && (
                                     <CollectionMembers
-                                        setSnackbarText={setSnackbarText}
                                         selectedTab={selectedTab}
                                         isTaskClosed={isTaskClosed}
                                         collectionId={collectionId}
-                                        taskResults={filteredData}
+                                        taskResults={normalizedTestees.completed}
                                     />
                                 )}
                             </>
@@ -162,18 +165,22 @@ export const CollectionIdPage: FC = () => {
                             <>
                                 {!isTaskClosed && (
                                     <HeaderButtons
-                                        isResults={taskResults.length > 0}
+                                        isResults={normalizedTestees.notCompleted.length > 0}
                                         collectionId={collectionId}
                                     />
                                 )}
 
-                                {taskResults.length > 0 && (
+                                {normalizedTestees.notCompleted.length > 0 ? (
                                     <CollectionMembers
                                         selectedTab={selectedTab}
                                         isTaskClosed={isTaskClosed}
                                         collectionId={collectionId}
+                                        taskResults={normalizedTestees.notCompleted}
+                                    />
+                                ) : (
+                                    <ShareLink
                                         setSnackbarText={setSnackbarText}
-                                        taskResults={filteredData}
+                                        collectionId={collectionId}
                                     />
                                 )}
                             </>

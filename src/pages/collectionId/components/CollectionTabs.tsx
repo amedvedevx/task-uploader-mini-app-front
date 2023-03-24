@@ -18,7 +18,7 @@ export const CollectionTabs: FC<CollectionTabsProps> = ({
     const usersCompletedTask = taskUsersConsolidated?.executedUsersCount || 0;
 
     const usersNotCompletedTask =
-        taskUsersConsolidated?.notExecutedUsersCounts +
+        taskUsersConsolidated?.notExecutedUsersCount +
             taskUsersConsolidated?.partiallyExecutedUsersCount || 0;
 
     return (

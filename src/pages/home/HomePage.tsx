@@ -28,7 +28,7 @@ export const HomePage: FC = () => {
 
     return (
         <Panel id={PANEL_COLLECTION_HOME}>
-            <CollectionsContainer>
+            <CollectionsContainer $isTasksExist={tasks.length > 0}>
                 <PlaceholderWidth
                     icon={
                         <ImageWithSizes
@@ -69,14 +69,14 @@ export const HomePage: FC = () => {
     );
 };
 
-const CollectionsContainer = styled(Div)`
+const CollectionsContainer = styled(Div)<{ $isTasksExist: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     flex-grow: 1;
 
-    padding-top: 15vh;
+    padding-top: ${({ $isTasksExist }) => ($isTasksExist ? '12vh' : 'unset')};
 `;
 
 export const PlaceholderWidth = styled(Placeholder)`
