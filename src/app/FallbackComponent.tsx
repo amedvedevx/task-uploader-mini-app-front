@@ -26,6 +26,7 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
 
                     {resetErrorBoundary && (
                         <Button
+                        stretched
                             type='button'
                             onClick={resetErrorBoundary}
                         >
@@ -39,6 +40,8 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
 );
 
 const StubWrapper = styled.div`
-    background: linear-gradient(135deg, #eef4ff 0%, #70a2ff 100%);
-    height: 100%;
+padding-top: 12vh;
+
+display: flex;
+justify-content: center;
 `;

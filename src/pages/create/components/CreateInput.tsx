@@ -38,6 +38,16 @@ export const CreateInput: FC<CreateInputProps> = ({
                                 maxLength={maxLength}
                             />
                         }
+                        status={
+                            inputName === 'collectionName' && errors.collectionName
+                                ? 'error'
+                                : 'valid'
+                        }
+                        bottom={
+                            inputName === 'collectionName' &&
+                            errors.collectionName &&
+                            'Укажите название сбора'
+                        }
                     >
                         {inputName === 'collectionName' ? (
                             <Input
@@ -72,7 +82,7 @@ export const CreateInput: FC<CreateInputProps> = ({
 };
 
 const CreateInputContainer = styled.div`
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 `;
 
 const FormItemRoot = styled(FormItem)`

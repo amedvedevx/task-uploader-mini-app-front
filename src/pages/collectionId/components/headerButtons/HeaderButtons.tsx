@@ -6,9 +6,10 @@ import { AddTestees, RemindAll } from './components';
 interface HeaderButtonsProps {
     collectionId: string;
     isResults: boolean;
+    setPopout: (arg: JSX.Element | null) => void;
 }
 
-export const HeaderButtons: FC<HeaderButtonsProps> = ({ collectionId, isResults }) => (
+export const HeaderButtons: FC<HeaderButtonsProps> = ({ collectionId, isResults, setPopout }) => (
     <ButtonGroup
         stretched
         mode='vertical'
@@ -16,6 +17,6 @@ export const HeaderButtons: FC<HeaderButtonsProps> = ({ collectionId, isResults 
     >
         <AddTestees collectionId={collectionId} />
 
-        {isResults && <RemindAll />}
+        {isResults && <RemindAll setPopout={setPopout} />}
     </ButtonGroup>
 );

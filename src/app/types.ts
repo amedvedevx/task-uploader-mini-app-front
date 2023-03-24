@@ -48,7 +48,7 @@ export type TaskType = {
     deadLine: number;
     subTasks: [
         {
-            id: number;
+            id: string;
             name: string;
             description: string;
             sortOrder: number;

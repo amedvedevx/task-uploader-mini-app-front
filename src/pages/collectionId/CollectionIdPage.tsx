@@ -21,8 +21,8 @@ import type { TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
 import { normalizeTestees } from '@/lib/utils';
+import { FooterWithButton, Popout } from '@/pages/components';
 
-import { FooterWithButton } from '../components';
 import { CollectionMembers } from './components/collectionMembers';
 import { HeaderButtons } from './components/headerButtons';
 import { CopyUploadLink } from './components/headerButtons/components';
@@ -32,6 +32,10 @@ import { SkeletonMembers } from './components/collectionMembers/components/Skele
 import { ShareLink } from './components/ShareLink';
 
 export type TabType = 'completed' | 'notCompleted';
+
+const payloadCloseTask = {
+    fields: [{ fieldName: 'status', value: 'DONE' }],
+};
 
 export const CollectionIdPage: FC = () => {
     const router = useRouter();
@@ -50,6 +54,8 @@ export const CollectionIdPage: FC = () => {
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
     const [downloadFiles, { isLoading: isFileDownloading }] = useLazyDownloadFilesQuery();
 
+    const [popout, setPopout] = useState<JSX.Element | null>(null);
+
     const [selectedTab, setSelectedTab] = useState<TabType>('notCompleted');
     const [snackbarText, setSnackbarText] = useState<string>('');
 
@@ -59,16 +65,29 @@ export const CollectionIdPage: FC = () => {
 
     const isTaskClosed = currentTask.status === TaskStatusTypesForOrganizer.DONE;
 
+    const popoutCloseTask = (
+        <Popout
+            text='Вы уверены, что хотите завершить сбор?'
+            header='Завершить задание'
+            action={async () => {
+                await updateTask({ taskId: collectionId, payload: payloadCloseTask });
+                setSnackbarText('Задание по сбору завершено');
+            }}
+            actionText='Завершить сбор'
+            setPopout={setPopout}
+        />
+    );
+
     const prepareButtonsOptions = (): ButtonOption[] => {
-        const downloadAllButton = {
+        const downloadAllButton: ButtonOption = {
             text: 'Скачать все файлы',
             onClick: () => downloadFiles({ taskId: collectionId }),
             loading: isFileDownloading,
             mode: 'primary',
         };
-        const closeTaskButton = {
+        const closeTaskButton: ButtonOption = {
             text: 'Завершить сбор',
-            onClick: () => handleUpdateTask(collectionId),
+            onClick: () => handleUpdateTask(),
             loading: isTaskUpdating,
             mode: 'secondary',
             appearance: 'negative',
@@ -89,12 +108,8 @@ export const CollectionIdPage: FC = () => {
         router.pushPage(PAGE_COLLECTION_HOME);
     };
 
-    const handleUpdateTask = (id: string) => {
-        const payload = {
-            fields: [{ fieldName: 'status', value: 'DONE' }],
-        };
-
-        updateTask({ taskId: id, payload });
+    const handleUpdateTask = () => {
+        setPopout(popoutCloseTask);
     };
 
     // TODO - remove error parser from here to api
@@ -156,6 +171,7 @@ export const CollectionIdPage: FC = () => {
                                         isTaskClosed={isTaskClosed}
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.completed}
+                                        setSnackbarText={setSnackbarText}
                                     />
                                 )}
                             </>
@@ -167,11 +183,13 @@ export const CollectionIdPage: FC = () => {
                                     <HeaderButtons
                                         isResults={normalizedTestees.notCompleted.length > 0}
                                         collectionId={collectionId}
+                                        setPopout={setPopout}
                                     />
                                 )}
 
                                 {normalizedTestees.notCompleted.length > 0 ? (
                                     <CollectionMembers
+                                        setSnackbarText={setSnackbarText}
                                         selectedTab={selectedTab}
                                         isTaskClosed={isTaskClosed}
                                         collectionId={collectionId}
@@ -199,6 +217,8 @@ export const CollectionIdPage: FC = () => {
                     {snackbarText}
                 </Snackbar>
             )}
+
+            {popout}
 
             <FooterWithButton options={prepareButtonsOptions()} />
         </Panel>

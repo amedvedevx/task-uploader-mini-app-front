@@ -33,7 +33,7 @@ export const Stub: FC<StubProps> = ({ children, title, subtitle, image }) => (
             {title}
         </StubTitle>
 
-        <StubSubtitle color='#000'>{subtitle}</StubSubtitle>
+        <StubSubtitle color='var(--vkui--color_text_secondary)'>{subtitle}</StubSubtitle>
 
         {children}
     </StubContainer>
