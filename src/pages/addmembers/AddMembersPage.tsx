@@ -1,7 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -23,23 +23,47 @@ export const AddMemmbersPage: FC = () => {
     const dispatch = useDispatch();
     const router = useRouter();
 
+    const [timer, setTimer] = useState<NodeJS.Timeout>();
+
     const [search, setSearch] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const { data: testees = [] as FriendsType[], isLoading } = useGetTesteesQuery({
-        search,
+        search: searchQuery,
         count: 50,
     });
+
+    const [allTestees, setAllTestees] = useState<FriendsType[]>([]);
 
     const selection = useMembersSelection(
         [],
         testees.map((el) => el.id),
-        testees,
+        allTestees,
     );
 
     const goBack = () => {
         router.popPage();
     };
+
+    const changeSeacrh = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        setSearch(e.target.value);
+        
+        clearTimeout(timer)
+
+        const newTimer = setTimeout(() => {
+            setSearchQuery(e.target.value)
+        }, 500);
+
+        setTimer(newTimer)
+    };
+
+    useEffect(() => {
+        if (!search.length) {
+            setAllTestees(testees);
+        }
+    }, [search, testees]);
 
     return (
         <Panel id={PANEL_ADD_MEMBERS}>
@@ -63,7 +87,7 @@ export const AddMemmbersPage: FC = () => {
                 <Search
                     after=''
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={changeSeacrh}
                 />
             </FixedLayout>
 
