@@ -1,7 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useState } from 'react';
+import { useTransition, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -23,18 +23,36 @@ export const AddMemmbersPage: FC = () => {
     const dispatch = useDispatch();
     const router = useRouter();
 
+    const [, startTransition] = useTransition();
     const [search, setSearch] = useState('');
+    const [seacrhQuery, setSearchQuery] = useState('');
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const { data: testees = [] as FriendsType[], isLoading } = useGetTesteesQuery({
-        search,
+        search: seacrhQuery,
         count: 50,
     });
+
+    const changeSeacrh = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+
+        startTransition(() => {
+            setSearchQuery(e.target.value);
+        });
+    };
+
+    const [allTestees, setAllTestees] = useState<FriendsType[]>([]);
+
+    useEffect(() => {
+        if (!search.length) {
+            setAllTestees(testees);
+        }
+    }, [search, testees]);
 
     const selection = useMembersSelection(
         [],
         testees.map((el) => el.id),
-        testees,
+        allTestees,
     );
 
     const goBack = () => {
@@ -63,7 +81,7 @@ export const AddMemmbersPage: FC = () => {
                 <Search
                     after=''
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={changeSeacrh}
                 />
             </FixedLayout>
 
