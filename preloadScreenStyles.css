@@ -1,0 +1,20 @@
+#preload-screen {
+    width: 100vw; 
+    height: 100vh;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    gap: 16px;
+}
+
+#preload-screen-text {
+    text-align: center;
+    font-family:  -apple-system, system-ui, 'Helvetica Neue', Roboto, sans-serif;
+    font-style: normal;
+    letter-spacing: -0.013em;
+    color: #000;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 22px;
+}
