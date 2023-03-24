@@ -19,14 +19,13 @@ export const StubContainer = styled.div`
     height: 100%;
 
     user-select: none;
+    width: 320px;
 `;
 
 export const StubImageContainer = styled.div`
     width: 180px;
     height: 180px;
     margin-bottom: 10px;
-
-    background: linear-gradient(135deg, #eef4ff 0%, #70a2ff 100%);
 
     border-radius: 50%;
 
@@ -36,18 +35,18 @@ export const StubImageContainer = styled.div`
 `;
 
 export const StubImage = styled.img<StubImageProps>`
-    margin: 18px;
+    margin: 34px;
 `;
 
 export const StubTitle = styled(Text)<StubTitleProps>`
-    margin-bottom: 5px;
-    font-size: 17px;
+    margin-bottom: 6px;
+    font-size: 20px;
 
     color: ${({ color }) => `${color}`};
 `;
 
 export const StubSubtitle = styled(Text)<StubSubtitleProps>`
-    font-size: 14px;
+    font-size: 16px;
 
     white-space: pre-wrap;
     text-align: center;

@@ -1,8 +1,10 @@
 import type { FC } from 'react';
-import { Div, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
+import { useState } from 'react';
+import { Div, FormLayout, Panel, PanelHeaderBack, Placeholder, Snackbar } from '@vkontakte/vkui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
+import { Icon28ErrorCircleOutline } from '@vkontakte/icons';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
@@ -22,8 +24,10 @@ type FormValues = {
 export const CreatePage: FC = () => {
     const router = useRouter();
 
-    const [createTask, { isLoading: isTaskCreating }] = useCreateTaskMutation();
-    const [createSubTask, { isLoading: isSubTaskCreating }] = useCreateSubTaskMutation();
+    const [createTask, { isLoading: isTaskCreating, isError: isTaskError }] =
+        useCreateTaskMutation();
+    const [createSubTask, { isLoading: isSubTaskCreating, isError: isSubTaskError }] =
+        useCreateSubTaskMutation();
 
     const {
         control,
@@ -36,8 +40,14 @@ export const CreatePage: FC = () => {
         },
     });
 
+    const [snackbarText, setSnackbarText] = useState<string>('');
+
     const onSubmit = async (data: { collectionName: string; collectionDescription: string }) => {
-        if (errors.root) return;
+        if (errors.root) {
+            setSnackbarText('Не удалось создать сбор');
+
+            return;
+        }
         const payload = {
             name: data.collectionName,
             description: data.collectionDescription,
@@ -64,6 +74,10 @@ export const CreatePage: FC = () => {
     const goBack = () => {
         router.popPage();
     };
+
+    if (isTaskError || isSubTaskError) {
+        setSnackbarText('Не удалось создать сбор');
+    }
 
     return (
         <Panel id={PANEL_CREATE_COLLECTION}>
@@ -97,6 +111,15 @@ export const CreatePage: FC = () => {
                 </FormWrapper>
             </CreateContainer>
 
+            {snackbarText && (
+                <Snackbar
+                    before={<Icon28ErrorCircleOutline color='var(--vkui--color_text_negative)' />}
+                    onClose={() => setSnackbarText('')}
+                >
+                    {snackbarText}
+                </Snackbar>
+            )}
+
             <FooterWithButton
                 options={[
                     {
@@ -128,7 +151,7 @@ const PlaceholderWidth = styled(Placeholder)`
         padding: unset;
     }
     .vkuiPlaceholder__header + .vkuiPlaceholder__text {
-        margin-top: 20px;
+        margin-top: 12px;
     }
 `;
 

@@ -27,19 +27,18 @@ export const UploadPage: FC = () => {
     const { uploadId } = useParams();
 
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
+    const taskId = uploadId;
+    const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
     const [uploadFiles, statusFromServer] = useUploadFilesMutation();
 
     const [isLoading, setLoading] = useState(false);
     const [isUploading, setUploading] = useState(false);
 
-    const taskId = data?.id;
-    const subTaskId = data?.subTasks[0]?.id;
-
     const { currentData: statusFromVk } = useGetSubTaskResultStatusQuery(
         {
-            taskId: uploadId,
-            subTaskId: data?.subTasks[0].id,
+            taskId,
+            subTaskId,
         },
         { skip: !isUploading, pollingInterval: 5000 },
     );
