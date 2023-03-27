@@ -14,7 +14,7 @@ import { useGetTaskIdQuery, useApointTaskMutation } from '@/api';
 import { useSearch } from '@/hooks';
 import type { TaskType } from '@/app/types';
 
-import { FooterWithButton } from '../components';
+import { FooterWithButton, MembersNotFound } from '../components';
 import { MembersList } from '../addmembers/components';
 import { useMembersSelection } from '../hooks';
 
@@ -75,11 +75,13 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {selectedMembers.length > 0 && (
+            {filteredData.length > 0 ? (
                 <MembersList
                     selection={selection}
                     collection={filteredData}
                 />
+            ) : (
+                <MembersNotFound />
             )}
 
             <FooterWithButton

@@ -14,7 +14,7 @@ import { useGetTaskIdQuery, useGetTesteesQuery } from '@/api';
 import { setSelectedMembers } from '@/api/state';
 import type { FriendsType, TaskType } from '@/app/types';
 
-import { FooterWithButton } from '../components';
+import { FooterWithButton, MembersNotFound } from '../components';
 import { MembersList } from './components';
 import { useMembersSelection } from '../hooks';
 
@@ -47,16 +47,15 @@ export const AddMemmbersPage: FC = () => {
     };
 
     const changeSeacrh = (e: React.ChangeEvent<HTMLInputElement>) => {
-
         setSearch(e.target.value);
-        
-        clearTimeout(timer)
+
+        clearTimeout(timer);
 
         const newTimer = setTimeout(() => {
-            setSearchQuery(e.target.value)
+            setSearchQuery(e.target.value);
         }, 500);
 
-        setTimer(newTimer)
+        setTimer(newTimer);
     };
 
     useEffect(() => {
@@ -91,11 +90,13 @@ export const AddMemmbersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {!isLoading && testees.length > 0 && (
+            {!isLoading && testees.length > 0 ? (
                 <MembersList
                     selection={selection}
                     collection={testees}
                 />
+            ) : (
+                <MembersNotFound />
             )}
 
             <FooterWithButton
