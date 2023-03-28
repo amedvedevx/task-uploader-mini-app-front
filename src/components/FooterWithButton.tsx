@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Div, FixedLayout, Separator } from '@vkontakte/vkui';
+import { Button, ButtonGroup, Counter, Div, FixedLayout, Separator } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
 export type ButtonOption = {
@@ -7,6 +7,7 @@ export type ButtonOption = {
     appearance?: 'accent' | 'positive' | 'negative' | 'neutral' | 'overlay' | 'accent-invariable';
     mode?: 'link' | 'primary' | 'secondary' | 'tertiary' | 'outline';
     loading: boolean;
+    counter?: number;
     disabled?: boolean;
 };
 
@@ -26,7 +27,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                 stretched
                 gap='s'
             >
-                {options.map(({ appearance, mode, text, onClick, loading, disabled }) => (
+                {options.map(({ appearance, mode, text, onClick, loading, disabled, counter }) => (
                     <Button
                         key={text}
                         stretched
@@ -34,6 +35,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                         appearance={appearance || 'accent'}
                         loading={loading}
                         disabled={loading || disabled}
+                        after={<Counter size='s'>{counter}</Counter>}
                         onClick={onClick}
                     >
                         {text}
