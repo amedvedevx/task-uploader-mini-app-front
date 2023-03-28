@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import type { TaskResults } from '@/app/types';
 import { getInitials } from '@/lib/utils';
 import { useLazyDownloadFilesQuery } from '@/api';
-import type { TabType } from '@/pages';
+import type { TabType } from '@/pages/collectionId/CollectionIdPage';
 
 interface CollectionMembersProps {
     taskResults: TaskResults[];
@@ -54,20 +54,20 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                             />
                         }
                         after={
-                            <Button
-                                appearance='accent'
-                                size='s'
-                                mode='secondary'
-                                disabled={originalArgs?.vkUserId === vkUserId && isLoading}
-                                loading={originalArgs?.vkUserId === vkUserId && isLoading}
-                                onClick={() =>
-                                    onClick({ taskId: collectionId, vkUserId, fullName })
-                                }
-                            >
-                                {selectedTab === 'completed'
-                                    ? 'Скачать'
-                                    : !isTaskClosed && 'Напомнить'}
-                            </Button>
+                            selectedTab === 'notCompleted' && isTaskClosed ? null : (
+                                <Button
+                                    appearance='accent'
+                                    size='s'
+                                    mode='secondary'
+                                    disabled={originalArgs?.vkUserId === vkUserId && isLoading}
+                                    loading={originalArgs?.vkUserId === vkUserId && isLoading}
+                                    onClick={() =>
+                                        onClick({ taskId: collectionId, vkUserId, fullName })
+                                    }
+                                >
+                                    {selectedTab === 'completed' ? 'Скачать' : 'Напомнить'}
+                                </Button>
+                            )
                         }
                     >
                         {fullName}

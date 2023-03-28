@@ -7,6 +7,7 @@ export type ButtonOption = {
     appearance?: 'accent' | 'positive' | 'negative' | 'neutral' | 'overlay' | 'accent-invariable';
     mode?: 'link' | 'primary' | 'secondary' | 'tertiary' | 'outline';
     loading: boolean;
+    disabled?: boolean;
 };
 
 interface FooterWithButtonProps {
@@ -25,14 +26,14 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                 stretched
                 gap='s'
             >
-                {options.map(({ appearance, mode, text, onClick, loading }) => (
+                {options.map(({ appearance, mode, text, onClick, loading, disabled }) => (
                     <Button
                         key={text}
                         stretched
                         mode={mode || 'primary'}
                         appearance={appearance || 'accent'}
                         loading={loading}
-                        disabled={loading}
+                        disabled={loading || disabled}
                         onClick={onClick}
                     >
                         {text}

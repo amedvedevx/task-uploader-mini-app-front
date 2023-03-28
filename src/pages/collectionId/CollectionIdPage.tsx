@@ -21,12 +21,12 @@ import type { TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
 import { normalizeTestees } from '@/lib/utils';
-import { FooterWithButton, Popout } from '@/pages/components';
+import type { ButtonOption } from '@/components';
+import { Popout, FooterWithButton } from '@/components';
 
 import { CollectionMembers } from './components/collectionMembers';
 import { HeaderButtons } from './components/headerButtons';
 import { CopyUploadLink } from './components/headerButtons/components';
-import type { ButtonOption } from '../components/FooterWithButton';
 import { CollectionTabs } from './components/CollectionTabs';
 import { SkeletonMembers } from './components/collectionMembers/components/SkeletonMembers';
 import { ShareLink } from './components/ShareLink';
@@ -93,15 +93,28 @@ export const CollectionIdPage: FC = () => {
             appearance: 'negative',
         };
 
-        if (isTaskClosed) {
-            return [downloadAllButton];
+        const closedTask: ButtonOption = {
+            text: 'Сбор завершен',
+            onClick: () => {},
+            loading: false,
+            disabled: true,
+            mode: 'secondary',
+            appearance: 'negative',
+        };
+
+        const buttonOptions = [];
+
+        if (normalizedTestees.completed.length > 0) {
+            buttonOptions.push(downloadAllButton);
         }
 
-        if (taskResults.length === 0) {
-            return [closeTaskButton];
+        if (!isTaskClosed) {
+            buttonOptions.push(closeTaskButton);
+        } else {
+            buttonOptions.push(closedTask);
         }
 
-        return [downloadAllButton, closeTaskButton];
+        return buttonOptions;
     };
 
     const goBack = () => {

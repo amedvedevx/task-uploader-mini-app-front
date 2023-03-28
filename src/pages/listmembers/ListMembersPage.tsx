@@ -13,8 +13,8 @@ import type { RootState } from '@/api';
 import { useGetTaskIdQuery, useApointTaskMutation } from '@/api';
 import { useSearch } from '@/hooks';
 import type { TaskType } from '@/app/types';
+import { FooterWithButton, MembersNotFound } from '@/components';
 
-import { FooterWithButton, MembersNotFound } from '../components';
 import { MembersList } from '../addmembers/components';
 import { useMembersSelection } from '../hooks';
 
