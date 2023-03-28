@@ -13,8 +13,8 @@ import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
 import { useGetTaskIdQuery, useGetTesteesQuery } from '@/api';
 import { setSelectedMembers } from '@/api/state';
 import type { FriendsType, TaskType } from '@/app/types';
+import { FooterWithButton, MembersNotFound } from '@/components';
 
-import { FooterWithButton, MembersNotFound } from '../components';
 import { MembersList } from './components';
 import { useMembersSelection } from '../hooks';
 

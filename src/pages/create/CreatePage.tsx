@@ -9,7 +9,7 @@ import { Icon28ErrorCircleOutline } from '@vkontakte/icons';
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateSubTaskMutation, useCreateTaskMutation } from '@/api';
-import { FooterWithButton } from '@/pages/components';
+import { FooterWithButton } from '@/components';
 
 import { CreateInput } from './components';
 
@@ -32,6 +32,7 @@ export const CreatePage: FC = () => {
     const {
         control,
         handleSubmit,
+        watch,
         formState: { errors },
     } = useForm<FormValues>({
         defaultValues: {
@@ -126,6 +127,7 @@ export const CreatePage: FC = () => {
                         text: 'Готово',
                         onClick: handleSubmit(onSubmit),
                         loading: isTaskCreating || isSubTaskCreating,
+                        disabled: watch('collectionName').length === 0,
                     },
                 ]}
             />

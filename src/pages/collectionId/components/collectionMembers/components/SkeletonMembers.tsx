@@ -5,7 +5,6 @@ import { SkeletonCircular, SkeletonRectangle } from '@/components/Skeletons';
 
 export const SkeletonMembers: FC = () => (
     <SkeletonWrapper>
-
         <SkeletonCard>
             <SkeletonCircular radius={40} />
 

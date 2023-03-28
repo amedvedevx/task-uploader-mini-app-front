@@ -2,7 +2,8 @@ import { Div, SegmentedControl } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
 import type { TaskUserConsolidatedData } from '@/app/types';
-import type { TabType } from '@/pages';
+
+import type { TabType } from '../CollectionIdPage';
 
 interface CollectionTabsProps {
     selectedTab: TabType;
