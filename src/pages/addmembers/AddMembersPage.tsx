@@ -10,7 +10,7 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import { useGetTaskIdQuery, useGetTesteesQuery } from '@/api';
+import { useGetTaskIdQuery, useGetTaskResultsQuery, useGetTesteesQuery } from '@/api';
 import { setSelectedMembers } from '@/api/state';
 import type { FriendsType, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
@@ -28,10 +28,18 @@ export const AddMemmbersPage: FC = () => {
     const [search, setSearch] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
 
+    const { data = { taskResults: [] } } = useGetTaskResultsQuery({
+        taskId: collectionId,
+    });
+    const { taskResults } = data;
+
+    const invitedMembers = taskResults.map((result) => result.testee.vkUserId);
+
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const { data: testees = [] as FriendsType[], isLoading } = useGetTesteesQuery({
         search: searchQuery,
         count: 50,
+        invitedMembers,
     });
 
     const [allTestees, setAllTestees] = useState<FriendsType[]>([]);
