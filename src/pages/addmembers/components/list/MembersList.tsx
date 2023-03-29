@@ -1,5 +1,12 @@
 import type { FC } from 'react';
-import { Avatar, Group, List, SimpleCell, calcInitialsAvatarColor, Header } from '@vkontakte/vkui';
+import {
+    Avatar,
+    Group,
+    List,
+    SimpleCell,
+    calcInitialsAvatarColor,
+    Header as HeaderRoot,
+} from '@vkontakte/vkui';
 import { Icon24Cancel, Icon24DoneOutline } from '@vkontakte/icons';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
@@ -37,7 +44,14 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
                     separator='hide'
                     mode='plain'
                     padding='s'
-                    header={<Header mode='tertiary'>Добавленные участники</Header>}
+                    // header={
+                    //     <Header
+                    //         color='#6D7885'
+                    //         mode='tertiary'
+                    //     >
+                    //         Добавленные участники
+                    //     </Header>
+                    // }
                 >
                     <List>
                         {invitedMembers.map(
@@ -67,6 +81,16 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
                 $isComplete={!invitedMembers?.length}
                 mode='plain'
                 padding='s'
+                header={
+                    invitedMembers?.length && (
+                        <Header
+                            color='#6D7885'
+                            mode='tertiary'
+                        >
+                            Выбранные участники
+                        </Header>
+                    )
+                }
             >
                 <List>
                     {collection.map(({ id, first_name, last_name, photo_100 }) => (
@@ -113,6 +137,12 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
 
 const GroupWide = styled(Group)<{ $isComplete: boolean }>`
     padding-top: ${({ $isComplete }) => ($isComplete ? '103px' : '0')};
+`;
+
+const Header = styled(HeaderRoot)`
+    .vkuiHeader__main {
+        color: var(--vkui--color_text_subhead);
+    }
 `;
 
 const Members = styled(SimpleCell)`
