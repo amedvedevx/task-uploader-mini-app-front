@@ -152,7 +152,7 @@ const DropZoneContainer = styled.div<DropZoneContainerProps>`
 
     &:hover {
         border-color: ${({ isDisabled }) =>
-        isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
+            isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
     }
 `;
 

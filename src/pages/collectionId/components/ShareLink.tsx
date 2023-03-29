@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import type { FC } from 'react';
-import { Button, Image, Link, Placeholder } from '@vkontakte/vkui';
-import { Icon24CopyOutline } from '@vkontakte/icons';
+import { Image, Link } from '@vkontakte/vkui';
 import styled from 'styled-components';
 import { useRouter } from '@happysanta/router';
 

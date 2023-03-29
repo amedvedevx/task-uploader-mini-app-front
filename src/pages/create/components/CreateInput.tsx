@@ -41,7 +41,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                         status={
                             inputName === 'collectionName' && errors.collectionName
                                 ? 'error'
-                                : 'valid'
+                                : 'default'
                         }
                         bottom={
                             inputName === 'collectionName' &&

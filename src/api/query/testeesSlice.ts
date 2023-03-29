@@ -8,7 +8,7 @@ import type { RootState } from '../store';
 const testeesSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getTestees: builder.query<FriendsType[], GetTesteesProps>({
-            queryFn: async ({ search, count }, { getState }) => {
+            queryFn: async ({ search, count, invitedMembers }, { getState }) => {
                 const { userInfo } = (getState() as RootState).authorization;
 
                 const testees = await bridge
@@ -24,6 +24,10 @@ const testeesSlice = apiSlice.injectEndpoints({
                         },
                     })
                     .then((data: { response: { items: FriendsType[] } }) => data.response.items);
+
+                if (invitedMembers) {
+                    return { data: testees.filter((el) => !invitedMembers.includes(el.id)) };
+                }
 
                 return { data: testees };
             },
