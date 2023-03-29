@@ -1,9 +1,8 @@
-import { Panel, Group, Separator, Spacing, MiniInfoCell } from '@vkontakte/vkui';
+import { Panel, Group, Separator, Spacing } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from '@happysanta/router';
 import styled from 'styled-components';
-import { Icon24FolderOutline, Icon24Info } from '@vkontakte/icons';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';

@@ -38,7 +38,7 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
 
     return (
         <>
-            {invitedMembers?.length > 0 && (
+            {invitedMembers && invitedMembers?.length > 0 && (
                 <GroupWide
                     $isComplete
                     separator='hide'
