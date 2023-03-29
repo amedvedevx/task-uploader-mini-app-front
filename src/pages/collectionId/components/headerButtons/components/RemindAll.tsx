@@ -2,7 +2,7 @@ import { Icon24NotificationOutline } from '@vkontakte/icons';
 import { CellButton, Avatar } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
-import { Popout } from '@/pages/components';
+import { Popout } from '@/components';
 
 interface RemindAllProps {
     setPopout: (arg: JSX.Element | null) => void;

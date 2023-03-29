@@ -17,6 +17,7 @@ import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
 import { UploadResultMessage } from './components/UploadResultMessage';
+import { TaskDescription } from './components/TaskDescription';
 
 export type SnackBarType = {
     type: 'error' | 'success' | false;
@@ -125,12 +126,17 @@ export const UploadPage: FC = () => {
                     <PanelHeaderContentCentered
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
-                        {data?.name}
+                        Сбор документов
                     </PanelHeaderContentCentered>
                 ) : (
                     <PanelHeaderSkeleton />
                 )}
             </PanelHeaderCentered>
+
+            <TaskDescription
+                taskName={data?.name}
+                description={data?.description}
+            />
 
             <UploadPageWrapper>
                 <DropZone
