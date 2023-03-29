@@ -10,7 +10,7 @@ import {
 } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
-import { useGetTaskIdQuery, useApointTaskMutation } from '@/api';
+import { useGetTaskResultsQuery, useGetTaskIdQuery, useApointTaskMutation } from '@/api';
 import { useSearch } from '@/hooks';
 import type { TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
@@ -21,6 +21,13 @@ import { useMembersSelection } from '../hooks';
 export const ListMembersPage: FC = () => {
     const { collectionId } = useParams();
     const router = useRouter();
+
+    const { data = { taskResults: [] } } = useGetTaskResultsQuery({
+        taskId: collectionId,
+    });
+    const { taskResults } = data;
+
+    const invitedMembers = taskResults.map((result) => result.testee);
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
@@ -77,6 +84,7 @@ export const ListMembersPage: FC = () => {
 
             {filteredData.length > 0 ? (
                 <MembersList
+                    invitedMembers={invitedMembers}
                     selection={selection}
                     collection={filteredData}
                 />
@@ -87,7 +95,8 @@ export const ListMembersPage: FC = () => {
             <FooterWithButton
                 options={[
                     {
-                        text: 'Готово',
+                        text: 'Добавить',
+                        counter: selectedMembers.length,
                         onClick: () => {
                             assignMembers(vkUserIds);
                             router.pushPage(PAGE_COLLECTION_ID, { collectionId: currentTask.id });
