@@ -44,14 +44,6 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
                     separator='hide'
                     mode='plain'
                     padding='s'
-                    // header={
-                    //     <Header
-                    //         color='#6D7885'
-                    //         mode='tertiary'
-                    //     >
-                    //         Добавленные участники
-                    //     </Header>
-                    // }
                 >
                     <List>
                         {invitedMembers.map(
