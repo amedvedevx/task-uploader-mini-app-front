@@ -10,9 +10,14 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import { useGetTaskIdQuery, useGetTaskResultsQuery, useGetTesteesQuery } from '@/api';
+import {
+    useGetTesteesQuery,
+    useGetTaskIdQuery,
+    useGetTaskResultsQuery,
+    useGetConversationsTesteesQuery,
+} from '@/api';
 import { setSelectedMembers } from '@/api/state';
-import type { FriendsType, TaskType } from '@/app/types';
+import type { FriendsType, GetTesteesResponse, ItemsType, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 
 import { MembersList } from './components';
@@ -36,19 +41,24 @@ export const AddMemmbersPage: FC = () => {
     const invitedMembers = taskResults.map((result) => result.testee.vkUserId);
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
-    const { data: testees = [] as FriendsType[], isLoading } = useGetTesteesQuery({
+
+    const { data: testees = {} as GetTesteesResponse, isLoading } = useGetTesteesQuery({
         search: searchQuery,
         count: 50,
-        invitedMembers,
     });
 
     const [allTestees, setAllTestees] = useState<FriendsType[]>([]);
+    const [profiles, setProfiles] = useState<FriendsType[]>([]);
+    const [chats, setChats] = useState<ItemsType[]>([]);
 
     const selection = useMembersSelection(
         [],
-        testees.map((el) => el.id),
+        profiles.map((el) => el.id) || [],
+        chats.map((el) => el.peer.id),
         allTestees,
     );
+
+    console.log(selection.selectedChats);
 
     const goBack = () => {
         router.popPage();
@@ -67,10 +77,24 @@ export const AddMemmbersPage: FC = () => {
     };
 
     useEffect(() => {
-        if (!search.length) {
-            setAllTestees(testees);
+        if (!isLoading && !search.length && testees.profiles) {
+            setAllTestees(testees.profiles);
         }
-    }, [search, testees]);
+
+        if (!isLoading && testees.profiles) {
+            setProfiles(testees.profiles);
+        }
+
+        if (!isLoading && testees.items) {
+            setChats(testees.items);
+        }
+    }, [search, testees, isLoading]);
+
+    const { data: members } = useGetConversationsTesteesQuery({
+        conversationsIds: selection.selectedChats,
+    });
+
+    console.log(members);
 
     return (
         <Panel id={PANEL_ADD_MEMBERS}>
@@ -98,7 +122,7 @@ export const AddMemmbersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {!isLoading && testees.length > 0 ? (
+            {!isLoading && testees.items.length > 0 ? (
                 <MembersList
                     selection={selection}
                     collection={testees}

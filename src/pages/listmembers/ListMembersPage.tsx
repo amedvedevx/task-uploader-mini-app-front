@@ -33,11 +33,11 @@ export const ListMembersPage: FC = () => {
     const [apointTask] = useApointTaskMutation();
 
     const { selectedMembers } = useSelector((state: RootState) => state.members);
-    const selection = useMembersSelection(
-        [],
-        selectedMembers.map((el) => el.id),
-        selectedMembers,
-    );
+    // const selection = useMembersSelection(
+    //     [],
+    //     selectedMembers.map((el) => el.id),
+    //     selectedMembers,
+    // );
     const vkUserIds = selectedMembers.map((el) => el.id);
 
     const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
@@ -85,7 +85,6 @@ export const ListMembersPage: FC = () => {
             {filteredData.length > 0 ? (
                 <MembersList
                     invitedMembers={invitedMembers}
-                    selection={selection}
                     collection={filteredData}
                 />
             ) : (

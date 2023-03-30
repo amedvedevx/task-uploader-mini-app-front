@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { SkeletonCircular, SkeletonRectangle } from '@/components/Skeletons';
 
-export const SkeletonFriends: FC = () => (
+export const SkeletonTestees: FC = () => (
     <SkeletonWrapper>
         <SkeletonCard>
             <SkeletonCircular radius={40} />

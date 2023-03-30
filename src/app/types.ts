@@ -176,11 +176,36 @@ export interface GetMembersResponce {
     friends: FriendsType[];
 }
 
+export interface GetTesteesResponse {
+    count: number;
+    items: ItemsType[];
+    profiles: FriendsType[];
+    groups: unknown[];
+}
+
 export interface GetTesteesProps {
     search: string;
     count: number;
     invitedMembers?: number[];
 }
+
+export type ItemsType = {
+    peer: {
+        id: number;
+        type: string;
+        local_id: number;
+    };
+
+    chat_settings: {
+        title: string;
+        members_count: number;
+        owner_id: number;
+        active_ids: number[];
+        photo: {
+            photo_100: string;
+        };
+    };
+};
 
 export type FriendsType = {
     id: number;
