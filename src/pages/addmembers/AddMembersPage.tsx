@@ -50,6 +50,10 @@ export const AddMemmbersPage: FC = () => {
         members,
     );
 
+    const { data: chatMembers } = useGetConversationsTesteesQuery({
+        conversationsIds: selection.selectedChats,
+    });
+
     const goBack = () => {
         router.popPage();
     };
@@ -65,10 +69,6 @@ export const AddMemmbersPage: FC = () => {
 
         setTimer(newTimer);
     };
-
-    const { data: chatMembers } = useGetConversationsTesteesQuery({
-        conversationsIds: selection.selectedChats,
-    });
 
     return (
         <Panel id={PANEL_ADD_MEMBERS}>
