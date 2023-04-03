@@ -2,9 +2,9 @@ import type { FC } from 'react';
 import { Avatar, Button, Group, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
-import type { TaskResults } from '@/app/types';
+import type { SnackBarText, TaskResults } from '@/app/types';
 import { getInitials } from '@/lib/utils';
-import { useLazyDownloadFilesQuery } from '@/api';
+import { useGetTaskIdQuery, useLazyDownloadFilesQuery, useSendNotificationMutation } from '@/api';
 import type { TabType } from '@/pages/collectionId/CollectionIdPage';
 
 interface CollectionMembersProps {
@@ -12,7 +12,7 @@ interface CollectionMembersProps {
     collectionId: string;
     isTaskClosed: boolean;
     selectedTab: TabType;
-    setSnackbarText: (arg: string) => void;
+    setSnackbarText: (arg: SnackBarText) => void;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
@@ -25,13 +25,23 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
     setSnackbarText,
 }) => {
     const [downloadFiles, { isLoading, originalArgs }] = useLazyDownloadFilesQuery();
+    const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
+    const [sendNotification] = useSendNotificationMutation();
     const testees = taskResults.map((el) => el.testee);
 
-    const onClick = ({ taskId, vkUserId, fullName }: OnClickArgs) => {
+    const onClickHandler = async ({ taskId, vkUserId, fullName }: OnClickArgs) => {
         if (selectedTab === 'completed') {
             downloadFiles({ taskId, vkUserId });
         } else {
-            setSnackbarText(`Отправили напоминание для ${fullName}`);
+            if (currentTask) {
+                await sendNotification({
+                    taskId,
+                    ownerName: currentTask?.owner.fullName,
+                    whoToSend: [vkUserId],
+                    taskName: currentTask?.name,
+                });
+            }
+            setSnackbarText({ type: 'success', text: `Отправили напоминание для ${fullName}` });
         }
     };
 
@@ -62,7 +72,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                                     disabled={originalArgs?.vkUserId === vkUserId && isLoading}
                                     loading={originalArgs?.vkUserId === vkUserId && isLoading}
                                     onClick={() =>
-                                        onClick({ taskId: collectionId, vkUserId, fullName })
+                                        onClickHandler({ taskId: collectionId, vkUserId, fullName })
                                     }
                                 >
                                     {selectedTab === 'completed' ? 'Скачать' : 'Напомнить'}

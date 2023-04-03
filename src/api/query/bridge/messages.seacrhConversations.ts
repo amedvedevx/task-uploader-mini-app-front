@@ -2,8 +2,18 @@ import bridge from '@vkontakte/vk-bridge';
 
 import type { GetTesteesResponse } from '@/app/types';
 
-export const searchConversations = (token: string, search: string, count: number) =>
-    bridge
+interface BridgeSeacrhConversationsArgs {
+    token: string;
+    search: string;
+    count: number;
+}
+
+export const BridgeSearchConversations = async ({
+    token,
+    search,
+    count,
+}: BridgeSeacrhConversationsArgs): Promise<GetTesteesResponse> => {
+    const result: GetTesteesResponse = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'messages.searchConversations',
             params: {
@@ -16,3 +26,6 @@ export const searchConversations = (token: string, search: string, count: number
             },
         })
         .then((data: { response: GetTesteesResponse }) => data.response);
+
+    return result;
+};

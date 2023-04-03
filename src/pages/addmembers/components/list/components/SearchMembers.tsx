@@ -1,11 +1,11 @@
 import type { FC } from 'react';
-import { Avatar, calcInitialsAvatarColor, List } from '@vkontakte/vkui';
+import { Avatar, calcInitialsAvatarColor, Group, List } from '@vkontakte/vkui';
 
 import type { GetTesteesResponse } from '@/app/types';
 import { getInitials } from '@/lib';
 import type { UseMembersSelectionResult } from '@/pages/hooks';
 
-import { avatarStub, GroupWide, Members } from '../MembersList';
+import { avatarStub, Members } from '../MembersList';
 import { Checkbox } from './Checkbox';
 
 interface SearchMembersProps {
@@ -19,82 +19,82 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
     return (
         <>
             {collection?.items.length > 0 && (
-                <GroupWide
-                    $top='103'
-                    $bottom='45'
+                <Group
                     mode='plain'
                     padding='s'
                 >
                     <List>
                         {chats?.length > 0 &&
-                            chats?.map(({ peer, chat_settings }) => (
+                            chats?.map((chat) => (
                                 <Members
-                                    key={peer.id}
+                                    key={chat.peer.id}
                                     before={
                                         <>
                                             <Checkbox
-                                                checked={Boolean(selection?.isChatActive(peer.id))}
+                                                checked={Boolean(selection?.isChatActive(chat))}
                                                 onChange={(e) => {
-                                                    selection?.handleSelectMember(
-                                                        e,
-                                                        peer.id,
-                                                        'chat',
-                                                    );
+                                                    selection?.handleSelectChat(e, chat);
                                                 }}
                                             />
 
                                             <Avatar
                                                 size={40}
                                                 src={
-                                                    !chat_settings.photo
+                                                    !chat.chat_settings.photo
                                                         ? avatarStub
-                                                        : chat_settings.photo.photo_100
+                                                        : chat.chat_settings.photo.photo_100
                                                 }
                                                 alt='icon'
-                                                gradientColor={calcInitialsAvatarColor(peer.id)}
+                                                gradientColor={calcInitialsAvatarColor(
+                                                    chat.peer.id,
+                                                )}
                                             />
                                         </>
                                     }
-                                    subtitle={`${chat_settings.members_count} участников`}
+                                    subtitle={`${chat.chat_settings.members_count} участников`}
                                     onClick={(e) => {
-                                        selection?.handleSelectMember(e as any, peer.id, 'chat');
+                                        selection?.handleSelectChat(e as any, chat);
                                     }}
                                 >
-                                    {chat_settings.title}
+                                    {chat.chat_settings.title}
                                 </Members>
                             ))}
 
                         {collection?.profiles &&
-                            collection.profiles.map(({ id, first_name, last_name, photo_100 }) => (
+                            collection.profiles.map((member) => (
                                 <Members
-                                    key={id}
+                                    key={member.id}
                                     before={
                                         <>
                                             <Checkbox
-                                                checked={Boolean(selection?.isMemberActive(id))}
+                                                checked={Boolean(selection?.isMemberActive(member))}
                                                 onChange={(e) => {
-                                                    selection?.handleSelectMember(e, id, 'user');
+                                                    selection?.handleSelectMember(e, member);
                                                 }}
                                             />
 
                                             <Avatar
                                                 size={40}
-                                                src={photo_100 === avatarStub ? '#' : photo_100}
+                                                src={
+                                                    member.photo_100 === avatarStub
+                                                        ? '#'
+                                                        : member.photo_100
+                                                }
                                                 alt='icon'
-                                                gradientColor={calcInitialsAvatarColor(id)}
-                                                initials={getInitials(`${first_name} ${last_name}`)}
+                                                gradientColor={calcInitialsAvatarColor(member.id)}
+                                                initials={getInitials(
+                                                    `${member.first_name} ${member.last_name}`,
+                                                )}
                                             />
                                         </>
                                     }
-                                    onClick={(e) =>
-                                        selection?.handleSelectMember(e as any, id, 'user')
-                                    }
+                                    onClick={(e) => selection?.handleSelectMember(e as any, member)}
                                 >
-                                    {`${first_name} ${last_name}`}
+                                    {`${member.first_name} ${member.last_name}`}
                                 </Members>
                             ))}
                     </List>
-                </GroupWide>
+                </Group>
             )}
         </>
     );

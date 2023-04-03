@@ -1,16 +1,16 @@
 import type { FC } from 'react';
-import { Avatar, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Avatar, calcInitialsAvatarColor, Group } from '@vkontakte/vkui';
 import { Icon24Cancel } from '@vkontakte/icons';
 import { useDispatch } from 'react-redux';
 
-import type { FriendsType } from '@/app/types';
 import { getInitials } from '@/lib';
+import type { SelectedChatMembersType } from '@/api/state';
 import { deleteChatMember } from '@/api/state';
 
-import { avatarStub, GroupWide, Header, Members } from '../MembersList';
+import { avatarStub, Header, Members } from '../MembersList';
 
 interface SelectedChatMembersProps {
-    collection?: { chatName: string; members: FriendsType[] }[];
+    collection?: SelectedChatMembersType[];
 }
 
 export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({ collection }) => {
@@ -19,15 +19,14 @@ export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({ collection }
     return (
         <>
             {collection?.map((chat) => (
-                <GroupWide
+                <Group
                     key={chat.chatName}
-                    $bottom='45'
                     mode='plain'
                     separator='hide'
                     padding='s'
                     header={<Header mode='tertiary'>{chat.chatName}</Header>}
                 >
-                    {chat.members.map(({ id, photo_100, first_name, last_name }) => (
+                    {chat.members?.map(({ id, photo_100, first_name, last_name }) => (
                         <Members
                             key={id}
                             before={
@@ -50,7 +49,7 @@ export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({ collection }
                             {`${first_name} ${last_name}`}
                         </Members>
                     ))}
-                </GroupWide>
+                </Group>
             ))}
         </>
     );

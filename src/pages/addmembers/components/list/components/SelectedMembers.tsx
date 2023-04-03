@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Avatar, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Avatar, calcInitialsAvatarColor, Group } from '@vkontakte/vkui';
 import { Icon24Cancel } from '@vkontakte/icons';
 import { useDispatch } from 'react-redux';
 
@@ -7,7 +7,7 @@ import type { FriendsType } from '@/app/types';
 import { getInitials } from '@/lib';
 import { deleteMember } from '@/api/state';
 
-import { avatarStub, GroupWide, Header, Members } from '../MembersList';
+import { avatarStub, Header, Members } from '../MembersList';
 
 interface SelectedMembersProps {
     collection?: FriendsType[];
@@ -17,8 +17,7 @@ export const SelectedMembers: FC<SelectedMembersProps> = ({ collection }) => {
     const dispatch = useDispatch();
 
     return (
-        <GroupWide
-            $bottom='45'
+        <Group
             mode='plain'
             separator='hide'
             padding='s'
@@ -46,6 +45,6 @@ export const SelectedMembers: FC<SelectedMembersProps> = ({ collection }) => {
                     {`${first_name} ${last_name}`}
                 </Members>
             ))}
-        </GroupWide>
+        </Group>
     );
 };

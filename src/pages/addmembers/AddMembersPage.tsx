@@ -1,7 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -10,9 +10,9 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import { useGetTesteesQuery, useGetTaskIdQuery, useGetConversationsTesteesQuery } from '@/api';
+import { useGetTesteesQuery, useGetTaskIdQuery, useGetChatTesteesQuery } from '@/api';
 import { setSelectedChatMembers, setSelectedMembers } from '@/api/state';
-import type { FriendsType, GetTesteesResponse, ItemsType, TaskType } from '@/app/types';
+import type { GetTesteesResponse, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 
 import { MembersList } from './components';
@@ -35,31 +35,10 @@ export const AddMemmbersPage: FC = () => {
         count: 50,
     });
 
-    const [members, setMembers] = useState<FriendsType[]>([]);
-    const [chats, setChats] = useState<ItemsType[]>([]);
+    const selection = useMembersSelection();
 
-    useEffect(() => {
-        if (!search.length && !isLoading) {
-            setMembers(testees.profiles);
-        }
-
-        if (!isLoading && testees.items?.length) {
-            setChats(testees.items.filter((el) => el.peer.type === 'chat'));
-        }
-    }, [search, testees, isLoading]);
-
-    const selection = useMembersSelection(
-        [],
-        testees.profiles?.map((el) => el.id),
-        testees.items?.map((el) => el.peer.id),
-        members,
-        chats,
-    );
-
-    console.log('selectedChat', selection.selectedChatCollection);
-
-    const { data: chatMembers } = useGetConversationsTesteesQuery({
-        conversations: selection.selectedChatCollection,
+    const { data: chatMembers = [] } = useGetChatTesteesQuery({
+        chats: selection.selectedChats,
     });
 
     const goBack = () => {
@@ -118,7 +97,7 @@ export const AddMemmbersPage: FC = () => {
                     {
                         text: 'Продолжить',
                         onClick: () => {
-                            dispatch(setSelectedMembers(selection.selectedCollection));
+                            dispatch(setSelectedMembers(selection.selectedMembers));
                             dispatch(setSelectedChatMembers(chatMembers));
                             router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
                         },

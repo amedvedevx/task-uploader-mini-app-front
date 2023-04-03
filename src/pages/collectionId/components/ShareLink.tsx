@@ -8,17 +8,18 @@ import PeaopleIcon from '@/assets/peopleIcon.svg';
 import { copyUploadLinkToClipboard } from '@/lib/utils';
 import { PAGE_ADD_MEMBERS } from '@/app/router';
 import { PlaceholderWidth } from '@/pages/home/HomePage';
+import type { SnackBarText } from '@/app/types';
 
 interface ShareLinkProps {
     collectionId: string;
-    setSnackbarText: (arg: string) => void;
+    setSnackbarText: (arg: SnackBarText) => void;
 }
 
 export const ShareLink: FC<ShareLinkProps> = ({ collectionId, setSnackbarText }) => {
     const router = useRouter();
     const copyLink = (copyText: string) => {
         copyUploadLinkToClipboard(copyText);
-        setSnackbarText('Ссылка скопирована');
+        setSnackbarText({ type: 'success', text: 'Ссылка скопирована' });
     };
 
     return (

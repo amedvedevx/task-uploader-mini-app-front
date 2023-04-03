@@ -1,9 +1,10 @@
 import type { FC } from 'react';
-import { Group, SimpleCell, Header as HeaderRoot } from '@vkontakte/vkui';
+import { SimpleCell, Header as HeaderRoot } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
 import type { FriendsType, GetTesteesResponse, TaskResults } from '@/app/types';
 import type { UseMembersSelectionResult } from '@/pages/hooks';
+import type { SelectedChatMembersType } from '@/api/state';
 
 import { InvitedMembers, SearchMembers, SelectedChatMembers, SelectedMembers } from './components';
 
@@ -11,7 +12,7 @@ interface MembersListProps {
     searchMembers?: GetTesteesResponse;
     invitedMembers?: TaskResults['testee'][];
     selectedMembers?: FriendsType[];
-    selectedChatMembers?: { chatName: string; members: FriendsType[] }[];
+    selectedChatMembers?: SelectedChatMembersType[];
     selection?: UseMembersSelectionResult;
 }
 
@@ -24,7 +25,7 @@ export const MembersList: FC<MembersListProps> = ({
     selectedMembers,
     selection,
 }) => (
-    <>
+    <MembersListWrapper>
         {invitedMembers?.length > 0 && <InvitedMembers collection={invitedMembers} />}
 
         {searchMembers?.items.length > 0 && (
@@ -33,17 +34,18 @@ export const MembersList: FC<MembersListProps> = ({
                 selection={selection}
             />
         )}
+
         {selectedMembers?.length > 0 && <SelectedMembers collection={selectedMembers} />}
 
         {selectedChatMembers?.length > 0 && (
             <SelectedChatMembers collection={selectedChatMembers} />
         )}
-    </>
+    </MembersListWrapper>
 );
 
-export const GroupWide = styled(Group)<{ $top?: string; $bottom?: string }>`
-    padding-top: ${({ $top }) => ($top ? `${$top}px` : '0px')};
-    padding-bottom: ${({ $bottom }) => ($bottom ? `${$bottom}px` : '0px')};
+const MembersListWrapper = styled.div`
+    padding-top: 103px;
+    padding-bottom: 45px;
 `;
 
 export const Header = styled(HeaderRoot)`

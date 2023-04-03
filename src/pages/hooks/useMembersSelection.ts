@@ -2,82 +2,69 @@ import { useState } from 'react';
 
 import type { FriendsType, ItemsType } from '@/app/types';
 
-type SelectedMembersType = number[];
+type IsMemberActive = (row: FriendsType) => boolean;
 
-type SelectedCollectionType = FriendsType[];
+type IsChatActive = (row: ItemsType) => boolean;
 
-type SelectedChatCollectionType = ItemsType[];
+type SelectedMembersType = FriendsType[];
 
-type HandleSelectMember = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    rowId: number,
-    type: 'chat' | 'user',
-) => void;
+type SelectedChatsType = ItemsType[];
 
-type IsMemberActive = (rowId: number) => boolean;
+type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, row: FriendsType) => void;
+
+type HandleSelectChat = (e: React.ChangeEvent<HTMLInputElement>, row: ItemsType) => void;
 
 export interface UseMembersSelectionResult {
-    selectedMembers: SelectedMembersType;
-    selectedChats: SelectedMembersType;
-    selectedCollection: SelectedCollectionType;
-    selectedChatCollection: SelectedChatCollectionType;
-    handleSelectMember: HandleSelectMember;
     isMemberActive: IsMemberActive;
-    isChatActive: IsMemberActive;
+    isChatActive: IsChatActive;
+    selectedMembers: SelectedMembersType;
+    selectedChats: SelectedChatsType;
+    handleSelectMember: HandleSelectMember;
+    handleSelectChat: HandleSelectChat;
 }
 
-export const useMembersSelection = (
-    initialState = [] as SelectedMembersType,
-    allRowsIds = [] as SelectedMembersType,
-    allChatIds = [] as SelectedMembersType,
-    collection: SelectedCollectionType,
-    chats: SelectedChatCollectionType,
-): UseMembersSelectionResult => {
-    const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>(initialState);
-    const [selectedChats, setSelectedChats] = useState<SelectedMembersType>(initialState);
+export const useMembersSelection = (): UseMembersSelectionResult => {
+    const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>([]);
+    const [selectedChats, setSelectedChats] = useState<SelectedChatsType>([]);
 
-    const handleSelectMember: HandleSelectMember = (e, rowId, type) => {
+    const handleSelectChat: HandleSelectChat = (e, row) => {
         e.preventDefault();
         e.stopPropagation();
 
-        if (type === 'chat') {
-            setSelectedChats((prevState) => {
-                if (prevState.includes(rowId)) {
-                    return prevState.filter((i) => i !== rowId);
-                }
-
-                return [...prevState, rowId];
-            });
-        }
-
-        setSelectedMembers((prevState) => {
-            if (prevState.includes(rowId)) {
-                return prevState.filter((i) => i !== rowId);
+        setSelectedChats((prevState) => {
+            if (prevState.map((el) => el.peer.id).includes(row.peer.id)) {
+                return prevState.filter((i) => i.peer.id !== row.peer.id);
             }
 
-            return [...prevState, rowId];
+            return [...prevState, row];
         });
     };
 
-    const isMemberActive: IsMemberActive = (rowId) => selectedMembers.includes(rowId);
+    const handleSelectMember: HandleSelectMember = (e, row) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-    const isChatActive: IsMemberActive = (rowId) => selectedChats.includes(rowId);
+        setSelectedMembers((prevState) => {
+            if (prevState.map((el) => el.id).includes(row.id)) {
+                return prevState.filter((i) => i.id !== row.id);
+            }
 
-    const selectedCollection: SelectedCollectionType = collection?.filter((el) =>
-        selectedMembers.includes(el.id),
-    );
+            return [...prevState, row];
+        });
+    };
 
-    const selectedChatCollection: SelectedChatCollectionType = chats?.filter((el) =>
-        selectedChats.includes(el.peer.id),
-    );
+    const isMemberActive: IsMemberActive = (row) =>
+        selectedMembers.map((el) => el.id).includes(row.id);
+
+    const isChatActive: IsChatActive = (row) =>
+        selectedChats.map((el) => el.peer.id).includes(row.peer.id);
 
     return {
-        selectedMembers,
-        selectedChats,
-        selectedCollection,
-        selectedChatCollection,
-        handleSelectMember,
         isMemberActive,
         isChatActive,
+        selectedMembers,
+        selectedChats,
+        handleSelectMember,
+        handleSelectChat,
     };
 };

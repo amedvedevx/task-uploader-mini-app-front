@@ -35,7 +35,11 @@ export const ListMembersPage: FC = () => {
         (state: RootState) => state.members,
     );
 
-    const vkUserIds = selectedMembers.map((el) => el.id);
+    const chatMemberIds = selectedChatMembers
+        .map((el) => el.members.map((member) => member.id))
+        .flat();
+
+    const vkUserIds = chatMemberIds.concat(selectedMembers.map((el) => el.id));
 
     const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
 

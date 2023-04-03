@@ -1,15 +1,25 @@
 import type { FC } from 'react';
 import { ButtonGroup } from '@vkontakte/vkui';
 
+import type { SnackBarText, TaskResults } from '@/app/types';
+
 import { AddTestees, RemindAll } from './components';
 
 interface HeaderButtonsProps {
     collectionId: string;
     isResults: boolean;
     setPopout: (arg: JSX.Element | null) => void;
+    setSnackbarText: (arg: SnackBarText) => void;
+    notCompletedMembers: TaskResults[];
 }
 
-export const HeaderButtons: FC<HeaderButtonsProps> = ({ collectionId, isResults, setPopout }) => (
+export const HeaderButtons: FC<HeaderButtonsProps> = ({
+    collectionId,
+    isResults,
+    setPopout,
+    setSnackbarText,
+    notCompletedMembers,
+}) => (
     <ButtonGroup
         stretched
         mode='vertical'
@@ -17,6 +27,12 @@ export const HeaderButtons: FC<HeaderButtonsProps> = ({ collectionId, isResults,
     >
         <AddTestees collectionId={collectionId} />
 
-        {isResults && <RemindAll setPopout={setPopout} />}
+        {isResults && (
+            <RemindAll
+                notCompletedMembers={notCompletedMembers}
+                setPopout={setPopout}
+                setSnackbarText={setSnackbarText}
+            />
+        )}
     </ButtonGroup>
 );
