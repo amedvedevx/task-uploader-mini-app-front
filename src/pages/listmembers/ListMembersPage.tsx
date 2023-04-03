@@ -16,7 +16,6 @@ import type { TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 
 import { MembersList } from '../addmembers/components';
-import { useMembersSelection } from '../hooks';
 
 export const ListMembersPage: FC = () => {
     const { collectionId } = useParams();
@@ -32,20 +31,22 @@ export const ListMembersPage: FC = () => {
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
 
-    const { selectedMembers } = useSelector((state: RootState) => state.members);
-    // const selection = useMembersSelection(
-    //     [],
-    //     selectedMembers.map((el) => el.id),
-    //     selectedMembers,
-    // );
-    const vkUserIds = selectedMembers.map((el) => el.id);
+    const { selectedMembers, selectedChatMembers } = useSelector(
+        (state: RootState) => state.members,
+    );
+
+    const memberIds = selectedMembers.map((el) => el.id);
+
+    const chatMemberIds = selectedChatMembers.flat().map((el) => el.id);
+
+    const vkUserIds = memberIds.concat(chatMemberIds);
 
     const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
 
-    const assignMembers = async (memberIds: number[]) => {
+    const assignMembers = async (selectedMemberIds: number[]) => {
         const payload = {
             taskId: collectionId,
-            vkUserIds: memberIds,
+            vkUserIds: selectedMemberIds,
         };
 
         await apointTask({ payload }).unwrap();
@@ -82,10 +83,11 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {filteredData.length > 0 ? (
+            {selectedMembers.length > 0 || selectedChatMembers.length > 0 ? (
                 <MembersList
                     invitedMembers={invitedMembers}
-                    collection={filteredData}
+                    selectedMembers={selectedMembers}
+                    selectedChatMembers={selectedChatMembers}
                 />
             ) : (
                 <MembersNotFound />
@@ -95,7 +97,7 @@ export const ListMembersPage: FC = () => {
                 options={[
                     {
                         text: 'Добавить',
-                        counter: selectedMembers.length,
+                        counter: vkUserIds.length,
                         onClick: () => {
                             assignMembers(vkUserIds);
                             router.pushPage(PAGE_COLLECTION_ID, { collectionId: currentTask.id });

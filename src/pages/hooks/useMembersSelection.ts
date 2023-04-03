@@ -28,6 +28,7 @@ export const useMembersSelection = (
     allRowsIds = [] as SelectedMembersType,
     allChatIds = [] as SelectedMembersType,
     collection: SelectedCollectionType,
+    chats?: FriendsType[],
 ): UseMembersSelectionResult => {
     const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>(initialState);
     const [selectedChats, setSelectedChats] = useState<SelectedMembersType>(initialState);

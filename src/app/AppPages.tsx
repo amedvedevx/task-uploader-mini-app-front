@@ -67,7 +67,6 @@ export const AppPages: FC = () => {
 
     const bearer = useVkHash();
     const token = useVkToken();
-    console.log(token);
     const userId = useVkUserId(token);
 
     useEffect(() => {

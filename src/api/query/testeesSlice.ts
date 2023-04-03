@@ -5,26 +5,8 @@ import type { FriendsType, GetTesteesProps, GetTesteesResponse } from '@/app/typ
 import { apiSlice } from './apiSlice';
 import type { RootState } from '../store';
 
-type ConversationMember = {
-    member_id: number;
-    invited_by: number;
-    join_date: number;
-    is_admin: boolean;
-    can_kick: boolean;
-};
-
 export type ConversationMembers = {
-    count: number;
-    items: ConversationMember[];
-    chat_restrictions: {
-        admins_promote_users: boolean;
-        only_admins_edit_info: boolean;
-        only_admins_edit_pin: boolean;
-        only_admins_invite: boolean;
-        only_admins_kick: boolean;
-    };
     profiles: FriendsType[];
-    groups: unknown[];
 };
 
 const testeesSlice = apiSlice.injectEndpoints({
@@ -67,7 +49,8 @@ const testeesSlice = apiSlice.injectEndpoints({
                             params: {
                                 access_token: userInfo.token,
                                 peer_id: conversId,
-                                v: '5.131',
+                                count: 50,
+                                v: ' 5.154',
                             },
                         })
                         .then((data: { response: ConversationMembers }) =>
