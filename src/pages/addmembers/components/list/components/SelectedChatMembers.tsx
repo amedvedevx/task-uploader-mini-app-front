@@ -9,23 +9,25 @@ import { deleteChatMember } from '@/api/state';
 
 import { avatarStub, GroupWide, Header, Members } from '../MembersList';
 
-interface ChatMembersProps {
-    collection?: FriendsType[][];
+interface SelectedChatMembersProps {
+    collection?: { chatName: string; members: FriendsType[] }[];
 }
 
-export const ChatMembers: FC<ChatMembersProps> = ({ collection }) => {
+export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({ collection }) => {
     const dispatch = useDispatch();
 
     return (
         <>
-            {collection?.map((chatMembers) => (
+            {collection?.map((chat) => (
                 <GroupWide
+                    key={chat.chatName}
+                    $bottom='45'
                     mode='plain'
                     separator='hide'
                     padding='s'
-                    header={<Header mode='tertiary'>Чат</Header>}
+                    header={<Header mode='tertiary'>{chat.chatName}</Header>}
                 >
-                    {chatMembers.map(({ id, photo_100, first_name, last_name }) => (
+                    {chat.members.map(({ id, photo_100, first_name, last_name }) => (
                         <Members
                             key={id}
                             before={
@@ -43,7 +45,7 @@ export const ChatMembers: FC<ChatMembersProps> = ({ collection }) => {
                                     onClick={() => dispatch(deleteChatMember(id))}
                                 />
                             }
-                            subtitle='Из чата «Чат»'
+                            subtitle={`Из чата «${chat.chatName}»`}
                         >
                             {`${first_name} ${last_name}`}
                         </Members>

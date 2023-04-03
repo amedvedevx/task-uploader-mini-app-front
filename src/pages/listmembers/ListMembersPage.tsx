@@ -35,18 +35,14 @@ export const ListMembersPage: FC = () => {
         (state: RootState) => state.members,
     );
 
-    const memberIds = selectedMembers.map((el) => el.id);
-
-    const chatMemberIds = selectedChatMembers.flat().map((el) => el.id);
-
-    const vkUserIds = memberIds.concat(chatMemberIds);
+    const vkUserIds = selectedMembers.map((el) => el.id);
 
     const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
 
-    const assignMembers = async (selectedMemberIds: number[]) => {
+    const assignMembers = async (membersIds: number[]) => {
         const payload = {
             taskId: collectionId,
-            vkUserIds: selectedMemberIds,
+            vkUserIds: membersIds,
         };
 
         await apointTask({ payload }).unwrap();
@@ -86,7 +82,7 @@ export const ListMembersPage: FC = () => {
             {selectedMembers.length > 0 || selectedChatMembers.length > 0 ? (
                 <MembersList
                     invitedMembers={invitedMembers}
-                    selectedMembers={selectedMembers}
+                    selectedMembers={filteredData}
                     selectedChatMembers={selectedChatMembers}
                 />
             ) : (

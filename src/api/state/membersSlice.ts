@@ -5,7 +5,7 @@ import type { FriendsType } from '@/app/types';
 
 export interface MembersState {
     selectedMembers: FriendsType[];
-    selectedChatMembers: FriendsType[][];
+    selectedChatMembers: { chatName: string; members: FriendsType[] }[];
     chatMemberIds: number[];
 }
 
@@ -25,9 +25,9 @@ export const membersSlice = createSlice({
 
         setSelectedChatMembers: (
             state,
-            action: PayloadAction<{ title: string; members: FriendsType[][] }>,
+            action: PayloadAction<{ chatName: string; members: FriendsType[] }[]>,
         ) => {
-            state.selectedChatMembers = action.payload.members;
+            state.selectedChatMembers = action.payload;
         },
 
         deleteMember: (state, action: PayloadAction<number>) => {
@@ -35,8 +35,8 @@ export const membersSlice = createSlice({
         },
 
         deleteChatMember: (state, action: PayloadAction<number>) => {
-            state.selectedChatMembers = state.selectedChatMembers.map((chats) =>
-                chats.map((chat) => chat).filter((member) => member.id !== action.payload),
+            state.selectedChatMembers = state.selectedChatMembers.filter((chat) =>
+                chat.members.map((member) => member).filter((el) => el.id !== action.payload),
             );
         },
     },

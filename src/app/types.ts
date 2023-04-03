@@ -189,6 +189,14 @@ export interface GetTesteesProps {
     invitedMembers?: number[];
 }
 
+export interface GetChatTestees {
+    profile: FriendsType[];
+}
+
+export interface GetChatTesteesProps {
+    conversationsIds: number[];
+}
+
 export type ItemsType = {
     peer: {
         id: number;

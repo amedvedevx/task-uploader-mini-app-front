@@ -12,7 +12,7 @@ import {
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
 import { useGetTesteesQuery, useGetTaskIdQuery, useGetConversationsTesteesQuery } from '@/api';
 import { setSelectedChatMembers, setSelectedMembers } from '@/api/state';
-import type { FriendsType, GetTesteesResponse, TaskType } from '@/app/types';
+import type { FriendsType, GetTesteesResponse, ItemsType, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 
 import { MembersList } from './components';
@@ -36,10 +36,15 @@ export const AddMemmbersPage: FC = () => {
     });
 
     const [members, setMembers] = useState<FriendsType[]>([]);
+    const [chats, setChats] = useState<ItemsType[]>([]);
 
     useEffect(() => {
         if (!search.length && !isLoading) {
             setMembers(testees.profiles);
+        }
+
+        if (!isLoading && testees.items?.length) {
+            setChats(testees.items.filter((el) => el.peer.type === 'chat'));
         }
     }, [search, testees, isLoading]);
 
@@ -48,10 +53,13 @@ export const AddMemmbersPage: FC = () => {
         testees.profiles?.map((el) => el.id),
         testees.items?.map((el) => el.peer.id),
         members,
+        chats,
     );
 
+    console.log('selectedChat', selection.selectedChatCollection);
+
     const { data: chatMembers } = useGetConversationsTesteesQuery({
-        conversationsIds: selection.selectedChats,
+        conversations: selection.selectedChatCollection,
     });
 
     const goBack = () => {
@@ -99,7 +107,7 @@ export const AddMemmbersPage: FC = () => {
             {(!isLoading && testees.items?.length > 0) || testees.profiles?.length > 0 ? (
                 <MembersList
                     selection={selection}
-                    collection={testees}
+                    searchMembers={testees}
                 />
             ) : (
                 <MembersNotFound />
@@ -111,7 +119,7 @@ export const AddMemmbersPage: FC = () => {
                         text: 'Продолжить',
                         onClick: () => {
                             dispatch(setSelectedMembers(selection.selectedCollection));
-                            dispatch(setSelectedChatMembers({ members: chatMembers }));
+                            dispatch(setSelectedChatMembers(chatMembers));
                             router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
                         },
                         loading: false,

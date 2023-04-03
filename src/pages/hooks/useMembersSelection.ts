@@ -1,10 +1,12 @@
 import { useState } from 'react';
 
-import type { FriendsType } from '@/app/types';
+import type { FriendsType, ItemsType } from '@/app/types';
 
 type SelectedMembersType = number[];
 
 type SelectedCollectionType = FriendsType[];
+
+type SelectedChatCollectionType = ItemsType[];
 
 type HandleSelectMember = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -18,6 +20,7 @@ export interface UseMembersSelectionResult {
     selectedMembers: SelectedMembersType;
     selectedChats: SelectedMembersType;
     selectedCollection: SelectedCollectionType;
+    selectedChatCollection: SelectedChatCollectionType;
     handleSelectMember: HandleSelectMember;
     isMemberActive: IsMemberActive;
     isChatActive: IsMemberActive;
@@ -28,7 +31,7 @@ export const useMembersSelection = (
     allRowsIds = [] as SelectedMembersType,
     allChatIds = [] as SelectedMembersType,
     collection: SelectedCollectionType,
-    chats?: FriendsType[],
+    chats: SelectedChatCollectionType,
 ): UseMembersSelectionResult => {
     const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>(initialState);
     const [selectedChats, setSelectedChats] = useState<SelectedMembersType>(initialState);
@@ -60,14 +63,19 @@ export const useMembersSelection = (
 
     const isChatActive: IsMemberActive = (rowId) => selectedChats.includes(rowId);
 
-    const selectedCollection: SelectedCollectionType = collection.filter((el) =>
+    const selectedCollection: SelectedCollectionType = collection?.filter((el) =>
         selectedMembers.includes(el.id),
+    );
+
+    const selectedChatCollection: SelectedChatCollectionType = chats?.filter((el) =>
+        selectedChats.includes(el.peer.id),
     );
 
     return {
         selectedMembers,
         selectedChats,
         selectedCollection,
+        selectedChatCollection,
         handleSelectMember,
         isMemberActive,
         isChatActive,

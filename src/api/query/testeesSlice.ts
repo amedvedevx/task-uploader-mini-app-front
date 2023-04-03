@@ -1,13 +1,9 @@
-import bridge from '@vkontakte/vk-bridge';
-
-import type { FriendsType, GetTesteesProps, GetTesteesResponse } from '@/app/types';
+import type { GetTesteesProps, GetTesteesResponse, FriendsType, ItemsType } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
 import type { RootState } from '../store';
-
-export type ConversationMembers = {
-    profiles: FriendsType[];
-};
+import { searchConversations } from '../bridge/seacrhConversations';
+import { getConversationsMembers } from '../bridge/getConversationsMembers';
 
 const testeesSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -15,48 +11,27 @@ const testeesSlice = apiSlice.injectEndpoints({
             queryFn: async ({ search, count }, { getState }) => {
                 const { userInfo } = (getState() as RootState).authorization;
 
-                const testees = await bridge
-                    .send('VKWebAppCallAPIMethod', {
-                        method: 'messages.searchConversations',
-                        params: {
-                            access_token: userInfo.token,
-                            q: search,
-                            count,
-                            extended: 1,
-                            v: '5.131',
-                            fields: 'photo_100',
-                        },
-                    })
-                    .then((data: { response: GetTesteesResponse }) => data.response);
+                const testees = await searchConversations(userInfo.token, search, count);
 
                 return { data: testees };
             },
         }),
 
         getConversationsTestees: builder.query<
-            ConversationMembers[],
-            { conversationsIds: number[] }
+            { chatName: string; members: FriendsType[] }[],
+            { conversations: ItemsType[] }
         >({
-            queryFn: async ({ conversationsIds }, { getState }) => {
+            queryFn: async ({ conversations }, { getState }) => {
                 const { userInfo } = (getState() as RootState).authorization;
 
-                const convMembers: ConversationMembers[] = [];
+                const convMembers: { chatName: string; members: FriendsType[] }[] = [];
 
-                const promises = conversationsIds.map(async (conversId: number) => {
-                    const result = await bridge
-                        .send('VKWebAppCallAPIMethod', {
-                            method: 'messages.getConversationMembers',
-                            params: {
-                                access_token: userInfo.token,
-                                peer_id: conversId,
-                                count: 50,
-                                v: ' 5.154',
-                            },
-                        })
-                        .then((data: { response: ConversationMembers }) =>
-                            data.response.profiles.slice(0, 50),
-                        )
-                        .catch((err) => err);
+                const promises = conversations.map(async ({ peer, chat_settings }) => {
+                    const result = getConversationsMembers(
+                        userInfo.token,
+                        peer.id,
+                        chat_settings.title,
+                    );
 
                     return result;
                 });
