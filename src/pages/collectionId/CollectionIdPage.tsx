@@ -2,7 +2,7 @@ import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search, Snackbar } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Icon28CheckCircleOutline } from '@vkontakte/icons';
+import { Icon28CheckCircleOutline, Icon28ErrorCircleOutline } from '@vkontakte/icons';
 import styled from 'styled-components';
 
 import {
@@ -17,7 +17,7 @@ import {
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import type { TaskType } from '@/app/types';
+import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
 import { normalizeTestees } from '@/lib/utils';
@@ -57,7 +57,7 @@ export const CollectionIdPage: FC = () => {
     const [popout, setPopout] = useState<JSX.Element | null>(null);
 
     const [selectedTab, setSelectedTab] = useState<TabType>('notCompleted');
-    const [snackbarText, setSnackbarText] = useState<string>('');
+    const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     const { filteredData, search, changeSearch } = useSearch(taskResults, ['testee', 'fullName']);
 
@@ -71,7 +71,7 @@ export const CollectionIdPage: FC = () => {
             header='Завершить задание'
             action={async () => {
                 await updateTask({ taskId: collectionId, payload: payloadCloseTask });
-                setSnackbarText('Задание по сбору завершено');
+                setSnackbarText({ type: 'success', text: 'Задание по сбору завершено' });
             }}
             actionText='Завершить сбор'
             setPopout={setPopout}
@@ -195,8 +195,10 @@ export const CollectionIdPage: FC = () => {
                                 {!isTaskClosed && (
                                     <HeaderButtons
                                         isResults={normalizedTestees.notCompleted.length > 0}
+                                        notCompletedMembers={normalizedTestees.notCompleted}
                                         collectionId={collectionId}
                                         setPopout={setPopout}
+                                        setSnackbarText={setSnackbarText}
                                     />
                                 )}
 
@@ -224,10 +226,16 @@ export const CollectionIdPage: FC = () => {
 
             {snackbarText && (
                 <Snackbar
-                    before={<Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />}
-                    onClose={() => setSnackbarText('')}
+                    before={
+                        snackbarText.type === 'error' ? (
+                            <Icon28ErrorCircleOutline color='var(--vkui--color_text_negative)' />
+                        ) : (
+                            <Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />
+                        )
+                    }
+                    onClose={() => setSnackbarText(null)}
                 >
-                    {snackbarText}
+                    {snackbarText.text}
                 </Snackbar>
             )}
 

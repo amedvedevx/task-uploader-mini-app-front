@@ -3,16 +3,17 @@ import { CellButton, Avatar } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
 import { copyUploadLinkToClipboard } from '@/lib/utils';
+import type { SnackBarText } from '@/app/types';
 
 interface CopyUploadLinkProps {
     collectionId: string;
-    setSnackbarText: (arg: string) => void;
+    setSnackbarText: (arg: SnackBarText) => void;
 }
 
 export const CopyUploadLink: FC<CopyUploadLinkProps> = ({ collectionId, setSnackbarText }) => {
     const copyLink = (copyText: string) => {
         copyUploadLinkToClipboard(copyText);
-        setSnackbarText('Ссылка скопирована');
+        setSnackbarText({ type: 'success', text: 'Ссылка скопирована' });
     };
 
     return (

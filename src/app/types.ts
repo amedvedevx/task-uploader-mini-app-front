@@ -36,9 +36,11 @@ export interface GetTaskIdResponce extends TaskType {}
 export type TaskType = {
     id: string;
     owner: {
-        id: number;
+        vkUserId: number;
         firstName: string;
         lastName: string;
+        fullName: string;
+        photo: string;
         createDate: string;
     };
     status: TaskStatusTypesForOrganizer & TaskStatusTypesForTestee;
@@ -182,6 +184,13 @@ export interface GetTesteesProps {
     invitedMembers?: number[];
 }
 
+export interface SendNotificationProps {
+    whoToSend: number[];
+    ownerName: string;
+    taskName: string;
+    taskId: string;
+}
+
 export type FriendsType = {
     id: number;
     can_access_closed: boolean;
@@ -222,3 +231,8 @@ export enum AddResultStatusTypes {
     'LOADED' = 'LOADED',
     'NOT_LOADED' = 'NOT_LOADED',
 }
+
+export type SnackBarText = {
+    type: 'error' | 'success';
+    text: string;
+} | null;
