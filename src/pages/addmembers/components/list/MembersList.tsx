@@ -68,16 +68,6 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
                 <Group
                     mode='plain'
                     padding='s'
-                    header={
-                        invitedMembers?.length && (
-                            <Header
-                                color='#6D7885'
-                                mode='tertiary'
-                            >
-                                Выбранные участники
-                            </Header>
-                        )
-                    }
                 >
                     <List>
                         {collection.map(({ id, first_name, last_name, photo_100 }) => (
