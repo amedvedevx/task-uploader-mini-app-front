@@ -83,7 +83,7 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {selectedMembers.length > 0 || selectedChatMembers.length > 0 ? (
+            {filteredData.length > 0 || invitedMembers.length > 0 ? (
                 <MembersList
                     invitedMembers={invitedMembers}
                     selectedMembers={filteredData}
