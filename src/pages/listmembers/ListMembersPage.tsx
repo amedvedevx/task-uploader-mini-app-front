@@ -57,6 +57,9 @@ export const ListMembersPage: FC = () => {
         router.popPage();
     };
 
+    const isMembers =
+        selectedChatMembers.length > 0 || filteredData.length > 0 || invitedMembers.length > 0;
+
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
             <FixedLayout
@@ -83,7 +86,7 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {filteredData.length > 0 || invitedMembers.length > 0 ? (
+            {isMembers ? (
                 <MembersList
                     invitedMembers={invitedMembers}
                     selectedMembers={filteredData}
