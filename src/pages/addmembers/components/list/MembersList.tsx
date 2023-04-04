@@ -37,10 +37,9 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
     }
 
     return (
-        <>
+        <MembersListWrapper>
             {invitedMembers && invitedMembers?.length > 0 && (
-                <GroupWide
-                    $isComplete
+                <Group
                     separator='hide'
                     mode='plain'
                     padding='s'
@@ -66,11 +65,10 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
                             ),
                         )}
                     </List>
-                </GroupWide>
+                </Group>
             )}
 
-            <GroupWide
-                $isComplete={!invitedMembers?.length}
+            <Group
                 mode='plain'
                 padding='s'
                 header={
@@ -122,13 +120,14 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
                         </Members>
                     ))}
                 </List>
-            </GroupWide>
-        </>
+            </Group>
+        </MembersListWrapper>
     );
 };
 
-const GroupWide = styled(Group)<{ $isComplete: boolean }>`
-    padding-top: ${({ $isComplete }) => ($isComplete ? '103px' : '0')};
+const MembersListWrapper = styled.div`
+    padding-top: 103px;
+    padding-bottom: 45px;
 `;
 
 const Header = styled(HeaderRoot)`
