@@ -82,7 +82,7 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {filteredData.length > 0 ? (
+            {filteredData.length > 0 || invitedMembers.length > 0 ? (
                 <MembersList
                     invitedMembers={invitedMembers}
                     selection={selection}

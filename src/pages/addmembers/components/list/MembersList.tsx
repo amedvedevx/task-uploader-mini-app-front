@@ -18,7 +18,7 @@ import { deleteMember } from '@/api/state';
 import { PANEL_ADD_MEMBERS, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { UseMembersSelectionResult } from '@/pages/hooks';
 
-import { Checkbox, SkeletonFriends } from './components';
+import { Checkbox } from './components';
 
 interface MembersListProps {
     collection: FriendsType[];
@@ -31,10 +31,6 @@ const avatarStub = 'https://vk.com/images/camera_100.png';
 export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, selection }) => {
     const location = useLocation();
     const dispatch = useDispatch();
-
-    if (!collection.length) {
-        return <SkeletonFriends />;
-    }
 
     return (
         <MembersListWrapper>
