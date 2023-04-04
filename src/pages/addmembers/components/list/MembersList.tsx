@@ -2,9 +2,8 @@ import type { FC } from 'react';
 import { SimpleCell, Header as HeaderRoot } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
-import type { FriendsType, GetTesteesResponse, TaskResults } from '@/app/types';
+import type { FriendsType, GetTesteesResponse, ItemsType, TaskResults } from '@/app/types';
 import type { UseMembersSelectionResult } from '@/pages/hooks';
-import type { SelectedChatMembersType } from '@/api/state';
 
 import { InvitedMembers, SearchMembers, SelectedChatMembers, SelectedMembers } from './components';
 
@@ -12,8 +11,9 @@ interface MembersListProps {
     searchMembers?: GetTesteesResponse;
     invitedMembers?: TaskResults['testee'][];
     selectedMembers?: FriendsType[];
-    selectedChatMembers?: SelectedChatMembersType[];
+    selectedChats?: ItemsType[];
     selection?: UseMembersSelectionResult;
+    setMembers?: React.Dispatch<React.SetStateAction<FriendsType[]>>;
 }
 
 export const avatarStub = 'https://vk.com/images/camera_100.png';
@@ -21,9 +21,10 @@ export const avatarStub = 'https://vk.com/images/camera_100.png';
 export const MembersList: FC<MembersListProps> = ({
     searchMembers,
     invitedMembers,
-    selectedChatMembers,
+    selectedChats,
     selectedMembers,
     selection,
+    setMembers,
 }) => (
     <MembersListWrapper>
         {invitedMembers?.length > 0 && <InvitedMembers collection={invitedMembers} />}
@@ -35,11 +36,14 @@ export const MembersList: FC<MembersListProps> = ({
             />
         )}
 
-        {selectedMembers?.length > 0 && <SelectedMembers collection={selectedMembers} />}
-
-        {selectedChatMembers?.length > 0 && (
-            <SelectedChatMembers collection={selectedChatMembers} />
+        {selectedChats?.length > 0 && (
+            <SelectedChatMembers
+                collection={selectedChats}
+                setMembers={setMembers}
+            />
         )}
+
+        {selectedMembers?.length > 0 && <SelectedMembers collection={selectedMembers} />}
     </MembersListWrapper>
 );
 

@@ -1,6 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -12,7 +13,7 @@ import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
 import { useGetTaskResultsQuery, useGetTaskIdQuery, useApointTaskMutation } from '@/api';
 import { useSearch } from '@/hooks';
-import type { TaskType } from '@/app/types';
+import type { FriendsType, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 
 import { MembersList } from '../addmembers/components';
@@ -31,15 +32,17 @@ export const ListMembersPage: FC = () => {
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
 
-    const { selectedMembers, selectedChatMembers } = useSelector(
-        (state: RootState) => state.members,
-    );
+    const { selectedMembers, selectedChats } = useSelector((state: RootState) => state.members);
 
-    const chatMemberIds = selectedChatMembers
-        .map((el) => el.members.map((member) => member.id))
-        .flat();
+    const [members, setMembers] = useState<FriendsType[]>([]);
 
-    const vkUserIds = chatMemberIds.concat(selectedMembers.map((el) => el.id));
+    console.log(members);
+
+    // const chatMemberIds = selectedChatMembers
+    //     .map((el) => el.members.map((member) => member.id))
+    //     .flat();
+
+    const vkUserIds = selectedMembers.map((el) => el.id);
 
     const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
 
@@ -83,11 +86,12 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {filteredData.length > 0 || invitedMembers.length > 0 ? (
+            {selectedMembers.length > 0 || invitedMembers.length > 0 ? (
                 <MembersList
                     invitedMembers={invitedMembers}
-                    selectedMembers={filteredData}
-                    selectedChatMembers={selectedChatMembers}
+                    selectedMembers={selectedMembers}
+                    selectedChats={selectedChats}
+                    setMembers={setMembers}
                 />
             ) : (
                 <MembersNotFound />

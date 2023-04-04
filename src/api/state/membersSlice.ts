@@ -1,21 +1,16 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { FriendsType } from '@/app/types';
-
-export type SelectedChatMembersType = {
-    chatName: string;
-    members: FriendsType[];
-};
+import type { FriendsType, ItemsType } from '@/app/types';
 
 export interface MembersState {
     selectedMembers: FriendsType[];
-    selectedChatMembers: SelectedChatMembersType[];
+    selectedChats: ItemsType[];
 }
 
 const initialState: MembersState = {
     selectedMembers: [],
-    selectedChatMembers: [],
+    selectedChats: [],
 };
 
 export const membersSlice = createSlice({
@@ -26,11 +21,8 @@ export const membersSlice = createSlice({
             state.selectedMembers = action.payload;
         },
 
-        setSelectedChatMembers: (
-            state,
-            action: PayloadAction<{ chatName: string; members: FriendsType[] }[]>,
-        ) => {
-            state.selectedChatMembers = action.payload;
+        setSelectedChats: (state, action: PayloadAction<ItemsType[]>) => {
+            state.selectedChats = action.payload;
         },
 
         deleteMember: (state, action: PayloadAction<number>) => {
@@ -46,7 +38,7 @@ export const membersSlice = createSlice({
     },
 });
 
-export const { setSelectedMembers, setSelectedChatMembers, deleteMember, deleteChatMember } =
+export const { setSelectedMembers, setSelectedChats, deleteMember, deleteChatMember } =
     membersSlice.actions;
 
 export default membersSlice.reducer;

@@ -1,24 +1,46 @@
 import type { FC } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar, calcInitialsAvatarColor, Group } from '@vkontakte/vkui';
 import { Icon24Cancel } from '@vkontakte/icons';
-import { useDispatch } from 'react-redux';
 
 import { getInitials } from '@/lib';
-import type { SelectedChatMembersType } from '@/api/state';
-import { deleteChatMember } from '@/api/state';
+import type { FriendsType, GetChatTesteesResponse, ItemsType } from '@/app/types';
+import { useGetChatTesteesQuery } from '@/api';
 
 import { avatarStub, Header, Members } from '../MembersList';
 
 interface SelectedChatMembersProps {
-    collection?: SelectedChatMembersType[];
+    collection?: ItemsType[];
+    setMembers: React.Dispatch<React.SetStateAction<FriendsType[] | GetChatTesteesResponse[]>>;
 }
 
-export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({ collection }) => {
-    const dispatch = useDispatch();
+export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({ collection, setMembers }) => {
+    const { data: chatMembers = [], isLoading } = useGetChatTesteesQuery({
+        chats: collection || [],
+    });
+
+    const [chats, setChats] = useState<GetChatTesteesResponse[]>([]);
+
+    useEffect(() => {
+        if (!isLoading) {
+            setChats(chatMembers);
+            setMembers(chatMembers);
+        }
+    }, [chatMembers, isLoading, setMembers]);
+
+    const removeChatMember = (id: number) => {
+        setChats((prevState) =>
+            prevState.map((chat) => ({
+                chatName: chat.chatName,
+                members: chat.members.filter((member) => member.id !== id),
+            })),
+        );
+        setMembers(chats);
+    };
 
     return (
         <>
-            {collection?.map((chat) => (
+            {chats.map((chat) => (
                 <Group
                     key={chat.chatName}
                     mode='plain'
@@ -41,7 +63,7 @@ export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({ collection }
                             after={
                                 <Icon24Cancel
                                     fill='var(--vkui--color_text_tertiary)'
-                                    onClick={() => dispatch(deleteChatMember(id))}
+                                    onClick={() => removeChatMember(id)}
                                 />
                             }
                             subtitle={`Из чата «${chat.chatName}»`}

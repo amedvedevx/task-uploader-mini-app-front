@@ -10,8 +10,8 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import { useGetTesteesQuery, useGetTaskIdQuery, useGetChatTesteesQuery } from '@/api';
-import { setSelectedChatMembers, setSelectedMembers } from '@/api/state';
+import { useGetTesteesQuery, useGetTaskIdQuery } from '@/api';
+import { setSelectedChats, setSelectedMembers } from '@/api/state';
 import type { GetTesteesResponse, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 
@@ -37,9 +37,9 @@ export const AddMemmbersPage: FC = () => {
 
     const selection = useMembersSelection();
 
-    const { data: chatMembers = [] } = useGetChatTesteesQuery({
-        chats: selection.selectedChats,
-    });
+    // const { data: chatMembers = [] } = useGetChatTesteesQuery({
+    //     chats: selection.selectedChats,
+    // });
 
     const goBack = () => {
         router.popPage();
@@ -98,7 +98,7 @@ export const AddMemmbersPage: FC = () => {
                         text: 'Продолжить',
                         onClick: () => {
                             dispatch(setSelectedMembers(selection.selectedMembers));
-                            dispatch(setSelectedChatMembers(chatMembers));
+                            dispatch(setSelectedChats(selection.selectedChats));
                             router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
                         },
                         loading: false,
