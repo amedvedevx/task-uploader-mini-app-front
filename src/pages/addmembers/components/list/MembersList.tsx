@@ -69,7 +69,7 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
                     mode='plain'
                     padding='s'
                     header={
-                        !invitedMembers?.length && (
+                        invitedMembers?.length && (
                             <Header
                                 color='#6D7885'
                                 mode='tertiary'
