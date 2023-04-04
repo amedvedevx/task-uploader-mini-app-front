@@ -1,11 +1,6 @@
 import bridge from '@vkontakte/vk-bridge';
 
-import type {
-    ConversationMembers,
-    FriendsType,
-    GetTesteesProps,
-    SendNotificationProps,
-} from '@/app/types';
+import type { FriendsType, GetTesteesProps, SendNotificationProps } from '@/app/types';
 import { UPLOAD_URL } from '@/app/config';
 
 import { apiSlice } from './apiSlice';

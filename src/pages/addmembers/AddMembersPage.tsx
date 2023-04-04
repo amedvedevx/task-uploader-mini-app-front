@@ -44,11 +44,7 @@ export const AddMemmbersPage: FC = () => {
 
     const [allTestees, setAllTestees] = useState<FriendsType[]>([]);
 
-    const selection = useMembersSelection(
-        [],
-        testees.map((el) => el.id),
-        allTestees,
-    );
+    const selection = useMembersSelection([], testees.map((el) => el.id) || [], allTestees);
 
     const goBack = () => {
         router.popPage();
@@ -67,10 +63,10 @@ export const AddMemmbersPage: FC = () => {
     };
 
     useEffect(() => {
-        if (!search.length) {
+        if (!search.length && !isLoading) {
             setAllTestees(testees);
         }
-    }, [search, testees]);
+    }, [isLoading, search, testees]);
 
     return (
         <Panel id={PANEL_ADD_MEMBERS}>
