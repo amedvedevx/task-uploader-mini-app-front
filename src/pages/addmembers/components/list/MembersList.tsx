@@ -64,59 +64,59 @@ export const MembersList: FC<MembersListProps> = ({ collection, invitedMembers, 
                 </Group>
             )}
 
-            <Group
-                mode='plain'
-                padding='s'
-                header={
-                    invitedMembers?.length && (
+            {collection.length > 0 && (
+                <Group
+                    mode='plain'
+                    padding='s'
+                    header={
                         <Header
                             color='#6D7885'
                             mode='tertiary'
                         >
                             Выбранные участники
                         </Header>
-                    )
-                }
-            >
-                <List>
-                    {collection.map(({ id, first_name, last_name, photo_100 }) => (
-                        <Members
-                            key={id}
-                            before={
-                                <>
-                                    {location.getPanelId() === PANEL_ADD_MEMBERS && (
-                                        <Checkbox
-                                            checked={selection.isMemberActive(id)}
-                                            onChange={(e) => {
-                                                selection.handleSelectMember(e, id);
-                                            }}
-                                        />
-                                    )}
+                    }
+                >
+                    <List>
+                        {collection.map(({ id, first_name, last_name, photo_100 }) => (
+                            <Members
+                                key={id}
+                                before={
+                                    <>
+                                        {location.getPanelId() === PANEL_ADD_MEMBERS && (
+                                            <Checkbox
+                                                checked={selection.isMemberActive(id)}
+                                                onChange={(e) => {
+                                                    selection.handleSelectMember(e, id);
+                                                }}
+                                            />
+                                        )}
 
-                                    <Avatar
-                                        size={40}
-                                        src={photo_100 === avatarStub ? '#' : photo_100}
-                                        alt='icon'
-                                        gradientColor={calcInitialsAvatarColor(id)}
-                                        initials={getInitials(`${first_name} ${last_name}`)}
-                                    />
-                                </>
-                            }
-                            after={
-                                location.getPanelId() === PANEL_LIST_MEMBERS && (
-                                    <Icon24Cancel
-                                        fill='var(--vkui--color_text_tertiary)'
-                                        onClick={() => dispatch(deleteMember(id))}
-                                    />
-                                )
-                            }
-                            onClick={(e) => selection.handleSelectMember(e as any, id)}
-                        >
-                            {`${first_name} ${last_name}`}
-                        </Members>
-                    ))}
-                </List>
-            </Group>
+                                        <Avatar
+                                            size={40}
+                                            src={photo_100 === avatarStub ? '#' : photo_100}
+                                            alt='icon'
+                                            gradientColor={calcInitialsAvatarColor(id)}
+                                            initials={getInitials(`${first_name} ${last_name}`)}
+                                        />
+                                    </>
+                                }
+                                after={
+                                    location.getPanelId() === PANEL_LIST_MEMBERS && (
+                                        <Icon24Cancel
+                                            fill='var(--vkui--color_text_tertiary)'
+                                            onClick={() => dispatch(deleteMember(id))}
+                                        />
+                                    )
+                                }
+                                onClick={(e) => selection.handleSelectMember(e as any, id)}
+                            >
+                                {`${first_name} ${last_name}`}
+                            </Members>
+                        ))}
+                    </List>
+                </Group>
+            )}
         </MembersListWrapper>
     );
 };
