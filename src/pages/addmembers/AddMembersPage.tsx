@@ -59,8 +59,6 @@ export const AddMemmbersPage: FC = () => {
         invitedMembersIds,
     });
 
-    console.log(testees);
-
     useEffect(() => {
         if (!isLoading && testees.profiles.length < 205) {
             setItemLength(testees.profiles.length);
