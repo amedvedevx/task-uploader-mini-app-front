@@ -24,7 +24,7 @@ import { FooterWithButton, MembersNotFound } from '@/components';
 import { MembersList } from './components';
 import { useMembersSelection } from '../hooks';
 
-const maxSearchTesttesItems = 205;
+const maxTesteeItems = 205;
 
 export const AddMemmbersPage: FC = () => {
     const { collectionId } = useParams();
@@ -62,7 +62,7 @@ export const AddMemmbersPage: FC = () => {
     });
 
     useEffect(() => {
-        if (!isLoading && testees.profiles.length < maxSearchTesttesItems) {
+        if (!isLoading && testees.profiles.length < maxTesteeItems) {
             setItemLength(testees.profiles.length);
         }
     }, [isLoading, testees]);

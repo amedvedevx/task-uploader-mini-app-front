@@ -172,18 +172,14 @@ export const CollectionIdPage: FC = () => {
                     taskUsersConsolidated={currentTask.consolidatedData}
                 />
 
-                {selectedTab === 'notCompleted' && (
-                    <>
-                        {!isTaskClosed && (
-                            <HeaderButtons
-                                isResults={normalizedTestees.notCompleted.length > 0}
-                                notCompletedMembers={normalizedTestees.notCompleted}
-                                collectionId={collectionId}
-                                setPopout={setPopout}
-                                setSnackbarText={setSnackbarText}
-                            />
-                        )}
-                    </>
+                {selectedTab === 'notCompleted' && !isTaskClosed && (
+                    <HeaderButtons
+                        isResults={normalizedTestees.notCompleted.length > 0}
+                        notCompletedMembers={normalizedTestees.notCompleted}
+                        collectionId={collectionId}
+                        setPopout={setPopout}
+                        setSnackbarText={setSnackbarText}
+                    />
                 )}
             </FixedLayout>
 
