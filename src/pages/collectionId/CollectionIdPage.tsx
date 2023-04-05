@@ -137,23 +137,23 @@ export const CollectionIdPage: FC = () => {
 
     return (
         <Panel id={PANEL_COLLECTION_ID}>
-            <PanelHeaderCentered
-                separator={false}
-                before={<PanelHeaderBack onClick={goBack} />}
-            >
-                {currentTask ? (
-                    <PanelHeaderContentCentered status={currentTask.name}>
-                        {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
-                    </PanelHeaderContentCentered>
-                ) : (
-                    <PanelHeaderSkeleton />
-                )}
-            </PanelHeaderCentered>
-
             <FixedLayout
                 filled
                 vertical='top'
             >
+                <PanelHeaderCentered
+                    separator={false}
+                    before={<PanelHeaderBack onClick={goBack} />}
+                >
+                    {currentTask ? (
+                        <PanelHeaderContentCentered status={currentTask.name}>
+                            {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
+                        </PanelHeaderContentCentered>
+                    ) : (
+                        <PanelHeaderSkeleton />
+                    )}
+                </PanelHeaderCentered>
+
                 <Search
                     value={search}
                     onChange={changeSearch}
@@ -162,7 +162,7 @@ export const CollectionIdPage: FC = () => {
                 {!isTaskClosed && (
                     <CopyUploadLink
                         setSnackbarText={setSnackbarText}
-                        collectionId={collectionId}
+                        currentTask={currentTask}
                     />
                 )}
 
@@ -171,6 +171,20 @@ export const CollectionIdPage: FC = () => {
                     setSelectedTab={setSelectedTab}
                     taskUsersConsolidated={currentTask.consolidatedData}
                 />
+
+                {selectedTab === 'notCompleted' && (
+                    <>
+                        {!isTaskClosed && (
+                            <HeaderButtons
+                                isResults={normalizedTestees.notCompleted.length > 0}
+                                notCompletedMembers={normalizedTestees.notCompleted}
+                                collectionId={collectionId}
+                                setPopout={setPopout}
+                                setSnackbarText={setSnackbarText}
+                            />
+                        )}
+                    </>
+                )}
             </FixedLayout>
 
             <ListContainer $isTaskClosed={isTaskClosed}>
@@ -192,16 +206,6 @@ export const CollectionIdPage: FC = () => {
 
                         {selectedTab === 'notCompleted' && (
                             <>
-                                {!isTaskClosed && (
-                                    <HeaderButtons
-                                        isResults={normalizedTestees.notCompleted.length > 0}
-                                        notCompletedMembers={normalizedTestees.notCompleted}
-                                        collectionId={collectionId}
-                                        setPopout={setPopout}
-                                        setSnackbarText={setSnackbarText}
-                                    />
-                                )}
-
                                 {normalizedTestees.notCompleted.length > 0 ? (
                                     <CollectionMembers
                                         setSnackbarText={setSnackbarText}

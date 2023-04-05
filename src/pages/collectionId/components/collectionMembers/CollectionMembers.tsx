@@ -46,7 +46,9 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
     };
 
     return (
-        <Group
+        <GroupWide
+            $selectedTab={selectedTab}
+            $isTaskClosed={isTaskClosed}
             mode='plain'
             padding='s'
         >
@@ -84,9 +86,16 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                     </Members>
                 ))}
             </List>
-        </Group>
+        </GroupWide>
     );
 };
+
+const GroupWide = styled(Group)<{ $selectedTab: TabType; $isTaskClosed: boolean }>`
+    ${({ $selectedTab, $isTaskClosed }) =>
+        $selectedTab === 'notCompleted' && !$isTaskClosed
+            ? 'padding-top: 155px'
+            : 'padding-top: 55px'};
+`;
 
 const Members = styled(SimpleCell)`
     margin-bottom: 16px;

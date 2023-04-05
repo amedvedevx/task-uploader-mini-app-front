@@ -6,12 +6,14 @@ interface BridgeGetConversationsMembersArgs {
     token: string;
     peerId: number;
     chatName: string;
+    invitedMembersIds: number[];
 }
 
 export const BridgeGetConversationsMembers = async ({
     token,
     peerId,
     chatName,
+    invitedMembersIds,
 }: BridgeGetConversationsMembersArgs): Promise<GetChatTesteesResponse> => {
     const result: GetChatTesteesResponse = await bridge
         .send('VKWebAppCallAPIMethod', {
@@ -24,7 +26,9 @@ export const BridgeGetConversationsMembers = async ({
         })
         .then((data: { response: { profiles: FriendsType[] } }) => ({
             chatName,
-            members: data.response.profiles,
+            members: data.response.profiles.filter(
+                (member) => !invitedMembersIds.includes(member.id),
+            ),
         }))
         .catch((err) => err);
 
