@@ -9,93 +9,87 @@ import { avatarStub, Members } from '../MembersList';
 import { Checkbox } from './Checkbox';
 
 interface SearchMembersProps {
-    collection?: GetTesteesResponse;
     selection?: UseMembersSelectionResult;
+    collection?: GetTesteesResponse;
 }
 
-export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection }) => {
-    const chats = collection?.items.filter((el) => el.peer.type === 'chat');
+export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection }) => (
+    <>
+        {collection?.profiles.length > 0 && (
+            <Group
+                mode='plain'
+                padding='s'
+            >
+                <List>
+                    {collection?.items &&
+                        collection?.items?.map((chat) => (
+                            <Members
+                                key={chat.peer.id}
+                                before={
+                                    <>
+                                        <Checkbox
+                                            checked={Boolean(selection?.isChatActive(chat))}
+                                            onChange={(e) => {
+                                                selection?.handleSelectChat(e, chat);
+                                            }}
+                                        />
 
-    return (
-        <>
-            {collection?.items.length > 0 && (
-                <Group
-                    mode='plain'
-                    padding='s'
-                >
-                    <List>
-                        {chats?.length > 0 &&
-                            chats?.map((chat) => (
-                                <Members
-                                    key={chat.peer.id}
-                                    before={
-                                        <>
-                                            <Checkbox
-                                                checked={Boolean(selection?.isChatActive(chat))}
-                                                onChange={(e) => {
-                                                    selection?.handleSelectChat(e, chat);
-                                                }}
-                                            />
+                                        <Avatar
+                                            size={40}
+                                            src={
+                                                !chat.chat_settings.photo
+                                                    ? avatarStub
+                                                    : chat.chat_settings.photo.photo_100
+                                            }
+                                            alt='icon'
+                                            gradientColor={calcInitialsAvatarColor(chat.peer.id)}
+                                        />
+                                    </>
+                                }
+                                subtitle={`${chat.chat_settings.members_count} участников`}
+                                onClick={(e) => {
+                                    selection?.handleSelectChat(e as any, chat);
+                                }}
+                            >
+                                {chat.chat_settings.title}
+                            </Members>
+                        ))}
 
-                                            <Avatar
-                                                size={40}
-                                                src={
-                                                    !chat.chat_settings.photo
-                                                        ? avatarStub
-                                                        : chat.chat_settings.photo.photo_100
-                                                }
-                                                alt='icon'
-                                                gradientColor={calcInitialsAvatarColor(
-                                                    chat.peer.id,
-                                                )}
-                                            />
-                                        </>
-                                    }
-                                    subtitle={`${chat.chat_settings.members_count} участников`}
-                                    onClick={(e) => {
-                                        selection?.handleSelectChat(e as any, chat);
-                                    }}
-                                >
-                                    {chat.chat_settings.title}
-                                </Members>
-                            ))}
+                    {collection?.profiles &&
+                        collection.profiles?.map((member) => (
+                            <Members
+                                key={member.id}
+                                before={
+                                    <>
+                                        <Checkbox
+                                            checked={Boolean(selection?.isMemberActive(member))}
+                                            onChange={(e) => {
+                                                selection?.handleSelectMember(e, member);
+                                            }}
+                                        />
 
-                        {collection?.profiles &&
-                            collection.profiles.map((member) => (
-                                <Members
-                                    key={member.id}
-                                    before={
-                                        <>
-                                            <Checkbox
-                                                checked={Boolean(selection?.isMemberActive(member))}
-                                                onChange={(e) => {
-                                                    selection?.handleSelectMember(e, member);
-                                                }}
-                                            />
-
-                                            <Avatar
-                                                size={40}
-                                                src={
-                                                    member.photo_100 === avatarStub
-                                                        ? '#'
-                                                        : member.photo_100
-                                                }
-                                                alt='icon'
-                                                gradientColor={calcInitialsAvatarColor(member.id)}
-                                                initials={getInitials(
-                                                    `${member.first_name} ${member.last_name}`,
-                                                )}
-                                            />
-                                        </>
-                                    }
-                                    onClick={(e) => selection?.handleSelectMember(e as any, member)}
-                                >
-                                    {`${member.first_name} ${member.last_name}`}
-                                </Members>
-                            ))}
-                    </List>
-                </Group>
-            )}
-        </>
-    );
-};
+                                        <Avatar
+                                            size={40}
+                                            src={
+                                                member.photo_100 === avatarStub
+                                                    ? '#'
+                                                    : member.photo_100
+                                            }
+                                            alt='icon'
+                                            gradientColor={calcInitialsAvatarColor(member.id)}
+                                            initials={getInitials(
+                                                `${member.first_name} ${member.last_name}`,
+                                            )}
+                                        />
+                                    </>
+                                }
+                                onClick={(e) => selection?.handleSelectMember(e as any, member)}
+                            >
+                                {`${member.first_name} ${member.last_name}`}
+                            </Members>
+                        ))}
+                </List>
+            </Group>
+        )}
+    </>
+);
