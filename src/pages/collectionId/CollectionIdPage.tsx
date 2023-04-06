@@ -145,7 +145,7 @@ export const CollectionIdPage: FC = () => {
                     separator={false}
                     before={<PanelHeaderBack onClick={goBack} />}
                 >
-                    {currentTask ? (
+                    {currentTask?.name ? (
                         <PanelHeaderContentCentered status={currentTask.name}>
                             {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
                         </PanelHeaderContentCentered>
@@ -220,7 +220,7 @@ export const CollectionIdPage: FC = () => {
                         )}
                     </>
                 ) : (
-                    <SkeletonMembers />
+                    <SkeletonMembers selectedTab={selectedTab} />
                 )}
             </ListContainer>
 

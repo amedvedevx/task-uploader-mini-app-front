@@ -2,9 +2,14 @@ import type { FC } from 'react';
 import styled from 'styled-components';
 
 import { SkeletonCircular, SkeletonRectangle } from '@/components/Skeletons';
+import type { TabType } from '@/pages';
 
-export const SkeletonMembers: FC = () => (
-    <SkeletonWrapper>
+interface SkeletonMembersProps {
+    selectedTab: TabType;
+}
+
+export const SkeletonMembers: FC<SkeletonMembersProps> = ({ selectedTab }) => (
+    <SkeletonWrapper $selectedTab={selectedTab}>
         <SkeletonCard>
             <SkeletonCircular radius={40} />
 
@@ -25,11 +30,14 @@ export const SkeletonMembers: FC = () => (
     </SkeletonWrapper>
 );
 
-const SkeletonWrapper = styled.div`
+const SkeletonWrapper = styled.div<{ $selectedTab: TabType }>`
     display: flex;
     flex-direction: column;
     padding: 12px 12px;
     gap: 8px;
+
+    ${({ $selectedTab }) =>
+        $selectedTab === 'notCompleted' ? 'padding-top: 155px' : 'padding-top: 55px'};
 `;
 
 const SkeletonCard = styled.div`
