@@ -38,7 +38,7 @@ export const parseFileSize = (size: number): string => {
 };
 
 export const getFileExtension = (fileName: string): string =>
-    fileName.substring(fileName.indexOf('.') + 1).toLowerCase();
+    fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 
 export const formatFileDate = (unixTime: number): string =>
     format(fromUnixTime(unixTime / 1000), 'd MMM', { locale: ru });
