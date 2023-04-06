@@ -18,8 +18,10 @@ import type { RootState } from '../store';
 const testeesSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getTestees: builder.query<GetTesteesResponse, GetTesteesProps>({
-            queryFn: async ({ search, count }, { getState }) => {
+            queryFn: async ({ search, count, invitedMembersIds }, { getState }) => {
                 const { userInfo } = (getState() as RootState).authorization;
+
+                let filteredTestees = {} as GetTesteesResponse;
 
                 const testees = await BridgeSearchConversations({
                     token: userInfo.token,
@@ -27,12 +29,20 @@ const testeesSlice = apiSlice.injectEndpoints({
                     count,
                 });
 
-                return { data: testees };
+                filteredTestees = {
+                    count: testees.count,
+                    items: testees.items.filter(
+                        (el) => el.peer.type === 'chat' && !!el.chat_settings.members_count,
+                    ),
+                    profiles: testees.profiles.filter((el) => !invitedMembersIds?.includes(el.id)),
+                };
+
+                return { data: filteredTestees };
             },
         }),
 
         getChatTestees: builder.query<GetChatTesteesResponse[], GetChatTesteesProps>({
-            queryFn: async ({ chats }, { getState }) => {
+            queryFn: async ({ chats, invitedMembersIds }, { getState }) => {
                 const { userInfo } = (getState() as RootState).authorization;
 
                 const convMembers: GetChatTesteesResponse[] = [];
@@ -42,6 +52,7 @@ const testeesSlice = apiSlice.injectEndpoints({
                         token: userInfo.token,
                         peerId: peer.id,
                         chatName: chat_settings.title,
+                        invitedMembersIds,
                     });
 
                     return result;

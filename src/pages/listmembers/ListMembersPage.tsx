@@ -10,7 +10,12 @@ import {
 } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
-import { useGetTaskResultsQuery, useGetTaskIdQuery, useApointTaskMutation } from '@/api';
+import {
+    useSendNotificationMutation,
+    useGetTaskResultsQuery,
+    useGetTaskIdQuery,
+    useApointTaskMutation,
+} from '@/api';
 import { useSearch } from '@/hooks';
 import type { TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
@@ -30,6 +35,7 @@ export const ListMembersPage: FC = () => {
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
+    const [sendNotification] = useSendNotificationMutation();
 
     const { selectedMembers, selectedChatMembers } = useSelector(
         (state: RootState) => state.members,
@@ -50,6 +56,13 @@ export const ListMembersPage: FC = () => {
         };
 
         await apointTask({ payload }).unwrap();
+
+        await sendNotification({
+            taskId: collectionId,
+            ownerName: currentTask.owner.fullName,
+            whoToSend: membersIds,
+            taskName: currentTask.name,
+        }).unwrap();
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
 
