@@ -1,35 +1,32 @@
 import type { FC } from 'react';
 import { ButtonGroup } from '@vkontakte/vkui';
 
-import type { SnackBarText, TaskResults } from '@/app/types';
+import type { SnackBarText } from '@/app/types';
 
 import { AddTestees, RemindAll } from './components';
 
 interface HeaderButtonsProps {
-    collectionId: string;
+    changePageHandler: (arg: string) => void;
     isResults: boolean;
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: (arg: SnackBarText) => void;
-    notCompletedMembers: TaskResults[];
 }
 
 export const HeaderButtons: FC<HeaderButtonsProps> = ({
-    collectionId,
+    changePageHandler,
     isResults,
     setPopout,
     setSnackbarText,
-    notCompletedMembers,
 }) => (
     <ButtonGroup
         stretched
         mode='vertical'
         gap='s'
     >
-        <AddTestees collectionId={collectionId} />
+        <AddTestees changePageHandler={changePageHandler} />
 
         {isResults && (
             <RemindAll
-                notCompletedMembers={notCompletedMembers}
                 setPopout={setPopout}
                 setSnackbarText={setSnackbarText}
             />

@@ -121,6 +121,10 @@ export const CollectionIdPage: FC = () => {
         router.pushPage(PAGE_COLLECTION_HOME);
     };
 
+    const changePageHandler = (page: string) => {
+        router.pushPage(page, { collectionId });
+    };
+
     const handleUpdateTask = () => {
         setPopout(popoutCloseTask);
     };
@@ -175,8 +179,7 @@ export const CollectionIdPage: FC = () => {
                 {selectedTab === 'notCompleted' && !isTaskClosed && (
                     <HeaderButtons
                         isResults={normalizedTestees.notCompleted.length > 0}
-                        notCompletedMembers={normalizedTestees.notCompleted}
-                        collectionId={collectionId}
+                        changePageHandler={changePageHandler}
                         setPopout={setPopout}
                         setSnackbarText={setSnackbarText}
                     />

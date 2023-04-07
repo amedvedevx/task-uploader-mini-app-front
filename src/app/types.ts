@@ -195,6 +195,20 @@ export interface GetChatTesteesResponse {
     members: FriendsType[];
 }
 
+export interface GetAllowedForRemindIdsResponce {
+    allowedUserIds: number[];
+}
+
+export interface GetAllowedForRemindIdsProps {
+    taskId: string;
+    userIds?: number[];
+}
+
+export interface UpdateAllowedForRemindIdsProps {
+    taskId: string;
+    userIds: number[];
+}
+
 export interface GetChatTesteesProps {
     chats: ItemsType[];
     invitedMembersIds: number[];
