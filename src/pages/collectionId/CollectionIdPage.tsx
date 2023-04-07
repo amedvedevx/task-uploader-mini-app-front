@@ -212,6 +212,7 @@ export const CollectionIdPage: FC = () => {
                                     />
                                 ) : (
                                     <ShareLink
+                                        currentTask={currentTask}
                                         setSnackbarText={setSnackbarText}
                                         collectionId={collectionId}
                                     />
