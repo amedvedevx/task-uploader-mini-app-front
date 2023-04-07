@@ -34,7 +34,9 @@ const testeesSlice = apiSlice.injectEndpoints({
                     items: testees.items.filter(
                         (el) => el.peer.type === 'chat' && !!el.chat_settings.members_count,
                     ),
-                    profiles: testees.profiles.filter((el) => !invitedMembersIds?.includes(el.id)),
+                    profiles: testees.profiles
+                        ? testees.profiles.filter((el) => !invitedMembersIds?.includes(el.id))
+                        : [],
                 };
 
                 return { data: filteredTestees };
