@@ -32,16 +32,22 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
     const onClickHandler = async ({ taskId, vkUserId, fullName }: OnClickArgs) => {
         if (selectedTab === 'completed') {
             downloadFiles({ taskId, vkUserId });
-        } else {
-            if (currentTask) {
-                await sendNotification({
-                    taskId,
-                    ownerName: currentTask?.owner.fullName,
-                    whoToSend: [vkUserId],
-                    taskName: currentTask?.name,
+        } else if (currentTask) {
+            const result = await sendNotification({
+                taskId: collectionId,
+                ownerName: currentTask?.owner.fullName,
+                whoToSend: [vkUserId],
+                taskName: currentTask?.name,
+            }).unwrap();
+
+            if (result === 'success') {
+                setSnackbarText({ type: 'success', text: `Отправили напоминание для ${fullName}` });
+            } else {
+                setSnackbarText({
+                    type: 'error',
+                    text: `Произошла ошибка при попытке отправить напоминание для ${fullName}`,
                 });
             }
-            setSnackbarText({ type: 'success', text: `Отправили напоминание для ${fullName}` });
         }
     };
 

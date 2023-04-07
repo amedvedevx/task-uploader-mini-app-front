@@ -39,7 +39,8 @@ export const RemindAll: FC<RemindAllProps> = ({
     };
     const popoutRemindAll = (
         <Popout
-            text='Вы уверены, что хотите отправить уведомление всем участникам сбора?'
+            text={`От Вашего имени всем участникам сбора будет отправлено личное сообщение. \n \r
+             Вы уверены, что хотите отправить уведомление?`}
             header='Отправить напоминание'
             action={remindAllClick}
             actionText='Напомнить всем'
