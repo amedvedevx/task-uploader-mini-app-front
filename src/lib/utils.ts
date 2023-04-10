@@ -3,8 +3,9 @@ import { ru } from 'date-fns/locale';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import copy from 'copy-to-clipboard';
 
-import { APP_ID } from '@/app/config';
-import { TaskResults, TaskStatusTypesForTestee } from '@/app/types';
+import { UPLOAD_URL } from '@/app/config';
+import type { TaskResults, TaskType } from '@/app/types';
+import { TaskStatusTypesForTestee } from '@/app/types';
 
 export const capitalizeString = (stringToCap: string): string =>
     stringToCap[0].toUpperCase() + stringToCap.slice(1);
@@ -37,7 +38,7 @@ export const parseFileSize = (size: number): string => {
 };
 
 export const getFileExtension = (fileName: string): string =>
-    fileName.substring(fileName.indexOf('.') + 1).toLowerCase();
+    fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 
 export const formatFileDate = (unixTime: number): string =>
     format(fromUnixTime(unixTime / 1000), 'd MMM', { locale: ru });
@@ -55,8 +56,8 @@ export const getInitials = (string: string): string => {
 export const getExtenstionInitials = (fileName: string): string =>
     getFileExtension(fileName).slice(0, 3).toUpperCase();
 
-export const copyUploadLinkToClipboard = (text: string): boolean => {
-    const link = `https://vk.com/app${APP_ID}/#/upload/${text}`;
+export const copyUploadLinkToClipboard = (task: TaskType): boolean => {
+    const link = `Вы были приглашены пользователем ${task.owner.fullName} для загрузки файлов по заданию: ${task.name}. \n ${UPLOAD_URL}${task.id}`;
 
     if (!navigator?.clipboard) {
         return false;
@@ -74,7 +75,7 @@ export const copyUploadLinkToClipboard = (text: string): boolean => {
 export const normalizeTestees = (
     taskResultsArg: TaskResults[],
 ): { completed: TaskResults[]; notCompleted: TaskResults[] } => {
-    let testees = {
+    const testees = {
         completed: [],
         notCompleted: [],
     };

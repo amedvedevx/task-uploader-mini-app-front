@@ -1,6 +1,6 @@
 {
   "name": "task-uploader-mini-app",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": "k.pozdnikin, s.minenkov, a.medvedev",
   "description": "",
   "homepage": ".",
@@ -35,6 +35,7 @@
     "react-dropzone": "^14.2.3",
     "react-error-boundary": "^3.1.4",
     "react-hook-form": "^7.43.1",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-redux": "^8.0.5",
     "styled-components": "^5.3.6"
   },

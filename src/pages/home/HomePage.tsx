@@ -74,9 +74,7 @@ const CollectionsContainer = styled(Div)<{ $isTasksExist: boolean }>`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
-
-    padding-top: ${({ $isTasksExist }) => ($isTasksExist ? '12vh' : 'unset')};
+    padding-top: 15vh;
 `;
 
 export const PlaceholderWidth = styled(Placeholder)`

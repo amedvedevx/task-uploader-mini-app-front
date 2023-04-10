@@ -1,52 +1,70 @@
 import { useState } from 'react';
 
-import type { FriendsType } from '@/app/types';
+import type { FriendsType, ItemsType } from '@/app/types';
 
-type SelectedMembersType = number[];
+type IsMemberActive = (row: FriendsType) => boolean;
 
-type SelectedCollectionType = FriendsType[];
+type IsChatActive = (row: ItemsType) => boolean;
 
-type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, rowId: number) => void;
+type SelectedMembersType = FriendsType[];
 
-type IsMemberActive = (rowId: number) => boolean;
+type SelectedChatsType = ItemsType[];
+
+type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, row: FriendsType) => void;
+
+type HandleSelectChat = (e: React.ChangeEvent<HTMLInputElement>, row: ItemsType) => void;
 
 export interface UseMembersSelectionResult {
-    selectedMembers: SelectedMembersType;
-    selectedCollection: SelectedCollectionType;
-    handleSelectMember: HandleSelectMember;
     isMemberActive: IsMemberActive;
+    isChatActive: IsChatActive;
+    selectedMembers: SelectedMembersType;
+    selectedChats: SelectedChatsType;
+    handleSelectMember: HandleSelectMember;
+    handleSelectChat: HandleSelectChat;
 }
 
-export const useMembersSelection = (
-    initialState = [] as SelectedMembersType,
-    allRowsIds = [] as SelectedMembersType,
-    collection: SelectedCollectionType,
-): UseMembersSelectionResult => {
-    const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>(initialState);
+export const useMembersSelection = (): UseMembersSelectionResult => {
+    const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>([]);
+    const [selectedChats, setSelectedChats] = useState<SelectedChatsType>([]);
 
-    const handleSelectMember: HandleSelectMember = (e, rowId) => {
+    const handleSelectChat: HandleSelectChat = (e, row) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        setSelectedChats((prevState) => {
+            if (prevState.map((el) => el.peer.id).includes(row.peer.id)) {
+                return prevState.filter((i) => i.peer.id !== row.peer.id);
+            }
+
+            return [...prevState, row];
+        });
+    };
+
+    const handleSelectMember: HandleSelectMember = (e, row) => {
         e.preventDefault();
         e.stopPropagation();
 
         setSelectedMembers((prevState) => {
-            if (prevState.includes(rowId)) {
-                return prevState.filter((i) => i !== rowId);
+            if (prevState.map((el) => el.id).includes(row.id)) {
+                return prevState.filter((i) => i.id !== row.id);
             }
 
-            return [...prevState, rowId];
+            return [...prevState, row];
         });
     };
 
-    const isMemberActive: IsMemberActive = (rowId) => selectedMembers.includes(rowId);
+    const isMemberActive: IsMemberActive = (row) =>
+        selectedMembers.map((el) => el.id).includes(row.id);
 
-    const selectedCollection: SelectedCollectionType = collection.filter((el) =>
-        selectedMembers.includes(el.id),
-    );
+    const isChatActive: IsChatActive = (row) =>
+        selectedChats.map((el) => el.peer.id).includes(row.peer.id);
 
     return {
-        selectedMembers,
-        selectedCollection,
-        handleSelectMember,
         isMemberActive,
+        isChatActive,
+        selectedMembers,
+        selectedChats,
+        handleSelectMember,
+        handleSelectChat,
     };
 };

@@ -10,13 +10,14 @@ export const useVkToken = (): string | undefined => {
         bridge
             .send('VKWebAppGetAuthToken', {
                 app_id: vkHostingConfig.app_id,
-                scope: 'friends',
+                scope: 'messages',
             })
             .then((data) => {
                 if (data.access_token) {
                     setAccessToken(data.access_token);
                 }
             })
+            // eslint-disable-next-line no-console
             .catch((error) => console.log('VKWebAppGetAuthToken', error));
     }, []);
 

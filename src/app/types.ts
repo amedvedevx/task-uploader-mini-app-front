@@ -36,9 +36,11 @@ export interface GetTaskIdResponce extends TaskType {}
 export type TaskType = {
     id: string;
     owner: {
-        id: number;
+        vkUserId: number;
         firstName: string;
         lastName: string;
+        fullName: string;
+        photo: string;
         createDate: string;
     };
     status: TaskStatusTypesForOrganizer & TaskStatusTypesForTestee;
@@ -176,10 +178,65 @@ export interface GetMembersResponce {
     friends: FriendsType[];
 }
 
+export interface GetTesteesResponse {
+    count: number;
+    items: ItemsType[];
+    profiles: FriendsType[];
+}
+
 export interface GetTesteesProps {
     search: string;
     count: number;
-    invitedMembers?: number[];
+    invitedMembersIds?: number[];
+}
+
+export interface GetChatTesteesResponse {
+    chatName: string;
+    members: FriendsType[];
+}
+
+export interface GetAllowedForRemindIdsResponce {
+    allowedUserIds: number[];
+}
+
+export interface GetAllowedForRemindIdsProps {
+    taskId: string;
+    userIds?: number[];
+}
+
+export interface UpdateAllowedForRemindIdsProps {
+    taskId: string;
+    userIds: number[];
+}
+
+export interface GetChatTesteesProps {
+    chats: ItemsType[];
+    invitedMembersIds: number[];
+}
+
+export type ItemsType = {
+    peer: {
+        id: number;
+        type: string;
+        local_id: number;
+    };
+
+    chat_settings: {
+        title: string;
+        members_count: number;
+        owner_id: number;
+        active_ids: number[];
+        photo: {
+            photo_100: string;
+        };
+    };
+};
+
+export interface SendNotificationProps {
+    whoToSend: number[];
+    ownerName: string;
+    taskName: string;
+    taskId: string;
 }
 
 export type FriendsType = {
@@ -222,3 +279,8 @@ export enum AddResultStatusTypes {
     'LOADED' = 'LOADED',
     'NOT_LOADED' = 'NOT_LOADED',
 }
+
+export type SnackBarText = {
+    type: 'error' | 'success';
+    text: string;
+} | null;

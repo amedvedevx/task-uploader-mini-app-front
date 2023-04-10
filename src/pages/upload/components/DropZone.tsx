@@ -2,19 +2,17 @@
 import { Icon56CancelCircleOutline, Icon56DocumentOutline } from '@vkontakte/icons';
 import { Div, Placeholder, File, Spinner } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 
 import { getFileExtension } from '@/lib/utils';
-
-import type { SnackBarType } from '../UploadPage';
+import type { SnackBarText } from '@/app/types';
 
 interface DropZoneProps {
     isLoading: boolean;
     isTaskComplete: boolean;
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
-    setSnackbar: React.Dispatch<React.SetStateAction<SnackBarType>>;
+    setSnackbarText: (arg: SnackBarText) => void;
 }
 
 // 200 MB
@@ -26,19 +24,19 @@ export const DropZone: FC<DropZoneProps> = ({
     isTaskComplete,
     isLoading,
     setFiles,
-    setSnackbar,
+    setSnackbarText,
 }) => {
     const filesValidator = (file: File) => {
         const fileExt = getFileExtension(file.name);
 
         if (file.size > maxFileSize) {
-            setSnackbar({ type: 'error', message: 'Размер файла слишком большой' });
+            setSnackbarText({ type: 'error', text: 'Размер файла слишком большой' });
 
             return rejectFileMessage;
         }
 
         if (forbiddenFileExtension.includes(fileExt)) {
-            setSnackbar({ type: 'error', message: 'Не подходящий тип файла' });
+            setSnackbarText({ type: 'error', text: 'Не подходящий тип файла' });
 
             return rejectFileMessage;
         }
@@ -46,10 +44,14 @@ export const DropZone: FC<DropZoneProps> = ({
         return null;
     };
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        setFiles((prevState) => [...prevState, ...acceptedFiles]);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const onDrop = (acceptedFiles: File[]) => {
+        setFiles((prevState) => {
+            const newState = prevState.concat(acceptedFiles);
+            const uniqueObjArray = [...new Map(newState.map((file) => [file.name, file])).values()];
+
+            return uniqueObjArray;
+        });
+    };
 
     const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept, isDragReject } =
         useDropzone({ onDrop, validator: filesValidator });

@@ -10,6 +10,7 @@ import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateSubTaskMutation, useCreateTaskMutation } from '@/api';
 import { FooterWithButton } from '@/components';
+import type { SnackBarText } from '@/app/types';
 
 import { CreateInput } from './components';
 
@@ -41,11 +42,11 @@ export const CreatePage: FC = () => {
         },
     });
 
-    const [snackbarText, setSnackbarText] = useState<string>('');
+    const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     const onSubmit = async (data: { collectionName: string; collectionDescription: string }) => {
         if (errors.root) {
-            setSnackbarText('Не удалось создать сбор');
+            setSnackbarText({ type: 'error', text: 'Не удалось создать сбор' });
 
             return;
         }
@@ -77,7 +78,7 @@ export const CreatePage: FC = () => {
     };
 
     if (isTaskError || isSubTaskError) {
-        setSnackbarText('Не удалось создать сбор');
+        setSnackbarText({ type: 'error', text: 'Не удалось создать сбор' });
     }
 
     return (
@@ -114,10 +115,14 @@ export const CreatePage: FC = () => {
 
             {snackbarText && (
                 <Snackbar
-                    before={<Icon28ErrorCircleOutline color='var(--vkui--color_text_negative)' />}
-                    onClose={() => setSnackbarText('')}
+                    before={
+                        snackbarText.type === 'error' && (
+                            <Icon28ErrorCircleOutline color='var(--vkui--color_text_negative)' />
+                        )
+                    }
+                    onClose={() => setSnackbarText(null)}
                 >
-                    {snackbarText}
+                    {snackbarText.text}
                 </Snackbar>
             )}
 

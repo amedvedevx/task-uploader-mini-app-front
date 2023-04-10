@@ -8,17 +8,19 @@ import PeaopleIcon from '@/assets/peopleIcon.svg';
 import { copyUploadLinkToClipboard } from '@/lib/utils';
 import { PAGE_ADD_MEMBERS } from '@/app/router';
 import { PlaceholderWidth } from '@/pages/home/HomePage';
+import type { SnackBarText, TaskType } from '@/app/types';
 
 interface ShareLinkProps {
     collectionId: string;
-    setSnackbarText: (arg: string) => void;
+    setSnackbarText: (arg: SnackBarText) => void;
+    currentTask: TaskType;
 }
 
-export const ShareLink: FC<ShareLinkProps> = ({ collectionId, setSnackbarText }) => {
+export const ShareLink: FC<ShareLinkProps> = ({ collectionId, currentTask, setSnackbarText }) => {
     const router = useRouter();
-    const copyLink = (copyText: string) => {
-        copyUploadLinkToClipboard(copyText);
-        setSnackbarText('Ссылка скопирована');
+    const copyLink = () => {
+        copyUploadLinkToClipboard(currentTask);
+        setSnackbarText({ type: 'success', text: 'Ссылка скопирована' });
     };
 
     return (
@@ -38,7 +40,7 @@ export const ShareLink: FC<ShareLinkProps> = ({ collectionId, setSnackbarText })
 
                 {` в задание по сбору файлов или `}
 
-                <Link onClick={() => copyLink(collectionId)}>поделитесь ссылкой</Link>
+                <Link onClick={() => copyLink()}>поделитесь ссылкой</Link>
 
                 {` с нужными пользователями`}
             </PlaceholderWidth>

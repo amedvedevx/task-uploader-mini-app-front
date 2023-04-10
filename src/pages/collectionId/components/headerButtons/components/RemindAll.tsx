@@ -1,22 +1,52 @@
 import { Icon24NotificationOutline } from '@vkontakte/icons';
 import { CellButton, Avatar } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { useParams } from '@happysanta/router';
 
 import { Popout } from '@/components';
+import {
+    useGetAllowedForRemindIdsQuery,
+    useGetTaskIdQuery,
+    useSendNotificationMutation,
+    useUpdateAllowedForRemindIdsMutation,
+} from '@/api';
+import type { SnackBarText, TaskType } from '@/app/types';
 
 interface RemindAllProps {
     setPopout: (arg: JSX.Element | null) => void;
+    setSnackbarText: (arg: SnackBarText) => void;
 }
 
-export const RemindAll: FC<RemindAllProps> = ({ setPopout }) => {
+export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText }) => {
+    const { collectionId } = useParams();
+    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
+    const [sendNotification] = useSendNotificationMutation();
+
+    const { data: reminds } = useGetAllowedForRemindIdsQuery({ taskId: collectionId });
+    const [updateReminds] = useUpdateAllowedForRemindIdsMutation();
+
+    const remindAllClick = async () => {
+        const allowedIds = reminds?.allowedUserIds;
+        const result = await sendNotification({
+            taskId: collectionId,
+            ownerName: currentTask?.owner.fullName,
+            whoToSend: allowedIds || [],
+            taskName: currentTask?.name,
+        }).unwrap();
+
+        if (result === 'success') {
+            setSnackbarText({ type: 'success', text: 'Напоминания отправлены' });
+            updateReminds({ taskId: collectionId, userIds: allowedIds });
+        } else {
+            setSnackbarText({ type: 'error', text: 'Произошла ошибка' });
+        }
+    };
     const popoutRemindAll = (
         <Popout
-            text='Вы уверены, что хотите отправить уведомление всем участникам сбора?'
+            text={`От Вашего имени всем участникам сбора будет отправлено личное сообщение. \n \r
+             Вы уверены, что хотите отправить уведомление?`}
             header='Отправить напоминание'
-            action={() => {
-                // eslint-disable-next-line no-console
-                console.log('remind all');
-            }}
+            action={remindAllClick}
             actionText='Напомнить всем'
             setPopout={setPopout}
         />

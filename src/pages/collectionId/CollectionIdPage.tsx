@@ -2,7 +2,7 @@ import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search, Snackbar } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Icon28CheckCircleOutline } from '@vkontakte/icons';
+import { Icon28CheckCircleOutline, Icon28ErrorCircleOutline } from '@vkontakte/icons';
 import styled from 'styled-components';
 
 import {
@@ -17,7 +17,7 @@ import {
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import type { TaskType } from '@/app/types';
+import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
 import { normalizeTestees } from '@/lib/utils';
@@ -57,7 +57,7 @@ export const CollectionIdPage: FC = () => {
     const [popout, setPopout] = useState<JSX.Element | null>(null);
 
     const [selectedTab, setSelectedTab] = useState<TabType>('notCompleted');
-    const [snackbarText, setSnackbarText] = useState<string>('');
+    const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     const { filteredData, search, changeSearch } = useSearch(taskResults, ['testee', 'fullName']);
 
@@ -71,7 +71,7 @@ export const CollectionIdPage: FC = () => {
             header='Завершить задание'
             action={async () => {
                 await updateTask({ taskId: collectionId, payload: payloadCloseTask });
-                setSnackbarText('Задание по сбору завершено');
+                setSnackbarText({ type: 'success', text: 'Задание по сбору завершено' });
             }}
             actionText='Завершить сбор'
             setPopout={setPopout}
@@ -121,6 +121,10 @@ export const CollectionIdPage: FC = () => {
         router.pushPage(PAGE_COLLECTION_HOME);
     };
 
+    const changePageHandler = (page: string) => {
+        router.pushPage(page, { collectionId });
+    };
+
     const handleUpdateTask = () => {
         setPopout(popoutCloseTask);
     };
@@ -137,23 +141,23 @@ export const CollectionIdPage: FC = () => {
 
     return (
         <Panel id={PANEL_COLLECTION_ID}>
-            <PanelHeaderCentered
-                separator={false}
-                before={<PanelHeaderBack onClick={goBack} />}
-            >
-                {currentTask ? (
-                    <PanelHeaderContentCentered status={currentTask.name}>
-                        {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
-                    </PanelHeaderContentCentered>
-                ) : (
-                    <PanelHeaderSkeleton />
-                )}
-            </PanelHeaderCentered>
-
             <FixedLayout
                 filled
                 vertical='top'
             >
+                <PanelHeaderCentered
+                    separator={false}
+                    before={<PanelHeaderBack onClick={goBack} />}
+                >
+                    {currentTask?.name ? (
+                        <PanelHeaderContentCentered status={currentTask.name}>
+                            {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
+                        </PanelHeaderContentCentered>
+                    ) : (
+                        <PanelHeaderSkeleton />
+                    )}
+                </PanelHeaderCentered>
+
                 <Search
                     value={search}
                     onChange={changeSearch}
@@ -162,7 +166,7 @@ export const CollectionIdPage: FC = () => {
                 {!isTaskClosed && (
                     <CopyUploadLink
                         setSnackbarText={setSnackbarText}
-                        collectionId={collectionId}
+                        currentTask={currentTask}
                     />
                 )}
 
@@ -171,6 +175,15 @@ export const CollectionIdPage: FC = () => {
                     setSelectedTab={setSelectedTab}
                     taskUsersConsolidated={currentTask.consolidatedData}
                 />
+
+                {selectedTab === 'notCompleted' && !isTaskClosed && (
+                    <HeaderButtons
+                        isResults={normalizedTestees.notCompleted.length > 0}
+                        changePageHandler={changePageHandler}
+                        setPopout={setPopout}
+                        setSnackbarText={setSnackbarText}
+                    />
+                )}
             </FixedLayout>
 
             <ListContainer $isTaskClosed={isTaskClosed}>
@@ -192,14 +205,6 @@ export const CollectionIdPage: FC = () => {
 
                         {selectedTab === 'notCompleted' && (
                             <>
-                                {!isTaskClosed && (
-                                    <HeaderButtons
-                                        isResults={normalizedTestees.notCompleted.length > 0}
-                                        collectionId={collectionId}
-                                        setPopout={setPopout}
-                                    />
-                                )}
-
                                 {normalizedTestees.notCompleted.length > 0 ? (
                                     <CollectionMembers
                                         setSnackbarText={setSnackbarText}
@@ -210,6 +215,7 @@ export const CollectionIdPage: FC = () => {
                                     />
                                 ) : (
                                     <ShareLink
+                                        currentTask={currentTask}
                                         setSnackbarText={setSnackbarText}
                                         collectionId={collectionId}
                                     />
@@ -218,16 +224,22 @@ export const CollectionIdPage: FC = () => {
                         )}
                     </>
                 ) : (
-                    <SkeletonMembers />
+                    <SkeletonMembers selectedTab={selectedTab} />
                 )}
             </ListContainer>
 
             {snackbarText && (
                 <Snackbar
-                    before={<Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />}
-                    onClose={() => setSnackbarText('')}
+                    before={
+                        snackbarText.type === 'error' ? (
+                            <Icon28ErrorCircleOutline color='var(--vkui--color_text_negative)' />
+                        ) : (
+                            <Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />
+                        )
+                    }
+                    onClose={() => setSnackbarText(null)}
                 >
-                    {snackbarText}
+                    {snackbarText.text}
                 </Snackbar>
             )}
 

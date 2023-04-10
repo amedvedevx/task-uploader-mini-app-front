@@ -2,24 +2,24 @@ import { Icon28CheckCircleOutline, Icon28CancelCircleFillRed } from '@vkontakte/
 import { Snackbar } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
-import type { SnackBarType } from '../UploadPage';
+import type { SnackBarText } from '@/app/types';
 
 interface UploadResultMessageProps {
-    result: SnackBarType;
-    setSnackbar: React.Dispatch<React.SetStateAction<SnackBarType>>;
+    result: SnackBarText;
+    setSnackbarText: (arg: SnackBarText) => void;
 }
 
-export const UploadResultMessage: FC<UploadResultMessageProps> = ({ result, setSnackbar }) => (
+export const UploadResultMessage: FC<UploadResultMessageProps> = ({ result, setSnackbarText }) => (
     <Snackbar
         before={
-            result.type === 'success' ? (
+            result?.type === 'success' ? (
                 <Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />
             ) : (
                 <Icon28CancelCircleFillRed />
             )
         }
-        onClose={() => setSnackbar({ type: false, message: '' })}
+        onClose={() => setSnackbarText(null)}
     >
-        {result.message}
+        {result?.text}
     </Snackbar>
 );

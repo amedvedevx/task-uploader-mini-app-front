@@ -3,16 +3,17 @@ import { CellButton, Avatar } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
 import { copyUploadLinkToClipboard } from '@/lib/utils';
+import type { SnackBarText, TaskType } from '@/app/types';
 
 interface CopyUploadLinkProps {
-    collectionId: string;
-    setSnackbarText: (arg: string) => void;
+    currentTask: TaskType;
+    setSnackbarText: (arg: SnackBarText) => void;
 }
 
-export const CopyUploadLink: FC<CopyUploadLinkProps> = ({ collectionId, setSnackbarText }) => {
-    const copyLink = (copyText: string) => {
-        copyUploadLinkToClipboard(copyText);
-        setSnackbarText('Ссылка скопирована');
+export const CopyUploadLink: FC<CopyUploadLinkProps> = ({ setSnackbarText, currentTask }) => {
+    const copyLink = (task: TaskType) => {
+        copyUploadLinkToClipboard(task);
+        setSnackbarText({ type: 'success', text: 'Ссылка скопирована' });
     };
 
     return (
@@ -25,7 +26,7 @@ export const CopyUploadLink: FC<CopyUploadLinkProps> = ({ collectionId, setSnack
                     <Icon24CopyOutline />
                 </Avatar>
             }
-            onClick={() => copyLink(collectionId)}
+            onClick={() => copyLink(currentTask)}
         >
             Скопировать ссылку на сбор
         </CellButton>
