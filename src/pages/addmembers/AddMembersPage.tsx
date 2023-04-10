@@ -17,7 +17,7 @@ import {
     useGetChatTesteesQuery,
     useGetTaskResultsQuery,
 } from '@/api';
-import { setSelectedChatMembers, setSelectedMembers } from '@/api/state';
+import { setSelectedChats, setSelectedMembers } from '@/api/state';
 import type { GetTesteesResponse, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 
@@ -55,11 +55,6 @@ export const AddMemmbersPage: FC = () => {
     });
 
     const selection = useMembersSelection();
-
-    const { data: chatMembers = [] } = useGetChatTesteesQuery({
-        chats: selection.selectedChats,
-        invitedMembersIds,
-    });
 
     useEffect(() => {
         if (!isLoading && testees.profiles.length < maxTesteeItems) {

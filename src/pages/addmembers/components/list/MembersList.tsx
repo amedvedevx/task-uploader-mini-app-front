@@ -2,14 +2,14 @@ import type { FC } from 'react';
 import { SimpleCell, Header as HeaderRoot } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
-import type { FriendsType, GetTesteesResponse, ItemsType, TaskResults } from '@/app/types';
+import type { FriendsType, GetTesteesResponse, ItemsType } from '@/app/types';
 import type { UseMembersSelectionResult } from '@/pages/hooks';
 
 import { InvitedMembers, SearchMembers, SelectedChatMembers, SelectedMembers } from './components';
 
 interface MembersListProps {
     searchMembers?: GetTesteesResponse;
-    invitedMembers?: TaskResults['testee'][];
+    invitedMembers?: number[];
     selectedMembers?: FriendsType[];
     selectedChats?: ItemsType[];
     selection?: UseMembersSelectionResult;
@@ -27,7 +27,7 @@ export const MembersList: FC<MembersListProps> = ({
     setMembers,
 }) => (
     <MembersListWrapper>
-        {invitedMembers?.length > 0 && <InvitedMembers collection={invitedMembers} />}
+        {/* {invitedMembers?.length > 0 && <InvitedMembers collection={invitedMembers} />} */}
 
         {searchMembers?.profiles.length > 0 && (
             <SearchMembers
@@ -39,6 +39,7 @@ export const MembersList: FC<MembersListProps> = ({
         {selectedChats?.length > 0 && (
             <SelectedChatMembers
                 collection={selectedChats}
+                invitedMembersIds={invitedMembers}
                 setMembers={setMembers}
             />
         )}

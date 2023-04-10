@@ -6,7 +6,7 @@ interface BridgeGetConversationsMembersArgs {
     token: string;
     peerId: number;
     chatName: string;
-    invitedMembersIds: number[];
+    invitedMembersIds?: number[];
 }
 
 export const BridgeGetConversationsMembers = async ({
@@ -26,9 +26,9 @@ export const BridgeGetConversationsMembers = async ({
         })
         .then((data: { response: { profiles: FriendsType[] } }) => ({
             chatName,
-            members: data.response.profiles.filter(
-                (member) => !invitedMembersIds.includes(member.id),
-            ),
+            members: invitedMembersIds
+                ? data.response.profiles.filter((member) => !invitedMembersIds.includes(member.id))
+                : data.response.profiles,
         }))
         .catch((err) => err);
 

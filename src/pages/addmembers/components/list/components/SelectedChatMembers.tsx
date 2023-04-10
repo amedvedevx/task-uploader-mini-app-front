@@ -11,20 +11,28 @@ import { avatarStub, Header, Members } from '../MembersList';
 
 interface SelectedChatMembersProps {
     collection?: ItemsType[];
-    setMembers: React.Dispatch<React.SetStateAction<FriendsType[] | GetChatTesteesResponse[]>>;
+    invitedMembersIds?: number[];
+    setMembers: React.Dispatch<React.SetStateAction<FriendsType[]>>;
 }
 
-export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({ collection, setMembers }) => {
+export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({
+    collection,
+    setMembers,
+    invitedMembersIds,
+}) => {
     const { data: chatMembers = [], isLoading } = useGetChatTesteesQuery({
         chats: collection || [],
+        invitedMembersIds,
     });
 
     const [chats, setChats] = useState<GetChatTesteesResponse[]>([]);
 
+    const allChatMembers = chatMembers.map((el) => el.members).flat();
+
     useEffect(() => {
         if (!isLoading) {
             setChats(chatMembers);
-            setMembers(chatMembers);
+            // setMembers((prev) => [...prev, ...allChatMembers]);
         }
     }, [chatMembers, isLoading, setMembers]);
 
@@ -35,7 +43,6 @@ export const SelectedChatMembers: FC<SelectedChatMembersProps> = ({ collection, 
                 members: chat.members.filter((member) => member.id !== id),
             })),
         );
-        setMembers(chats);
     };
 
     return (

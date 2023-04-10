@@ -211,7 +211,7 @@ export interface UpdateAllowedForRemindIdsProps {
 
 export interface GetChatTesteesProps {
     chats: ItemsType[];
-    invitedMembersIds: number[];
+    invitedMembersIds?: number[];
 }
 
 export type ItemsType = {

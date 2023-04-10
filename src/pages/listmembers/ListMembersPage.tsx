@@ -32,7 +32,7 @@ export const ListMembersPage: FC = () => {
     });
     const { taskResults } = data;
 
-    const invitedMembers = taskResults.map((result) => result.testee);
+    const invitedMembers = taskResults.map((result) => result.testee.vkUserId);
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
@@ -40,9 +40,14 @@ export const ListMembersPage: FC = () => {
 
     const { selectedMembers, selectedChats } = useSelector((state: RootState) => state.members);
 
-    const [members, setMembers] = useState<FriendsType[]>([]);
+    const [members, setMembers] = useState<FriendsType[]>(selectedMembers);
 
-    console.log(members);
+    const filtered = members.map((item) => ({
+        ...item,
+        fullName: `${item.first_name} ${item.last_name}`,
+    }));
+
+    console.log(filtered);
 
     // const chatMemberIds = selectedChatMembers
     //     .map((el) => el.members.map((member) => member.id))
@@ -50,7 +55,7 @@ export const ListMembersPage: FC = () => {
 
     const vkUserIds = selectedMembers.map((el) => el.id);
 
-    const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
+    const { search, changeSearch, filteredData } = useSearch(filtered, 'fullName');
 
     const assignMembers = async (membersIds: number[]) => {
         const payload = {
@@ -73,8 +78,7 @@ export const ListMembersPage: FC = () => {
         router.popPage();
     };
 
-    const isMembers =
-        selectedChatMembers.length > 0 || filteredData.length > 0 || invitedMembers.length > 0;
+    const isMembers = filteredData.length > 0 || invitedMembers.length > 0;
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
@@ -105,7 +109,7 @@ export const ListMembersPage: FC = () => {
             {isMembers ? (
                 <MembersList
                     invitedMembers={invitedMembers}
-                    selectedMembers={selectedMembers}
+                    selectedMembers={filteredData}
                     selectedChats={selectedChats}
                     setMembers={setMembers}
                 />
