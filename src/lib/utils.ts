@@ -3,9 +3,9 @@ import { ru } from 'date-fns/locale';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import copy from 'copy-to-clipboard';
 
-import { APP_ID, UPLOAD_URL } from '@/app/config';
-import type { TaskResults } from '@/app/types';
-import { TaskStatusTypesForTestee, TaskType } from '@/app/types';
+import { UPLOAD_URL } from '@/app/config';
+import type { TaskResults, TaskType } from '@/app/types';
+import { TaskStatusTypesForTestee } from '@/app/types';
 
 export const capitalizeString = (stringToCap: string): string =>
     stringToCap[0].toUpperCase() + stringToCap.slice(1);

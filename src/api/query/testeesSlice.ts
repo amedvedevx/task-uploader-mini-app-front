@@ -17,7 +17,6 @@ import {
 } from './bridge';
 import { apiSlice } from './apiSlice';
 import type { RootState } from '../store';
-import { tasksDateSorting } from './mappers';
 
 const testeesSlice = apiSlice
     .enhanceEndpoints({ addTagTypes: ['AllowedRemindIds'] })
