@@ -113,7 +113,7 @@ const testeesSlice = apiSlice
                         return { data: 'success' };
                     }
 
-                    return { error: 'error' };
+                    return { data: 'error' };
                 },
             }),
         }),
