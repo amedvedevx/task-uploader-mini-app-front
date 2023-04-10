@@ -40,7 +40,11 @@ const testeesSlice = apiSlice
                             (el) => el.peer.type === 'chat' && !!el.chat_settings.members_count,
                         ),
                         profiles: testees.profiles
-                            ? testees.profiles.filter((el) => !invitedMembersIds?.includes(el.id))
+                            ? testees.profiles.filter(
+                                  (el) =>
+                                      !invitedMembersIds?.includes(el.id) &&
+                                      el.id !== userInfo.userId,
+                              )
                             : [],
                     };
 

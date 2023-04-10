@@ -1,6 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -8,7 +9,7 @@ import {
     PanelHeaderContentCentered,
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
+import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
 import {
     useSendNotificationMutation,
@@ -65,6 +66,12 @@ export const ListMembersPage: FC = () => {
         }).unwrap();
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
+
+    useEffect(() => {
+        if (!vkUserIds.length) {
+            router.pushPage(PAGE_ADD_MEMBERS, { collectionId });
+        }
+    }, [vkUserIds, router, collectionId]);
 
     const goBack = () => {
         router.popPage();
