@@ -29,10 +29,10 @@ export const MembersList: FC<MembersListProps> = ({
     <MembersListWrapper>
         {invitedMembers?.length > 0 && <InvitedMembers collection={invitedMembers} />}
 
-        {searchMembers?.items.length > 0 && (
+        {searchMembers?.profiles.length > 0 && (
             <SearchMembers
-                collection={searchMembers}
                 selection={selection}
+                collection={searchMembers}
             />
         )}
 

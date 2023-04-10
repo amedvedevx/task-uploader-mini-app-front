@@ -11,7 +11,12 @@ import {
 } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
-import { useGetTaskResultsQuery, useGetTaskIdQuery, useApointTaskMutation } from '@/api';
+import {
+    useSendNotificationMutation,
+    useGetTaskResultsQuery,
+    useGetTaskIdQuery,
+    useApointTaskMutation,
+} from '@/api';
 import { useSearch } from '@/hooks';
 import type { FriendsType, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
@@ -31,6 +36,7 @@ export const ListMembersPage: FC = () => {
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
+    const [sendNotification] = useSendNotificationMutation();
 
     const { selectedMembers, selectedChats } = useSelector((state: RootState) => state.members);
 
@@ -53,12 +59,22 @@ export const ListMembersPage: FC = () => {
         };
 
         await apointTask({ payload }).unwrap();
+
+        await sendNotification({
+            taskId: collectionId,
+            ownerName: currentTask.owner.fullName,
+            whoToSend: membersIds,
+            taskName: currentTask.name,
+        }).unwrap();
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
 
     const goBack = () => {
         router.popPage();
     };
+
+    const isMembers =
+        selectedChatMembers.length > 0 || filteredData.length > 0 || invitedMembers.length > 0;
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
@@ -86,7 +102,7 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {selectedMembers.length > 0 || invitedMembers.length > 0 ? (
+            {isMembers ? (
                 <MembersList
                     invitedMembers={invitedMembers}
                     selectedMembers={selectedMembers}

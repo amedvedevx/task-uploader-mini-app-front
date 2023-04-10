@@ -182,13 +182,12 @@ export interface GetTesteesResponse {
     count: number;
     items: ItemsType[];
     profiles: FriendsType[];
-    groups: unknown[];
 }
 
 export interface GetTesteesProps {
     search: string;
     count: number;
-    invitedMembers?: number[];
+    invitedMembersIds?: number[];
 }
 
 export interface GetChatTesteesResponse {
@@ -196,8 +195,23 @@ export interface GetChatTesteesResponse {
     members: FriendsType[];
 }
 
+export interface GetAllowedForRemindIdsResponce {
+    allowedUserIds: number[];
+}
+
+export interface GetAllowedForRemindIdsProps {
+    taskId: string;
+    userIds?: number[];
+}
+
+export interface UpdateAllowedForRemindIdsProps {
+    taskId: string;
+    userIds: number[];
+}
+
 export interface GetChatTesteesProps {
     chats: ItemsType[];
+    invitedMembersIds: number[];
 }
 
 export type ItemsType = {

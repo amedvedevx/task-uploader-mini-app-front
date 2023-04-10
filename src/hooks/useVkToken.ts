@@ -17,6 +17,7 @@ export const useVkToken = (): string | undefined => {
                     setAccessToken(data.access_token);
                 }
             })
+            // eslint-disable-next-line no-console
             .catch((error) => console.log('VKWebAppGetAuthToken', error));
     }, []);
 

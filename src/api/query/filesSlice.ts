@@ -42,7 +42,8 @@ const filesSlice = apiSlice.injectEndpoints({
                 } else {
                     dwnlnk.href = window.URL.createObjectURL(result.textblob);
                 }
-                dwnlnk.click();
+
+                return { data: dwnlnk.click() };
             },
         }),
         uploadFiles: builder.mutation<UploadFilesResponce, UploadFilesProps>({

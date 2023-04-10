@@ -2,7 +2,6 @@
 import { Icon56CancelCircleOutline, Icon56DocumentOutline } from '@vkontakte/icons';
 import { Div, Placeholder, File, Spinner } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 
@@ -45,10 +44,14 @@ export const DropZone: FC<DropZoneProps> = ({
         return null;
     };
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        setFiles((prevState) => [...prevState, ...acceptedFiles]);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const onDrop = (acceptedFiles: File[]) => {
+        setFiles((prevState) => {
+            const newState = prevState.concat(acceptedFiles);
+            const uniqueObjArray = [...new Map(newState.map((file) => [file.name, file])).values()];
+
+            return uniqueObjArray;
+        });
+    };
 
     const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept, isDragReject } =
         useDropzone({ onDrop, validator: filesValidator });
@@ -151,7 +154,7 @@ const DropZoneContainer = styled.div<DropZoneContainerProps>`
 
     &:hover {
         border-color: ${({ isDisabled }) =>
-        isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
+            isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
     }
 `;
 
