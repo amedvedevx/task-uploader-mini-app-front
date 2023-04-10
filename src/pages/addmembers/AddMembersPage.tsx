@@ -83,6 +83,8 @@ export const AddMemmbersPage: FC = () => {
         setTimer(newTimer);
     };
 
+    const selectedMembers = selection.selectedMembers.concat(selection.selectedChats);
+
     return (
         <Panel id={PANEL_ADD_MEMBERS}>
             <FixedLayout
@@ -132,6 +134,7 @@ export const AddMemmbersPage: FC = () => {
                 options={[
                     {
                         text: 'Продолжить',
+                        disabled: !selectedMembers.length,
                         onClick: () => {
                             dispatch(setSelectedMembers(selection.selectedMembers));
                             dispatch(setSelectedChatMembers(chatMembers));
