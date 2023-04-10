@@ -1,8 +1,9 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import {
     PanelHeaderCentered,
@@ -10,13 +11,20 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import { useGetTaskIdQuery, useGetTaskResultsQuery, useGetTesteesQuery } from '@/api';
-import { setSelectedMembers } from '@/api/state';
-import type { FriendsType, TaskType } from '@/app/types';
+import {
+    useGetTesteesQuery,
+    useGetTaskIdQuery,
+    useGetChatTesteesQuery,
+    useGetTaskResultsQuery,
+} from '@/api';
+import { setSelectedChatMembers, setSelectedMembers } from '@/api/state';
+import type { GetTesteesResponse, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 
 import { MembersList } from './components';
 import { useMembersSelection } from '../hooks';
+
+const maxTesteeItems = 205;
 
 export const AddMemmbersPage: FC = () => {
     const { collectionId } = useParams();
@@ -25,30 +33,39 @@ export const AddMemmbersPage: FC = () => {
 
     const [timer, setTimer] = useState<NodeJS.Timeout>();
 
+    const [conversationsCount, setConversationsCount] = useState(50);
+    const [itemLength, setItemLength] = useState(0);
+
     const [search, setSearch] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+
+    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
 
     const { data = { taskResults: [] } } = useGetTaskResultsQuery({
         taskId: collectionId,
     });
     const { taskResults } = data;
 
-    const invitedMembers = taskResults.map((result) => result.testee.vkUserId);
+    const invitedMembersIds = taskResults.map((result) => result.testee.vkUserId);
 
-    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
-    const { data: testees = [] as FriendsType[], isLoading } = useGetTesteesQuery({
+    const { data: testees = {} as GetTesteesResponse, isLoading } = useGetTesteesQuery({
         search: searchQuery,
-        count: 50,
-        invitedMembers,
+        count: conversationsCount,
+        invitedMembersIds,
     });
 
-    const [allTestees, setAllTestees] = useState<FriendsType[]>([]);
+    const selection = useMembersSelection();
 
-    const selection = useMembersSelection(
-        [],
-        testees.map((el) => el.id),
-        allTestees,
-    );
+    const { data: chatMembers = [] } = useGetChatTesteesQuery({
+        chats: selection.selectedChats,
+        invitedMembersIds,
+    });
+
+    useEffect(() => {
+        if (!isLoading && testees.profiles.length < maxTesteeItems) {
+            setItemLength(testees.profiles.length);
+        }
+    }, [isLoading, testees]);
 
     const goBack = () => {
         router.popPage();
@@ -66,11 +83,7 @@ export const AddMemmbersPage: FC = () => {
         setTimer(newTimer);
     };
 
-    useEffect(() => {
-        if (!search.length) {
-            setAllTestees(testees);
-        }
-    }, [search, testees]);
+    const selectedMembers = selection.selectedMembers.concat(selection.selectedChats);
 
     return (
         <Panel id={PANEL_ADD_MEMBERS}>
@@ -98,21 +111,33 @@ export const AddMemmbersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {!isLoading && testees.length > 0 ? (
-                <MembersList
-                    selection={selection}
-                    collection={testees}
-                />
-            ) : (
-                <MembersNotFound />
-            )}
+            <InfiniteScroll
+                hasMore
+                dataLength={itemLength}
+                next={() => setConversationsCount(conversationsCount + 50)}
+                scrollThreshold={0.7}
+                loader={false}
+            >
+                <>
+                    {!isLoading && testees.profiles.length > 0 ? (
+                        <MembersList
+                            selection={selection}
+                            searchMembers={testees}
+                        />
+                    ) : (
+                        <MembersNotFound />
+                    )}
+                </>
+            </InfiniteScroll>
 
             <FooterWithButton
                 options={[
                     {
                         text: 'Продолжить',
+                        disabled: !selectedMembers.length,
                         onClick: () => {
-                            dispatch(setSelectedMembers(selection.selectedCollection));
+                            dispatch(setSelectedMembers(selection.selectedMembers));
+                            dispatch(setSelectedChatMembers(chatMembers));
                             router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
                         },
                         loading: false,

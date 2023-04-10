@@ -10,13 +10,17 @@ import {
 } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
-import { useGetTaskResultsQuery, useGetTaskIdQuery, useApointTaskMutation } from '@/api';
+import {
+    useSendNotificationMutation,
+    useGetTaskResultsQuery,
+    useGetTaskIdQuery,
+    useApointTaskMutation,
+} from '@/api';
 import { useSearch } from '@/hooks';
 import type { TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 
 import { MembersList } from '../addmembers/components';
-import { useMembersSelection } from '../hooks';
 
 export const ListMembersPage: FC = () => {
     const { collectionId } = useParams();
@@ -31,30 +35,43 @@ export const ListMembersPage: FC = () => {
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
+    const [sendNotification] = useSendNotificationMutation();
 
-    const { selectedMembers } = useSelector((state: RootState) => state.members);
-    const selection = useMembersSelection(
-        [],
-        selectedMembers.map((el) => el.id),
-        selectedMembers,
+    const { selectedMembers, selectedChatMembers } = useSelector(
+        (state: RootState) => state.members,
     );
-    const vkUserIds = selectedMembers.map((el) => el.id);
+
+    const chatMemberIds = selectedChatMembers
+        .map((el) => el.members.map((member) => member.id))
+        .flat();
+
+    const vkUserIds = chatMemberIds.concat(selectedMembers.map((el) => el.id));
 
     const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
 
-    const assignMembers = async (memberIds: number[]) => {
+    const assignMembers = async (membersIds: number[]) => {
         const payload = {
             taskId: collectionId,
-            vkUserIds: memberIds,
+            vkUserIds: membersIds,
         };
 
         await apointTask({ payload }).unwrap();
+
+        await sendNotification({
+            taskId: collectionId,
+            ownerName: currentTask.owner.fullName,
+            whoToSend: membersIds,
+            taskName: currentTask.name,
+        }).unwrap();
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
 
     const goBack = () => {
         router.popPage();
     };
+
+    const isMembers =
+        selectedChatMembers.length > 0 || filteredData.length > 0 || invitedMembers.length > 0;
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
@@ -82,11 +99,11 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {filteredData.length > 0 ? (
+            {isMembers ? (
                 <MembersList
                     invitedMembers={invitedMembers}
-                    selection={selection}
-                    collection={filteredData}
+                    selectedMembers={filteredData}
+                    selectedChatMembers={selectedChatMembers}
                 />
             ) : (
                 <MembersNotFound />
@@ -96,7 +113,7 @@ export const ListMembersPage: FC = () => {
                 options={[
                     {
                         text: 'Добавить',
-                        counter: selectedMembers.length,
+                        counter: vkUserIds.length,
                         onClick: () => {
                             assignMembers(vkUserIds);
                             router.pushPage(PAGE_COLLECTION_ID, { collectionId: currentTask.id });

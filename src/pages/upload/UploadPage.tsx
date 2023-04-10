@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
+import type { SnackBarText } from '@/app/types';
 import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import {
     PanelHeaderCentered,
@@ -46,7 +47,7 @@ export const UploadPage: FC = () => {
 
     const [files, setFiles] = useState<File[]>([]);
 
-    const [snackbar, setSnackbar] = useState<SnackBarType>({ type: false, message: '' });
+    const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     const removeFile = (lastModified: number) => {
         const filteredState = files.filter((file) => file.lastModified !== lastModified);
@@ -64,12 +65,12 @@ export const UploadPage: FC = () => {
         });
     };
 
-    const finalizeUpload = (result: SnackBarType) => {
+    const finalizeUpload = (result: SnackBarText) => {
         setLoading(false);
-        setSnackbar(result);
+        setSnackbarText(result);
         setUploading(false);
 
-        if (result.type === 'success') clearState();
+        if (result?.type === 'success') clearState();
     };
 
     useEffect(() => {
@@ -78,7 +79,7 @@ export const UploadPage: FC = () => {
         if (statusFromVk?.isError) {
             finalizeUpload({
                 type: 'error',
-                message: errorMessage || 'Загрузка файлов не удалась',
+                text: errorMessage || 'Загрузка файлов не удалась',
             });
 
             return;
@@ -90,11 +91,11 @@ export const UploadPage: FC = () => {
             case AddResultStatusTypes.NOT_LOADED:
                 finalizeUpload({
                     type: 'error',
-                    message: errorMessage || 'Загрузка файлов не удалась',
+                    text: errorMessage || 'Загрузка файлов не удалась',
                 });
                 break;
             case AddResultStatusTypes.LOADED:
-                finalizeUpload({ type: 'success', message: 'Файлы загружены' });
+                finalizeUpload({ type: 'success', text: 'Файлы загружены' });
                 break;
 
             default:
@@ -108,7 +109,7 @@ export const UploadPage: FC = () => {
             statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED ||
             statusFromServer.isError
         ) {
-            finalizeUpload({ type: 'error', message: 'Загрузка файлов не удалась' });
+            finalizeUpload({ type: 'error', text: 'Загрузка файлов не удалась' });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [statusFromServer]);
@@ -143,7 +144,7 @@ export const UploadPage: FC = () => {
                     isTaskComplete={isTaskComplete}
                     isLoading={isLoading}
                     setFiles={setFiles}
-                    setSnackbar={setSnackbar}
+                    setSnackbarText={setSnackbarText}
                 />
 
                 {!!files.length && (
@@ -165,10 +166,10 @@ export const UploadPage: FC = () => {
                     </Group>
                 )}
 
-                {snackbar.type && (
+                {snackbarText && (
                     <UploadResultMessage
-                        result={snackbar}
-                        setSnackbar={setSnackbar}
+                        result={snackbarText}
+                        setSnackbarText={setSnackbarText}
                     />
                 )}
             </UploadPageWrapper>
