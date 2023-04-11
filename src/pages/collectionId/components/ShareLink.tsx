@@ -2,7 +2,6 @@
 import type { FC } from 'react';
 import { Image, Link } from '@vkontakte/vkui';
 import styled from 'styled-components';
-import { useRouter } from '@happysanta/router';
 
 import PeaopleIcon from '@/assets/peopleIcon.svg';
 import { copyUploadLinkToClipboard } from '@/lib/utils';
@@ -11,13 +10,16 @@ import { PlaceholderWidth } from '@/pages/home/HomePage';
 import type { SnackBarText, TaskType } from '@/app/types';
 
 interface ShareLinkProps {
-    collectionId: string;
+    changePageHandler: (arg: string) => void;
     setSnackbarText: (arg: SnackBarText) => void;
     currentTask: TaskType;
 }
 
-export const ShareLink: FC<ShareLinkProps> = ({ collectionId, currentTask, setSnackbarText }) => {
-    const router = useRouter();
+export const ShareLink: FC<ShareLinkProps> = ({
+    changePageHandler,
+    currentTask,
+    setSnackbarText,
+}) => {
     const copyLink = () => {
         copyUploadLinkToClipboard(currentTask);
         setSnackbarText({ type: 'success', text: 'Ссылка скопирована' });
@@ -34,9 +36,7 @@ export const ShareLink: FC<ShareLinkProps> = ({ collectionId, currentTask, setSn
                     />
                 }
             >
-                <Link onClick={() => router.pushPage(PAGE_ADD_MEMBERS, { collectionId })}>
-                    Добавьте участников
-                </Link>
+                <Link onClick={() => changePageHandler(PAGE_ADD_MEMBERS)}>Добавьте участников</Link>
 
                 {` в задание по сбору файлов или `}
 

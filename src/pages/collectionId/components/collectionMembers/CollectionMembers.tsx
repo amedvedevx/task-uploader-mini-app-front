@@ -2,7 +2,12 @@ import type { FC } from 'react';
 import { Avatar, Button, Group, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
-import type { SnackBarText, TaskResults } from '@/app/types';
+import type {
+    DownloadFilesProps,
+    GetAllowedForRemindIdsResponce,
+    SnackBarText,
+    TaskResults,
+} from '@/app/types';
 import { getInitials } from '@/lib/utils';
 import {
     useGetAllowedForRemindIdsQuery,
@@ -30,17 +35,17 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
     selectedTab,
     setSnackbarText,
 }) => {
-    const [downloadFiles, { isLoading, originalArgs }] = useLazyDownloadFilesQuery();
+    const [downloadFiles, { isLoading: isDownloading, originalArgs }] = useLazyDownloadFilesQuery();
     const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
-    const [sendNotification] = useSendNotificationMutation();
+    const [sendNotification, { isLoading: isSendingNotification }] = useSendNotificationMutation();
 
     const { data: reminds } = useGetAllowedForRemindIdsQuery({ taskId: collectionId });
     const [updateReminds] = useUpdateAllowedForRemindIdsMutation();
     const testees = taskResults.map((el) => el.testee);
 
-    const onClickHandler = async ({ taskId, vkUserId, fullName }: OnClickArgs) => {
+    const onClickHandler = async ({ vkUserId, fullName }: OnClickArgs) => {
         if (selectedTab === 'completed') {
-            downloadFiles({ taskId, vkUserId });
+            downloadFiles({ taskId: collectionId, vkUserId });
         } else if (currentTask) {
             const result = await sendNotification({
                 taskId: collectionId,
@@ -82,22 +87,26 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                             />
                         }
                         after={
-                            selectedTab === 'notCompleted' && isTaskClosed ? null : (
-                                <Button
-                                    appearance='accent'
-                                    size='s'
-                                    mode='secondary'
-                                    disabled={
-                                        (originalArgs?.vkUserId === vkUserId && isLoading) ||
-                                        !reminds?.allowedUserIds.includes(vkUserId)
-                                    }
-                                    loading={originalArgs?.vkUserId === vkUserId && isLoading}
-                                    onClick={() =>
-                                        onClickHandler({ taskId: collectionId, vkUserId, fullName })
-                                    }
-                                >
-                                    {selectedTab === 'completed' ? 'Скачать' : 'Напомнить'}
-                                </Button>
+                            selectedTab === 'completed' ? (
+                                <DownloadButton
+                                    originalArgs={originalArgs}
+                                    vkUserId={vkUserId}
+                                    isDownloading={isDownloading}
+                                    fullName={fullName}
+                                    onClickHandler={onClickHandler}
+                                />
+                            ) : (
+                                <>
+                                    {!isTaskClosed && (
+                                        <RemindButton
+                                            reminds={reminds}
+                                            vkUserId={vkUserId}
+                                            isSendingNotification={isSendingNotification}
+                                            fullName={fullName}
+                                            onClickHandler={onClickHandler}
+                                        />
+                                    )}
+                                </>
                             )
                         }
                     >
@@ -121,7 +130,60 @@ const Members = styled(SimpleCell)`
 `;
 
 type OnClickArgs = {
-    taskId: string;
     vkUserId: number;
     fullName: string;
 };
+
+interface RemindButtonProps {
+    reminds: GetAllowedForRemindIdsResponce | undefined;
+    vkUserId: number;
+    isSendingNotification: boolean;
+    onClickHandler: (arg: { vkUserId: number; fullName: string }) => void;
+    fullName: string;
+}
+
+const RemindButton: FC<RemindButtonProps> = ({
+    reminds,
+    vkUserId,
+    isSendingNotification,
+    onClickHandler,
+    fullName,
+}) => (
+    <Button
+        appearance='accent'
+        size='s'
+        mode='secondary'
+        disabled={!reminds?.allowedUserIds.includes(vkUserId)}
+        loading={isSendingNotification}
+        onClick={() => onClickHandler({ vkUserId, fullName })}
+    >
+        Напомнить
+    </Button>
+);
+
+interface DownloadButtonProps {
+    originalArgs: DownloadFilesProps | undefined;
+    vkUserId: number;
+    isDownloading: boolean;
+    onClickHandler: (arg: { vkUserId: number; fullName: string }) => void;
+    fullName: string;
+}
+
+const DownloadButton: FC<DownloadButtonProps> = ({
+    originalArgs,
+    vkUserId,
+    isDownloading,
+    onClickHandler,
+    fullName,
+}) => (
+    <Button
+        appearance='accent'
+        size='s'
+        mode='secondary'
+        disabled={originalArgs?.vkUserId === vkUserId && isDownloading}
+        loading={originalArgs?.vkUserId === vkUserId && isDownloading}
+        onClick={() => onClickHandler({ vkUserId, fullName })}
+    >
+        Скачать
+    </Button>
+);

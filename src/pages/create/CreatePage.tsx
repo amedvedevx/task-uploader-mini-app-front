@@ -1,16 +1,16 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Div, FormLayout, Panel, PanelHeaderBack, Placeholder, Snackbar } from '@vkontakte/vkui';
+import { Div, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
-import { Icon28ErrorCircleOutline } from '@vkontakte/icons';
 
 import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateSubTaskMutation, useCreateTaskMutation } from '@/api';
 import { FooterWithButton } from '@/components';
 import type { SnackBarText } from '@/app/types';
+import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { CreateInput } from './components';
 
@@ -114,16 +114,10 @@ export const CreatePage: FC = () => {
             </CreateContainer>
 
             {snackbarText && (
-                <Snackbar
-                    before={
-                        snackbarText.type === 'error' && (
-                            <Icon28ErrorCircleOutline color='var(--vkui--color_text_negative)' />
-                        )
-                    }
-                    onClose={() => setSnackbarText(null)}
-                >
-                    {snackbarText.text}
-                </Snackbar>
+                <SnackBarMessage
+                    snackbarText={snackbarText}
+                    setSnackbarText={setSnackbarText}
+                />
             )}
 
             <FooterWithButton

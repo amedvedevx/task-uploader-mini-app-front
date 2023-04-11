@@ -13,17 +13,12 @@ import {
     PanelHeaderContentCentered,
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
+import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
-import { UploadResultMessage } from './components/UploadResultMessage';
 import { TaskDescription } from './components/TaskDescription';
-
-export type SnackBarType = {
-    type: 'error' | 'success' | false;
-    message: string;
-};
 
 export const UploadPage: FC = () => {
     const { uploadId } = useParams();
@@ -167,8 +162,8 @@ export const UploadPage: FC = () => {
                 )}
 
                 {snackbarText && (
-                    <UploadResultMessage
-                        result={snackbarText}
+                    <SnackBarMessage
+                        snackbarText={snackbarText}
                         setSnackbarText={setSnackbarText}
                     />
                 )}
