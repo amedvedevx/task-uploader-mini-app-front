@@ -1,8 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
-import { FixedLayout, Panel, PanelHeaderBack, Search, Snackbar } from '@vkontakte/vkui';
+import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Icon28CheckCircleOutline, Icon28ErrorCircleOutline } from '@vkontakte/icons';
 import styled from 'styled-components';
 
 import {
@@ -23,6 +22,7 @@ import { useSearch } from '@/hooks';
 import { normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
+import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { CollectionMembers } from './components/collectionMembers';
 import { HeaderButtons } from './components/headerButtons';
@@ -129,7 +129,6 @@ export const CollectionIdPage: FC = () => {
         setPopout(popoutCloseTask);
     };
 
-    // TODO - remove error parser from here to api
     if (error?.status) {
         const errorMessage =
             error?.status === 400
@@ -178,7 +177,7 @@ export const CollectionIdPage: FC = () => {
 
                 {selectedTab === 'notCompleted' && !isTaskClosed && (
                     <HeaderButtons
-                        isResults={normalizedTestees.notCompleted.length > 0}
+                        isTestees={normalizedTestees.notCompleted.length > 0}
                         changePageHandler={changePageHandler}
                         setPopout={setPopout}
                         setSnackbarText={setSnackbarText}
@@ -189,38 +188,31 @@ export const CollectionIdPage: FC = () => {
             <ListContainer $isTaskClosed={isTaskClosed}>
                 {!isLoading ? (
                     <>
-                        {selectedTab === 'completed' && (
-                            <>
-                                {normalizedTestees.completed.length > 0 && (
-                                    <CollectionMembers
-                                        selectedTab={selectedTab}
-                                        isTaskClosed={isTaskClosed}
-                                        collectionId={collectionId}
-                                        taskResults={normalizedTestees.completed}
-                                        setSnackbarText={setSnackbarText}
-                                    />
-                                )}
-                            </>
+                        {selectedTab === 'completed' && normalizedTestees.completed.length > 0 && (
+                            <CollectionMembers
+                                selectedTab={selectedTab}
+                                isTaskClosed={isTaskClosed}
+                                collectionId={collectionId}
+                                taskResults={normalizedTestees.completed}
+                                setSnackbarText={setSnackbarText}
+                            />
                         )}
 
-                        {selectedTab === 'notCompleted' && (
-                            <>
-                                {normalizedTestees.notCompleted.length > 0 ? (
-                                    <CollectionMembers
-                                        setSnackbarText={setSnackbarText}
-                                        selectedTab={selectedTab}
-                                        isTaskClosed={isTaskClosed}
-                                        collectionId={collectionId}
-                                        taskResults={normalizedTestees.notCompleted}
-                                    />
-                                ) : (
-                                    <ShareLink
-                                        currentTask={currentTask}
-                                        setSnackbarText={setSnackbarText}
-                                        collectionId={collectionId}
-                                    />
-                                )}
-                            </>
+                        {selectedTab === 'notCompleted' &&
+                        normalizedTestees.notCompleted.length > 0 ? (
+                            <CollectionMembers
+                                setSnackbarText={setSnackbarText}
+                                selectedTab={selectedTab}
+                                isTaskClosed={isTaskClosed}
+                                collectionId={collectionId}
+                                taskResults={normalizedTestees.notCompleted}
+                            />
+                        ) : (
+                            <ShareLink
+                                currentTask={currentTask}
+                                setSnackbarText={setSnackbarText}
+                                changePageHandler={changePageHandler}
+                            />
                         )}
                     </>
                 ) : (
@@ -229,18 +221,10 @@ export const CollectionIdPage: FC = () => {
             </ListContainer>
 
             {snackbarText && (
-                <Snackbar
-                    before={
-                        snackbarText.type === 'error' ? (
-                            <Icon28ErrorCircleOutline color='var(--vkui--color_text_negative)' />
-                        ) : (
-                            <Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />
-                        )
-                    }
-                    onClose={() => setSnackbarText(null)}
-                >
-                    {snackbarText.text}
-                </Snackbar>
+                <SnackBarMessage
+                    snackbarText={snackbarText}
+                    setSnackbarText={setSnackbarText}
+                />
             )}
 
             {popout}

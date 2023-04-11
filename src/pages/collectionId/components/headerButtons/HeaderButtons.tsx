@@ -7,14 +7,14 @@ import { AddTestees, RemindAll } from './components';
 
 interface HeaderButtonsProps {
     changePageHandler: (arg: string) => void;
-    isResults: boolean;
+    isTestees: boolean;
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: (arg: SnackBarText) => void;
 }
 
 export const HeaderButtons: FC<HeaderButtonsProps> = ({
     changePageHandler,
-    isResults,
+    isTestees,
     setPopout,
     setSnackbarText,
 }) => (
@@ -25,7 +25,7 @@ export const HeaderButtons: FC<HeaderButtonsProps> = ({
     >
         <AddTestees changePageHandler={changePageHandler} />
 
-        {isResults && (
+        {isTestees && (
             <RemindAll
                 setPopout={setPopout}
                 setSnackbarText={setSnackbarText}

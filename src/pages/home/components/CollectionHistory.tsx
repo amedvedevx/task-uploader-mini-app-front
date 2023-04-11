@@ -9,7 +9,7 @@ import type { TaskType } from '@/app/types';
 import { CollectionHistorySkeleton } from './skeleton';
 
 interface CollectionHistoryProps {
-    collections: TaskType[];
+    collections: TaskType[] | undefined;
     isLoading: boolean;
 }
 
@@ -19,7 +19,7 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections, isL
     return (
         <CollectionHistoryWrapper>
             <List>
-                {!isLoading ? (
+                {!isLoading && collections ? (
                     collections.map(({ id, name, status, consolidatedData }) => (
                         <SimpleCell
                             key={id}
