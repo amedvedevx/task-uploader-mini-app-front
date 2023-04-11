@@ -1,15 +1,18 @@
 import { useParams, useRouter } from '@happysanta/router';
-import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
+import {
+    FixedLayout,
+    Panel,
+    PanelHeader,
+    PanelHeaderBack,
+    PanelHeaderContent,
+    Search,
+} from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-import {
-    PanelHeaderCentered,
-    PanelHeaderContentCentered,
-    PanelHeaderSkeleton,
-} from '@/components/PanelHeaderCentered';
+import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
 import {
     useGetTesteesQuery,
@@ -91,18 +94,18 @@ export const AddMemmbersPage: FC = () => {
                 filled
                 vertical='top'
             >
-                <PanelHeaderCentered
+                <PanelHeader
                     separator={false}
                     before={<PanelHeaderBack onClick={goBack} />}
                 >
                     {currentTask ? (
-                        <PanelHeaderContentCentered status={currentTask.name}>
+                        <PanelHeaderContent status={currentTask.name}>
                             Добавьте участников
-                        </PanelHeaderContentCentered>
+                        </PanelHeaderContent>
                     ) : (
                         <PanelHeaderSkeleton />
                     )}
-                </PanelHeaderCentered>
+                </PanelHeader>
 
                 <Search
                     after=''

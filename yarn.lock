@@ -6549,10 +6549,10 @@ vite-plugin-compression@^0.5.1:
     debug "^4.3.3"
     fs-extra "^10.0.0"
 
-vite-plugin-singlefile@^0.13.2:
-  version "0.13.2"
-  resolved "https://registry.npmjs.org/vite-plugin-singlefile/-/vite-plugin-singlefile-0.13.2.tgz"
-  integrity sha512-HAvrU9mxasNMn/YF0Hb9NjsWDstCWe4iLQ6IR5ppOiNMvXjcyqU3C9SDQ32xnonx3Y04JUGjD2bGiT6q0S9T8w==
+vite-plugin-singlefile@^0.13.5:
+  version "0.13.5"
+  resolved "https://registry.yarnpkg.com/vite-plugin-singlefile/-/vite-plugin-singlefile-0.13.5.tgz#9465dbb0b06afb2a73600a50fcce4b51c8d10999"
+  integrity sha512-y/aRGh8qHmw2f1IhaI/C6PJAaov47ESYDvUv1am1YHMhpY+19B5k5Odp8P+tgs+zhfvak6QB1ykrALQErEAo7g==
   dependencies:
     micromatch "^4.0.5"
 

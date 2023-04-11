@@ -1,11 +1,10 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Div, FormLayout, Panel, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
+import { Div, FormLayout, Panel, PanelHeader, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
-import { PanelHeaderCentered } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateSubTaskMutation, useCreateTaskMutation } from '@/api';
 import { FooterWithButton } from '@/components';
@@ -83,7 +82,7 @@ export const CreatePage: FC = () => {
 
     return (
         <Panel id={PANEL_CREATE_COLLECTION}>
-            <PanelHeaderCentered
+            <PanelHeader
                 separator={false}
                 before={<PanelHeaderBack onClick={goBack} />}
             />
