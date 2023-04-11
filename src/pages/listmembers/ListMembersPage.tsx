@@ -9,7 +9,7 @@ import {
     PanelHeaderContentCentered,
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
+import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
 import {
     useGetChatTesteesQuery,
@@ -79,6 +79,12 @@ export const ListMembersPage: FC = () => {
         }).unwrap();
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
+
+    useEffect(() => {
+        if (!vkUserIds.length) {
+            router.pushPage(PAGE_ADD_MEMBERS, { collectionId });
+        }
+    }, [vkUserIds, router, collectionId]);
 
     const goBack = () => {
         router.popPage();

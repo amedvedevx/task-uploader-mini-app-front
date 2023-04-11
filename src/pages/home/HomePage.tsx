@@ -22,13 +22,11 @@ import { CollectionHistory } from './components/CollectionHistory';
 export const HomePage: FC = () => {
     const router = useRouter();
 
-    const { data = { tasks: [] }, isLoading } = useGetTasksQuery({});
-
-    const { tasks } = data;
+    const { data, isLoading } = useGetTasksQuery({});
 
     return (
         <Panel id={PANEL_COLLECTION_HOME}>
-            <CollectionsContainer $isTasksExist={tasks.length > 0}>
+            <CollectionsContainer>
                 <PlaceholderWidth
                     icon={
                         <ImageWithSizes
@@ -49,7 +47,7 @@ export const HomePage: FC = () => {
                     }
                 />
 
-                {tasks.length > 0 && (
+                {data && data?.tasks?.length > 0 && (
                     <GroupWide
                         header={<Header mode='primary'>История</Header>}
                         mode='plain'
@@ -59,7 +57,7 @@ export const HomePage: FC = () => {
                         </Spacing>
 
                         <CollectionHistory
-                            collections={tasks}
+                            collections={data?.tasks}
                             isLoading={isLoading}
                         />
                     </GroupWide>
@@ -69,7 +67,7 @@ export const HomePage: FC = () => {
     );
 };
 
-const CollectionsContainer = styled(Div)<{ $isTasksExist: boolean }>`
+const CollectionsContainer = styled(Div)`
     display: flex;
     flex-direction: column;
     align-items: center;
