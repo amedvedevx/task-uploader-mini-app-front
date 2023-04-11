@@ -175,24 +175,19 @@ export interface DeleteSubTaskProps {
 }
 
 export interface GetMembersResponce {
-    friends: FriendsType[];
+    friends: TesteeType[];
 }
 
 export interface GetTesteesResponse {
     count: number;
-    items: ItemsType[];
-    profiles: FriendsType[];
+    items: ChatType[];
+    profiles: TesteeType[];
 }
 
 export interface GetTesteesProps {
     search: string;
     count: number;
     invitedMembersIds?: number[];
-}
-
-export interface GetChatTesteesResponse {
-    chatName: string;
-    members: FriendsType[];
 }
 
 export interface GetAllowedForRemindIdsResponce {
@@ -210,11 +205,11 @@ export interface UpdateAllowedForRemindIdsProps {
 }
 
 export interface GetChatTesteesProps {
-    chats: ItemsType[];
+    selectedChats: ChatType[];
     invitedMembersIds?: number[];
 }
 
-export type ItemsType = {
+export type ChatType = {
     peer: {
         id: number;
         type: string;
@@ -239,8 +234,10 @@ export interface SendNotificationProps {
     taskId: string;
 }
 
-export type FriendsType = {
+export type TesteeType = {
     id: number;
+    chatName: string;
+    full_name: string;
     can_access_closed: boolean;
     first_name: string;
     is_closed: boolean;

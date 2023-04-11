@@ -1,6 +1,6 @@
 import bridge from '@vkontakte/vk-bridge';
 
-import type { FriendsType, GetChatTesteesResponse } from '@/app/types';
+import type { TesteeType } from '@/app/types';
 
 interface BridgeGetConversationsMembersArgs {
     token: string;
@@ -14,8 +14,8 @@ export const BridgeGetConversationsMembers = async ({
     peerId,
     chatName,
     invitedMembersIds,
-}: BridgeGetConversationsMembersArgs): Promise<GetChatTesteesResponse> => {
-    const result: GetChatTesteesResponse = await bridge
+}: BridgeGetConversationsMembersArgs): Promise<TesteeType> => {
+    const result: TesteeType = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'messages.getConversationMembers',
             params: {
@@ -24,12 +24,15 @@ export const BridgeGetConversationsMembers = async ({
                 v: ' 5.154',
             },
         })
-        .then((data: { response: { profiles: FriendsType[] } }) => ({
-            chatName,
-            members: invitedMembersIds
-                ? data.response.profiles.filter((member) => !invitedMembersIds.includes(member.id))
-                : data.response.profiles,
-        }))
+        .then((data: { response: { profiles: TesteeType[] } }) => {
+            const dataWithAddFields = data.response.profiles.map((item) => ({
+                ...item,
+                chatName: chatName,
+                full_name: `${item.first_name} ${item.last_name}`,
+            }));
+
+            return dataWithAddFields.filter((member) => !invitedMembersIds.includes(member.id));
+        })
         .catch((err) => err);
 
     return result;

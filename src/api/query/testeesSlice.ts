@@ -3,10 +3,10 @@ import type {
     GetTesteesProps,
     SendNotificationProps,
     GetChatTesteesProps,
-    GetChatTesteesResponse,
     GetAllowedForRemindIdsProps,
     GetAllowedForRemindIdsResponce,
     UpdateAllowedForRemindIdsProps,
+    TesteeType,
 } from '@/app/types';
 import { UPLOAD_URL } from '@/app/config';
 
@@ -48,13 +48,13 @@ const testeesSlice = apiSlice
                 },
             }),
 
-            getChatTestees: builder.query<GetChatTesteesResponse[], GetChatTesteesProps>({
-                queryFn: async ({ chats, invitedMembersIds }, { getState }) => {
+            getChatTestees: builder.query<TesteeType[], GetChatTesteesProps>({
+                queryFn: async ({ selectedChats, invitedMembersIds }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
 
-                    const convMembers: GetChatTesteesResponse[] = [];
+                    const convMembers: TesteeType[] = [];
 
-                    const promises = chats.map(async ({ peer, chat_settings }) => {
+                    const promises = selectedChats.map(async ({ peer, chat_settings }) => {
                         const result = await BridgeGetConversationsMembers({
                             token: userInfo.token,
                             peerId: peer.id,
@@ -69,7 +69,7 @@ const testeesSlice = apiSlice
                         results.forEach((result) => convMembers.push(result.value));
                     });
 
-                    return { data: convMembers };
+                    return { data: convMembers.flat() };
                 },
             }),
             getAllowedForRemindIds: builder.query<

@@ -1,7 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -12,14 +12,16 @@ import {
 import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
 import {
+    useGetChatTesteesQuery,
     useSendNotificationMutation,
     useGetTaskResultsQuery,
     useGetTaskIdQuery,
     useApointTaskMutation,
 } from '@/api';
 import { useSearch } from '@/hooks';
-import type { FriendsType, TaskType } from '@/app/types';
+import type { TaskType, TesteeType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
+import { normalizeMembers } from '@/lib';
 
 import { MembersList } from '../addmembers/components';
 
@@ -34,28 +36,32 @@ export const ListMembersPage: FC = () => {
 
     const invitedMembers = taskResults.map((result) => result.testee.vkUserId);
 
+    const { selectedMembers, selectedChats } = useSelector((state: RootState) => state.members);
+
+    const { data: chatMembers = [], isLoading } = useGetChatTesteesQuery({
+        selectedChats,
+        invitedMembersIds: invitedMembers,
+    });
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
     const [sendNotification] = useSendNotificationMutation();
 
-    const { selectedMembers, selectedChats } = useSelector((state: RootState) => state.members);
+    const [members, setMembers] = useState<TesteeType[]>([]);
 
-    const [members, setMembers] = useState<FriendsType[]>(selectedMembers);
+    useEffect(() => {
+        if (!isLoading) {
+            const allMembers = selectedMembers.concat(chatMembers);
+            setMembers(normalizeMembers(allMembers));
+        }
+    }, [isLoading, selectedMembers, chatMembers]);
 
-    const filtered = members.map((item) => ({
-        ...item,
-        fullName: `${item.first_name} ${item.last_name}`,
-    }));
+    const deleteMember = (id: number) => {
+        setMembers((prev) => prev.filter((el) => el.id !== id));
+    };
 
-    console.log(filtered);
+    const { search, changeSearch, filteredData } = useSearch(members, 'full_name');
 
-    // const chatMemberIds = selectedChatMembers
-    //     .map((el) => el.members.map((member) => member.id))
-    //     .flat();
-
-    const vkUserIds = selectedMembers.map((el) => el.id);
-
-    const { search, changeSearch, filteredData } = useSearch(filtered, 'fullName');
+    const vkUserIds = members.map((el) => el.id);
 
     const assignMembers = async (membersIds: number[]) => {
         const payload = {
@@ -77,8 +83,6 @@ export const ListMembersPage: FC = () => {
     const goBack = () => {
         router.popPage();
     };
-
-    const isMembers = filteredData.length > 0 || invitedMembers.length > 0;
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
@@ -106,12 +110,10 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {isMembers ? (
+            {filteredData.length > 0 ? (
                 <MembersList
-                    invitedMembers={invitedMembers}
                     selectedMembers={filteredData}
-                    selectedChats={selectedChats}
-                    setMembers={setMembers}
+                    deleteMember={deleteMember}
                 />
             ) : (
                 <MembersNotFound />

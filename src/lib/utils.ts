@@ -4,7 +4,7 @@ import { ru } from 'date-fns/locale';
 import copy from 'copy-to-clipboard';
 
 import { UPLOAD_URL } from '@/app/config';
-import type { TaskResults, TaskType } from '@/app/types';
+import type { TesteeType, TaskResults, TaskType } from '@/app/types';
 import { TaskStatusTypesForTestee } from '@/app/types';
 
 export const capitalizeString = (stringToCap: string): string =>
@@ -94,3 +94,12 @@ export const normalizeTestees = (
 
     return testees;
 };
+
+export const normalizeMembers = (members: TesteeType[]): TesteeType[] =>
+    members.reduce((o: TesteeType[], i) => {
+        if (!o.find((v) => v.id === i.id)) {
+            o.push(i);
+        }
+
+        return o;
+    }, []);
