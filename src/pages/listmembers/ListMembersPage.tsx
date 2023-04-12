@@ -1,14 +1,17 @@
 import { useParams, useRouter } from '@happysanta/router';
-import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
+import {
+    FixedLayout,
+    Panel,
+    PanelHeader,
+    PanelHeaderBack,
+    PanelHeaderContent,
+    Search,
+} from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    PanelHeaderCentered,
-    PanelHeaderContentCentered,
-    PanelHeaderSkeleton,
-} from '@/components/PanelHeaderCentered';
+import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
 import {
@@ -97,18 +100,18 @@ export const ListMembersPage: FC = () => {
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
-            <PanelHeaderCentered
+            <PanelHeader
                 separator={false}
                 before={<PanelHeaderBack onClick={goBack} />}
             >
                 {currentTask ? (
-                    <PanelHeaderContentCentered status={currentTask.name}>
+                    <PanelHeaderContent status={currentTask.name}>
                         Список участников
-                    </PanelHeaderContentCentered>
+                    </PanelHeaderContent>
                 ) : (
                     <PanelHeaderSkeleton />
                 )}
-            </PanelHeaderCentered>
+            </PanelHeader>
 
             <FixedLayout
                 filled

@@ -1,6 +1,6 @@
 {
   "name": "task-uploader-mini-app",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "author": "k.pozdnikin, s.minenkov, a.medvedev",
   "description": "",
   "homepage": ".",
@@ -23,9 +23,9 @@
     "@happysanta/router": "^0.3.1",
     "@reduxjs/toolkit": "^1.9.2",
     "@types/lodash.get": "^4.4.7",
-    "@vkontakte/icons": "^2.15.0",
+    "@vkontakte/icons": "^2.27.0",
     "@vkontakte/vk-bridge": "^2.7.2",
-    "@vkontakte/vkui": "^5.1.0",
+    "@vkontakte/vkui": "^5.3.1",
     "copy-to-clipboard": "^3.3.3",
     "cypress": "^11.1.0",
     "date-fns": "^2.29.3",
@@ -81,7 +81,7 @@
     "typescript": "^4.9.1-beta",
     "vite": "^4.1.1",
     "vite-plugin-compression": "^0.5.1",
-    "vite-plugin-singlefile": "^0.13.2",
+    "vite-plugin-singlefile": "^0.13.5",
     "vite-tsconfig-paths": "^4.0.5",
     "vitest": "^0.28.4"
   }
