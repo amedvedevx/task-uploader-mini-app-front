@@ -14,7 +14,7 @@ export const PAGE_COLLECTION_HOME = '/';
 export const PAGE_CREATE_COLLECTION = '/collection';
 export const PAGE_ADD_MEMBERS = '/collection/add-members/:collectionId([0-9a-zA-Z-]+)';
 export const PAGE_LIST_MEMBERS = '/collection/list-members/:collectionId([0-9a-zA-Z-]+)';
-export const PAGE_COLLECTION_ID = '/collection/:collectionId([0-9a-zA-Z-]+)';
+export const PAGE_COLLECTION_ID = '/collectionId/:collectionId([0-9a-zA-Z-]+)';
 export const PAGE_UPLOAD_ID = '/upload/:uploadId([0-9a-zA-Z-]+)';
 
 export const POPOUT_FEEDBACK = 'popout_feedback';

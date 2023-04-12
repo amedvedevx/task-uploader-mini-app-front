@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { lazy, useEffect } from 'react';
-import { useFirstPageCheck, useLocation } from '@happysanta/router';
+import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
@@ -13,6 +13,8 @@ import { useVkUserId } from '@/hooks';
 import { PreloadScreen } from '@/components';
 
 import {
+    PAGE_COLLECTION_ID,
+    PAGE_UPLOAD_ID,
     PANEL_ADD_MEMBERS,
     PANEL_COLLECTION_HOME,
     PANEL_COLLECTION_ID,
@@ -61,6 +63,7 @@ const CollectionIdPage = lazy(() =>
 
 export const AppPages: FC = () => {
     const location = useLocation();
+    const router = useRouter();
     const isFirst = useFirstPageCheck();
 
     const dispatch = useDispatch();
@@ -68,6 +71,19 @@ export const AppPages: FC = () => {
     const bearer = useVkHash();
     const token = useVkToken();
     const userId = useVkUserId(token);
+
+    bridge.subscribe((e) => {
+        if (e.detail.type === 'VKWebAppChangeFragment') {
+            const index = e.detail.data.location.lastIndexOf('/');
+            const id = e.detail.data.location.substring(index + 1);
+
+            if (e.detail.data.location.includes('upload')) {
+                router.pushPage(PAGE_UPLOAD_ID, { uploadId: id });
+            } else if (e.detail.data.location.includes('collectionId')) {
+                router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
+            }
+        }
+    });
 
     useEffect(() => {
         if (token && userId) {
