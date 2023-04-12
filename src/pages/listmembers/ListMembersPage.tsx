@@ -97,23 +97,23 @@ export const ListMembersPage: FC = () => {
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
+            <PanelHeaderCentered
+                separator={false}
+                before={<PanelHeaderBack onClick={goBack} />}
+            >
+                {currentTask ? (
+                    <PanelHeaderContentCentered status={currentTask.name}>
+                        Список участников
+                    </PanelHeaderContentCentered>
+                ) : (
+                    <PanelHeaderSkeleton />
+                )}
+            </PanelHeaderCentered>
+
             <FixedLayout
                 filled
                 vertical='top'
             >
-                <PanelHeaderCentered
-                    separator={false}
-                    before={<PanelHeaderBack onClick={goBack} />}
-                >
-                    {currentTask ? (
-                        <PanelHeaderContentCentered status={currentTask.name}>
-                            Список участников
-                        </PanelHeaderContentCentered>
-                    ) : (
-                        <PanelHeaderSkeleton />
-                    )}
-                </PanelHeaderCentered>
-
                 <Search
                     after=''
                     value={search}
