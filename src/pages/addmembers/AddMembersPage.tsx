@@ -80,23 +80,23 @@ export const AddMembersPage: FC = () => {
 
     return (
         <Panel id={PANEL_ADD_MEMBERS}>
-            <PanelHeader
-                separator={false}
-                before={<PanelHeaderBack onClick={goBack} />}
-            >
-                {currentTask ? (
-                    <PanelHeaderContent status={currentTask.name}>
-                        Добавьте участников
-                    </PanelHeaderContent>
-                ) : (
-                    <PanelHeaderSkeleton />
-                )}
-            </PanelHeader>
-
             <FixedLayout
                 filled
                 vertical='top'
             >
+                <PanelHeader
+                    separator={false}
+                    before={<PanelHeaderBack onClick={goBack} />}
+                >
+                    {currentTask ? (
+                        <PanelHeaderContent status={currentTask.name}>
+                            Добавьте участников
+                        </PanelHeaderContent>
+                    ) : (
+                        <PanelHeaderSkeleton />
+                    )}
+                </PanelHeader>
+
                 <Search
                     after=''
                     value={search}
