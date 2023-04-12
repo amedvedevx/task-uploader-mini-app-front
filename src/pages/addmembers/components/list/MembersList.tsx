@@ -8,10 +8,10 @@ import type { UseMembersSelectionResult } from '@/pages/hooks';
 import { SearchMembers, SelectedMembers } from './components';
 
 interface MembersListProps {
+    selection?: UseMembersSelectionResult;
     searchMembers?: GetTesteesResponse;
     selectedMembers?: TesteeType[];
     deleteMember?: (id: number) => void;
-    selection?: UseMembersSelectionResult;
 }
 
 export const avatarStub = 'https://vk.com/images/camera_100.png';

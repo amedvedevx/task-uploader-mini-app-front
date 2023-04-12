@@ -5,15 +5,15 @@ import type { TesteeType } from '@/app/types';
 interface BridgeGetConversationsMembersArgs {
     token: string;
     peerId: number;
-    chatName: string;
-    invitedMembersIds?: number[];
+    groupName: string;
+    invitedMemberIds?: number[];
 }
 
 export const BridgeGetConversationsMembers = async ({
     token,
     peerId,
-    chatName,
-    invitedMembersIds,
+    groupName,
+    invitedMemberIds,
 }: BridgeGetConversationsMembersArgs): Promise<TesteeType> => {
     const result: TesteeType = await bridge
         .send('VKWebAppCallAPIMethod', {
@@ -27,11 +27,11 @@ export const BridgeGetConversationsMembers = async ({
         .then((data: { response: { profiles: TesteeType[] } }) => {
             const dataWithAddFields = data.response.profiles.map((item) => ({
                 ...item,
-                chatName: chatName,
+                groupName,
                 full_name: `${item.first_name} ${item.last_name}`,
             }));
 
-            return dataWithAddFields.filter((member) => !invitedMembersIds.includes(member.id));
+            return dataWithAddFields.filter((member) => !invitedMemberIds.includes(member.id));
         })
         .catch((err) => err);
 

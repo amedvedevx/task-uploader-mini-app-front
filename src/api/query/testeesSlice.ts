@@ -23,37 +23,23 @@ const testeesSlice = apiSlice
     .injectEndpoints({
         endpoints: (builder) => ({
             getTestees: builder.query<GetTesteesResponse, GetTesteesProps>({
-                queryFn: async ({ search, count, invitedMembersIds }, { getState }) => {
+                queryFn: async ({ search, count, invitedMemberIds }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
-
-                    let filteredTestees = {} as GetTesteesResponse;
 
                     const testees = await BridgeSearchConversations({
                         token: userInfo.token,
+                        userId: userInfo.userId,
+                        invitedMemberIds,
                         search,
                         count,
                     });
 
-                    filteredTestees = {
-                        count: testees.count,
-                        items: testees.items.filter(
-                            (el) => el.peer.type === 'chat' && !!el.chat_settings.members_count,
-                        ),
-                        profiles: testees.profiles
-                            ? testees.profiles.filter(
-                                  (el) =>
-                                      !invitedMembersIds?.includes(el.id) &&
-                                      el.id !== userInfo.userId,
-                              )
-                            : [],
-                    };
-
-                    return { data: filteredTestees };
+                    return { data: testees };
                 },
             }),
 
             getChatTestees: builder.query<TesteeType[], GetChatTesteesProps>({
-                queryFn: async ({ selectedChats, invitedMembersIds }, { getState }) => {
+                queryFn: async ({ selectedChats, invitedMemberIds }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
 
                     const convMembers: TesteeType[] = [];
@@ -62,8 +48,8 @@ const testeesSlice = apiSlice
                         const result = await BridgeGetConversationsMembers({
                             token: userInfo.token,
                             peerId: peer.id,
-                            chatName: chat_settings.title,
-                            invitedMembersIds,
+                            groupName: chat_settings.title,
+                            invitedMemberIds,
                         });
 
                         return result;

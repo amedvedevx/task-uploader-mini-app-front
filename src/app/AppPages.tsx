@@ -43,7 +43,7 @@ const CreatePage = lazy(() =>
 
 const AddMembersPage = lazy(() =>
     import('@/pages/addmembers/AddMembersPage').then((module) => ({
-        default: module.AddMemmbersPage,
+        default: module.AddMembersPage,
     })),
 );
 

@@ -1,7 +1,7 @@
 import { useParams, useRouter } from '@happysanta/router';
 import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -11,12 +11,7 @@ import {
     PanelHeaderSkeleton,
 } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import {
-    useGetTesteesQuery,
-    useGetTaskIdQuery,
-    useGetChatTesteesQuery,
-    useGetTaskResultsQuery,
-} from '@/api';
+import { useGetTesteesQuery, useGetTaskIdQuery, useGetTaskResultsQuery } from '@/api';
 import { setSelectedChats, setSelectedMembers } from '@/api/state';
 import type { GetTesteesResponse, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
@@ -26,7 +21,7 @@ import { useMembersSelection } from '../hooks';
 
 const maxTesteeItems = 205;
 
-export const AddMemmbersPage: FC = () => {
+export const AddMembersPage: FC = () => {
     const { collectionId } = useParams();
     const dispatch = useDispatch();
     const router = useRouter();
@@ -46,12 +41,12 @@ export const AddMemmbersPage: FC = () => {
     });
     const { taskResults } = data;
 
-    const invitedMembersIds = taskResults.map((result) => result.testee.vkUserId);
+    const invitedMemberIds = taskResults.map((result) => result.testee.vkUserId);
 
     const { data: testees = {} as GetTesteesResponse, isLoading } = useGetTesteesQuery({
         search: searchQuery,
         count: conversationsCount,
-        invitedMembersIds,
+        invitedMemberIds,
     });
 
     const selection = useMembersSelection();

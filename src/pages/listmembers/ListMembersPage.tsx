@@ -34,34 +34,33 @@ export const ListMembersPage: FC = () => {
     });
     const { taskResults } = data;
 
-    const invitedMembers = taskResults.map((result) => result.testee.vkUserId);
+    const invitedMemberIds = taskResults.map((result) => result.testee.vkUserId);
 
     const { selectedMembers, selectedChats } = useSelector((state: RootState) => state.members);
 
     const { data: chatMembers = [], isLoading } = useGetChatTesteesQuery({
         selectedChats,
-        invitedMembersIds: invitedMembers,
+        invitedMemberIds,
     });
+
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
     const [sendNotification] = useSendNotificationMutation();
 
-    const [members, setMembers] = useState<TesteeType[]>([]);
+    const [localMembers, setLocalMembers] = useState<TesteeType[]>([]);
 
     useEffect(() => {
         if (!isLoading) {
             const allMembers = selectedMembers.concat(chatMembers);
-            setMembers(normalizeMembers(allMembers));
+            setLocalMembers(normalizeMembers(allMembers));
         }
     }, [isLoading, selectedMembers, chatMembers]);
 
     const deleteMember = (id: number) => {
-        setMembers((prev) => prev.filter((el) => el.id !== id));
+        setLocalMembers((prev) => prev.filter((el) => el.id !== id));
     };
 
-    const { search, changeSearch, filteredData } = useSearch(members, 'full_name');
-
-    const vkUserIds = members.map((el) => el.id);
+    const { search, changeSearch, filteredData } = useSearch(localMembers, 'full_name');
 
     const assignMembers = async (membersIds: number[]) => {
         const payload = {
@@ -80,11 +79,17 @@ export const ListMembersPage: FC = () => {
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
 
+    const vkUserIds = localMembers.map((el) => el.id);
+
     useEffect(() => {
-        if (!vkUserIds.length) {
-            router.pushPage(PAGE_ADD_MEMBERS, { collectionId });
-        }
-    }, [vkUserIds, router, collectionId]);
+        const timer = setTimeout(() => {
+            if (!vkUserIds.length) {
+                router.pushPage(PAGE_ADD_MEMBERS, { collectionId });
+            }
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, [vkUserIds]);
 
     const goBack = () => {
         router.popPage();

@@ -19,10 +19,11 @@ export const membersSlice = createSlice({
     reducers: {
         setSelectedMembers: (state, action: PayloadAction<TesteeType[]>) => {
             state.selectedMembers = action.payload;
+
             state.selectedMembers = state.selectedMembers.map((member) => ({
                 ...member,
                 full_name: `${member.first_name} ${member.last_name}`,
-                chatName: '',
+                groupName: 'Выбранные участники',
             }));
         },
 

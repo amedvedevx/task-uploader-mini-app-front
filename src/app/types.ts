@@ -187,7 +187,7 @@ export interface GetTesteesResponse {
 export interface GetTesteesProps {
     search: string;
     count: number;
-    invitedMembersIds?: number[];
+    invitedMemberIds?: number[];
 }
 
 export interface GetAllowedForRemindIdsResponce {
@@ -206,7 +206,7 @@ export interface UpdateAllowedForRemindIdsProps {
 
 export interface GetChatTesteesProps {
     selectedChats: ChatType[];
-    invitedMembersIds?: number[];
+    invitedMemberIds?: number[];
 }
 
 export type ChatType = {
@@ -236,7 +236,7 @@ export interface SendNotificationProps {
 
 export type TesteeType = {
     id: number;
-    chatName: string;
+    groupName: string;
     full_name: string;
     can_access_closed: boolean;
     first_name: string;
