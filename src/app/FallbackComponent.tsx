@@ -20,7 +20,6 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
                 <Stub
                     title='Ошибка'
                     subtitle={error?.message || 'Что-то пошло не так'}
-                    type='fallback'
                 >
                     <br />
 

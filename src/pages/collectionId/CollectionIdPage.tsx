@@ -12,8 +12,9 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
+import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import {
+    store,
     useGetTaskIdQuery,
     useGetTaskResultsQuery,
     useLazyDownloadFilesQuery,
@@ -67,6 +68,9 @@ export const CollectionIdPage: FC = () => {
     const normalizedTestees = normalizeTestees(filteredData);
 
     const isTaskClosed = currentTask.status === TaskStatusTypesForOrganizer.DONE;
+
+    const stateErrors = store.getState().errors;
+    const apiMessageError = stateErrors.find((errorObj) => errorObj.type === 'api-messages');
 
     const popoutCloseTask = (
         <Popout
@@ -125,6 +129,11 @@ export const CollectionIdPage: FC = () => {
     };
 
     const changePageHandler = (page: string) => {
+        if (page === PAGE_ADD_MEMBERS && !!apiMessageError) {
+            setSnackbarText({ type: 'error', text: apiMessageError.text });
+
+            return;
+        }
         router.pushPage(page, { collectionId });
     };
 
@@ -143,23 +152,23 @@ export const CollectionIdPage: FC = () => {
 
     return (
         <Panel id={PANEL_COLLECTION_ID}>
+            <PanelHeader
+                separator={false}
+                before={<PanelHeaderBack onClick={goBack} />}
+            >
+                {currentTask?.name ? (
+                    <PanelHeaderContent status={currentTask.name}>
+                        {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
+                    </PanelHeaderContent>
+                ) : (
+                    <PanelHeaderSkeleton />
+                )}
+            </PanelHeader>
+
             <FixedLayout
                 filled
                 vertical='top'
             >
-                <PanelHeader
-                    separator={false}
-                    before={<PanelHeaderBack onClick={goBack} />}
-                >
-                    {currentTask?.name ? (
-                        <PanelHeaderContent status={currentTask.name}>
-                            {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
-                        </PanelHeaderContent>
-                    ) : (
-                        <PanelHeaderSkeleton />
-                    )}
-                </PanelHeader>
-
                 <Search
                     value={search}
                     onChange={changeSearch}
@@ -184,6 +193,7 @@ export const CollectionIdPage: FC = () => {
                         changePageHandler={changePageHandler}
                         setPopout={setPopout}
                         setSnackbarText={setSnackbarText}
+                        apiMessageError={apiMessageError}
                     />
                 )}
             </FixedLayout>
@@ -243,8 +253,8 @@ export const CollectionIdPage: FC = () => {
 };
 
 const ListContainer = styled.div<{ $isTaskClosed: boolean }>`
-    padding-top: ${({ $isTaskClosed }) => ($isTaskClosed ? '108px' : '170px')};
-    padding-bottom: 52px;
+    margin-top: ${({ $isTaskClosed }) => ($isTaskClosed ? '108px' : '170px')};
+    margin-bottom: 52px;
 
     display: flex;
     flex-direction: column;

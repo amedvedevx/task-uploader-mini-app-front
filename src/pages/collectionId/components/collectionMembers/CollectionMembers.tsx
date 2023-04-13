@@ -75,7 +75,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
         >
             <List>
                 {testees.map(({ vkUserId, firstName, lastName, fullName, photo }) => (
-                    <Members
+                    <Member
                         key={vkUserId}
                         before={
                             <Avatar
@@ -111,7 +111,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                         }
                     >
                         {fullName}
-                    </Members>
+                    </Member>
                 ))}
             </List>
         </GroupWide>
@@ -121,11 +121,11 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
 const GroupWide = styled(Group)<{ $selectedTab: TabType; $isTaskClosed: boolean }>`
     ${({ $selectedTab, $isTaskClosed }) =>
         $selectedTab === 'notCompleted' && !$isTaskClosed
-            ? 'padding-top: 155px'
-            : 'padding-top: 55px'};
+            ? 'margin-top: 102px'
+            : 'margin-top: 0px'};
 `;
 
-const Members = styled(SimpleCell)`
+const Member = styled(SimpleCell)`
     margin-bottom: 16px;
 `;
 
