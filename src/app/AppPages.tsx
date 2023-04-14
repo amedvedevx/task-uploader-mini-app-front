@@ -2,7 +2,11 @@ import type { FC } from 'react';
 import { lazy, useEffect } from 'react';
 import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
-import bridge from '@vkontakte/vk-bridge';
+import bridge, {
+    ChangeFragmentResponse,
+    ReceiveDataMap,
+    VKBridgeEvent,
+} from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 import { useDispatch } from 'react-redux';
 
@@ -72,18 +76,30 @@ export const AppPages: FC = () => {
     const token = useVkToken();
     const userId = useVkUserId(token);
 
-    bridge.subscribe((e) => {
-        if (e.detail.type === 'VKWebAppChangeFragment') {
-            const index = e.detail.data.location.lastIndexOf('/');
-            const id = e.detail.data.location.substring(index + 1);
+    useEffect(() => {
+        const changeFragment = ({
+            detail: { type, data },
+        }: VKBridgeEvent<keyof ReceiveDataMap>) => {
+            if (type === 'VKWebAppChangeFragment') {
+                const dataTyped = data as ChangeFragmentResponse;
+                const index = dataTyped.location?.lastIndexOf('/');
+                const id = dataTyped.location.substring(index + 1);
 
-            if (e.detail.data.location.includes('upload')) {
-                router.pushPage(PAGE_UPLOAD_ID, { uploadId: id });
-            } else if (e.detail.data.location.includes('collectionId')) {
-                router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
+                if (dataTyped.location.includes('upload')) {
+                    router.pushPage(PAGE_UPLOAD_ID, { uploadId: id });
+                } else if (dataTyped.location.includes('collectionId')) {
+                    router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
+                }
             }
-        }
-    });
+        };
+
+        bridge.subscribe(changeFragment);
+
+        return () => {
+            bridge.unsubscribe(changeFragment);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (token && userId) {
