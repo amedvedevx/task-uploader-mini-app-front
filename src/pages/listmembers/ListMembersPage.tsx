@@ -53,10 +53,10 @@ export const ListMembersPage: FC = () => {
     const [localMembers, setLocalMembers] = useState<TesteeType[]>([]);
 
     useEffect(() => {
-        if (!isLoading) {
-            const allMembers = selectedMembers.concat(chatMembers);
-            setLocalMembers(normalizeMembers(allMembers));
-        }
+        if (isLoading) return;
+
+        const allMembers = selectedMembers.concat(chatMembers);
+        setLocalMembers(normalizeMembers(allMembers));
     }, [isLoading, selectedMembers, chatMembers]);
 
     const deleteMember = (id: number) => {
