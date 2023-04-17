@@ -14,7 +14,6 @@ export const PanelHeaderSkeleton: FC = () => (
 
 const SkeletonWrapper = styled.div`
     display: flex;
-    justify-content: center;
     align-items: center;
     min-height: 52px;
 `;

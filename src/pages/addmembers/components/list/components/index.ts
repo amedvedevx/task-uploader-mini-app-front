@@ -3,4 +3,3 @@ export * from './SkeletonTestees';
 export * from './InvitedMembers';
 export * from './SearchMembers';
 export * from './SelectedMembers';
-export * from './SelectedChatMembers';

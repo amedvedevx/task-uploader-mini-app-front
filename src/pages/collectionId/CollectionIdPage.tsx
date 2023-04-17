@@ -1,14 +1,17 @@
 import { useParams, useRouter } from '@happysanta/router';
-import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
+import {
+    FixedLayout,
+    Panel,
+    PanelHeader,
+    PanelHeaderBack,
+    PanelHeaderContent,
+    Search,
+} from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import {
-    PanelHeaderCentered,
-    PanelHeaderContentCentered,
-    PanelHeaderSkeleton,
-} from '@/components/PanelHeaderCentered';
+import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import {
     useGetTaskIdQuery,
@@ -144,18 +147,18 @@ export const CollectionIdPage: FC = () => {
                 filled
                 vertical='top'
             >
-                <PanelHeaderCentered
+                <PanelHeader
                     separator={false}
                     before={<PanelHeaderBack onClick={goBack} />}
                 >
                     {currentTask?.name ? (
-                        <PanelHeaderContentCentered status={currentTask.name}>
+                        <PanelHeaderContent status={currentTask.name}>
                             {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
-                        </PanelHeaderContentCentered>
+                        </PanelHeaderContent>
                     ) : (
                         <PanelHeaderSkeleton />
                     )}
-                </PanelHeaderCentered>
+                </PanelHeader>
 
                 <Search
                     value={search}
@@ -188,31 +191,36 @@ export const CollectionIdPage: FC = () => {
             <ListContainer $isTaskClosed={isTaskClosed}>
                 {!isLoading ? (
                     <>
-                        {selectedTab === 'completed' && normalizedTestees.completed.length > 0 && (
-                            <CollectionMembers
-                                selectedTab={selectedTab}
-                                isTaskClosed={isTaskClosed}
-                                collectionId={collectionId}
-                                taskResults={normalizedTestees.completed}
-                                setSnackbarText={setSnackbarText}
-                            />
-                        )}
-
-                        {selectedTab === 'notCompleted' &&
-                        normalizedTestees.notCompleted.length > 0 ? (
-                            <CollectionMembers
-                                setSnackbarText={setSnackbarText}
-                                selectedTab={selectedTab}
-                                isTaskClosed={isTaskClosed}
-                                collectionId={collectionId}
-                                taskResults={normalizedTestees.notCompleted}
-                            />
+                        {selectedTab === 'completed' ? (
+                            <>
+                                {normalizedTestees.completed.length > 0 && (
+                                    <CollectionMembers
+                                        selectedTab={selectedTab}
+                                        isTaskClosed={isTaskClosed}
+                                        collectionId={collectionId}
+                                        taskResults={normalizedTestees.completed}
+                                        setSnackbarText={setSnackbarText}
+                                    />
+                                )}
+                            </>
                         ) : (
-                            <ShareLink
-                                currentTask={currentTask}
-                                setSnackbarText={setSnackbarText}
-                                changePageHandler={changePageHandler}
-                            />
+                            <>
+                                {normalizedTestees.notCompleted.length > 0 ? (
+                                    <CollectionMembers
+                                        setSnackbarText={setSnackbarText}
+                                        selectedTab={selectedTab}
+                                        isTaskClosed={isTaskClosed}
+                                        collectionId={collectionId}
+                                        taskResults={normalizedTestees.notCompleted}
+                                    />
+                                ) : (
+                                    <ShareLink
+                                        currentTask={currentTask}
+                                        setSnackbarText={setSnackbarText}
+                                        changePageHandler={changePageHandler}
+                                    />
+                                )}
+                            </>
                         )}
                     </>
                 ) : (

@@ -3,10 +3,10 @@ import type {
     GetTesteesProps,
     SendNotificationProps,
     GetChatTesteesProps,
-    GetChatTesteesResponse,
     GetAllowedForRemindIdsProps,
     GetAllowedForRemindIdsResponce,
     UpdateAllowedForRemindIdsProps,
+    TesteeType,
 } from '@/app/types';
 import { UPLOAD_URL } from '@/app/config';
 
@@ -23,7 +23,7 @@ const testeesSlice = apiSlice
     .injectEndpoints({
         endpoints: (builder) => ({
             getTestees: builder.query<GetTesteesResponse, GetTesteesProps>({
-                queryFn: async ({ search, count, invitedMembersIds }, { getState }) => {
+                queryFn: async ({ search, count, invitedMemberIds }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
 
                     let filteredTestees = {} as GetTesteesResponse;
@@ -42,7 +42,7 @@ const testeesSlice = apiSlice
                         profiles: testees.profiles
                             ? testees.profiles.filter(
                                   (el) =>
-                                      !invitedMembersIds?.includes(el.id) &&
+                                      !invitedMemberIds?.includes(el.id) &&
                                       el.id !== userInfo.userId,
                               )
                             : [],
@@ -52,28 +52,34 @@ const testeesSlice = apiSlice
                 },
             }),
 
-            getChatTestees: builder.query<GetChatTesteesResponse[], GetChatTesteesProps>({
-                queryFn: async ({ chats, invitedMembersIds }, { getState }) => {
+            getChatTestees: builder.query<TesteeType[], GetChatTesteesProps>({
+                queryFn: async ({ selectedChats, invitedMemberIds }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
 
-                    const convMembers: GetChatTesteesResponse[] = [];
+                    const convMembers: TesteeType[] = [];
 
-                    const promises = chats.map(async ({ peer, chat_settings }) => {
+                    const promises = selectedChats.map(async ({ peer, chat_settings }) => {
                         const result = await BridgeGetConversationsMembers({
                             token: userInfo.token,
                             peerId: peer.id,
-                            chatName: chat_settings.title,
-                            invitedMembersIds,
                         });
 
-                        return result;
+                        const dataWithAddFields = result.map((item) => ({
+                            ...item,
+                            groupName: chat_settings.title,
+                            full_name: `${item.first_name} ${item.last_name}`,
+                        }));
+
+                        return dataWithAddFields.filter(
+                            (member) => !invitedMemberIds?.includes(member.id),
+                        );
                     });
 
                     await Promise.allSettled(promises).then((results) => {
                         results.forEach((result) => convMembers.push(result.value));
                     });
 
-                    return { data: convMembers };
+                    return { data: convMembers.flat() };
                 },
             }),
             getAllowedForRemindIds: builder.query<
