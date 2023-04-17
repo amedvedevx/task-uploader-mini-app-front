@@ -20,6 +20,7 @@ export const SelectedMembers: FC<SelectedMembersProps> = ({ collection, deleteMe
         <>
             {groupHeaders.map((groupHeader) => (
                 <Group
+                    key={groupHeader}
                     mode='plain'
                     separator='hide'
                     padding='s'
@@ -27,7 +28,7 @@ export const SelectedMembers: FC<SelectedMembersProps> = ({ collection, deleteMe
                 >
                     {collection
                         ?.filter((testee) => testee.groupName === groupHeader)
-                        ?.map(({ id, first_name, last_name, photo_100, groupName }) => (
+                        ?.map(({ id, full_name, photo_100, groupName }) => (
                             <Members
                                 key={id}
                                 before={
@@ -36,7 +37,7 @@ export const SelectedMembers: FC<SelectedMembersProps> = ({ collection, deleteMe
                                         src={photo_100 === avatarStub ? '#' : photo_100}
                                         alt='icon'
                                         gradientColor={calcInitialsAvatarColor(id)}
-                                        initials={getInitials(`${first_name} ${last_name}`)}
+                                        initials={getInitials(full_name)}
                                     />
                                 }
                                 after={
@@ -51,7 +52,7 @@ export const SelectedMembers: FC<SelectedMembersProps> = ({ collection, deleteMe
                                         : ''
                                 }
                             >
-                                {`${first_name} ${last_name}`}
+                                {full_name}
                             </Members>
                         ))}
                 </Group>

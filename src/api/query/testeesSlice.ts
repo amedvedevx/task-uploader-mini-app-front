@@ -26,15 +26,29 @@ const testeesSlice = apiSlice
                 queryFn: async ({ search, count, invitedMemberIds }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
 
+                    let filteredTestees = {} as GetTesteesResponse;
+
                     const testees = await BridgeSearchConversations({
                         token: userInfo.token,
-                        userId: userInfo.userId,
-                        invitedMemberIds,
                         search,
                         count,
                     });
 
-                    return { data: testees };
+                    filteredTestees = {
+                        count: testees.count,
+                        items: testees.items.filter(
+                            (el) => el.peer.type === 'chat' && !!el.chat_settings.members_count,
+                        ),
+                        profiles: testees.profiles
+                            ? testees.profiles.filter(
+                                  (el) =>
+                                      !invitedMemberIds?.includes(el.id) &&
+                                      el.id !== userInfo.userId,
+                              )
+                            : [],
+                    };
+
+                    return { data: filteredTestees };
                 },
             }),
 
@@ -48,11 +62,17 @@ const testeesSlice = apiSlice
                         const result = await BridgeGetConversationsMembers({
                             token: userInfo.token,
                             peerId: peer.id,
-                            groupName: chat_settings.title,
-                            invitedMemberIds,
                         });
 
-                        return result;
+                        const dataWithAddFields = result.map((item) => ({
+                            ...item,
+                            groupName: chat_settings.title,
+                            full_name: `${item.first_name} ${item.last_name}`,
+                        }));
+
+                        return dataWithAddFields.filter(
+                            (member) => !invitedMemberIds?.includes(member.id),
+                        );
                     });
 
                     await Promise.allSettled(promises).then((results) => {
