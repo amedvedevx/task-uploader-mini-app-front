@@ -28,7 +28,7 @@ export const SelectedMembers: FC<SelectedMembersProps> = ({ collection, deleteMe
                 >
                     {collection
                         ?.filter((testee) => testee.groupName === groupHeader)
-                        ?.map(({ id, full_name, photo_100, groupName }) => (
+                        ?.map(({ id, first_name, last_name, full_name, photo_100, groupName }) => (
                             <Members
                                 key={id}
                                 before={
@@ -37,7 +37,7 @@ export const SelectedMembers: FC<SelectedMembersProps> = ({ collection, deleteMe
                                         src={photo_100 === avatarStub ? '#' : photo_100}
                                         alt='icon'
                                         gradientColor={calcInitialsAvatarColor(id)}
-                                        initials={getInitials(full_name)}
+                                        initials={getInitials(`${first_name} ${last_name}`)}
                                     />
                                 }
                                 after={
