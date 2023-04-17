@@ -1,4 +1,4 @@
-import { Panel, Group, Separator, Spacing } from '@vkontakte/vkui';
+import { Panel, Group, Separator, Spacing, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from '@happysanta/router';
@@ -8,11 +8,7 @@ import { PANEL_UPLOAD_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
 import type { SnackBarText } from '@/app/types';
 import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
-import {
-    PanelHeaderCentered,
-    PanelHeaderContentCentered,
-    PanelHeaderSkeleton,
-} from '@/components/PanelHeaderCentered';
+import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { DropZone } from './components/DropZone';
@@ -117,17 +113,17 @@ export const UploadPage: FC = () => {
 
     return (
         <Panel id={PANEL_UPLOAD_ID}>
-            <PanelHeaderCentered>
+            <PanelHeader>
                 {data ? (
-                    <PanelHeaderContentCentered
+                    <PanelHeaderContent
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
                         Сбор документов
-                    </PanelHeaderContentCentered>
+                    </PanelHeaderContent>
                 ) : (
                     <PanelHeaderSkeleton />
                 )}
-            </PanelHeaderCentered>
+            </PanelHeader>
 
             <TaskDescription
                 taskName={data?.name}

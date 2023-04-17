@@ -77,15 +77,13 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                                             }
                                             alt='icon'
                                             gradientColor={calcInitialsAvatarColor(member.id)}
-                                            initials={getInitials(
-                                                `${member.first_name} ${member.last_name}`,
-                                            )}
+                                            initials={getInitials(member.full_name)}
                                         />
                                     </>
                                 }
                                 onClick={(e) => selection?.handleSelectMember(e as any, member)}
                             >
-                                {`${member.first_name} ${member.last_name}`}
+                                {member.full_name}
                             </Members>
                         ))}
                 </List>

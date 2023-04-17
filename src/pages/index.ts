@@ -5,5 +5,3 @@ export * from './listmembers';
 export * from './addmembers';
 
 export * from './upload';
-
-export * from './components';
