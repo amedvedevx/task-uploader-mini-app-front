@@ -1,6 +1,14 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Div, FormLayout, Panel, PanelHeader, PanelHeaderBack, Placeholder } from '@vkontakte/vkui';
+import {
+    Div,
+    FormLayout,
+    Input,
+    Panel,
+    PanelHeader,
+    PanelHeaderBack,
+    Placeholder,
+} from '@vkontakte/vkui';
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
@@ -138,7 +146,7 @@ const CreateContainer = styled(Div)`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
+    padding-top: 15vh;
 `;
 
 const FormWrapper = styled.div`
