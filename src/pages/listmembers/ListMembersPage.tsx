@@ -1,24 +1,30 @@
 import { useParams, useRouter } from '@happysanta/router';
-import { FixedLayout, Panel, PanelHeaderBack, Search } from '@vkontakte/vkui';
+import {
+    FixedLayout,
+    Panel,
+    PanelHeader,
+    PanelHeaderBack,
+    PanelHeaderContent,
+    Search,
+} from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    PanelHeaderCentered,
-    PanelHeaderContentCentered,
-    PanelHeaderSkeleton,
-} from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
+import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
+import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_ID, PANEL_LIST_MEMBERS } from '@/app/router';
 import type { RootState } from '@/api';
 import {
+    useGetChatTesteesQuery,
     useSendNotificationMutation,
     useGetTaskResultsQuery,
     useGetTaskIdQuery,
     useApointTaskMutation,
 } from '@/api';
 import { useSearch } from '@/hooks';
-import type { TaskType } from '@/app/types';
+import type { TaskType, TesteeType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
+import { normalizeMembers } from '@/lib';
 
 import { MembersList } from '../addmembers/components';
 
@@ -31,23 +37,33 @@ export const ListMembersPage: FC = () => {
     });
     const { taskResults } = data;
 
-    const invitedMembers = taskResults.map((result) => result.testee);
+    const invitedMemberIds = taskResults.map((result) => result.testee.vkUserId);
+
+    const { selectedMembers, selectedChats } = useSelector((state: RootState) => state.members);
+
+    const { data: chatMembers = [], isLoading } = useGetChatTesteesQuery({
+        selectedChats,
+        invitedMemberIds,
+    });
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [apointTask] = useApointTaskMutation();
     const [sendNotification] = useSendNotificationMutation();
 
-    const { selectedMembers, selectedChatMembers } = useSelector(
-        (state: RootState) => state.members,
-    );
+    const [localMembers, setLocalMembers] = useState<TesteeType[]>([]);
 
-    const chatMemberIds = selectedChatMembers
-        .map((el) => el.members.map((member) => member.id))
-        .flat();
+    useEffect(() => {
+        if (isLoading) return;
 
-    const vkUserIds = chatMemberIds.concat(selectedMembers.map((el) => el.id));
+        const allMembers = selectedMembers.concat(chatMembers);
+        setLocalMembers(normalizeMembers(allMembers));
+    }, [isLoading, selectedMembers, chatMembers]);
 
-    const { search, changeSearch, filteredData } = useSearch(selectedMembers, 'first_name');
+    const deleteMember = (id: number) => {
+        setLocalMembers((prev) => prev.filter((el) => el.id !== id));
+    };
+
+    const { search, changeSearch, filteredData } = useSearch(localMembers, 'full_name');
 
     const assignMembers = async (membersIds: number[]) => {
         const payload = {
@@ -66,12 +82,22 @@ export const ListMembersPage: FC = () => {
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
 
+    const vkUserIds = localMembers.map((el) => el.id);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (!vkUserIds.length) {
+                router.pushPage(PAGE_ADD_MEMBERS, { collectionId });
+            }
+        }, 2000);
+
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [vkUserIds]);
+
     const goBack = () => {
         router.popPage();
     };
-
-    const isMembers =
-        selectedChatMembers.length > 0 || filteredData.length > 0 || invitedMembers.length > 0;
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
@@ -79,18 +105,18 @@ export const ListMembersPage: FC = () => {
                 filled
                 vertical='top'
             >
-                <PanelHeaderCentered
+                <PanelHeader
                     separator={false}
                     before={<PanelHeaderBack onClick={goBack} />}
                 >
                     {currentTask ? (
-                        <PanelHeaderContentCentered status={currentTask.name}>
+                        <PanelHeaderContent status={currentTask.name}>
                             Список участников
-                        </PanelHeaderContentCentered>
+                        </PanelHeaderContent>
                     ) : (
                         <PanelHeaderSkeleton />
                     )}
-                </PanelHeaderCentered>
+                </PanelHeader>
 
                 <Search
                     after=''
@@ -99,11 +125,10 @@ export const ListMembersPage: FC = () => {
                 />
             </FixedLayout>
 
-            {isMembers ? (
+            {filteredData.length > 0 ? (
                 <MembersList
-                    invitedMembers={invitedMembers}
                     selectedMembers={filteredData}
-                    selectedChatMembers={selectedChatMembers}
+                    deleteMember={deleteMember}
                 />
             ) : (
                 <MembersNotFound />

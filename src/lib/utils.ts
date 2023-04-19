@@ -4,7 +4,7 @@ import { ru } from 'date-fns/locale';
 import copy from 'copy-to-clipboard';
 
 import { UPLOAD_URL } from '@/app/config';
-import type { TaskResults, TaskType } from '@/app/types';
+import type { TesteeType, TaskResults, TaskType } from '@/app/types';
 import { TaskStatusTypesForTestee } from '@/app/types';
 
 export const capitalizeString = (stringToCap: string): string =>
@@ -93,4 +93,32 @@ export const normalizeTestees = (
     });
 
     return testees;
+};
+
+export const normalizeMembers = (members: TesteeType[]): TesteeType[] =>
+    members.reduce((o: TesteeType[], i) => {
+        if (!o.find((v) => v.id === i.id)) {
+            o.push(i);
+        }
+
+        return o;
+    }, []);
+
+export const errorParser = (errorNumber: number): string => {
+    let result;
+    switch (errorNumber) {
+        case 404:
+            result = 'Такого сбора не существует';
+            break;
+
+        case 401:
+            result = 'Вы не являетесь создателем сбора. Доступ запрещен';
+            break;
+
+        default:
+            result = 'Произошла ошибка. Попробуйте еще раз';
+            break;
+    }
+
+    return result;
 };

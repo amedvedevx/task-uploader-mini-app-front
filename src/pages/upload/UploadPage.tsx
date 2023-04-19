@@ -1,4 +1,4 @@
-import { Panel, Group, Separator, Spacing } from '@vkontakte/vkui';
+import { Panel, Group, Separator, Spacing, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from '@happysanta/router';
@@ -8,22 +8,14 @@ import { PANEL_UPLOAD_ID } from '@/app/router';
 import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
 import type { SnackBarText } from '@/app/types';
 import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
-import {
-    PanelHeaderCentered,
-    PanelHeaderContentCentered,
-    PanelHeaderSkeleton,
-} from '@/components/PanelHeaderCentered';
+import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
+import { SnackBarMessage } from '@/components/SnackBarMessage';
+import { errorParser } from '@/lib/utils';
 
 import { DropZone } from './components/DropZone';
 import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
-import { UploadResultMessage } from './components/UploadResultMessage';
 import { TaskDescription } from './components/TaskDescription';
-
-export type SnackBarType = {
-    type: 'error' | 'success' | false;
-    message: string;
-};
 
 export const UploadPage: FC = () => {
     const { uploadId } = useParams();
@@ -114,25 +106,25 @@ export const UploadPage: FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [statusFromServer]);
 
-    if (error?.status === 400) {
-        const errorMessage = 'Такого сбора не существует';
+    if (error?.status) {
+        const errorMessage = errorParser(error?.status);
 
         throw Error(errorMessage);
     }
 
     return (
         <Panel id={PANEL_UPLOAD_ID}>
-            <PanelHeaderCentered>
+            <PanelHeader>
                 {data ? (
-                    <PanelHeaderContentCentered
+                    <PanelHeaderContent
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
                         Сбор документов
-                    </PanelHeaderContentCentered>
+                    </PanelHeaderContent>
                 ) : (
                     <PanelHeaderSkeleton />
                 )}
-            </PanelHeaderCentered>
+            </PanelHeader>
 
             <TaskDescription
                 taskName={data?.name}
@@ -167,8 +159,8 @@ export const UploadPage: FC = () => {
                 )}
 
                 {snackbarText && (
-                    <UploadResultMessage
-                        result={snackbarText}
+                    <SnackBarMessage
+                        snackbarText={snackbarText}
                         setSnackbarText={setSnackbarText}
                     />
                 )}

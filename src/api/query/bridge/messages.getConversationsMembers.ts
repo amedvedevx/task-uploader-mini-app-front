@@ -1,21 +1,17 @@
 import bridge from '@vkontakte/vk-bridge';
 
-import type { FriendsType, GetChatTesteesResponse } from '@/app/types';
+import type { TesteeType } from '@/app/types';
 
 interface BridgeGetConversationsMembersArgs {
     token: string;
     peerId: number;
-    chatName: string;
-    invitedMembersIds: number[];
 }
 
 export const BridgeGetConversationsMembers = async ({
     token,
     peerId,
-    chatName,
-    invitedMembersIds,
-}: BridgeGetConversationsMembersArgs): Promise<GetChatTesteesResponse> => {
-    const result: GetChatTesteesResponse = await bridge
+}: BridgeGetConversationsMembersArgs): Promise<TesteeType[]> => {
+    const result: TesteeType[] = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'messages.getConversationMembers',
             params: {
@@ -24,12 +20,7 @@ export const BridgeGetConversationsMembers = async ({
                 v: ' 5.154',
             },
         })
-        .then((data: { response: { profiles: FriendsType[] } }) => ({
-            chatName,
-            members: data.response.profiles.filter(
-                (member) => !invitedMembersIds.includes(member.id),
-            ),
-        }))
+        .then((data: { response: { profiles: TesteeType[] } }) => data.response.profiles)
         .catch((err) => err);
 
     return result;

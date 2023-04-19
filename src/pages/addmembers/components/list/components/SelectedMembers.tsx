@@ -1,50 +1,62 @@
 import type { FC } from 'react';
 import { Avatar, calcInitialsAvatarColor, Group } from '@vkontakte/vkui';
 import { Icon24Cancel } from '@vkontakte/icons';
-import { useDispatch } from 'react-redux';
+import uniq from 'lodash.uniq';
 
-import type { FriendsType } from '@/app/types';
+import type { TesteeType } from '@/app/types';
 import { getInitials } from '@/lib';
-import { deleteMember } from '@/api/state';
 
 import { avatarStub, Header, Members } from '../MembersList';
 
 interface SelectedMembersProps {
-    collection?: FriendsType[];
+    collection?: TesteeType[];
+    deleteMember?: (id: number) => void;
 }
 
-export const SelectedMembers: FC<SelectedMembersProps> = ({ collection }) => {
-    const dispatch = useDispatch();
+export const SelectedMembers: FC<SelectedMembersProps> = ({ collection, deleteMember }) => {
+    const groupHeaders = uniq(collection?.map((el) => el.groupName));
 
     return (
-        <Group
-            mode='plain'
-            separator='hide'
-            padding='s'
-            header={<Header mode='tertiary'>Выбранные участники</Header>}
-        >
-            {collection?.map(({ id, first_name, last_name, photo_100 }) => (
-                <Members
-                    key={id}
-                    before={
-                        <Avatar
-                            size={40}
-                            src={photo_100 === avatarStub ? '#' : photo_100}
-                            alt='icon'
-                            gradientColor={calcInitialsAvatarColor(id)}
-                            initials={getInitials(`${first_name} ${last_name}`)}
-                        />
-                    }
-                    after={
-                        <Icon24Cancel
-                            fill='var(--vkui--color_text_tertiary)'
-                            onClick={() => dispatch(deleteMember(id))}
-                        />
-                    }
+        <>
+            {groupHeaders.map((groupHeader) => (
+                <Group
+                    key={groupHeader}
+                    mode='plain'
+                    separator='hide'
+                    padding='s'
+                    header={<Header mode='tertiary'>{groupHeader}</Header>}
                 >
-                    {`${first_name} ${last_name}`}
-                </Members>
+                    {collection
+                        ?.filter((testee) => testee.groupName === groupHeader)
+                        ?.map(({ id, first_name, last_name, full_name, photo_100, groupName }) => (
+                            <Members
+                                key={id}
+                                before={
+                                    <Avatar
+                                        size={40}
+                                        src={photo_100 === avatarStub ? '#' : photo_100}
+                                        alt='icon'
+                                        gradientColor={calcInitialsAvatarColor(id)}
+                                        initials={getInitials(`${first_name} ${last_name}`)}
+                                    />
+                                }
+                                after={
+                                    <Icon24Cancel
+                                        fill='var(--vkui--color_text_tertiary)'
+                                        onClick={() => deleteMember && deleteMember(id)}
+                                    />
+                                }
+                                subtitle={
+                                    groupName.length && groupName !== 'Выбранные участники'
+                                        ? `Из чата «${groupName}»`
+                                        : ''
+                                }
+                            >
+                                {full_name}
+                            </Members>
+                        ))}
+                </Group>
             ))}
-        </Group>
+        </>
     );
 };

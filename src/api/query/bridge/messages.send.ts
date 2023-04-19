@@ -39,7 +39,13 @@ export const BridgeMessagesSend = async ({
                 v: '5.131',
             },
         })
-        .then((result) => 'success')
+        .then((res) => {
+            if (res.response[0].error) {
+                return 'error';
+            }
+
+            return 'success';
+        })
         .catch((err) => 'error');
 
     return result;

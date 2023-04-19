@@ -11,13 +11,15 @@ import {
     useUpdateAllowedForRemindIdsMutation,
 } from '@/api';
 import type { SnackBarText, TaskType } from '@/app/types';
+import type { ErrorsState } from '@/api/state';
 
 interface RemindAllProps {
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: (arg: SnackBarText) => void;
+    apiMessageError: ErrorsState | undefined;
 }
 
-export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText }) => {
+export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiMessageError }) => {
     const { collectionId } = useParams();
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [sendNotification] = useSendNotificationMutation();
@@ -62,6 +64,8 @@ export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText }) =>
                     <Icon24NotificationOutline />
                 </Avatar>
             }
+            subtitle={apiMessageError ? apiMessageError.text : null}
+            disabled={!!apiMessageError}
             onClick={() => setPopout(popoutRemindAll)}
         >
             Напомнить всем

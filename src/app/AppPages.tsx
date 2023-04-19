@@ -1,7 +1,8 @@
 import type { FC } from 'react';
 import { lazy, useEffect } from 'react';
-import { useFirstPageCheck, useLocation } from '@happysanta/router';
+import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
+import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 import { useDispatch } from 'react-redux';
@@ -13,6 +14,8 @@ import { useVkUserId } from '@/hooks';
 import { PreloadScreen } from '@/components';
 
 import {
+    PAGE_COLLECTION_ID,
+    PAGE_UPLOAD_ID,
     PANEL_ADD_MEMBERS,
     PANEL_COLLECTION_HOME,
     PANEL_COLLECTION_ID,
@@ -43,7 +46,7 @@ const CreatePage = lazy(() =>
 
 const AddMembersPage = lazy(() =>
     import('@/pages/addmembers/AddMembersPage').then((module) => ({
-        default: module.AddMemmbersPage,
+        default: module.AddMembersPage,
     })),
 );
 
@@ -61,6 +64,7 @@ const CollectionIdPage = lazy(() =>
 
 export const AppPages: FC = () => {
     const location = useLocation();
+    const router = useRouter();
     const isFirst = useFirstPageCheck();
 
     const dispatch = useDispatch();
@@ -70,11 +74,37 @@ export const AppPages: FC = () => {
     const userId = useVkUserId(token);
 
     useEffect(() => {
+        const changeFragment = ({
+            detail: { type, data },
+        }: VKBridgeEvent<keyof ReceiveDataMap>) => {
+            if (type === 'VKWebAppChangeFragment') {
+                const dataTyped = data as ChangeFragmentResponse;
+                const index = dataTyped.location?.lastIndexOf('/');
+                const id = dataTyped.location.substring(index + 1);
+
+                if (dataTyped.location.includes('upload')) {
+                    router.pushPage(PAGE_UPLOAD_ID, { uploadId: id });
+                } else if (dataTyped.location.includes('collectionId')) {
+                    router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
+                }
+            }
+        };
+
+        bridge.subscribe(changeFragment);
+
+        return () => {
+            bridge.unsubscribe(changeFragment);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
         if (token && userId) {
             dispatch(setUserInfo({ token, userId }));
         }
 
         bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFirst, token, userId]);
 
     return (
@@ -85,7 +115,7 @@ export const AppPages: FC = () => {
                         <Root activeView={location.getViewId()}>
                             <View
                                 id={VIEW_CREATE}
-                                activePanel={location.getViewActivePanel(VIEW_CREATE)}
+                                activePanel={location.getViewActivePanel(VIEW_CREATE) as string}
                             >
                                 <HomePage id={PANEL_COLLECTION_HOME} />
 
@@ -100,7 +130,7 @@ export const AppPages: FC = () => {
 
                             <View
                                 id={VIEW_UPLOAD}
-                                activePanel={location.getViewActivePanel(VIEW_UPLOAD)}
+                                activePanel={location.getViewActivePanel(VIEW_UPLOAD) as string}
                             >
                                 <UploadPage id={PANEL_UPLOAD_ID} />
                             </View>

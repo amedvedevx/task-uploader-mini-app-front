@@ -1,58 +1,50 @@
-import { List, SimpleCell, Text } from '@vkontakte/vkui';
+import { List } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { useRouter } from '@happysanta/router';
 
-import { PAGE_COLLECTION_ID } from '@/app/router';
-import type { TaskType } from '@/app/types';
+import type { SnackBarText, TaskType } from '@/app/types';
 
 import { CollectionHistorySkeleton } from './skeleton';
+import { CollectionCell } from './CollectionCell';
 
 interface CollectionHistoryProps {
-    collections: TaskType[];
+    collections: TaskType[] | undefined;
     isLoading: boolean;
+    setSnackbarText: React.Dispatch<React.SetStateAction<SnackBarText>>;
 }
 
-export const CollectionHistory: FC<CollectionHistoryProps> = ({ collections, isLoading }) => {
-    const router = useRouter();
+export const CollectionHistory: FC<CollectionHistoryProps> = ({
+    collections,
+    isLoading,
+    setSnackbarText,
+}) => {
+    const [popout, setPopout] = useState<JSX.Element | null>(null);
 
     return (
         <CollectionHistoryWrapper>
             <List>
-                {!isLoading ? (
+                {!isLoading && collections ? (
                     collections.map(({ id, name, status, consolidatedData }) => (
-                        <SimpleCell
+                        <CollectionCell
                             key={id}
-                            after={
-                                status === 'DONE' ? (
-                                    <GrayText>завершен</GrayText>
-                                ) : (
-                                    <GreenText>открыт</GreenText>
-                                )
-                            }
-                            subtitle={`Прислали ${consolidatedData.executedUsersCount}`}
-                            onClick={() => {
-                                router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
-                            }}
-                        >
-                            {name}
-                        </SimpleCell>
+                            id={id}
+                            name={name}
+                            status={status}
+                            consolidatedData={consolidatedData}
+                            setPopout={setPopout}
+                            setSnackbarText={setSnackbarText}
+                        />
                     ))
                 ) : (
                     <CollectionHistorySkeleton />
                 )}
+
+                {popout}
             </List>
         </CollectionHistoryWrapper>
     );
 };
-
-const GreenText = styled(Text)`
-    color: var(--vkui--color_text_positive);
-`;
-
-const GrayText = styled(Text)`
-    color: var(--vkui--color_text_secondary);
-`;
 
 const CollectionHistoryWrapper = styled.div`
     min-height: 190px;
