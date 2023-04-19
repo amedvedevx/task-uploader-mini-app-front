@@ -2,33 +2,40 @@ import type { FC } from 'react';
 import { ButtonGroup } from '@vkontakte/vkui';
 
 import type { SnackBarText } from '@/app/types';
+import type { ErrorsState } from '@/api/state';
 
 import { AddTestees, RemindAll } from './components';
 
 interface HeaderButtonsProps {
     changePageHandler: (arg: string) => void;
-    isResults: boolean;
+    isTestees: boolean;
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: (arg: SnackBarText) => void;
+    apiMessageError: ErrorsState | undefined;
 }
 
 export const HeaderButtons: FC<HeaderButtonsProps> = ({
     changePageHandler,
-    isResults,
+    isTestees,
     setPopout,
     setSnackbarText,
+    apiMessageError,
 }) => (
     <ButtonGroup
         stretched
         mode='vertical'
         gap='s'
     >
-        <AddTestees changePageHandler={changePageHandler} />
+        <AddTestees
+            changePageHandler={changePageHandler}
+            apiMessageError={apiMessageError}
+        />
 
-        {isResults && (
+        {isTestees && (
             <RemindAll
                 setPopout={setPopout}
                 setSnackbarText={setSnackbarText}
+                apiMessageError={apiMessageError}
             />
         )}
     </ButtonGroup>

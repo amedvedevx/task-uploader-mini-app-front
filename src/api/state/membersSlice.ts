@@ -1,52 +1,38 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { FriendsType } from '@/app/types';
-
-export type SelectedChatMembersType = {
-    chatName: string;
-    members: FriendsType[];
-};
+import type { TesteeType, ChatType } from '@/app/types';
 
 export interface MembersState {
-    selectedMembers: FriendsType[];
-    selectedChatMembers: SelectedChatMembersType[];
+    selectedMembers: TesteeType[];
+    selectedChats: ChatType[];
 }
 
 const initialState: MembersState = {
     selectedMembers: [],
-    selectedChatMembers: [],
+    selectedChats: [],
 };
 
 export const membersSlice = createSlice({
     name: 'members',
     initialState,
     reducers: {
-        setSelectedMembers: (state, action: PayloadAction<FriendsType[]>) => {
+        setSelectedMembers: (state, action: PayloadAction<TesteeType[]>) => {
             state.selectedMembers = action.payload;
-        },
 
-        setSelectedChatMembers: (
-            state,
-            action: PayloadAction<{ chatName: string; members: FriendsType[] }[]>,
-        ) => {
-            state.selectedChatMembers = action.payload;
-        },
-
-        deleteMember: (state, action: PayloadAction<number>) => {
-            state.selectedMembers = state.selectedMembers.filter((el) => el.id !== action.payload);
-        },
-
-        deleteChatMember: (state, action: PayloadAction<number>) => {
-            state.selectedChatMembers = state.selectedChatMembers.map((chat) => ({
-                chatName: chat.chatName,
-                members: chat.members.filter((member) => member.id !== action.payload),
+            state.selectedMembers = state.selectedMembers.map((member) => ({
+                ...member,
+                full_name: `${member.first_name} ${member.last_name}`,
+                groupName: 'Выбранные участники',
             }));
+        },
+
+        setSelectedChats: (state, action: PayloadAction<ChatType[]>) => {
+            state.selectedChats = action.payload;
         },
     },
 });
 
-export const { setSelectedMembers, setSelectedChatMembers, deleteMember, deleteChatMember } =
-    membersSlice.actions;
+export const { setSelectedMembers, setSelectedChats } = membersSlice.actions;
 
 export default membersSlice.reducer;

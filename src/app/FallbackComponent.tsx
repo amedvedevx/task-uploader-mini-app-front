@@ -20,13 +20,12 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
                 <Stub
                     title='Ошибка'
                     subtitle={error?.message || 'Что-то пошло не так'}
-                    type='fallback'
                 >
                     <br />
 
                     {resetErrorBoundary && (
                         <Button
-                        stretched
+                            stretched
                             type='button'
                             onClick={resetErrorBoundary}
                         >
@@ -40,8 +39,8 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
 );
 
 const StubWrapper = styled.div`
-padding-top: 12vh;
+    padding-top: 15vh;
 
-display: flex;
-justify-content: center;
+    display: flex;
+    justify-content: center;
 `;

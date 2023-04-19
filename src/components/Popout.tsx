@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, PopoutWrapper, usePlatform } from '@vkontakte/vkui';
+import { Alert, Platform, PopoutWrapper, usePlatform } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
 interface PopoutProps {
@@ -27,7 +27,7 @@ export const Popout: React.FC<PopoutProps> = ({ header, text, setPopout, actionT
                         mode: 'cancel',
                     },
                     {
-                        title: platform === 'ios' ? trimTextForIos(actionText) : actionText,
+                        title: platform === Platform.IOS ? trimTextForIos(actionText) : actionText,
                         mode: 'destructive',
                         autoClose: true,
                         action,

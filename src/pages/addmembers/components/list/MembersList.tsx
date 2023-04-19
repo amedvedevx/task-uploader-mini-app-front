@@ -2,43 +2,39 @@ import type { FC } from 'react';
 import { SimpleCell, Header as HeaderRoot } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
-import type { FriendsType, GetTesteesResponse, TaskResults } from '@/app/types';
+import type { TesteeType, GetTesteesResponse } from '@/app/types';
 import type { UseMembersSelectionResult } from '@/pages/hooks';
-import type { SelectedChatMembersType } from '@/api/state';
 
-import { InvitedMembers, SearchMembers, SelectedChatMembers, SelectedMembers } from './components';
+import { SearchMembers, SelectedMembers } from './components';
 
 interface MembersListProps {
-    searchMembers?: GetTesteesResponse;
-    invitedMembers?: TaskResults['testee'][];
-    selectedMembers?: FriendsType[];
-    selectedChatMembers?: SelectedChatMembersType[];
     selection?: UseMembersSelectionResult;
+    searchMembers?: GetTesteesResponse;
+    selectedMembers?: TesteeType[];
+    deleteMember?: (id: number) => void;
 }
 
 export const avatarStub = 'https://vk.com/images/camera_100.png';
 
 export const MembersList: FC<MembersListProps> = ({
     searchMembers,
-    invitedMembers,
-    selectedChatMembers,
+    deleteMember,
     selectedMembers,
     selection,
 }) => (
     <MembersListWrapper>
-        {invitedMembers?.length > 0 && <InvitedMembers collection={invitedMembers} />}
-
-        {searchMembers?.profiles.length > 0 && (
+        {searchMembers && searchMembers?.profiles.length > 0 && (
             <SearchMembers
                 selection={selection}
                 collection={searchMembers}
             />
         )}
 
-        {selectedMembers?.length > 0 && <SelectedMembers collection={selectedMembers} />}
-
-        {selectedChatMembers?.length > 0 && (
-            <SelectedChatMembers collection={selectedChatMembers} />
+        {selectedMembers && selectedMembers?.length > 0 && (
+            <SelectedMembers
+                collection={selectedMembers}
+                deleteMember={deleteMember}
+            />
         )}
     </MembersListWrapper>
 );

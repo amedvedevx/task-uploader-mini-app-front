@@ -1,17 +1,24 @@
 import { useParams, useRouter } from '@happysanta/router';
-import { FixedLayout, Panel, PanelHeaderBack, Search, Snackbar } from '@vkontakte/vkui';
+import {
+    FixedLayout,
+    MiniInfoCell,
+    Panel,
+    PanelHeader,
+    PanelHeaderBack,
+    PanelHeaderContent,
+    Platform,
+    Search,
+    usePlatform,
+} from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useState } from 'react';
-import { Icon28CheckCircleOutline, Icon28ErrorCircleOutline } from '@vkontakte/icons';
+import { createRef, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Icon20ReportOutline } from '@vkontakte/icons';
 
+import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
+import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import {
-    PanelHeaderCentered,
-    PanelHeaderContentCentered,
-    PanelHeaderSkeleton,
-} from '@/components/PanelHeaderCentered';
-import { PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
-import {
+    store,
     useGetTaskIdQuery,
     useGetTaskResultsQuery,
     useLazyDownloadFilesQuery,
@@ -20,9 +27,10 @@ import {
 import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
-import { normalizeTestees } from '@/lib/utils';
+import { errorParser, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
+import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { CollectionMembers } from './components/collectionMembers';
 import { HeaderButtons } from './components/headerButtons';
@@ -65,6 +73,15 @@ export const CollectionIdPage: FC = () => {
 
     const isTaskClosed = currentTask.status === TaskStatusTypesForOrganizer.DONE;
 
+    const stateErrors = store.getState().errors;
+    const apiMessageError = stateErrors.find((errorObj) => errorObj.type === 'api-messages');
+
+    const platform = usePlatform();
+    const isMobilePlatform = platform === Platform.ANDROID || platform === Platform.IOS;
+
+    const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
+    const fixedLayoutRef = createRef();
+
     const popoutCloseTask = (
         <Popout
             text='Вы уверены, что хотите завершить сбор?'
@@ -104,7 +121,7 @@ export const CollectionIdPage: FC = () => {
 
         const buttonOptions = [];
 
-        if (normalizedTestees.completed.length > 0) {
+        if (normalizedTestees.completed.length > 0 && !isMobilePlatform) {
             buttonOptions.push(downloadAllButton);
         }
 
@@ -122,6 +139,11 @@ export const CollectionIdPage: FC = () => {
     };
 
     const changePageHandler = (page: string) => {
+        if (page === PAGE_ADD_MEMBERS && !!apiMessageError) {
+            setSnackbarText({ type: 'error', text: apiMessageError.text });
+
+            return;
+        }
         router.pushPage(page, { collectionId });
     };
 
@@ -129,67 +151,82 @@ export const CollectionIdPage: FC = () => {
         setPopout(popoutCloseTask);
     };
 
-    // TODO - remove error parser from here to api
+    useLayoutEffect(() => {
+        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
+    }, [selectedTab, isTaskClosed, fixedLayoutRef]);
+
     if (error?.status) {
-        const errorMessage =
-            error?.status === 400
-                ? 'Такого сбора не существует'
-                : 'Вы не являетесь создаталем сбора. Доступ запрещен';
+        const errorMessage = errorParser(error?.status)
 
         throw Error(errorMessage);
     }
 
     return (
         <Panel id={PANEL_COLLECTION_ID}>
-            <FixedLayout
-                filled
-                vertical='top'
-            >
-                <PanelHeaderCentered
-                    separator={false}
-                    before={<PanelHeaderBack onClick={goBack} />}
+            <div ref={fixedLayoutRef}>
+                <FixedLayout
+                    filled
+                    vertical='top'
                 >
-                    {currentTask?.name ? (
-                        <PanelHeaderContentCentered status={currentTask.name}>
-                            {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
-                        </PanelHeaderContentCentered>
-                    ) : (
-                        <PanelHeaderSkeleton />
+                    <PanelHeader
+                        separator={false}
+                        before={<PanelHeaderBack onClick={goBack} />}
+                    >
+                        {currentTask?.name ? (
+                            <PanelHeaderContent status={currentTask.name}>
+                                {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
+                            </PanelHeaderContent>
+                        ) : (
+                            <PanelHeaderSkeleton />
+                        )}
+                    </PanelHeader>
+
+                    {apiMessageError && (
+                        <MiniInfoCell
+                            before={<Icon20ReportOutline />}
+                            textWrap='full'
+                            mode='base'
+                        >
+                            Некоторый функционал приложения временно недоступен в мобильной версии.
+                            Воспользуйтесь Desktop версией приложения. Приносим свои извинения за
+                            неудобства.
+                        </MiniInfoCell>
                     )}
-                </PanelHeaderCentered>
 
-                <Search
-                    value={search}
-                    onChange={changeSearch}
-                />
-
-                {!isTaskClosed && (
-                    <CopyUploadLink
-                        setSnackbarText={setSnackbarText}
-                        currentTask={currentTask}
+                    <Search
+                        value={search}
+                        onChange={changeSearch}
                     />
-                )}
 
-                <CollectionTabs
-                    selectedTab={selectedTab}
-                    setSelectedTab={setSelectedTab}
-                    taskUsersConsolidated={currentTask.consolidatedData}
-                />
+                    {!isTaskClosed && (
+                        <CopyUploadLink
+                            setSnackbarText={setSnackbarText}
+                            currentTask={currentTask}
+                        />
+                    )}
 
-                {selectedTab === 'notCompleted' && !isTaskClosed && (
-                    <HeaderButtons
-                        isResults={normalizedTestees.notCompleted.length > 0}
-                        changePageHandler={changePageHandler}
-                        setPopout={setPopout}
-                        setSnackbarText={setSnackbarText}
+                    <CollectionTabs
+                        selectedTab={selectedTab}
+                        setSelectedTab={setSelectedTab}
+                        taskUsersConsolidated={currentTask.consolidatedData}
                     />
-                )}
-            </FixedLayout>
 
-            <ListContainer $isTaskClosed={isTaskClosed}>
+                    {selectedTab === 'notCompleted' && !isTaskClosed && (
+                        <HeaderButtons
+                            isTestees={normalizedTestees.notCompleted.length > 0}
+                            changePageHandler={changePageHandler}
+                            setPopout={setPopout}
+                            setSnackbarText={setSnackbarText}
+                            apiMessageError={apiMessageError}
+                        />
+                    )}
+                </FixedLayout>
+            </div>
+
+            <ListContainer $fixedLayoutHeight={`${fixLayoutHeight}`}>
                 {!isLoading ? (
                     <>
-                        {selectedTab === 'completed' && (
+                        {selectedTab === 'completed' ? (
                             <>
                                 {normalizedTestees.completed.length > 0 && (
                                     <CollectionMembers
@@ -198,12 +235,12 @@ export const CollectionIdPage: FC = () => {
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.completed}
                                         setSnackbarText={setSnackbarText}
+                                        apiMessageError={apiMessageError}
+                                        isMobilePlatform={isMobilePlatform}
                                     />
                                 )}
                             </>
-                        )}
-
-                        {selectedTab === 'notCompleted' && (
+                        ) : (
                             <>
                                 {normalizedTestees.notCompleted.length > 0 ? (
                                     <CollectionMembers
@@ -212,12 +249,14 @@ export const CollectionIdPage: FC = () => {
                                         isTaskClosed={isTaskClosed}
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.notCompleted}
+                                        apiMessageError={apiMessageError}
+                                        isMobilePlatform={isMobilePlatform}
                                     />
                                 ) : (
                                     <ShareLink
                                         currentTask={currentTask}
                                         setSnackbarText={setSnackbarText}
-                                        collectionId={collectionId}
+                                        changePageHandler={changePageHandler}
                                     />
                                 )}
                             </>
@@ -229,18 +268,10 @@ export const CollectionIdPage: FC = () => {
             </ListContainer>
 
             {snackbarText && (
-                <Snackbar
-                    before={
-                        snackbarText.type === 'error' ? (
-                            <Icon28ErrorCircleOutline color='var(--vkui--color_text_negative)' />
-                        ) : (
-                            <Icon28CheckCircleOutline color='var(--vkui--color_text_positive)' />
-                        )
-                    }
-                    onClose={() => setSnackbarText(null)}
-                >
-                    {snackbarText.text}
-                </Snackbar>
+                <SnackBarMessage
+                    snackbarText={snackbarText}
+                    setSnackbarText={setSnackbarText}
+                />
             )}
 
             {popout}
@@ -250,8 +281,8 @@ export const CollectionIdPage: FC = () => {
     );
 };
 
-const ListContainer = styled.div<{ $isTaskClosed: boolean }>`
-    padding-top: ${({ $isTaskClosed }) => ($isTaskClosed ? '108px' : '170px')};
+const ListContainer = styled.div<{ $fixedLayoutHeight: string }>`
+    padding-top: ${({ $fixedLayoutHeight }) => `${$fixedLayoutHeight}px`};
     padding-bottom: 52px;
 
     display: flex;

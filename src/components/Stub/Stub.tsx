@@ -14,7 +14,7 @@ interface StubProps {
     children?: ReactNode;
     title: string;
     subtitle: string;
-    image: string;
+    image?: string;
 }
 
 export const Stub: FC<StubProps> = ({ children, title, subtitle, image }) => (
@@ -27,7 +27,7 @@ export const Stub: FC<StubProps> = ({ children, title, subtitle, image }) => (
         </StubImageContainer>
 
         <StubTitle
-            color='#000'
+            color='var(--vkui--color_text_primary)'
             weight='1'
         >
             {title}

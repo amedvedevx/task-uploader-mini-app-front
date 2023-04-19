@@ -10,25 +10,27 @@ import {
     Div,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { useState } from 'react';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PAGE_CREATE_COLLECTION, PANEL_COLLECTION_HOME } from '@/app/router';
 import DocAndImageIcon from '@/assets/docAndImgIcon.svg';
 import { useGetTasksQuery } from '@/api';
+import type { SnackBarText } from '@/app/types';
+import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { CollectionHistory } from './components/CollectionHistory';
 
 export const HomePage: FC = () => {
     const router = useRouter();
 
-    const { data = { tasks: [] }, isLoading } = useGetTasksQuery({});
-
-    const { tasks } = data;
+    const { data, isLoading } = useGetTasksQuery({});
+    const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     return (
         <Panel id={PANEL_COLLECTION_HOME}>
-            <CollectionsContainer $isTasksExist={tasks.length > 0}>
+            <CollectionsContainer>
                 <PlaceholderWidth
                     icon={
                         <ImageWithSizes
@@ -49,7 +51,7 @@ export const HomePage: FC = () => {
                     }
                 />
 
-                {tasks.length > 0 && (
+                {data && data?.tasks?.length > 0 && (
                     <GroupWide
                         header={<Header mode='primary'>История</Header>}
                         mode='plain'
@@ -59,17 +61,25 @@ export const HomePage: FC = () => {
                         </Spacing>
 
                         <CollectionHistory
-                            collections={tasks}
+                            collections={data?.tasks}
                             isLoading={isLoading}
+                            setSnackbarText={setSnackbarText}
                         />
                     </GroupWide>
                 )}
             </CollectionsContainer>
+
+            {snackbarText && (
+                <SnackBarMessage
+                    snackbarText={snackbarText}
+                    setSnackbarText={setSnackbarText}
+                />
+            )}
         </Panel>
     );
 };
 
-const CollectionsContainer = styled(Div)<{ $isTasksExist: boolean }>`
+const CollectionsContainer = styled(Div)`
     display: flex;
     flex-direction: column;
     align-items: center;
