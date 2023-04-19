@@ -138,7 +138,7 @@ const CreateContainer = styled(Div)`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
+    padding-top: 15vh;
 `;
 
 const FormWrapper = styled.div`
