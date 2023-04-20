@@ -29,7 +29,10 @@ export const HomePage: FC = () => {
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     return (
-        <Panel id={PANEL_COLLECTION_HOME}>
+        <Panel
+            id={PANEL_COLLECTION_HOME}
+            data-automation-id='home-page-panel'
+        >
             <CollectionsContainer>
                 <PlaceholderWidth
                     icon={
@@ -49,6 +52,7 @@ export const HomePage: FC = () => {
                             Создать
                         </Button>
                     }
+                    data-automation-id='home-page-placeholder'
                 />
 
                 {data && data?.tasks?.length > 0 && (
