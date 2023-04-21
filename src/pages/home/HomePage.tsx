@@ -59,6 +59,7 @@ export const HomePage: FC = () => {
                     <GroupWide
                         header={<Header mode='primary'>История</Header>}
                         mode='plain'
+                        data-automation-id='home-page-history'
                     >
                         <Spacing size={32}>
                             <Separator />

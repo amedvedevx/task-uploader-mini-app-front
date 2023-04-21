@@ -1,14 +1,14 @@
 import type { GetTasksResponce, GetTaskIdResponce } from '../../src/app/types';
 
-const ApiBaseUrl = Cypress.env('API_BASE_URL') as string;
+const ApiBaseUrl = `https://${Cypress.env('API_BASE_URL')}`;
 
-export const interceptTaskId = (taskId: string): GetTaskIdResponce =>
-    cy.intercept('GET', `${ApiBaseUrl}/task/${taskId}`).as('getTaskId');
+export const interceptTaskId = (): GetTaskIdResponce =>
+    cy.intercept('GET', `${ApiBaseUrl}/task/*`).as('getTaskId');
 
-export const interceptTasks = (): GetTasksResponce =>
-    cy.intercept('GET', `${ApiBaseUrl}/task`).as('getTasks');
+export const interceptTasks = (bodyData: GetTasksResponce): GetTasksResponce =>
+    cy.intercept('GET', `${ApiBaseUrl}/task?`, { body: bodyData }).as('getTasks');
 
-// export const interceptDiary = (bodyData: DiaryResponse): DiaryResponse =>
-//     cy.intercept('GET', `${ApiBaseUrl}/diary*`, { body: bodyData }).as('getDiary');
-
-// export const interceptAuth = () => cy.intercept('GET', `${ApiBaseUrl}/auth*`).as('auth');
+export const interceptDeleteTaskId = (bodyData: GetTasksResponce): void =>
+    cy
+        .intercept('DELETE', `${ApiBaseUrl}/task/*`, { body: bodyData.tasks.slice(1) })
+        .as('deleteTaskId');

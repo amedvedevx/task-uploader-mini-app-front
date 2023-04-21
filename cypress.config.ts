@@ -8,6 +8,6 @@ export default defineConfig({
       },
     },
     env: {
-       "API_BASE_URL": 'vkfiles.usetech.com/'
+       "API_BASE_URL": 'vkfiles.usetech.com'
     }
 });

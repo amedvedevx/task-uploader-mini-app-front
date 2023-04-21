@@ -1,23 +1,103 @@
 {
-  "text":"Сегодня у тебя: 📚 4 урока, уроки заканчиваются в 13:30. ✏️ Сделал домашнее задание?",
-  "actions":[
-    {
-      "id":"1",
-      "text":"Было просто! 👍",
-      "actionType":"primary",
-      "answer":"Отлично 👌 Удачного дня!"
-    },
-    {
-      "id":"2",
-      "text":"Остались вопросы 🙁",
-      "actionType":"primary",
-      "answer":"Не волнуйся, такое бывает. Помни: ты всегда можешь обсудить задание с учителем 😊"
-    },
-    {
-      "id":"3",
-      "text":"Еле хватило времени 😜",
-      "actionType":"primary",
-      "answer":"Повезло! Но в следующий раз лучше не тянуть 😉"
-    }
-  ]
+  "tasks":[
+  {
+      "owner": {
+          "firstName": "Наташа",
+          "lastName": "Каллистова",
+          "fullName": "Наташа Каллистова",
+          "createDate": null,
+          "photo": "https://sun1-20.userapi.com/s/v1/if1/50sgK6svbUVqmhBhdR6Wmm_-KTi0EphxFwmxMhj_BkFgHORf5ytH4WpmoygN8iE1H9QtpX_U.jpg?size=100x100&quality=96&crop=0,14,1538,1538&ava=1",
+          "vkUserId": 8789950
+      },
+      "status": "IN_PROGRESS",
+      "name": "Задание 1",
+      "description": "",
+      "dateCreate": 1681993995,
+      "deadline": 1684585991,
+      "subTasks": [
+          {
+              "name": "Подзадание 1 задания 1",
+              "description": "Описание подзадания 1",
+              "sortOrder": 1,
+              "subTaskType": "FILE",
+              "dateCreate": 1681993995,
+              "id": "86e6b5ed-55ee-4d4b-ad6f-2af088ead05f"
+          }
+      ],
+      "unlimited": true,
+      "consolidatedData": {
+          "total": null,
+          "executedUsersCount": 0,
+          "partiallyExecutedUsersCount": 0,
+          "notExecutedUsersCount": 0
+      },
+      "id": "2d9369e7-0342-47ee-b4b5-a51d6cdaddab"
+  },
+  {
+      "owner": {
+          "firstName": "Наташа",
+          "lastName": "Каллистова",
+          "fullName": "Наташа Каллистова",
+          "createDate": null,
+          "photo": "https://sun1-20.userapi.com/s/v1/if1/50sgK6svbUVqmhBhdR6Wmm_-KTi0EphxFwmxMhj_BkFgHORf5ytH4WpmoygN8iE1H9QtpX_U.jpg?size=100x100&quality=96&crop=0,14,1538,1538&ava=1",
+          "vkUserId": 8789950
+      },
+      "status": "NEW",
+      "name": "Задание 2",
+      "description": "",
+      "dateCreate": 1679421894,
+      "deadline": 1682013017,
+      "subTasks": [
+        {
+          "name": "Подзадание 1 задания 2",
+          "description": "Описание подзадания 1",
+          "sortOrder": 1,
+          "subTaskType": "FILE",
+          "dateCreate": 1681993995,
+          "id": "86e6b5ed-55ee-4d4b-ad6f-2af088ead05f"
+      }
+      ],
+      "unlimited": true,
+      "consolidatedData": {
+          "total": null,
+          "executedUsersCount": 0,
+          "partiallyExecutedUsersCount": 0,
+          "notExecutedUsersCount": 0
+      },
+      "id": "9ac6cae9-4e01-4c56-8986-fcc1cb7c40da"
+  },
+  {
+      "owner": {
+          "firstName": "Наташа",
+          "lastName": "Каллистова",
+          "fullName": "Наташа Каллистова",
+          "createDate": null,
+          "photo": "https://sun1-20.userapi.com/s/v1/if1/50sgK6svbUVqmhBhdR6Wmm_-KTi0EphxFwmxMhj_BkFgHORf5ytH4WpmoygN8iE1H9QtpX_U.jpg?size=100x100&quality=96&crop=0,14,1538,1538&ava=1",
+          "vkUserId": 8789950
+      },
+      "status": "NEW",
+      "name": "Задание 3",
+      "description": "",
+      "dateCreate": 1679424916,
+      "deadline": 1682013017,
+      "subTasks": [
+        {
+          "name": "Подзадание 1 задания 3",
+          "description": "Описание подзадания 1",
+          "sortOrder": 1,
+          "subTaskType": "FILE",
+          "dateCreate": 1681993995,
+          "id": "86e6b5ed-55ee-4d4b-ad6f-2af088ead05f"
+      }
+      ],
+      "unlimited": true,
+      "consolidatedData": {
+          "total": null,
+          "executedUsersCount": 0,
+          "partiallyExecutedUsersCount": 0,
+          "notExecutedUsersCount": 0
+      },
+      "id": "71aa54ff-2431-4791-9b91-06adba5a3ef5"
+  }
+]
 }
