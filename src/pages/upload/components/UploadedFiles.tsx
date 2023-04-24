@@ -22,10 +22,11 @@ export const UploadedFiles: FC<UploadedFilesProps> = ({ files, removeFile }) => 
                     ${inclinationWord(files.length, ['файл', 'файла', 'файлов'])}`}
         </Header>
 
-        <List>
+        <List data-automation-id='upload-page-filesList'>
             {files.map(({ name, lastModified, size }) => (
                 <Cell
                     key={lastModified}
+                    data-automation-id='upload-page-deleteFileButton'
                     mode='removable'
                     subtitle={`${getFileExtension(name)} - ${formatFileDate(
                         lastModified,

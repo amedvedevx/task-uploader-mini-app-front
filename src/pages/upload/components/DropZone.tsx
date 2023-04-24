@@ -76,6 +76,7 @@ export const DropZone: FC<DropZoneProps> = ({
                         <Spinner size='large' />
                     ) : (
                         <PlaceholderCentered
+                            data-automation-id='upload-page-placeholder'
                             icon={<Icon56DocumentOutline color='var(--vkui--color_icon_accent)' />}
                             action={
                                 !isDragActive && (

@@ -113,7 +113,10 @@ export const UploadPage: FC = () => {
     }
 
     return (
-        <Panel id={PANEL_UPLOAD_ID}>
+        <Panel
+            id={PANEL_UPLOAD_ID}
+            data-automation-id='upload-page-panel'
+        >
             <PanelHeader>
                 {data ? (
                     <PanelHeaderContent
@@ -140,7 +143,10 @@ export const UploadPage: FC = () => {
                 />
 
                 {!!files.length && (
-                    <Group separator='hide'>
+                    <Group
+                        separator='hide'
+                        data-automation-id='upload-page-files'
+                    >
                         <UploadedFiles
                             files={files}
                             removeFile={removeFile}

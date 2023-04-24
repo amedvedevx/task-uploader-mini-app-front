@@ -1,4 +1,4 @@
-import type { GetTasksResponce, GetTaskIdResponce } from '../../src/app/types';
+import type { GetTasksResponce, GetTaskIdResponce, UploadFilesResponce } from '../../src/app/types';
 
 const ApiBaseUrl = `https://${Cypress.env('API_BASE_URL')}`;
 
@@ -12,3 +12,6 @@ export const interceptDeleteTaskId = (bodyData: GetTasksResponce): void =>
     cy
         .intercept('DELETE', `${ApiBaseUrl}/task/*`, { body: bodyData.tasks.slice(1) })
         .as('deleteTaskId');
+
+export const interceptUploadFiles = (bodyData: UploadFilesResponce): UploadFilesResponce =>
+    cy.intercept('PUT', `${ApiBaseUrl}/files?`, { body: bodyData }).as('uploadFiles');
