@@ -1,16 +1,10 @@
-import type { type GetTaskIdResponce, type GetTaskResultsResponce } from '../../../src/app/types';
+import type { GetTaskIdResponce, GetTaskResultsResponce } from '../../../src/app/types';
 import { TaskStatusTypesForOrganizer } from '../../../src/app/types';
 import CollectionId from '../../pages/CollectionId';
-import Common from '../../pages/Common';
-import Create from '../../pages/Create';
-import Home from '../../pages/Home';
 import { interceptTaskId, interceptTaskIdResults } from '../interceptors';
 
 describe('User can visit collectionId page', () => {
-    const create = new Create(Cypress.env('API_BASE_URL'));
     const collectionId = new CollectionId(Cypress.env('API_BASE_URL'));
-    const common = new Common();
-    const home = new Home(Cypress.env('API_BASE_URL'));
 
     let taskResultsData: GetTaskResultsResponce;
     let taskData: GetTaskIdResponce;

@@ -1,10 +1,8 @@
-import Common from '../../pages/Common';
 import Create from '../../pages/Create';
 import Home from '../../pages/Home';
 
 describe('User can visit create page', () => {
     const create = new Create(Cypress.env('API_BASE_URL'));
-    const common = new Common();
     const home = new Home(Cypress.env('API_BASE_URL'));
 
     beforeEach(() => {
