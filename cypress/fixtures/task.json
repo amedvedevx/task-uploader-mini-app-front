@@ -1,0 +1,33 @@
+{
+    "owner": {
+        "firstName": "Наташа",
+        "lastName": "Каллистова",
+        "fullName": "Наташа Каллистова",
+        "createDate": null,
+        "photo": null,
+        "vkUserId": 8789950
+    },
+    "status": "IN_PROGRESS",
+    "name": "Проверка скачивания файлов №2",
+    "description": "хехе",
+    "dateCreate": 1681379251,
+    "deadline": 1683971226,
+    "subTasks": [
+        {
+            "name": "Подзадание 1 задания Проверка скачивания файлов №2",
+            "description": "Описание подзадания 1",
+            "sortOrder": 1,
+            "subTaskType": "FILE",
+            "dateCreate": 1681379251,
+            "id": "88b766e7-1ae1-4ed1-9985-2cbbba050f59"
+        }
+    ],
+    "unlimited": true,
+    "consolidatedData": {
+        "total": null,
+        "executedUsersCount": 3,
+        "partiallyExecutedUsersCount": 0,
+        "notExecutedUsersCount": 1
+    },
+    "id": "08ef58ee-18e4-452d-ac23-f9482c5d2bef"
+}

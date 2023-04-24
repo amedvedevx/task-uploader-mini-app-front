@@ -20,6 +20,7 @@ export const AddTestees: FC<AddTesteesProps> = ({ changePageHandler, apiMessageE
                 <Icon24Add />
             </Avatar>
         }
+        data-automation-id='collectionId-page-addTestees-button'
         subtitle={apiMessageError ? apiMessageError.text : null}
         disabled={!!apiMessageError}
         onClick={() => changePageHandler(PAGE_ADD_MEMBERS)}
