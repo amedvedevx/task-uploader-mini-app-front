@@ -76,7 +76,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
             mode='plain'
             padding='s'
         >
-            <List>
+            <List data-automation-id='collectionId-page-membersList'>
                 {testees.map(({ vkUserId, firstName, lastName, fullName, photo }) => (
                     <Member
                         key={vkUserId}

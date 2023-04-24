@@ -176,7 +176,10 @@ export const CollectionIdPage: FC = () => {
                         before={<PanelHeaderBack onClick={goBack} />}
                     >
                         {currentTask?.name ? (
-                            <PanelHeaderContent status={currentTask.name}>
+                            <PanelHeaderContent
+                                status={currentTask.name}
+                                data-automation-id='collectionId-page-headerContent'
+                            >
                                 {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
                             </PanelHeaderContent>
                         ) : (
@@ -198,6 +201,7 @@ export const CollectionIdPage: FC = () => {
 
                     <Search
                         value={search}
+                        data-automation-id='common-searchBar'
                         onChange={changeSearch}
                     />
 

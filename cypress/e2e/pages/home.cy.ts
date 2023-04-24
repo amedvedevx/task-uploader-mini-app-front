@@ -10,7 +10,7 @@ describe('User can visit home page', () => {
     let tasksRes: GetTasksResponce;
 
     before(() => {
-        cy.fixture('home.json').then((fixtureData: GetTasksResponce) => {
+        cy.fixture('tasks.json').then((fixtureData: GetTasksResponce) => {
             tasksRes = fixtureData;
         });
     });
@@ -46,16 +46,4 @@ describe('User can visit home page', () => {
         cy.wait('@getTaskId');
         collectionId.Panel.should('exist');
     });
-
-    // it('if there is tasks show history can delete task', () => {
-    //     if (tasksRes.tasks.length) {
-    //         home.TaskActionSheet.first().click();
-    //         home.DeleteTaskAction.click();
-    //         cy.get('.vkuiAlert__actions').contains('Удалить сбор').click();
-    //     };
-
-    //     cy.wait('@deleteTaskId');
-
-    //     home.HistoryList.should('have.length', 2);
-    // });
 });

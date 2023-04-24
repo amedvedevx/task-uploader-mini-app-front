@@ -64,6 +64,7 @@ export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiM
                     <Icon24NotificationOutline />
                 </Avatar>
             }
+            data-automation-id='collectionId-page-remindAll-button'
             subtitle={apiMessageError ? apiMessageError.text : null}
             disabled={!!apiMessageError || reminds?.allowedUserIds?.length > 50}
             onClick={() => setPopout(popoutRemindAll)}

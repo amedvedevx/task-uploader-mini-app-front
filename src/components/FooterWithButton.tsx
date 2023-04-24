@@ -19,6 +19,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
     <FixedLayout
         filled
         vertical='bottom'
+        data-automation-id='common-footer'
     >
         <Separator wide />
 
@@ -26,6 +27,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
             <ButtonGroup
                 stretched
                 gap='s'
+                data-automation-id='common-footerButtons'
             >
                 {options.map(({ appearance, mode, text, onClick, loading, disabled, counter }) => (
                     <Button

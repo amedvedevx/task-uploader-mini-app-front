@@ -26,6 +26,7 @@ export const CopyUploadLink: FC<CopyUploadLinkProps> = ({ setSnackbarText, curre
                     <Icon24CopyOutline />
                 </Avatar>
             }
+            data-automation-id='collectionId-page-copyLink'
             onClick={() => copyLink(currentTask)}
         >
             Скопировать ссылку на сбор
