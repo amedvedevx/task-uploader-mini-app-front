@@ -120,6 +120,7 @@ export const UploadPage: FC = () => {
             <PanelHeader>
                 {data ? (
                     <PanelHeaderContent
+                        data-automation-id='upload-page-headerContent'
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
                         Сбор документов
@@ -145,7 +146,7 @@ export const UploadPage: FC = () => {
                 {!!files.length && (
                     <Group
                         separator='hide'
-                        data-automation-id='upload-page-files'
+                        data-automation-id='upload-page-filesGroup'
                     >
                         <UploadedFiles
                             files={files}

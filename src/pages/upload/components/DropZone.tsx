@@ -60,12 +60,18 @@ export const DropZone: FC<DropZoneProps> = ({
         <DivStretched>
             {isTaskComplete ? (
                 <DropZoneContainer isDisabled>
-                    <PlaceholderCentered icon={<Icon56CancelCircleOutline />}>
+                    <PlaceholderCentered
+                        data-automation-id='upload-page-placeholderCompleted'
+                        icon={<Icon56CancelCircleOutline />}
+                    >
                         Сбор завершен
                     </PlaceholderCentered>
                 </DropZoneContainer>
             ) : (
-                <DropZoneContainer {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
+                <DropZoneContainer
+                    data-automation-id='upload-page-dropZone'
+                    {...getRootProps({ isFocused, isDragAccept, isDragReject })}
+                >
                     <input
                         type='file'
                         {...getInputProps()}
@@ -76,11 +82,12 @@ export const DropZone: FC<DropZoneProps> = ({
                         <Spinner size='large' />
                     ) : (
                         <PlaceholderCentered
-                            data-automation-id='upload-page-placeholder'
+                            // data-automation-id='upload-page-placeholder'
                             icon={<Icon56DocumentOutline color='var(--vkui--color_icon_accent)' />}
                             action={
                                 !isDragActive && (
                                     <File
+                                        data-automation-id='upload-page-placeholder'
                                         size='m'
                                         onClick={(e) => {
                                             e.stopPropagation();

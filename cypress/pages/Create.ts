@@ -31,8 +31,6 @@ class Create extends Common {
     get BackButton() {
         return cy.getByAutomationId('create-page-backButton') as Cypress.Chainable;
     }
-
-    
 }
 
 export default Create;

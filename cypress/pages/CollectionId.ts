@@ -43,7 +43,6 @@ class CollectionId extends Common {
     // get Panel() {
     //     return cy.getByAutomationId('collectionId-page-panel') as Cypress.Chainable;
     // }
-
 }
 
 export default CollectionId;
