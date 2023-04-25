@@ -24,21 +24,9 @@ class Upload extends Common {
         return cy.getByAutomationId('upload-page-dropZone') as Cypress.Chainable;
     }
 
-    // get Placeholder() {
-    //     return cy.getByAutomationId('upload-page-placeholder') as Cypress.Chainable;
-    // }
-
     get PlaceholderCompleted() {
         return cy.getByAutomationId('upload-page-placeholderCompleted') as Cypress.Chainable;
     }
-
-    // get FilesGroup() {
-    //     return cy.getByAutomationId('upload-page-filesGroup') as Cypress.Chainable;
-    // }
-
-    // get FilesList() {
-    //     return cy.getByAutomationId('home-page-filesList') as Cypress.Chainable;
-    // }
 
     get DeleteFile() {
         return cy.getByAutomationId('upload-page-deleteFileButton') as Cypress.Chainable;
