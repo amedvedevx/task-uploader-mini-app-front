@@ -1,7 +1,7 @@
 import type { GetTasksResponce } from '../../../src/app/types';
 import CollectionId from '../../pages/CollectionId';
 import Home from '../../pages/Home';
-import { interceptDeleteTaskId, interceptTaskId, interceptTasks } from '../interceptors';
+import { interceptTasks } from '../interceptors';
 
 describe('User can visit home page', () => {
     const home = new Home(Cypress.env('API_BASE_URL'));
@@ -16,9 +16,7 @@ describe('User can visit home page', () => {
     });
 
     beforeEach(() => {
-        interceptDeleteTaskId(tasksRes);
         interceptTasks(tasksRes);
-        interceptTaskId();
         cy.visit('/');
         cy.wait('@getTasks');
     });
