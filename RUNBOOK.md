@@ -64,4 +64,6 @@ i.zakhartsov@vk.team
 
 # Архитектура
 
+**Важно: файлы хранятся в закрытом сообщетсве!**
+
 https://gitlab.mvk.com/vkapps/edu-apps/task-uploader-mimi-app-front/-/blob/master/architecture.png
