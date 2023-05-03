@@ -1,5 +1,5 @@
-import type { GetTaskIdResponce } from '../../../src/app/types';
 import { TaskStatusTypesForOrganizer } from '../../../src/app/types';
+import type { GetTaskIdResponce } from '../../../src/app/types';
 import Upload from '../../pages/Upload';
 import { interceptTaskId } from '../interceptors';
 
@@ -7,7 +7,9 @@ describe('User can visit upload page', () => {
     const upload = new Upload(Cypress.env('API_BASE_URL'));
 
     let taskData: GetTaskIdResponce;
+
     let isTaskClosed: boolean;
+    let files: File[];
 
     before(() => {
         cy.fixture('task.json').then((fixtureData: GetTaskIdResponce) => {
@@ -38,20 +40,61 @@ describe('User can visit upload page', () => {
         upload.TaskDescription.should('contain.text', taskData.name);
     });
 
-    it('upload file on click to drop zone', () => {
-        cy.get('input[type=file]')
+    it('and see that when the file is loaded, the file gets into the list', () => {
+        cy.get('input[type=file][multiple]')
             .first()
-            .selectFile('cypress/fixtures/Screenshot.png', { force: true });
+            .selectFile(
+                [
+                    {
+                        contents: 'cypress/fixtures/Screenshot.png',
+                    },
+                ],
+                { force: true },
+            )
+            .then(($input) => {
+                files = $input[0].files;
 
-        upload.SendButton.click();
+                upload.FilesList.children().should('have.length', files.length);
+                upload.CellFile.children().contains(files[0].name);
+            });
     });
 
-    it('upload file on drag and drop', () => {
-        cy.get('input[type=file]')
+    it('and see that when sending a file', () => {
+        cy.get('input[type=file][multiple]')
             .first()
-            .selectFile('cypress/fixtures/Screenshot.png', { force: true, action: 'drag-drop' });
+            .selectFile(
+                [
+                    {
+                        contents: 'cypress/fixtures/Screenshot.png',
+                    },
+                ],
+                { force: true },
+            )
+            .then(($input) => {
+                files = $input[0].files;
 
-        upload.SendButton.click();
+                upload.FilesList.children().should('have.length', files.length);
+                upload.SendButton.click();
+            });
+    });
+
+    it('and see that sending file with drag and drop', () => {
+        cy.get('input[type=file][multiple]')
+            .first()
+            .selectFile(
+                [
+                    {
+                        contents: 'cypress/fixtures/Screenshot.png',
+                    },
+                ],
+                { force: true, action: 'drag-drop' },
+            )
+            .then(($input) => {
+                files = $input[0].files;
+
+                upload.FilesList.children().should('have.length', files.length);
+                upload.SendButton.click();
+            });
     });
 
     it('and see correct drop zone after closing task', () => {
@@ -62,11 +105,22 @@ describe('User can visit upload page', () => {
     });
 
     it('and see corrcet delete file', () => {
-        cy.get('input[type=file]')
+        cy.get('input[type=file][multiple]')
             .first()
-            .selectFile('cypress/fixtures/Screenshot.png', { force: true });
+            .selectFile(
+                [
+                    {
+                        contents: 'cypress/fixtures/Screenshot.png',
+                    },
+                ],
+                { force: true },
+            )
+            .then(($input) => {
+                files = $input[0].files;
 
-        upload.DeleteFile.click();
+                upload.FilesList.children().should('have.length', files.length);
+                upload.CellFile.get('.vkuiIconButton').click();
+            });
     });
 
     it('if the user clicks cancel, the selected files will be deleted', () => {

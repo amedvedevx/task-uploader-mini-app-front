@@ -26,7 +26,7 @@ export const UploadedFiles: FC<UploadedFilesProps> = ({ files, removeFile }) => 
             {files.map(({ name, lastModified, size }) => (
                 <Cell
                     key={lastModified}
-                    data-automation-id='upload-page-deleteFileButton'
+                    data-automation-id='upload-page-cellFile'
                     mode='removable'
                     subtitle={`${getFileExtension(name)} - ${formatFileDate(
                         lastModified,

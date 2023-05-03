@@ -20,16 +20,16 @@ class Upload extends Common {
         return cy.getByAutomationId('upload-page-taskDescription') as Cypress.Chainable;
     }
 
-    get DropZone() {
-        return cy.getByAutomationId('upload-page-dropZone') as Cypress.Chainable;
+    get FilesList() {
+        return cy.getByAutomationId('upload-page-filesList') as Cypress.Chainable;
+    }
+
+    get CellFile() {
+        return cy.getByAutomationId('upload-page-cellFile') as Cypress.Chainable;
     }
 
     get PlaceholderCompleted() {
         return cy.getByAutomationId('upload-page-placeholderCompleted') as Cypress.Chainable;
-    }
-
-    get DeleteFile() {
-        return cy.getByAutomationId('upload-page-deleteFileButton') as Cypress.Chainable;
     }
 
     get CancelButton() {
@@ -38,6 +38,10 @@ class Upload extends Common {
 
     get SendButton() {
         return cy.getByAutomationId('upload-page-sendFilesButton') as Cypress.Chainable;
+    }
+
+    get SnackBarMessage() {
+        return cy.getByAutomationId('upload-page-snackBarMessage') as Cypress.Chainable;
     }
 }
 

@@ -167,6 +167,7 @@ export const UploadPage: FC = () => {
 
                 {snackbarText && (
                     <SnackBarMessage
+                        data-automation-id='upload-page-snackBarMessage'
                         snackbarText={snackbarText}
                         setSnackbarText={setSnackbarText}
                     />
