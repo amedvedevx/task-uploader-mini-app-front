@@ -1,0 +1,136 @@
+{
+  "tasks":[
+  {
+      "owner": {
+          "firstName": "Наташа",
+          "lastName": "Каллистова",
+          "fullName": "Наташа Каллистова",
+          "createDate": null,
+          "photo": "https://sun1-20.userapi.com/s/v1/if1/50sgK6svbUVqmhBhdR6Wmm_-KTi0EphxFwmxMhj_BkFgHORf5ytH4WpmoygN8iE1H9QtpX_U.jpg?size=100x100&quality=96&crop=0,14,1538,1538&ava=1",
+          "vkUserId": 8789950
+      },
+      "status": "IN_PROGRESS",
+      "name": "Задание 1",
+      "description": "",
+      "dateCreate": 1681993995,
+      "deadline": 1684585991,
+      "subTasks": [
+          {
+              "name": "Подзадание 1 задания 1",
+              "description": "Описание подзадания 1",
+              "sortOrder": 1,
+              "subTaskType": "FILE",
+              "dateCreate": 1681993995,
+              "id": "86e6b5ed-55ee-4d4b-ad6f-2af088ead05f"
+          }
+      ],
+      "unlimited": true,
+      "consolidatedData": {
+          "total": null,
+          "executedUsersCount": 0,
+          "partiallyExecutedUsersCount": 0,
+          "notExecutedUsersCount": 0
+      },
+      "id": "2d9369e7-0342-47ee-b4b5-a51d6cdaddab"
+  },
+  {
+      "owner": {
+          "firstName": "Наташа",
+          "lastName": "Каллистова",
+          "fullName": "Наташа Каллистова",
+          "createDate": null,
+          "photo": "https://sun1-20.userapi.com/s/v1/if1/50sgK6svbUVqmhBhdR6Wmm_-KTi0EphxFwmxMhj_BkFgHORf5ytH4WpmoygN8iE1H9QtpX_U.jpg?size=100x100&quality=96&crop=0,14,1538,1538&ava=1",
+          "vkUserId": 8789950
+      },
+      "status": "NEW",
+      "name": "Задание 2",
+      "description": "",
+      "dateCreate": 1679421894,
+      "deadline": 1682013017,
+      "subTasks": [
+        {
+          "name": "Подзадание 1 задания 2",
+          "description": "Описание подзадания 1",
+          "sortOrder": 1,
+          "subTaskType": "FILE",
+          "dateCreate": 1681993995,
+          "id": "86e6b5ed-55ee-4d4b-ad6f-2af088ead05f"
+      }
+      ],
+      "unlimited": true,
+      "consolidatedData": {
+          "total": null,
+          "executedUsersCount": 0,
+          "partiallyExecutedUsersCount": 0,
+          "notExecutedUsersCount": 0
+      },
+      "id": "9ac6cae9-4e01-4c56-8986-fcc1cb7c40da"
+  },
+  {
+      "owner": {
+          "firstName": "Наташа",
+          "lastName": "Каллистова",
+          "fullName": "Наташа Каллистова",
+          "createDate": null,
+          "photo": "https://sun1-20.userapi.com/s/v1/if1/50sgK6svbUVqmhBhdR6Wmm_-KTi0EphxFwmxMhj_BkFgHORf5ytH4WpmoygN8iE1H9QtpX_U.jpg?size=100x100&quality=96&crop=0,14,1538,1538&ava=1",
+          "vkUserId": 8789950
+      },
+      "status": "NEW",
+      "name": "Задание 3",
+      "description": "",
+      "dateCreate": 1679424916,
+      "deadline": 1682013017,
+      "subTasks": [
+        {
+          "name": "Подзадание 1 задания 3",
+          "description": "Описание подзадания 1",
+          "sortOrder": 1,
+          "subTaskType": "FILE",
+          "dateCreate": 1681993995,
+          "id": "86e6b5ed-55ee-4d4b-ad6f-2af088ead05f"
+      }
+      ],
+      "unlimited": true,
+      "consolidatedData": {
+          "total": null,
+          "executedUsersCount": 0,
+          "partiallyExecutedUsersCount": 0,
+          "notExecutedUsersCount": 0
+      },
+      "id": "71aa54ff-2431-4791-9b91-06adba5a3ef5"
+  },
+  {
+    "owner": {
+        "firstName": "Наташа",
+        "lastName": "Каллистова",
+        "fullName": "Наташа Каллистова",
+        "createDate": null,
+        "photo": null,
+        "vkUserId": 8789950
+    },
+    "status": "IN_PROGRESS",
+    "name": "Проверка скачивания файлов №2",
+    "description": "хехе",
+    "dateCreate": 1681379251,
+    "deadline": 1683971226,
+    "subTasks": [
+        {
+            "name": "Подзадание 1 задания Проверка скачивания файлов №2",
+            "description": "Описание подзадания 1",
+            "sortOrder": 1,
+            "subTaskType": "FILE",
+            "dateCreate": 1681379251,
+            "id": "88b766e7-1ae1-4ed1-9985-2cbbba050f59"
+        }
+    ],
+    "unlimited": true,
+    "consolidatedData": {
+        "total": null,
+        "executedUsersCount": 3,
+        "partiallyExecutedUsersCount": 0,
+        "notExecutedUsersCount": 1
+    },
+    "id": "08ef58ee-18e4-452d-ac23-f9482c5d2bef"
+}
+]
+}

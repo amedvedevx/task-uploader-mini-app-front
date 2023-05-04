@@ -11,7 +11,7 @@ interface TaskDescriptionProps {
 }
 
 export const TaskDescription: FC<TaskDescriptionProps> = ({ taskName, description }) => (
-    <DescriptionWrapper>
+    <DescriptionWrapper data-automation-id='upload-page-taskDescription'>
         {taskName || description ? (
             <>
                 <MiniInfoCell
