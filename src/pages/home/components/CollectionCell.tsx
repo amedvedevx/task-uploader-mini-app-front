@@ -76,6 +76,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
                 onClick={() => {
                     setPopout(popoutDeleteTask);
                 }}
+                data-automation-id='home-page-deleteTaskAction'
             >
                 Удалить сбор
             </ActionSheetItem>
@@ -92,6 +93,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
             }}
             actionText='Удалить сбор'
             setPopout={setPopout}
+            data-automation-id='home-page-deleteTaskButton'
         />
     );
 
@@ -121,6 +123,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
                 <IconButton
                     getRootRef={baseTargetRef}
                     aria-label='actionSheet-button'
+                    data-automation-id='home-page-taskActionSheet'
                     onClick={(e) => clickIconHandler(e)}
                 >
                     <Icon24MoreVertical />

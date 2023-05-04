@@ -25,6 +25,7 @@ export const CollectionTabs: FC<CollectionTabsProps> = ({
         <Div>
             <SegmentedControl
                 name='selectedTab'
+                data-automation-id='collectionId-page-tabs'
                 value={selectedTab}
                 options={[
                     {

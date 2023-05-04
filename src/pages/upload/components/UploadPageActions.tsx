@@ -24,6 +24,7 @@ export const UploadPageActions: FC<UploadPageActionsProps> = ({
                 mode='secondary'
                 appearance='accent'
                 disabled={isLoading}
+                data-automation-id='upload-page-cancelButton'
                 onClick={() => clearState()}
             >
                 Отменить
@@ -35,6 +36,7 @@ export const UploadPageActions: FC<UploadPageActionsProps> = ({
                 appearance='accent'
                 mode='primary'
                 disabled={isLoading}
+                data-automation-id='upload-page-sendFilesButton'
                 onClick={() => sendFiles()}
             >
                 Отправить
