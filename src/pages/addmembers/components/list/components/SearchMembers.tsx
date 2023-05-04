@@ -15,7 +15,7 @@ interface SearchMembersProps {
 
 export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection }) => (
     <>
-        {collection?.profiles.length > 0 && (
+        {collection && collection?.profiles.length > 0 && (
             <Group
                 mode='plain'
                 padding='s'
@@ -48,7 +48,7 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                                 }
                                 subtitle={`${chat.chat_settings.members_count} участников`}
                                 onClick={(e) => {
-                                    selection?.handleSelectChat(e as any, chat);
+                                    selection?.handleSelectChat(e, chat);
                                 }}
                             >
                                 {chat.chat_settings.title}
@@ -83,7 +83,7 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                                         />
                                     </>
                                 }
-                                onClick={(e) => selection?.handleSelectMember(e as any, member)}
+                                onClick={(e) => selection?.handleSelectMember(e, member)}
                             >
                                 {`${member.first_name} ${member.last_name}`}
                             </Members>

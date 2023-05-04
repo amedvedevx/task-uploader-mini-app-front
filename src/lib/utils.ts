@@ -1,6 +1,5 @@
 import { format, fromUnixTime } from 'date-fns';
 import { ru } from 'date-fns/locale';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import copy from 'copy-to-clipboard';
 
 import { UPLOAD_URL } from '@/app/config';
@@ -22,9 +21,10 @@ export const inclinationWord = (quanty: number, words: string[]): string => {
 
 export const parseFileSize = (size: number): string => {
     let counter = 0;
+    let sizeCopy = size;
 
-    while (size >= 1024) {
-        size /= 1024;
+    while (sizeCopy >= 1024) {
+        sizeCopy /= 1024;
         counter++;
     }
 
@@ -34,7 +34,7 @@ export const parseFileSize = (size: number): string => {
         B = 0,
     }
 
-    return `${Math.ceil(size)} ${SizeType[counter]}`;
+    return `${Math.ceil(sizeCopy)} ${SizeType[counter]}`;
 };
 
 export const getFileExtension = (fileName: string): string =>

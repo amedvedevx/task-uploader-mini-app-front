@@ -73,10 +73,10 @@ export const CollectionCell: FC<CollectionCellProps> = ({
                     )
                 }
                 mode='destructive'
+                data-automation-id='home-page-deleteTaskAction'
                 onClick={() => {
                     setPopout(popoutDeleteTask);
                 }}
-                data-automation-id='home-page-deleteTaskAction'
             >
                 Удалить сбор
             </ActionSheetItem>

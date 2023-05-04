@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type { ErrorData } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
 import { useState, useEffect, useRef, useTransition } from 'react';
