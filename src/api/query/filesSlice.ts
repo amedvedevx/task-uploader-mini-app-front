@@ -1,6 +1,8 @@
 import type { UploadFilesProps, DownloadFilesProps, UploadFilesResponce } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
+import { BridgeDocsSave, BridgeDocsUploadServer } from './bridge';
+import type { RootState } from '../store';
 
 const filesSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -52,6 +54,53 @@ const filesSlice = apiSlice.injectEndpoints({
                 method: 'PUT',
                 body: files,
             }),
+        }),
+        uploadFilesNew: builder.mutation<UploadFilesResponce, UploadFilesProps>({
+            queryFn: async (
+                { taskId, subTaskId, files },
+                _queryApi,
+                _extraOptions,
+                fetchWithBQ,
+            ) => {
+                const { userInfo } = (_queryApi.getState() as RootState).authorization;
+
+                const result = await Promise.all(
+                    files.map(async (fileToSend) => {
+                        const uploadUrl = (await BridgeDocsUploadServer({
+                            token: userInfo.token,
+                        })) as unknown as string;
+
+                        const filesData = new FormData();
+
+                        filesData.append('url', uploadUrl);
+                        filesData.append('file', fileToSend);
+
+                        // change
+                        const uploadResponse = await fetchWithBQ({
+                            url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
+                            method: 'PUT',
+                            headers: { 'Content-type': 'multipart/form-data' },
+                            body: filesData,
+                        });
+
+                        const saveResponce = await BridgeDocsSave({
+                            token: userInfo.token,
+                            file: uploadResponse.data,
+                        });
+
+                        const saveFileLink: 'success' | 'error' = await fetchWithBQ({
+                            url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
+                            method: 'PUT',
+                            headers: { 'Content-type': 'application/json' },
+                            body: saveResponce,
+                        });
+
+                        return saveFileLink;
+                    }),
+                );
+
+                return result;
+            },
         }),
     }),
 });
