@@ -13,6 +13,7 @@ import {
     useGetAllowedForRemindIdsQuery,
     useGetTaskIdQuery,
     useLazyDownloadFilesQuery,
+    useLazyDownloadFilesOnMobileQuery,
     useSendNotificationMutation,
     useUpdateAllowedForRemindIdsMutation,
 } from '@/api';
@@ -41,6 +42,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
     isMobilePlatform,
 }) => {
     const [downloadFiles, { isLoading: isDownloading, originalArgs }] = useLazyDownloadFilesQuery();
+    const [downloadFilesOnMobile] = useLazyDownloadFilesOnMobileQuery();
     const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
     const [sendNotification, { isLoading: isSendingNotification }] = useSendNotificationMutation();
 
@@ -50,6 +52,15 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
 
     const onClickHandler = async ({ vkUserId, fullName }: OnClickArgs) => {
         if (selectedTab === 'completed') {
+            if (isMobilePlatform) {
+                const resultsForUser = taskResults.find(
+                    (taskResult) => taskResult.testee.vkUserId === vkUserId,
+                );
+
+                if (resultsForUser) {
+                    downloadFilesOnMobile(resultsForUser?.subTaskResults);
+                }
+            }
             downloadFiles({ taskId: collectionId, vkUserId });
         } else if (currentTask) {
             const result = await sendNotification({
@@ -96,7 +107,6 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                                     vkUserId={vkUserId}
                                     isDownloading={isDownloading}
                                     fullName={fullName}
-                                    isMobilePlatform={isMobilePlatform}
                                     onClickHandler={onClickHandler}
                                 />
                             ) : (
@@ -167,7 +177,6 @@ interface DownloadButtonProps {
     isDownloading: boolean;
     onClickHandler: (arg: { vkUserId: number; fullName: string }) => void;
     fullName: string;
-    isMobilePlatform: boolean;
 }
 
 const DownloadButton: FC<DownloadButtonProps> = ({
@@ -176,13 +185,12 @@ const DownloadButton: FC<DownloadButtonProps> = ({
     isDownloading,
     onClickHandler,
     fullName,
-    isMobilePlatform,
 }) => (
     <Button
         appearance='accent'
         size='s'
         mode='secondary'
-        disabled={(originalArgs?.vkUserId === vkUserId && isDownloading) || isMobilePlatform}
+        disabled={originalArgs?.vkUserId === vkUserId && isDownloading}
         loading={originalArgs?.vkUserId === vkUserId && isDownloading}
         onClick={() => onClickHandler({ vkUserId, fullName })}
     >

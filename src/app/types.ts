@@ -2,21 +2,28 @@ export interface GetTaskResultsResponce {
     taskResults: TaskResults[];
 }
 
+type TaskDetailResultContent = {
+    size: number;
+    title: string;
+    uploadDate: string;
+    url: string;
+};
+
+export type TaskDetailResult = {
+    resultId: string;
+    taskDetailId: string;
+    completeDate: number;
+    status: 'LOADED';
+    content: TaskDetailResultContent[];
+};
+
 export type TaskResults = {
     id: number;
     taskId: string;
     completeDate: number;
     assignDate: string;
     taskResultStatus: TaskStatusTypesForTestee;
-    taskDetailResults: [
-        {
-            resultId: string;
-            taskDetailId: string;
-            completeDate: number;
-            status: 'LOADED';
-            content: Array<Record<string, unknown>>;
-        },
-    ];
+    subTaskResults: TaskDetailResult[];
     testee: {
         vkUserId: number;
         firstName: string;
@@ -81,7 +88,7 @@ export interface DeleteTaskResultProps {
 export interface UploadFilesProps {
     taskId: string;
     subTaskId: string;
-    files: FormData;
+    files: File[];
 }
 
 export interface UploadFilesResponce {

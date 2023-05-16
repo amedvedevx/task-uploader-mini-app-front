@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import bridge from '@vkontakte/vk-bridge';
 
 interface BridgeDocsSaveArgs {
@@ -42,7 +43,11 @@ export const BridgeDocsSave = async ({
 
             return res.response as BridgeDocsSaveResponce;
         })
-        .catch((err) => 'error');
+        .catch((err) => {
+            console.log(err);
+
+            return 'error';
+        });
 
     return result;
 };

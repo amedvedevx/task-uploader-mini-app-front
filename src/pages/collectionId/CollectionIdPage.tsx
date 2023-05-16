@@ -187,6 +187,7 @@ export const CollectionIdPage: FC = () => {
                         )}
                     </PanelHeader>
 
+                    {/* For unpredictable problems caused by vk api */}
                     {apiMessageError && (
                         <MiniInfoCell
                             before={<Icon20ReportOutline />}

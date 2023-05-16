@@ -1,7 +1,12 @@
-import type { UploadFilesProps, DownloadFilesProps, UploadFilesResponce } from '@/app/types';
+import type {
+    UploadFilesProps,
+    DownloadFilesProps,
+    UploadFilesResponce,
+    TaskDetailResult,
+} from '@/app/types';
 
 import { apiSlice } from './apiSlice';
-import { BridgeDocsSave, BridgeDocsUploadServer } from './bridge';
+import { BridgeDocsSave, BridgeDocsUploadServer, BridgeDownload } from './bridge';
 import type { RootState } from '../store';
 
 const filesSlice = apiSlice.injectEndpoints({
@@ -48,14 +53,14 @@ const filesSlice = apiSlice.injectEndpoints({
                 return { data: dwnlnk.click() };
             },
         }),
-        uploadFiles: builder.mutation<UploadFilesResponce, UploadFilesProps>({
-            query: ({ taskId, subTaskId, files }) => ({
-                url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
-                method: 'PUT',
-                body: files,
-            }),
+        downloadFilesOnMobile: builder.query<void, TaskDetailResult[]>({
+            queryFn: (resultsData) => {
+                resultsData[0].content.forEach((fileData) => {
+                    BridgeDownload({ url: fileData.url, fileName: fileData.title });
+                });
+            },
         }),
-        uploadFilesNew: builder.mutation<UploadFilesResponce, UploadFilesProps>({
+        uploadFiles: builder.mutation<UploadFilesResponce, UploadFilesProps>({
             queryFn: async (
                 { taskId, subTaskId, files },
                 _queryApi,
@@ -66,43 +71,48 @@ const filesSlice = apiSlice.injectEndpoints({
 
                 const result = await Promise.all(
                     files.map(async (fileToSend) => {
-                        const uploadUrl = (await BridgeDocsUploadServer({
+                        const uploadUrl = await BridgeDocsUploadServer({
                             token: userInfo.token,
-                        })) as unknown as string;
+                        });
 
                         const filesData = new FormData();
 
-                        filesData.append('url', uploadUrl);
+                        filesData.append('url', uploadUrl?.upload_url);
                         filesData.append('file', fileToSend);
 
-                        // change
                         const uploadResponse = await fetchWithBQ({
-                            url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
-                            method: 'PUT',
-                            headers: { 'Content-type': 'multipart/form-data' },
+                            url: `/files`,
+                            method: 'POST',
                             body: filesData,
                         });
 
                         const saveResponce = await BridgeDocsSave({
                             token: userInfo.token,
-                            file: uploadResponse.data,
+                            file: uploadResponse?.data?.file,
                         });
 
-                        const saveFileLink: 'success' | 'error' = await fetchWithBQ({
-                            url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
-                            method: 'PUT',
-                            headers: { 'Content-type': 'application/json' },
-                            body: saveResponce,
-                        });
-
-                        return saveFileLink;
+                        return saveResponce;
                     }),
                 );
 
-                return result;
+                const preparedFiles = result.map((saveResult) => saveResult?.doc);
+
+                const saveFileLink: 'success' | 'error' = await fetchWithBQ({
+                    url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
+                    method: 'PUT',
+                    body: {
+                        data: preparedFiles,
+                    },
+                });
+
+                return saveFileLink;
             },
         }),
     }),
 });
 
-export const { useLazyDownloadFilesQuery, useUploadFilesMutation } = filesSlice;
+export const {
+    useLazyDownloadFilesQuery,
+    useLazyDownloadFilesOnMobileQuery,
+    useUploadFilesMutation,
+} = filesSlice;

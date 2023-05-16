@@ -14,7 +14,7 @@ export const useVkToken = (): string | undefined => {
         bridge
             .send('VKWebAppGetAuthToken', {
                 app_id: vkHostingConfig.app_id,
-                scope: 'messages, docs',
+                scope: 'messages,docs',
             })
             .then((data) => {
                 if (data.access_token) {

@@ -49,10 +49,8 @@ export const UploadPage: FC = () => {
     const clearState = () => setFiles([]);
 
     const sendFiles = () => {
-        const filesToSend = new FormData();
-        files.forEach((file) => filesToSend.append('files', file));
         setLoading(true);
-        uploadFiles({ taskId, subTaskId, files: filesToSend }).then(() => {
+        uploadFiles({ taskId, subTaskId, files }).then(() => {
             setUploading(true);
         });
     };

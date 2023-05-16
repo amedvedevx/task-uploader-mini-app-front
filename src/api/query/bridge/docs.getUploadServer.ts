@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import bridge from '@vkontakte/vk-bridge';
 
 interface BridgeDocsUploadServerArgs {
@@ -26,7 +27,11 @@ export const BridgeDocsUploadServer = async ({
 
             return res.response as BridgeDocsUploadServerResponce;
         })
-        .catch((err) => 'error');
+        .catch((err) => {
+            console.log(err);
+
+            return 'error';
+        });
 
     return result;
 };
