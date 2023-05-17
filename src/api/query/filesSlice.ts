@@ -58,6 +58,8 @@ const filesSlice = apiSlice.injectEndpoints({
                 resultsData[0].content.forEach((fileData) => {
                     BridgeDownload({ url: fileData.url, fileName: fileData.title });
                 });
+
+                return { data: 'success' as unknown as void };
             },
         }),
         uploadFiles: builder.mutation<UploadFilesResponce, UploadFilesProps>({
@@ -97,7 +99,7 @@ const filesSlice = apiSlice.injectEndpoints({
 
                 const preparedFiles = result.map((saveResult) => saveResult?.doc);
 
-                const saveFileLink: 'success' | 'error' = await fetchWithBQ({
+                const saveFileLink = await fetchWithBQ({
                     url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
                     method: 'PUT',
                     body: {

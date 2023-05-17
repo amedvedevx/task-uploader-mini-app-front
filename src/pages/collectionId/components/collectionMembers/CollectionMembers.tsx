@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Avatar, Button, Group, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Avatar, Button, Group, List, Platform, SimpleCell, calcInitialsAvatarColor, usePlatform } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
 import type {
@@ -50,6 +50,9 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
     const [updateReminds] = useUpdateAllowedForRemindIdsMutation();
     const testees = taskResults.map((el) => el.testee);
 
+    const platform = usePlatform();
+    const isIOSPlatform = platform === Platform.IOS;
+
     const onClickHandler = async ({ vkUserId, fullName }: OnClickArgs) => {
         if (selectedTab === 'completed') {
             if (isMobilePlatform) {
@@ -58,10 +61,11 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                 );
 
                 if (resultsForUser) {
-                    downloadFilesOnMobile(resultsForUser?.subTaskResults);
+                    downloadFilesOnMobile(resultsForUser.subTaskResults);
                 }
+            } else {
+                downloadFiles({ taskId: collectionId, vkUserId });
             }
-            downloadFiles({ taskId: collectionId, vkUserId });
         } else if (currentTask) {
             const result = await sendNotification({
                 taskId: collectionId,
@@ -101,7 +105,7 @@ export const CollectionMembers: FC<CollectionMembersProps> = ({
                             />
                         }
                         after={
-                            selectedTab === 'completed' ? (
+                            selectedTab === 'completed' && !isIOSPlatform ? (
                                 <DownloadButton
                                     originalArgs={originalArgs}
                                     vkUserId={vkUserId}
