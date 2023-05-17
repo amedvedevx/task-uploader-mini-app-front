@@ -53,6 +53,16 @@ const filesSlice = apiSlice.injectEndpoints({
                 return { data: dwnlnk.click() };
             },
         }),
+        downloadSingleFile: builder.query<void, { url: string; title: string }>({
+            queryFn: ({ url, title }) => {
+                const dwnlnk = document.createElement('a');
+                dwnlnk.download = title;
+                dwnlnk.href = url;
+                dwnlnk.target = '_blank';
+
+                return { data: dwnlnk.click() };
+            },
+        }),
         downloadFilesOnMobile: builder.query<void, TaskDetailResult[]>({
             queryFn: (resultsData) => {
                 resultsData[0].content.forEach((fileData) => {
@@ -116,5 +126,6 @@ const filesSlice = apiSlice.injectEndpoints({
 export const {
     useLazyDownloadFilesQuery,
     useLazyDownloadFilesOnMobileQuery,
+    useLazyDownloadSingleFileQuery,
     useUploadFilesMutation,
 } = filesSlice;

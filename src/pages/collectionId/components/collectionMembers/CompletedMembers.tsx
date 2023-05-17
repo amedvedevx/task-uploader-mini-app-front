@@ -14,7 +14,11 @@ import { AccordionSummary } from '@vkontakte/vkui/dist/components/Accordion/Acco
 
 import type { DownloadFilesProps, TaskResults } from '@/app/types';
 import { getInitials } from '@/lib/utils';
-import { useLazyDownloadFilesQuery, useLazyDownloadFilesOnMobileQuery } from '@/api';
+import {
+    useLazyDownloadFilesQuery,
+    useLazyDownloadFilesOnMobileQuery,
+    useLazyDownloadSingleFileQuery,
+} from '@/api';
 import { BridgeDownload } from '@/api/query/bridge';
 
 interface CompletedMembersProps {
@@ -32,6 +36,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
 }) => {
     const [downloadFiles, { isLoading: isDownloading, originalArgs }] = useLazyDownloadFilesQuery();
     const [downloadFilesOnMobile] = useLazyDownloadFilesOnMobileQuery();
+    const [downloadSingleFile] = useLazyDownloadSingleFileQuery();
 
     const platform = usePlatform();
     const isIOSPlatform = platform === Platform.IOS;
@@ -49,8 +54,9 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                     downloadFilesOnMobile(resultsForUser.subTaskResults);
                 }
             }
+        } else if (url && title) {
+            downloadSingleFile({ url, title });
         } else {
-            //need to separate download one file or zip
             downloadFiles({ taskId: collectionId, vkUserId });
         }
     };
