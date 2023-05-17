@@ -8,6 +8,7 @@ import {
     PanelHeaderContent,
     Platform,
     Search,
+    Spacing,
     usePlatform,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
@@ -32,7 +33,7 @@ import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 
-import { CollectionMembers } from './components/collectionMembers';
+import { CompletedMembers, NotCompletedMembers } from './components/collectionMembers';
 import { HeaderButtons } from './components/headerButtons';
 import { CopyUploadLink } from './components/headerButtons/components';
 import { CollectionTabs } from './components/CollectionTabs';
@@ -228,6 +229,8 @@ export const CollectionIdPage: FC = () => {
                             apiMessageError={apiMessageError}
                         />
                     )}
+
+                    <Spacing size={8} />
                 </FixedLayout>
             </div>
 
@@ -237,13 +240,9 @@ export const CollectionIdPage: FC = () => {
                         {selectedTab === 'completed' ? (
                             <>
                                 {normalizedTestees.completed.length > 0 && (
-                                    <CollectionMembers
-                                        selectedTab={selectedTab}
-                                        isTaskClosed={isTaskClosed}
+                                    <CompletedMembers
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.completed}
-                                        setSnackbarText={setSnackbarText}
-                                        apiMessageError={apiMessageError}
                                         isMobilePlatform={isMobilePlatform}
                                     />
                                 )}
@@ -251,14 +250,12 @@ export const CollectionIdPage: FC = () => {
                         ) : (
                             <>
                                 {normalizedTestees.notCompleted.length > 0 ? (
-                                    <CollectionMembers
+                                    <NotCompletedMembers
                                         setSnackbarText={setSnackbarText}
-                                        selectedTab={selectedTab}
                                         isTaskClosed={isTaskClosed}
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.notCompleted}
                                         apiMessageError={apiMessageError}
-                                        isMobilePlatform={isMobilePlatform}
                                     />
                                 ) : (
                                     <ShareLink
