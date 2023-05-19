@@ -21,7 +21,11 @@ type FormValues = {
     collectionDescription: string;
 };
 
-export const CreatePage: FC = () => {
+interface CreatePageProps {
+    id?: string;
+}
+
+export const CreatePage: FC<CreatePageProps> = () => {
     const router = useRouter();
 
     const [createTask, { isLoading: isTaskCreating, isError: isTaskError }] =

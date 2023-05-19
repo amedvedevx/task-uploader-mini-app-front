@@ -41,10 +41,10 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     const platform = usePlatform();
     const isIOSPlatform = platform === Platform.IOS;
 
-    const onClickHandler = ({ vkUserId, url, title, taskId, subTaskId, docId }: OnClickArgs) => {
+    const onClickHandler = async ({ vkUserId, url, title, taskId, subTaskId, docId }: OnClickArgs) => {
         if (isMobilePlatform) {
             if (url && title) {
-                BridgeDownload({ url, fileName: title });
+                await BridgeDownload({ url, fileName: title });
             } else {
                 const resultsForUser = taskResults.find(
                     (taskResult) => taskResult.testee.vkUserId === vkUserId,

@@ -4,7 +4,7 @@ import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
-import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
+import {Root, SplitCol, SplitLayout, usePlatform, View} from '@vkontakte/vkui';
 import { useDispatch } from 'react-redux';
 
 import { useVkHash } from '@/api';
@@ -25,7 +25,6 @@ import {
     VIEW_CREATE,
     VIEW_UPLOAD,
 } from './router';
-import { APP_ID } from './config';
 
 const HomePage = lazy(() =>
     import('@/pages/home/HomePage').then((module) => ({
@@ -67,6 +66,9 @@ export const AppPages: FC = () => {
     const location = useLocation();
     const router = useRouter();
     const isFirst = useFirstPageCheck();
+    const platform = usePlatform();
+
+    console.log("platform", platform);
 
     const dispatch = useDispatch();
 
@@ -103,10 +105,13 @@ export const AppPages: FC = () => {
         if (token && userId) {
             dispatch(setUserInfo({ token, userId }));
         }
+    }, [token, userId]);
 
-        bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isFirst, token, userId]);
+    useEffect(() => {
+        if (platform !== Platform.VKCOM) {
+            bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
+        }
+    }, [isFirst, platform]);
 
     return (
         <>

@@ -22,7 +22,11 @@ import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { CollectionHistory } from './components/CollectionHistory';
 
-export const HomePage: FC = () => {
+interface HomePageProps {
+    id?: string;
+}
+
+export const HomePage: FC<HomePageProps> = () => {
     const router = useRouter();
 
     const { data, isLoading } = useGetTasksQuery({});
