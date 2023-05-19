@@ -46,7 +46,11 @@ const payloadCloseTask = {
     fields: [{ fieldName: 'status', value: 'DONE' }],
 };
 
-export const CollectionIdPage: FC = () => {
+interface CollectionIdProps {
+    id?: string;
+}
+
+export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const router = useRouter();
     const { collectionId } = useParams();
 
@@ -81,7 +85,7 @@ export const CollectionIdPage: FC = () => {
     const isMobilePlatform = platform === Platform.ANDROID || platform === Platform.IOS;
 
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
-    const fixedLayoutRef = createRef();
+    const fixedLayoutRef = createRef<HTMLDivElement>();
 
     const popoutCloseTask = (
         <Popout

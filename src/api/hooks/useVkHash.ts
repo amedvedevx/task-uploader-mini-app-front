@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { ErrorData } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
 import { useDispatch } from 'react-redux';
 

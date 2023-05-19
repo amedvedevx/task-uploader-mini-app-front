@@ -11,6 +11,7 @@ export const BridgeGetConversationsMembers = async ({
     token,
     peerId,
 }: BridgeGetConversationsMembersArgs): Promise<TesteeType[]> => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result: TesteeType[] = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'messages.getConversationMembers',
