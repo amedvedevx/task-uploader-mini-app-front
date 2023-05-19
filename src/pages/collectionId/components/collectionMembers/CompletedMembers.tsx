@@ -41,7 +41,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     const platform = usePlatform();
     const isIOSPlatform = platform === Platform.IOS;
 
-    const onClickHandler = ({ vkUserId, url, title }: OnClickArgs) => {
+    const onClickHandler = ({ vkUserId, url, title, taskId, subTaskId, docId }: OnClickArgs) => {
         if (isMobilePlatform) {
             if (url && title) {
                 BridgeDownload({ url, fileName: title });
@@ -54,8 +54,8 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                     downloadFilesOnMobile(resultsForUser.subTaskResults);
                 }
             }
-        } else if (url && title) {
-            downloadSingleFile({ url, title });
+        } else if (docId && title) {
+            downloadSingleFile({ taskId, title, docId, subTaskId, vkUserId });
         } else {
             downloadFiles({ taskId: collectionId, vkUserId });
         }
@@ -67,6 +67,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                 ({
                     testee: { vkUserId, firstName, lastName, fullName, photo },
                     subTaskResults,
+                    taskId,
                 }) => (
                     <Accordion key={vkUserId}>
                         <AccordionSummaryWidth>
@@ -99,7 +100,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                         </AccordionSummaryWidth>
 
                         <List>
-                            {subTaskResults[0].content.map(({ title, size, uploadDate, url }) => (
+                            {subTaskResults[0].content.map(({ title, docId, url }) => (
                                 <SimpleCell
                                     key={title}
                                     after={
@@ -113,7 +114,16 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                             loading={
                                                 originalArgs?.vkUserId === vkUserId && isDownloading
                                             }
-                                            onClick={() => onClickHandler({ vkUserId, url, title })}
+                                            onClick={() =>
+                                                onClickHandler({
+                                                    vkUserId,
+                                                    url,
+                                                    title,
+                                                    taskId,
+                                                    docId,
+                                                    subTaskId: subTaskResults[0].subTaskId,
+                                                })
+                                            }
                                         >
                                             Скачать
                                         </Button>
@@ -137,6 +147,9 @@ const AccordionSummaryWidth = styled(AccordionSummary)`
 `;
 
 type OnClickArgs = {
+    docId: number;
+    taskId: string;
+    subTaskId: string;
     vkUserId: number;
     url?: string;
     title?: string;

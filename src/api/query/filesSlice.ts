@@ -3,6 +3,7 @@ import type {
     DownloadFilesProps,
     UploadFilesResponce,
     TaskDetailResult,
+    DownloadSingleFileProps,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
@@ -53,12 +54,32 @@ const filesSlice = apiSlice.injectEndpoints({
                 return { data: dwnlnk.click() };
             },
         }),
-        downloadSingleFile: builder.query<void, { url: string; title: string }>({
-            queryFn: ({ url, title }) => {
+        downloadSingleFile: builder.query<void, DownloadSingleFileProps>({
+            queryFn: async (
+                { title, taskId, subTaskId, docId, vkUserId },
+                _queryApi,
+                _extraOptions,
+                fetchWithBQ,
+            ) => {
+                const response = await fetchWithBQ({
+                    url: `/files/${taskId}/${subTaskId}`,
+                    responseHandler: (res) => res.blob(),
+                    params: { docId, vkUserId },
+                });
+
+                const result = {
+                    textblob: response.data as Blob,
+                    fileName: title,
+                };
+
                 const dwnlnk = document.createElement('a');
-                dwnlnk.download = title;
-                dwnlnk.href = url;
-                dwnlnk.target = '_blank';
+                dwnlnk.download = result.fileName;
+
+                if (window.webkitURL != null) {
+                    dwnlnk.href = window.webkitURL.createObjectURL(result.textblob);
+                } else {
+                    dwnlnk.href = window.URL.createObjectURL(result.textblob);
+                }
 
                 return { data: dwnlnk.click() };
             },

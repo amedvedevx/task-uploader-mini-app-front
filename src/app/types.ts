@@ -3,6 +3,7 @@ export interface GetTaskResultsResponce {
 }
 
 type TaskDetailResultContent = {
+    docId: number;
     size: number;
     title: string;
     uploadDate: string;
@@ -11,6 +12,7 @@ type TaskDetailResultContent = {
 
 export type TaskDetailResult = {
     resultId: string;
+    subTaskId: string;
     taskDetailId: string;
     completeDate: number;
     status: 'LOADED';
@@ -105,6 +107,14 @@ export interface DownloadFilesProps {
 
 export interface DownloadFilesResponce {
     files: Record<string, unknown>;
+}
+
+export interface DownloadSingleFileProps {
+    title: string;
+    taskId: string;
+    subTaskId: string;
+    docId: number;
+    vkUserId: number;
 }
 
 export interface GetSubTaskResultStatusProps {

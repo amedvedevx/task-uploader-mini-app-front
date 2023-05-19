@@ -25,6 +25,7 @@ import {
     VIEW_CREATE,
     VIEW_UPLOAD,
 } from './router';
+import { APP_ID } from './config';
 
 const HomePage = lazy(() =>
     import('@/pages/home/HomePage').then((module) => ({
@@ -69,9 +70,9 @@ export const AppPages: FC = () => {
 
     const dispatch = useDispatch();
 
-    const bearer = useVkHash();
     const token = useVkToken();
     const userId = useVkUserId(token);
+    const bearer = useVkHash(token);
 
     useEffect(() => {
         const changeFragment = ({

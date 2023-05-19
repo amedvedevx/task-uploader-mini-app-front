@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 
 import { APP_DEV_AUTH, APP_ID, IS_DEV } from '@/app/config';
 import { setBearer } from '@/api/state/authorizationSlice';
+import { useVkUserId } from '@/hooks';
 
 import { useUserRole } from './useUserRole';
 
@@ -13,12 +14,13 @@ export interface VKWebAppCreateHashResult {
     ts: string;
 }
 
-export const useVkHash = (): boolean => {
+export const useVkHash = (token: string | undefined): boolean => {
     const [status, setStatus] = useState(false);
 
     const dispatch = useDispatch();
 
     const userType = useUserRole();
+    const vkUserId = useVkUserId(token);
 
     const fetchVkHash = useCallback(async () => {
         const vkHash = await bridge
@@ -26,19 +28,12 @@ export const useVkHash = (): boolean => {
             // eslint-disable-next-line no-console
             .catch((error) => console.error('VKWebAppCreateHash', error));
 
-        const vkUserInfo = await bridge
-            .send('VKWebAppGetLaunchParams')
-            .catch((error: ErrorData) => {
-                // eslint-disable-next-line no-console
-                console.error(`Ошибка: ${error.error_type}`, error.error_data);
-            });
-
-        if (vkHash && userType && vkUserInfo) {
+        if (vkHash && userType && vkUserId) {
             dispatch(
                 setBearer(
                     `Bearer {"sign": ${JSON.stringify(
                         vkHash.sign,
-                    )}, "userId": ${vkUserInfo.vk_user_id.toString()}, "appId": ${APP_ID}, "ts": ${
+                    )}, "userId": ${vkUserId.toString()}, "appId": ${APP_ID}, "ts": ${
                         vkHash.ts
                     }, "role": "${userType}"}`,
                 ),
