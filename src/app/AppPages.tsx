@@ -4,7 +4,7 @@ import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
-import {Root, SplitCol, SplitLayout, usePlatform, View} from '@vkontakte/vkui';
+import { Root, SplitCol, SplitLayout, usePlatform, View } from '@vkontakte/vkui';
 import { useDispatch } from 'react-redux';
 
 import { useVkHash } from '@/api';
@@ -68,13 +68,13 @@ export const AppPages: FC = () => {
     const isFirst = useFirstPageCheck();
     const platform = usePlatform();
 
-    console.log("platform", platform);
-
     const dispatch = useDispatch();
 
     const token = useVkToken();
     const userId = useVkUserId(token);
     const bearer = useVkHash(token);
+
+    console.log(userId);
 
     useEffect(() => {
         const changeFragment = ({
@@ -108,7 +108,7 @@ export const AppPages: FC = () => {
     }, [token, userId]);
 
     useEffect(() => {
-        if (platform !== Platform.VKCOM) {
+        if (platform !== 'VKCOM') {
             bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
         }
     }, [isFirst, platform]);
