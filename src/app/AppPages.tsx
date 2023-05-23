@@ -4,14 +4,13 @@ import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
-import {Root, SplitCol, SplitLayout, usePlatform, View} from '@vkontakte/vkui';
-import { useDispatch } from 'react-redux';
+import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
-import { useVkHash } from '@/api';
+import { useGenerateBearer } from '@/api';
 import { useVkToken } from '@/hooks/useVkToken';
-import { setUserInfo } from '@/api/state';
-import { useVkUserId } from '@/hooks';
+import { useBridgePlatform, useVkUserId } from '@/hooks';
 import { PreloadScreen } from '@/components';
+import { checkIsMobilePlatform } from '@/lib';
 
 import {
     PAGE_COLLECTION_ID,
@@ -66,15 +65,12 @@ export const AppPages: FC = () => {
     const location = useLocation();
     const router = useRouter();
     const isFirst = useFirstPageCheck();
-    const platform = usePlatform();
+    const platform = useBridgePlatform();
+    const isMobilePlatform = checkIsMobilePlatform(platform);
 
-    console.log("platform", platform);
-
-    const dispatch = useDispatch();
-
-    const token = useVkToken();
-    const userId = useVkUserId(token);
-    const bearer = useVkHash(token);
+    useVkToken();
+    useVkUserId();
+    const bearer = useGenerateBearer();
 
     useEffect(() => {
         const changeFragment = ({
@@ -102,16 +98,10 @@ export const AppPages: FC = () => {
     }, []);
 
     useEffect(() => {
-        if (token && userId) {
-            dispatch(setUserInfo({ token, userId }));
-        }
-    }, [token, userId]);
-
-    useEffect(() => {
-        if (platform !== Platform.VKCOM) {
+        if (isMobilePlatform) {
             bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
         }
-    }, [isFirst, platform]);
+    }, [isFirst, isMobilePlatform]);
 
     return (
         <>

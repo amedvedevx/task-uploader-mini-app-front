@@ -1,20 +1,17 @@
 /* eslint-disable no-console */
-import type { ErrorData } from '@vkontakte/vk-bridge';
+import type { EGetLaunchParamsResponsePlatforms, ErrorData } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
 
-import { setUserId } from '@/api/state';
-
-export const useVkUserId = (): void => {
-    const dispatch = useDispatch();
+export const useBridgePlatform = (): string => {
+    const [platform, setPlatform] = useState<EGetLaunchParamsResponsePlatforms | ''>('');
 
     useEffect(() => {
-        // TODO ME-41476 - refactor bridge calls to api layer
         bridge
+            // TODO ME-41476 - refactor bridge calls to api layer
             .send('VKWebAppGetLaunchParams')
             .then((data) => {
-                dispatch(setUserId({ userId: data.vk_user_id }));
+                setPlatform(data.vk_platform);
             })
             .catch((error: ErrorData) => {
                 // eslint-disable-next-line no-console
@@ -22,4 +19,6 @@ export const useVkUserId = (): void => {
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    return platform;
 };

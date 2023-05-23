@@ -6,10 +6,8 @@ import {
     PanelHeader,
     PanelHeaderBack,
     PanelHeaderContent,
-    Platform,
     Search,
     Spacing,
-    usePlatform,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { createRef, useLayoutEffect, useState } from 'react';
@@ -27,8 +25,8 @@ import {
 } from '@/api';
 import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
-import { useSearch } from '@/hooks';
-import { errorParser, normalizeTestees } from '@/lib/utils';
+import { useBridgePlatform, useSearch } from '@/hooks';
+import { checkIsMobilePlatform, errorParser, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
@@ -46,7 +44,11 @@ const payloadCloseTask = {
     fields: [{ fieldName: 'status', value: 'DONE' }],
 };
 
-export const CollectionIdPage: FC = () => {
+interface CollectionIdProps {
+    id?: string;
+}
+
+export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const router = useRouter();
     const { collectionId } = useParams();
 
@@ -77,11 +79,11 @@ export const CollectionIdPage: FC = () => {
     const stateErrors = store.getState().errors;
     const apiMessageError = stateErrors.find((errorObj) => errorObj.type === 'api-messages');
 
-    const platform = usePlatform();
-    const isMobilePlatform = platform === Platform.ANDROID || platform === Platform.IOS;
+    const platform = useBridgePlatform();
+    const isMobilePlatform = checkIsMobilePlatform(platform);
 
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
-    const fixedLayoutRef = createRef();
+    const fixedLayoutRef = createRef<HTMLDivElement>();
 
     const popoutCloseTask = (
         <Popout
