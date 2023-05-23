@@ -21,13 +21,15 @@ export const authorizationSlice = createSlice({
         setBearer: (state, action: PayloadAction<string>) => {
             state.value = action.payload;
         },
-        setUserInfo: (state, action: PayloadAction<{ token: string; userId: number }>) => {
+        setUserToken: (state, action: PayloadAction<{ token: string }>) => {
             state.userInfo.token = action.payload.token;
+        },
+        setUserId: (state, action: PayloadAction<{ userId: number }>) => {
             state.userInfo.userId = action.payload.userId;
         },
     },
 });
 
-export const { setBearer, setUserInfo } = authorizationSlice.actions;
+export const { setBearer, setUserId, setUserToken } = authorizationSlice.actions;
 
 export default authorizationSlice.reducer;

@@ -1,7 +1,7 @@
 import { format, fromUnixTime } from 'date-fns';
 import { ru } from 'date-fns/locale';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import copy from 'copy-to-clipboard';
+import { EGetLaunchParamsResponsePlatforms } from '@vkontakte/vk-bridge';
 
 import { UPLOAD_URL } from '@/app/config';
 import type { TesteeType, TaskResults, TaskType } from '@/app/types';
@@ -22,9 +22,10 @@ export const inclinationWord = (quanty: number, words: string[]): string => {
 
 export const parseFileSize = (size: number): string => {
     let counter = 0;
+    let sizeCopy = size;
 
-    while (size >= 1024) {
-        size /= 1024;
+    while (sizeCopy >= 1024) {
+        sizeCopy /= 1024;
         counter++;
     }
 
@@ -34,7 +35,7 @@ export const parseFileSize = (size: number): string => {
         B = 0,
     }
 
-    return `${Math.ceil(size)} ${SizeType[counter]}`;
+    return `${Math.ceil(sizeCopy)} ${SizeType[counter]}`;
 };
 
 export const getFileExtension = (fileName: string): string =>
@@ -121,4 +122,16 @@ export const errorParser = (errorNumber: number): string => {
     }
 
     return result;
+};
+
+export const checkIsMobilePlatform = (platform: string): boolean => {
+    const desktopTypes = [
+        EGetLaunchParamsResponsePlatforms.DESKTOP_WEB,
+        EGetLaunchParamsResponsePlatforms.MOBILE_WEB,
+        // this type returned by bridge is not consistent with bridge documentation, its 'mvk_external'
+        'mkv_external',
+        'web_external',
+    ];
+
+    return !desktopTypes.includes(platform);
 };

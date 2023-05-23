@@ -1,6 +1,14 @@
-import type { UploadFilesProps, DownloadFilesProps, UploadFilesResponce } from '@/app/types';
+import type {
+    UploadFilesProps,
+    DownloadFilesProps,
+    UploadFilesResponce,
+    TaskDetailResult,
+    DownloadSingleFileProps,
+} from '@/app/types';
 
 import { apiSlice } from './apiSlice';
+import { BridgeDocsSave, BridgeDocsUploadServer, BridgeDownload } from './bridge';
+import type { RootState } from '../store';
 
 const filesSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -46,14 +54,99 @@ const filesSlice = apiSlice.injectEndpoints({
                 return { data: dwnlnk.click() };
             },
         }),
+        downloadSingleFile: builder.query<void, DownloadSingleFileProps>({
+            queryFn: async (
+                { title, taskId, subTaskId, docId, vkUserId },
+                _queryApi,
+                _extraOptions,
+                fetchWithBQ,
+            ) => {
+                const response = await fetchWithBQ({
+                    url: `/files/${taskId}/${subTaskId}`,
+                    responseHandler: (res) => res.blob(),
+                    params: { docId, vkUserId },
+                });
+
+                const result = {
+                    textblob: response.data as Blob,
+                    fileName: title,
+                };
+
+                const dwnlnk = document.createElement('a');
+                dwnlnk.download = result.fileName;
+
+                if (window.webkitURL != null) {
+                    dwnlnk.href = window.webkitURL.createObjectURL(result.textblob);
+                } else {
+                    dwnlnk.href = window.URL.createObjectURL(result.textblob);
+                }
+
+                return { data: dwnlnk.click() };
+            },
+        }),
+        downloadFilesOnMobile: builder.query<void, TaskDetailResult[]>({
+            queryFn: (resultsData) => {
+                resultsData[0].content.forEach((fileData) => {
+                    BridgeDownload({ url: fileData.url, fileName: fileData.title });
+                });
+
+                return { data: 'success' as unknown as void };
+            },
+        }),
         uploadFiles: builder.mutation<UploadFilesResponce, UploadFilesProps>({
-            query: ({ taskId, subTaskId, files }) => ({
-                url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
-                method: 'PUT',
-                body: files,
-            }),
+            queryFn: async (
+                { taskId, subTaskId, files },
+                _queryApi,
+                _extraOptions,
+                fetchWithBQ,
+            ) => {
+                const { userInfo } = (_queryApi.getState() as RootState).authorization;
+
+                const result = await Promise.all(
+                    files.map(async (fileToSend) => {
+                        const uploadUrl = await BridgeDocsUploadServer({
+                            token: userInfo.token,
+                        });
+
+                        const filesData = new FormData();
+
+                        filesData.append('url', uploadUrl?.upload_url);
+                        filesData.append('file', fileToSend);
+
+                        const uploadResponse = await fetchWithBQ({
+                            url: `/files`,
+                            method: 'POST',
+                            body: filesData,
+                        });
+
+                        const saveResponce = await BridgeDocsSave({
+                            token: userInfo.token,
+                            file: uploadResponse?.data?.file,
+                        });
+
+                        return saveResponce;
+                    }),
+                );
+
+                const preparedFiles = result.map((saveResult) => saveResult?.doc);
+
+                const saveFileLink = await fetchWithBQ({
+                    url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
+                    method: 'PUT',
+                    body: {
+                        data: preparedFiles,
+                    },
+                });
+
+                return saveFileLink;
+            },
         }),
     }),
 });
 
-export const { useLazyDownloadFilesQuery, useUploadFilesMutation } = filesSlice;
+export const {
+    useLazyDownloadFilesQuery,
+    useLazyDownloadFilesOnMobileQuery,
+    useLazyDownloadSingleFileQuery,
+    useUploadFilesMutation,
+} = filesSlice;

@@ -1,57 +1,25 @@
+/* eslint-disable no-console */
 import type { ErrorData } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
-import { useState, useEffect, useRef, useTransition } from 'react';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { APP_ID } from '@/app/config';
+import { setUserId } from '@/api/state';
 
-export const useVkUserId = (token: string | undefined): number | undefined => {
-    const [vkUserId, setVkUserId] = useState<number>();
-    const [, startTransition] = useTransition();
-    const isFetching = useRef<boolean>(false);
+export const useVkUserId = (): void => {
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!token || isFetching.current) {
-            return;
-        }
-
-        isFetching.current = true;
-
+        // TODO ME-41476 - refactor bridge calls to api layer
         bridge
-            .send('VKWebAppCallAPIMethod', {
-                method: 'account.getMulti',
-                params: {
-                    access_token: token,
-                    v: '5.203',
-                    miniapp_id: APP_ID,
-                    fields: 'profile_type',
-                },
+            .send('VKWebAppGetLaunchParams')
+            .then((data) => {
+                dispatch(setUserId({ userId: data.vk_user_id }));
             })
-            .then(
-                (data: {
-                    response: {
-                        items: Array<{
-                            id: number;
-                            profile_type: number;
-                        }>;
-                    };
-                }) => {
-                    const trainingAccount = data?.response?.items.find(
-                        (item) => item.profile_type === 2,
-                    );
-
-                    startTransition(() => {
-                        if (trainingAccount) {
-                            setVkUserId(trainingAccount.id);
-                        } else {
-                            setVkUserId(data?.response?.items[0].id);
-                        }
-                    });
-                },
-            )
             .catch((error: ErrorData) => {
-                console.log('account.getMulti error', error);
+                // eslint-disable-next-line no-console
+                console.error(`Ошибка: ${error.error_type}`, error.error_data);
             });
-    }, [token]);
-
-    return vkUserId;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 };

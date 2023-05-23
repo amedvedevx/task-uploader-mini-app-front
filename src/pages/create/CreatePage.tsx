@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
-import { PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
+import { PAGE_COLLECTION_HOME, PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
 import { useCreateSubTaskMutation, useCreateTaskMutation } from '@/api';
 import { FooterWithButton } from '@/components';
 import type { SnackBarText } from '@/app/types';
@@ -21,7 +21,11 @@ type FormValues = {
     collectionDescription: string;
 };
 
-export const CreatePage: FC = () => {
+interface CreatePageProps {
+    id?: string;
+}
+
+export const CreatePage: FC<CreatePageProps> = () => {
     const router = useRouter();
 
     const [createTask, { isLoading: isTaskCreating, isError: isTaskError }] =
@@ -73,7 +77,7 @@ export const CreatePage: FC = () => {
     };
 
     const goBack = () => {
-        router.popPage();
+        router.pushPage(PAGE_COLLECTION_HOME);
     };
 
     if (isTaskError || isSubTaskError) {
@@ -81,19 +85,33 @@ export const CreatePage: FC = () => {
     }
 
     return (
-        <Panel id={PANEL_CREATE_COLLECTION}>
+        <Panel
+            id={PANEL_CREATE_COLLECTION}
+            data-automation-id='create-page-panel'
+        >
             <PanelHeader
                 separator={false}
-                before={<PanelHeaderBack onClick={goBack} />}
+                before={
+                    <PanelHeaderBack
+                        data-automation-id='create-page-backButton'
+                        onClick={goBack}
+                    />
+                }
             />
 
             <CreateContainer>
                 <FormWrapper>
-                    <PlaceholderWidth header='Придумайте название'>
+                    <PlaceholderWidth
+                        header='Придумайте название'
+                        data-automation-id='create-page-placeholder'
+                    >
                         Название поможет вам быстрее найти сбор среди других заданий
                     </PlaceholderWidth>
 
-                    <FormLayoutWidth onSubmit={handleSubmit(onSubmit)}>
+                    <FormLayoutWidth
+                        data-automation-id='create-page-form'
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
                         <CreateInput
                             required
                             control={control}
@@ -138,7 +156,7 @@ const CreateContainer = styled(Div)`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
+    padding-top: 15vh;
 `;
 
 const FormWrapper = styled.div`

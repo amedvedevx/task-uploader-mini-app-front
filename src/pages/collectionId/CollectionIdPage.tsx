@@ -6,9 +6,8 @@ import {
     PanelHeader,
     PanelHeaderBack,
     PanelHeaderContent,
-    Platform,
     Search,
-    usePlatform,
+    Spacing,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { createRef, useLayoutEffect, useState } from 'react';
@@ -26,13 +25,13 @@ import {
 } from '@/api';
 import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
-import { useSearch } from '@/hooks';
-import { errorParser, normalizeTestees } from '@/lib/utils';
+import { useBridgePlatform, useSearch } from '@/hooks';
+import { checkIsMobilePlatform, errorParser, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 
-import { CollectionMembers } from './components/collectionMembers';
+import { CompletedMembers, NotCompletedMembers } from './components/collectionMembers';
 import { HeaderButtons } from './components/headerButtons';
 import { CopyUploadLink } from './components/headerButtons/components';
 import { CollectionTabs } from './components/CollectionTabs';
@@ -45,7 +44,11 @@ const payloadCloseTask = {
     fields: [{ fieldName: 'status', value: 'DONE' }],
 };
 
-export const CollectionIdPage: FC = () => {
+interface CollectionIdProps {
+    id?: string;
+}
+
+export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const router = useRouter();
     const { collectionId } = useParams();
 
@@ -76,11 +79,11 @@ export const CollectionIdPage: FC = () => {
     const stateErrors = store.getState().errors;
     const apiMessageError = stateErrors.find((errorObj) => errorObj.type === 'api-messages');
 
-    const platform = usePlatform();
-    const isMobilePlatform = platform === Platform.ANDROID || platform === Platform.IOS;
+    const platform = useBridgePlatform();
+    const isMobilePlatform = checkIsMobilePlatform(platform);
 
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
-    const fixedLayoutRef = createRef();
+    const fixedLayoutRef = createRef<HTMLDivElement>();
 
     const popoutCloseTask = (
         <Popout
@@ -156,13 +159,16 @@ export const CollectionIdPage: FC = () => {
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
 
     if (error?.status) {
-        const errorMessage = errorParser(error?.status)
+        const errorMessage = errorParser(error?.status);
 
         throw Error(errorMessage);
     }
 
     return (
-        <Panel id={PANEL_COLLECTION_ID}>
+        <Panel
+            id={PANEL_COLLECTION_ID}
+            data-automation-id='collectionId-page-panel'
+        >
             <div ref={fixedLayoutRef}>
                 <FixedLayout
                     filled
@@ -173,7 +179,10 @@ export const CollectionIdPage: FC = () => {
                         before={<PanelHeaderBack onClick={goBack} />}
                     >
                         {currentTask?.name ? (
-                            <PanelHeaderContent status={currentTask.name}>
+                            <PanelHeaderContent
+                                status={currentTask.name}
+                                data-automation-id='collectionId-page-headerContent'
+                            >
                                 {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
                             </PanelHeaderContent>
                         ) : (
@@ -181,6 +190,7 @@ export const CollectionIdPage: FC = () => {
                         )}
                     </PanelHeader>
 
+                    {/* For unpredictable problems caused by vk api */}
                     {apiMessageError && (
                         <MiniInfoCell
                             before={<Icon20ReportOutline />}
@@ -195,6 +205,7 @@ export const CollectionIdPage: FC = () => {
 
                     <Search
                         value={search}
+                        data-automation-id='common-searchBar'
                         onChange={changeSearch}
                     />
 
@@ -220,6 +231,8 @@ export const CollectionIdPage: FC = () => {
                             apiMessageError={apiMessageError}
                         />
                     )}
+
+                    <Spacing size={8} />
                 </FixedLayout>
             </div>
 
@@ -229,13 +242,9 @@ export const CollectionIdPage: FC = () => {
                         {selectedTab === 'completed' ? (
                             <>
                                 {normalizedTestees.completed.length > 0 && (
-                                    <CollectionMembers
-                                        selectedTab={selectedTab}
-                                        isTaskClosed={isTaskClosed}
+                                    <CompletedMembers
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.completed}
-                                        setSnackbarText={setSnackbarText}
-                                        apiMessageError={apiMessageError}
                                         isMobilePlatform={isMobilePlatform}
                                     />
                                 )}
@@ -243,14 +252,12 @@ export const CollectionIdPage: FC = () => {
                         ) : (
                             <>
                                 {normalizedTestees.notCompleted.length > 0 ? (
-                                    <CollectionMembers
+                                    <NotCompletedMembers
                                         setSnackbarText={setSnackbarText}
-                                        selectedTab={selectedTab}
                                         isTaskClosed={isTaskClosed}
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.notCompleted}
                                         apiMessageError={apiMessageError}
-                                        isMobilePlatform={isMobilePlatform}
                                     />
                                 ) : (
                                     <ShareLink
