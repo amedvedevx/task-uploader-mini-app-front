@@ -28,7 +28,11 @@ import { normalizeMembers } from '@/lib';
 
 import { MembersList } from '../addmembers/components';
 
-export const ListMembersPage: FC = () => {
+interface ListMembersPageProps {
+    id?: string;
+}
+
+export const ListMembersPage: FC<ListMembersPageProps> = () => {
     const { collectionId } = useParams();
     const router = useRouter();
 

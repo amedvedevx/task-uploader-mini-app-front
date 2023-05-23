@@ -1,6 +1,7 @@
 import { format, fromUnixTime } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import copy from 'copy-to-clipboard';
+import { EGetLaunchParamsResponsePlatforms } from '@vkontakte/vk-bridge';
 
 import { UPLOAD_URL } from '@/app/config';
 import type { TesteeType, TaskResults, TaskType } from '@/app/types';
@@ -121,4 +122,16 @@ export const errorParser = (errorNumber: number): string => {
     }
 
     return result;
+};
+
+export const checkIsMobilePlatform = (platform: string): boolean => {
+    const desktopTypes = [
+        EGetLaunchParamsResponsePlatforms.DESKTOP_WEB,
+        EGetLaunchParamsResponsePlatforms.MOBILE_WEB,
+        // this type returned by bridge is not consistent with bridge documentation, its 'mvk_external'
+        'mkv_external',
+        'web_external',
+    ];
+
+    return !desktopTypes.includes(platform);
 };

@@ -17,7 +17,11 @@ import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
 import { TaskDescription } from './components/TaskDescription';
 
-export const UploadPage: FC = () => {
+interface ListMembersPageProps {
+    id?: string;
+}
+
+export const UploadPage: FC<ListMembersPageProps> = () => {
     const { uploadId } = useParams();
 
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId });

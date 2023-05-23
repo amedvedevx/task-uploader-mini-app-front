@@ -12,7 +12,7 @@ import {
 import styled from 'styled-components';
 import { AccordionSummary } from '@vkontakte/vkui/dist/components/Accordion/AccordionSummary';
 
-import type { DownloadFilesProps, TaskResults } from '@/app/types';
+import type { TaskResults } from '@/app/types';
 import { getInitials } from '@/lib/utils';
 import {
     useLazyDownloadFilesQuery,
@@ -20,6 +20,8 @@ import {
     useLazyDownloadSingleFileQuery,
 } from '@/api';
 import { BridgeDownload } from '@/api/query/bridge';
+
+import { DownloadButton } from './components/DownloadButton';
 
 interface CompletedMembersProps {
     taskResults: TaskResults[];
@@ -41,7 +43,14 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     const platform = usePlatform();
     const isIOSPlatform = platform === Platform.IOS;
 
-    const onClickHandler = async ({ vkUserId, url, title, taskId, subTaskId, docId }: OnClickArgs) => {
+    const onClickHandler = async ({
+        vkUserId,
+        url,
+        title,
+        taskId,
+        subTaskId,
+        docId,
+    }: OnClickArgs) => {
         if (isMobilePlatform) {
             if (url && title) {
                 await BridgeDownload({ url, fileName: title });
@@ -54,7 +63,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                     downloadFilesOnMobile(resultsForUser.subTaskResults);
                 }
             }
-        } else if (docId && title) {
+        } else if (docId && title && taskId && subTaskId) {
             downloadSingleFile({ taskId, title, docId, subTaskId, vkUserId });
         } else {
             downloadFiles({ taskId: collectionId, vkUserId });
@@ -89,7 +98,6 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                             originalArgs={originalArgs}
                                             vkUserId={vkUserId}
                                             isDownloading={isDownloading}
-                                            fullName={fullName}
                                             onClickHandler={onClickHandler}
                                         />
                                     )
@@ -147,37 +155,10 @@ const AccordionSummaryWidth = styled(AccordionSummary)`
 `;
 
 type OnClickArgs = {
-    docId: number;
-    taskId: string;
-    subTaskId: string;
     vkUserId: number;
     url?: string;
     title?: string;
+    taskId?: string;
+    subTaskId?: string;
+    docId?: number;
 };
-
-interface DownloadButtonProps {
-    originalArgs: DownloadFilesProps | undefined;
-    vkUserId: number;
-    isDownloading: boolean;
-    onClickHandler: (arg: { vkUserId: number; fullName: string }) => void;
-    fullName: string;
-}
-
-const DownloadButton: FC<DownloadButtonProps> = ({
-    originalArgs,
-    vkUserId,
-    isDownloading,
-    onClickHandler,
-    fullName,
-}) => (
-    <Button
-        appearance='accent'
-        size='s'
-        mode='secondary'
-        disabled={originalArgs?.vkUserId === vkUserId && isDownloading}
-        loading={originalArgs?.vkUserId === vkUserId && isDownloading}
-        onClick={() => onClickHandler({ vkUserId, fullName })}
-    >
-        Скачать
-    </Button>
-);
