@@ -1,25 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import { useDispatch } from 'react-redux';
 
-import { setError } from '@/api/state';
+import { setError, setUserToken } from '@/api/state';
 
 import vkHostingConfig from '../../vk-hosting-config.json';
 
-export const useVkToken = (): string | undefined => {
-    const [accessToken, setAccessToken] = useState<string>();
+export const useVkToken = (): void => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        // TODO ME-41476 - refactor bridge calls to api layer
         bridge
             .send('VKWebAppGetAuthToken', {
                 app_id: vkHostingConfig.app_id,
-                scope: 'messages',
+                scope: 'messages,docs',
             })
             .then((data) => {
-                if (data.access_token) {
-                    setAccessToken(data.access_token);
-                }
+                dispatch(setUserToken({ token: data.access_token }));
             })
             .catch((error) => {
                 // eslint-disable-next-line no-console
@@ -35,7 +33,6 @@ export const useVkToken = (): string | undefined => {
                     );
                 }
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    return accessToken;
 };

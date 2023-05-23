@@ -23,7 +23,7 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({
 
     return (
         <CollectionHistoryWrapper>
-            <List>
+            <List data-automation-id='home-page-historyList'>
                 {!isLoading && collections ? (
                     collections.map(({ id, name, status, consolidatedData }) => (
                         <CollectionCell

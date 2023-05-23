@@ -1,18 +1,18 @@
 import { useState } from 'react';
 
-import type { FriendsType, ItemsType } from '@/app/types';
+import type { ChatType, TesteeType } from '@/app/types';
 
-type IsMemberActive = (row: FriendsType) => boolean;
+type IsMemberActive = (row: TesteeType) => boolean;
 
-type IsChatActive = (row: ItemsType) => boolean;
+type IsChatActive = (row: ChatType) => boolean;
 
-type SelectedMembersType = FriendsType[];
+type SelectedMembersType = TesteeType[];
 
-type SelectedChatsType = ItemsType[];
+type SelectedChatsType = ChatType[];
 
-type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, row: FriendsType) => void;
+type HandleSelectMember = (e: React.ChangeEvent<HTMLInputElement>, row: TesteeType) => void;
 
-type HandleSelectChat = (e: React.ChangeEvent<HTMLInputElement>, row: ItemsType) => void;
+type HandleSelectChat = (e: React.ChangeEvent<HTMLInputElement>, row: ChatType) => void;
 
 export interface UseMembersSelectionResult {
     isMemberActive: IsMemberActive;

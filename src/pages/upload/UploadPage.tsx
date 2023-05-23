@@ -17,7 +17,11 @@ import { UploadedFiles } from './components/UploadedFiles';
 import { UploadPageActions } from './components/UploadPageActions';
 import { TaskDescription } from './components/TaskDescription';
 
-export const UploadPage: FC = () => {
+interface ListMembersPageProps {
+    id?: string;
+}
+
+export const UploadPage: FC<ListMembersPageProps> = () => {
     const { uploadId } = useParams();
 
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
@@ -49,10 +53,8 @@ export const UploadPage: FC = () => {
     const clearState = () => setFiles([]);
 
     const sendFiles = () => {
-        const filesToSend = new FormData();
-        files.forEach((file) => filesToSend.append('files', file));
         setLoading(true);
-        uploadFiles({ taskId, subTaskId, files: filesToSend }).then(() => {
+        uploadFiles({ taskId, subTaskId, files }).then(() => {
             setUploading(true);
         });
     };
@@ -113,10 +115,14 @@ export const UploadPage: FC = () => {
     }
 
     return (
-        <Panel id={PANEL_UPLOAD_ID}>
+        <Panel
+            id={PANEL_UPLOAD_ID}
+            data-automation-id='upload-page-panel'
+        >
             <PanelHeader>
                 {data ? (
                     <PanelHeaderContent
+                        data-automation-id='upload-page-headerContent'
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
                         Сбор документов
@@ -140,7 +146,10 @@ export const UploadPage: FC = () => {
                 />
 
                 {!!files.length && (
-                    <Group separator='hide'>
+                    <Group
+                        separator='hide'
+                        data-automation-id='upload-page-filesGroup'
+                    >
                         <UploadedFiles
                             files={files}
                             removeFile={removeFile}
@@ -160,6 +169,7 @@ export const UploadPage: FC = () => {
 
                 {snackbarText && (
                     <SnackBarMessage
+                        data-automation-id='upload-page-snackBarMessage'
                         snackbarText={snackbarText}
                         setSnackbarText={setSnackbarText}
                     />

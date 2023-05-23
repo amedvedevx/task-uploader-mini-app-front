@@ -5,13 +5,12 @@ import '@vkontakte/vkui/dist/vkui.css';
 import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
-import { useDispatch } from 'react-redux';
 
-import { useVkHash } from '@/api';
+import { useGenerateBearer } from '@/api';
 import { useVkToken } from '@/hooks/useVkToken';
-import { setUserInfo } from '@/api/state';
-import { useVkUserId } from '@/hooks';
+import { useBridgePlatform, useVkUserId } from '@/hooks';
 import { PreloadScreen } from '@/components';
+import { checkIsMobilePlatform } from '@/lib';
 
 import {
     PAGE_COLLECTION_ID,
@@ -66,12 +65,12 @@ export const AppPages: FC = () => {
     const location = useLocation();
     const router = useRouter();
     const isFirst = useFirstPageCheck();
+    const platform = useBridgePlatform();
+    const isMobilePlatform = checkIsMobilePlatform(platform);
 
-    const dispatch = useDispatch();
-
-    const bearer = useVkHash();
-    const token = useVkToken();
-    const userId = useVkUserId(token);
+    useVkToken();
+    useVkUserId();
+    const bearer = useGenerateBearer();
 
     useEffect(() => {
         const changeFragment = ({
@@ -99,13 +98,10 @@ export const AppPages: FC = () => {
     }, []);
 
     useEffect(() => {
-        if (token && userId) {
-            dispatch(setUserInfo({ token, userId }));
+        if (isMobilePlatform) {
+            bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
         }
-
-        bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isFirst, token, userId]);
+    }, [isFirst, isMobilePlatform]);
 
     return (
         <>

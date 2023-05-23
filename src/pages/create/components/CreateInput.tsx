@@ -56,6 +56,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                                 value={value}
                                 status={errors.collectionName && 'error'}
                                 maxLength={maxLength}
+                                data-automation-id='create-page-titleInput'
                                 onChange={onChange}
                                 onBlur={onBlur}
                             />

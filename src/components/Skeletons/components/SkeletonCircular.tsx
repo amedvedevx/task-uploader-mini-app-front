@@ -20,6 +20,6 @@ export const SkeletonCircular: FC<SkeletonCircularProps> = ({ radius }) => (
 );
 const SkeletonEl = styled(SkeletonAnimation)<SkeletonElProps>`
     height: ${({ $height }) => `${$height}px`};
-    width: ${({ $width }) => `${$width + 4 }px`};
+    width: ${({ $width }) => `${$width + 4}px`};
     border-radius: 50%;
 `;

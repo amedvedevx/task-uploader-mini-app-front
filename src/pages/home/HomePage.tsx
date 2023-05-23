@@ -22,14 +22,21 @@ import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { CollectionHistory } from './components/CollectionHistory';
 
-export const HomePage: FC = () => {
+interface HomePageProps {
+    id?: string;
+}
+
+export const HomePage: FC<HomePageProps> = () => {
     const router = useRouter();
 
     const { data, isLoading } = useGetTasksQuery({});
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     return (
-        <Panel id={PANEL_COLLECTION_HOME}>
+        <Panel
+            id={PANEL_COLLECTION_HOME}
+            data-automation-id='home-page-panel'
+        >
             <CollectionsContainer>
                 <PlaceholderWidth
                     icon={
@@ -49,12 +56,14 @@ export const HomePage: FC = () => {
                             Создать
                         </Button>
                     }
+                    data-automation-id='home-page-placeholder'
                 />
 
                 {data && data?.tasks?.length > 0 && (
                     <GroupWide
                         header={<Header mode='primary'>История</Header>}
                         mode='plain'
+                        data-automation-id='home-page-history'
                     >
                         <Spacing size={32}>
                             <Separator />

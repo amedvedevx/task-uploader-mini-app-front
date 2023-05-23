@@ -24,7 +24,11 @@ import { useMembersSelection } from '../hooks';
 
 const maxTesteeItems = 205;
 
-export const AddMembersPage: FC = () => {
+interface AddMembersPageProps {
+    id?: string;
+}
+
+export const AddMembersPage: FC<AddMembersPageProps> = () => {
     const { collectionId } = useParams();
     const dispatch = useDispatch();
     const router = useRouter();

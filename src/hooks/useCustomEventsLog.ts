@@ -9,6 +9,7 @@ export const useCustomEventsLog = (): UseCustomEventsLogResult => {
     const sendActionToCustomEvent = (actionType: string, actionText: string) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+        // TODO ME-41476 - refactor bridge calls to api layer
         bridge.send('VKWebAppSendCustomEvent', {
             type: `Click to diary action: ${actionType}`,
             event: actionText,
