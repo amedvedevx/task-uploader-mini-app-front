@@ -86,8 +86,9 @@ const testeesSlice = apiSlice
                 GetAllowedForRemindIdsResponce,
                 GetAllowedForRemindIdsProps
             >({
-                query: ({ taskId }) => ({
+                query: ({ taskId, userIds }) => ({
                     url: `/task-result/get-users-for-notification/${taskId}`,
+                    params: { userIds },
                 }),
                 providesTags: (result, error, arg) => [
                     { type: 'AllowedRemindIds', id: arg.taskId },
