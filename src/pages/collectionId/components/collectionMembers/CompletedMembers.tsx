@@ -98,6 +98,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                             originalArgs={originalArgs}
                                             vkUserId={vkUserId}
                                             isDownloading={isDownloading}
+                                            counter={subTaskResults[0].content.length}
                                             onClickHandler={onClickHandler}
                                         />
                                     )
