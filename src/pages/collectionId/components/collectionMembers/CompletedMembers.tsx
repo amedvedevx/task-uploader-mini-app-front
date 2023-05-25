@@ -108,7 +108,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                             </SimpleCell>
                         </AccordionSummaryWidth>
 
-                        <List>
+                        <ListCustomPadding>
                             {subTaskResults[0].content.map(({ title, docId, url }) => (
                                 <SimpleCell
                                     key={title}
@@ -141,7 +141,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                     {title}
                                 </SimpleCell>
                             ))}
-                        </List>
+                        </ListCustomPadding>
                     </Accordion>
                 ),
             )}
@@ -153,6 +153,11 @@ const AccordionSummaryWidth = styled(AccordionSummary)`
     .vkuiSimpleCell__children {
         width: 100%;
     }
+`;
+
+const ListCustomPadding = styled(List)`
+    padding-left: 16px;
+    padding-right: 50px;
 `;
 
 type OnClickArgs = {
