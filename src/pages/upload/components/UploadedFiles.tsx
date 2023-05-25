@@ -2,20 +2,14 @@ import { Header, List, Cell, Avatar, calcInitialsAvatarColor } from '@vkontakte/
 import type { FC } from 'react';
 import styled from 'styled-components';
 
-import {
-    inclinationWord,
-    getFileExtension,
-    formatFileDate,
-    parseFileSize,
-    getExtenstionInitials,
-} from '@/lib';
+import { inclinationWord, getFileExtension, parseFileSize, getExtenstionInitials } from '@/lib';
+import type { TaskDetailResultContent } from '@/app/types';
 
 interface UploadedFilesProps {
-    files: File[];
-    removeFile: (lastModified: number) => void;
+    files: TaskDetailResultContent[];
 }
 
-export const UploadedFiles: FC<UploadedFilesProps> = ({ files, removeFile }) => (
+export const UploadedFiles: FC<UploadedFilesProps> = ({ files }) => (
     <>
         <Header mode='secondary'>
             {`Загружено ${files.length} 
@@ -23,23 +17,18 @@ export const UploadedFiles: FC<UploadedFilesProps> = ({ files, removeFile }) => 
         </Header>
 
         <List data-automation-id='upload-page-filesList'>
-            {files.map(({ name, lastModified, size }) => (
+            {files.map(({ title, docId, size }) => (
                 <Cell
-                    key={lastModified}
-                    data-automation-id='upload-page-cellFile'
-                    mode='removable'
-                    subtitle={`${getFileExtension(name)} - ${formatFileDate(
-                        lastModified,
-                    )} - ${parseFileSize(size)}`}
+                    key={docId}
+                    subtitle={`${getFileExtension(title)} - ${parseFileSize(size)}`}
                     before={
                         <AvatarSquared
-                            initials={getExtenstionInitials(name)}
+                            initials={getExtenstionInitials(title)}
                             gradientColor={calcInitialsAvatarColor(size)}
                         />
                     }
-                    onRemove={() => removeFile(lastModified)}
                 >
-                    {name}
+                    {title}
                 </Cell>
             ))}
         </List>
