@@ -1,11 +1,16 @@
-import { Panel, Group, Separator, Spacing, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
+import { Panel, Group, Separator, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
-import { useGetTaskIdQuery, useGetSubTaskResultStatusQuery, useUploadFilesMutation } from '@/api';
+import {
+    useGetTaskIdQuery,
+    useGetSubTaskResultStatusQuery,
+    useUploadFilesMutation,
+    useGetTaskResultsQuery,
+} from '@/api';
 import type { SnackBarText } from '@/app/types';
 import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
@@ -13,9 +18,10 @@ import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { errorParser } from '@/lib/utils';
 
 import { DropZone } from './components/DropZone';
-import { UploadedFiles } from './components/UploadedFiles';
+import { FilesReadyToUpload } from './components/FilesReadyToUpload';
 import { UploadPageActions } from './components/UploadPageActions';
 import { TaskDescription } from './components/TaskDescription';
+import { UploadedFiles } from './components/UploadedFiles';
 
 interface ListMembersPageProps {
     id?: string;
@@ -25,6 +31,9 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const { uploadId } = useParams();
 
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
+    const { data: taskResults } = useGetTaskResultsQuery({
+        taskId: uploadId,
+    });
     const taskId = uploadId;
     const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
@@ -42,6 +51,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     );
 
     const [files, setFiles] = useState<File[]>([]);
+    const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
 
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
@@ -137,7 +147,16 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                 description={data?.description}
             />
 
+            {uploadedFiles && <UploadedFiles files={uploadedFiles} />}
+
             <UploadPageWrapper>
+                {!!files.length && (
+                    <FilesReadyToUpload
+                        files={files}
+                        removeFile={removeFile}
+                    />
+                )}
+
                 <DropZone
                     isTaskComplete={isTaskComplete}
                     isLoading={isLoading}
@@ -150,13 +169,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         separator='hide'
                         data-automation-id='upload-page-filesGroup'
                     >
-                        <UploadedFiles
-                            files={files}
-                            removeFile={removeFile}
-                        />
-
-                        <Spacing size={24} />
-
                         <Separator wide />
 
                         <UploadPageActions

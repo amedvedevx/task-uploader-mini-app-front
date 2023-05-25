@@ -2,7 +2,7 @@ export interface GetTaskResultsResponce {
     taskResults: TaskResults[];
 }
 
-type TaskDetailResultContent = {
+export type TaskDetailResultContent = {
     docId: number;
     size: number;
     title: string;

@@ -10,7 +10,7 @@ import { apiSlice } from './apiSlice';
 import { BridgeDocsSave, BridgeDocsUploadServer, BridgeDownload } from './bridge';
 import type { RootState } from '../store';
 
-const filesSlice = apiSlice.injectEndpoints({
+const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).injectEndpoints({
     endpoints: (builder) => ({
         downloadFiles: builder.query<void, DownloadFilesProps>({
             queryFn: async (
@@ -137,9 +137,9 @@ const filesSlice = apiSlice.injectEndpoints({
                         data: preparedFiles,
                     },
                 });
-
                 return saveFileLink;
             },
+            invalidatesTags: (result, error, arg) => [{ type: 'TaskResult', id: arg.taskId }],
         }),
     }),
 });
