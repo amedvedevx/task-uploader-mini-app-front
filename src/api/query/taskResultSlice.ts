@@ -15,7 +15,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] 
             query: ({ taskId }) => ({
                 url: `/task-result/${taskId}`,
             }),
-            providesTags: () => ['TaskResult'],
+            providesTags: ['TaskResult'],
             transformResponse: (response: { taskResults: TaskResults[] }) => ({
                 taskResults: response.taskResults,
             }),
@@ -25,7 +25,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] 
                 url: `/task-result/${taskId}/${subTaskId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: () => ['TaskResult'],
+            invalidatesTags: ['TaskResult'],
         }),
         getSubTaskResultStatus: builder.query<
             GetSubTaskResultStatusResponce,

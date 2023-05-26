@@ -91,7 +91,7 @@ const testeesSlice = apiSlice
                     url: `/task-result/get-users-for-notification/${taskId}`,
                     params: { userIds },
                 }),
-                providesTags: () => ['AllowedRemindIds'],
+                providesTags: ['AllowedRemindIds'],
             }),
 
             updateAllowedForRemindIds: builder.mutation<void, UpdateAllowedForRemindIdsProps>({
@@ -100,7 +100,7 @@ const testeesSlice = apiSlice
                     params: { userIds },
                     method: 'POST',
                 }),
-                invalidatesTags: () => ['AllowedRemindIds'],
+                invalidatesTags: ['AllowedRemindIds'],
             }),
 
             sendNotification: builder.mutation<BridgeMessagesSendResponce, SendNotificationProps>({
@@ -123,7 +123,7 @@ const testeesSlice = apiSlice
 
                     return { data: result };
                 },
-                invalidatesTags: () => ['AllowedRemindIds'],
+                invalidatesTags: ['AllowedRemindIds'],
             }),
         }),
     });

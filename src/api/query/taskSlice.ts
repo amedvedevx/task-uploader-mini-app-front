@@ -35,7 +35,7 @@ const taskResultSlice = apiSlice
                 query: ({ taskId }) => ({
                     url: `/task/${taskId}`,
                 }),
-                providesTags: () => ['Task'],
+                providesTags: ['Task'],
             }),
             apointTask: builder.mutation<void, AppointTaskProps>({
                 query: ({ payload }) => ({
@@ -43,7 +43,7 @@ const taskResultSlice = apiSlice
                     method: 'PUT',
                     body: { ...payload },
                 }),
-                invalidatesTags: () => ['Task', 'TaskResult', 'AllowedRemindIds'],
+                invalidatesTags: ['Task', 'TaskResult', 'AllowedRemindIds'],
             }),
             createTask: builder.mutation<{ taskId: string }, CreateTaskProps>({
                 query: (payload) => ({
@@ -51,7 +51,7 @@ const taskResultSlice = apiSlice
                     method: 'POST',
                     body: { ...payload },
                 }),
-                invalidatesTags: () => ['Task'],
+                invalidatesTags: ['Task'],
             }),
             createSubTask: builder.mutation<void, CreateSubTaskProps>({
                 query: ({ taskId, payload }) => ({
@@ -59,21 +59,21 @@ const taskResultSlice = apiSlice
                     method: 'POST',
                     body: { ...payload },
                 }),
-                invalidatesTags: () => ['Task'],
+                invalidatesTags: ['Task'],
             }),
             deleteTask: builder.mutation<void, DeleteTaskProps>({
                 query: ({ taskId }) => ({
                     url: `/task/${taskId}`,
                     method: 'DELETE',
                 }),
-                invalidatesTags: () => ['Task'],
+                invalidatesTags: ['Task'],
             }),
             deleteSubTask: builder.mutation<void, DeleteSubTaskProps>({
                 query: ({ taskId, subTaskId }) => ({
                     url: `/task/${taskId}/${subTaskId}`,
                     method: 'DELETE',
                 }),
-                invalidatesTags: () => ['Task'],
+                invalidatesTags: ['Task'],
             }),
 
             updateTask: builder.mutation<void, UpdateTaskProps>({
@@ -82,7 +82,7 @@ const taskResultSlice = apiSlice
                     method: 'PATCH',
                     body: { ...payload },
                 }),
-                invalidatesTags: () => ['Task'],
+                invalidatesTags: ['Task'],
             }),
 
             createWideTask: builder.mutation<string, CreateWideTask>({
@@ -112,7 +112,7 @@ const taskResultSlice = apiSlice
 
                     return { data: taskId };
                 },
-                invalidatesTags: () => ['Task', 'AllowedRemindIds', 'TaskResult'],
+                invalidatesTags: ['Task', 'AllowedRemindIds', 'TaskResult'],
             }),
         }),
     });

@@ -139,7 +139,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 });
                 return saveFileLink;
             },
-            invalidatesTags: () => ['TaskResult'],
+            invalidatesTags: ['TaskResult'],
         }),
     }),
 });
