@@ -166,16 +166,16 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
 
+    useEffect(() => {
+        refetchResults();
+        refetchTask();
+    }, []);
+
     if (error?.status) {
         const errorMessage = errorParser(error?.status);
 
         throw Error(errorMessage);
     }
-
-    useEffect(() => {
-        refetchResults();
-        refetchTask();
-    }, []);
 
     return (
         <Panel
