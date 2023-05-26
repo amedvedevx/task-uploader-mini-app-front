@@ -91,6 +91,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
+
     const fixedLayoutRef = createRef<HTMLDivElement>();
 
     const popoutCloseTask = (
@@ -169,7 +170,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     useEffect(() => {
         refetchResults();
         refetchTask();
-    }, []);
+    }, [selectedTab]);
 
     if (error?.status) {
         const errorMessage = errorParser(error?.status);
