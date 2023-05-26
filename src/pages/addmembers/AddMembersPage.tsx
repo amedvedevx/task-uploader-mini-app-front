@@ -144,3 +144,5 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
         </Panel>
     );
 };
+
+export default AddMembersPage;

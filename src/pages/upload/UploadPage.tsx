@@ -191,6 +191,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     );
 };
 
+export default UploadPage;
+
 const UploadPageWrapper = styled.div`
     display: flex;
     flex-direction: column;

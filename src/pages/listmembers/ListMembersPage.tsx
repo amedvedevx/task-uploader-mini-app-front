@@ -154,3 +154,5 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         </Panel>
     );
 };
+
+export default ListMembersPage;

@@ -88,6 +88,8 @@ export const HomePage: FC<HomePageProps> = () => {
     );
 };
 
+export default HomePage
+
 const CollectionsContainer = styled(Div)`
     display: flex;
     flex-direction: column;

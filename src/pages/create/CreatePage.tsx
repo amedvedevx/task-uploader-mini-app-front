@@ -151,6 +151,8 @@ export const CreatePage: FC<CreatePageProps> = () => {
     );
 };
 
+export default CreatePage;
+
 const CreateContainer = styled(Div)`
     display: flex;
     flex-direction: column;
