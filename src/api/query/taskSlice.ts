@@ -35,7 +35,7 @@ const taskResultSlice = apiSlice
                 query: ({ taskId }) => ({
                     url: `/task/${taskId}`,
                 }),
-                providesTags: (result) => [{ type: 'Task', id: result?.id }],
+                providesTags: () => ['Task'],
             }),
             apointTask: builder.mutation<void, AppointTaskProps>({
                 query: ({ payload }) => ({
@@ -43,11 +43,7 @@ const taskResultSlice = apiSlice
                     method: 'PUT',
                     body: { ...payload },
                 }),
-                invalidatesTags: (result, error, arg) => [
-                    { type: 'Task', id: arg.payload.taskId },
-                    { type: 'TaskResult', id: arg.payload.taskId },
-                    { type: 'AllowedRemindIds', id: arg.payload.taskId },
-                ],
+                invalidatesTags: () => ['Task', 'TaskResult', 'AllowedRemindIds'],
             }),
             createTask: builder.mutation<{ taskId: string }, CreateTaskProps>({
                 query: (payload) => ({
@@ -55,7 +51,7 @@ const taskResultSlice = apiSlice
                     method: 'POST',
                     body: { ...payload },
                 }),
-                invalidatesTags: () => [{ type: 'Task' }],
+                invalidatesTags: () => ['Task'],
             }),
             createSubTask: builder.mutation<void, CreateSubTaskProps>({
                 query: ({ taskId, payload }) => ({
@@ -63,21 +59,21 @@ const taskResultSlice = apiSlice
                     method: 'POST',
                     body: { ...payload },
                 }),
-                invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
+                invalidatesTags: () => ['Task'],
             }),
             deleteTask: builder.mutation<void, DeleteTaskProps>({
                 query: ({ taskId }) => ({
                     url: `/task/${taskId}`,
                     method: 'DELETE',
                 }),
-                invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
+                invalidatesTags: () => ['Task'],
             }),
             deleteSubTask: builder.mutation<void, DeleteSubTaskProps>({
                 query: ({ taskId, subTaskId }) => ({
                     url: `/task/${taskId}/${subTaskId}`,
                     method: 'DELETE',
                 }),
-                invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
+                invalidatesTags: () => ['Task'],
             }),
 
             updateTask: builder.mutation<void, UpdateTaskProps>({
@@ -86,7 +82,7 @@ const taskResultSlice = apiSlice
                     method: 'PATCH',
                     body: { ...payload },
                 }),
-                invalidatesTags: (result, error, arg) => [{ type: 'Task', id: arg.taskId }],
+                invalidatesTags: () => ['Task'],
             }),
 
             createWideTask: builder.mutation<string, CreateWideTask>({
@@ -116,7 +112,7 @@ const taskResultSlice = apiSlice
 
                     return { data: taskId };
                 },
-                invalidatesTags: () => [{ type: 'Task' }],
+                invalidatesTags: () => ['Task', 'AllowedRemindIds', 'TaskResult'],
             }),
         }),
     });
