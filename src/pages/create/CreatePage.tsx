@@ -54,8 +54,8 @@ export const CreatePage: FC<CreatePageProps> = () => {
             return;
         }
         const payload = {
-            name: data.collectionName,
-            description: data.collectionDescription,
+            name: data.collectionName.trim(),
+            description: data.collectionDescription.trim(),
             unlimited: true,
             deadLine: deadLineDate,
         };
@@ -143,7 +143,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
                         text: 'Готово',
                         onClick: handleSubmit(onSubmit),
                         loading: isTaskCreating || isSubTaskCreating,
-                        disabled: watch('collectionName').length === 0,
+                        disabled: watch('collectionName').trim().length === 0,
                     },
                 ]}
             />

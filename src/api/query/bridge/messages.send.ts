@@ -9,7 +9,23 @@ interface BridgeMessagesSendArgs {
     taskId: string;
 }
 
-type BridgeMessagesSendResponce = 'success' | 'error';
+type ErrorResponce = {
+    response: [
+        {
+            peer_id: number;
+            message_id: number;
+            error: { code: number; description: string };
+        },
+        { peer_id: number; message_id: number; conversation_message_id: number },
+    ];
+};
+
+type Error = {
+    error: string;
+    forbiddenUsers: number[];
+};
+
+export type BridgeMessagesSendResponce = 'success' | Error;
 
 export const BridgeMessagesSend = async ({
     token,
@@ -39,9 +55,15 @@ export const BridgeMessagesSend = async ({
                 v: '5.131',
             },
         })
-        .then((res) => {
+        .then((res: ErrorResponce) => {
             if (res.response[0].error) {
-                return 'error';
+                const forbiddenUsers = res.response.slice(1).map((user) => user.peer_id);
+                const errorData = {
+                    error: res.response[0].error.description,
+                    forbiddenUsers,
+                };
+
+                return errorData;
             }
 
             return 'success';
