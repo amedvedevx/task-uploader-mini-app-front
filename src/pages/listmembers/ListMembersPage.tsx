@@ -8,7 +8,7 @@ import {
     Search,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { createRef, useLayoutEffect, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
@@ -25,6 +25,7 @@ import { useSearch } from '@/hooks';
 import type { TaskType, TesteeType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 import { normalizeMembers } from '@/lib';
+import { ListContainer } from '@/components/ListContainer';
 
 import { MembersList } from '../addmembers/components';
 
@@ -55,6 +56,8 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
     const [sendNotification] = useSendNotificationMutation();
 
     const [localMembers, setLocalMembers] = useState<TesteeType[]>([]);
+    const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
+    const fixedLayoutRef = createRef<HTMLDivElement>();
 
     useEffect(() => {
         if (isLoading) return;
@@ -62,6 +65,10 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         const allMembers = selectedMembers.concat(chatMembers);
         setLocalMembers(normalizeMembers(allMembers));
     }, [isLoading, selectedMembers, chatMembers]);
+
+    useLayoutEffect(() => {
+        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
+    }, [fixedLayoutRef]);
 
     const deleteMember = (id: number) => {
         setLocalMembers((prev) => prev.filter((el) => el.id !== id));
@@ -86,6 +93,10 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };
 
+    const goBack = () => {
+        router.popPage();
+    };
+
     const vkUserIds = localMembers.map((el) => el.id);
 
     useEffect(() => {
@@ -99,44 +110,44 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vkUserIds]);
 
-    const goBack = () => {
-        router.popPage();
-    };
-
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
-            <FixedLayout
-                filled
-                vertical='top'
-            >
-                <PanelHeader
-                    separator={false}
-                    before={<PanelHeaderBack onClick={goBack} />}
+            <div ref={fixedLayoutRef}>
+                <FixedLayout
+                    filled
+                    vertical='top'
                 >
-                    {currentTask ? (
-                        <PanelHeaderContent status={currentTask.name}>
-                            Список участников
-                        </PanelHeaderContent>
-                    ) : (
-                        <PanelHeaderSkeleton />
-                    )}
-                </PanelHeader>
+                    <PanelHeader
+                        separator={false}
+                        before={<PanelHeaderBack onClick={goBack} />}
+                    >
+                        {currentTask ? (
+                            <PanelHeaderContent status={currentTask.name}>
+                                Список участников
+                            </PanelHeaderContent>
+                        ) : (
+                            <PanelHeaderSkeleton />
+                        )}
+                    </PanelHeader>
 
-                <Search
-                    after=''
-                    value={search}
-                    onChange={changeSearch}
-                />
-            </FixedLayout>
+                    <Search
+                        after=''
+                        value={search}
+                        onChange={changeSearch}
+                    />
+                </FixedLayout>
+            </div>
 
-            {filteredData.length > 0 ? (
-                <MembersList
-                    selectedMembers={filteredData}
-                    deleteMember={deleteMember}
-                />
-            ) : (
-                <MembersNotFound />
-            )}
+            <ListContainer $fixedLayoutHeight={`${fixLayoutHeight}`}>
+                {filteredData.length > 0 ? (
+                    <MembersList
+                        selectedMembers={filteredData}
+                        deleteMember={deleteMember}
+                    />
+                ) : (
+                    <MembersNotFound />
+                )}
+            </ListContainer>
 
             <FooterWithButton
                 options={[

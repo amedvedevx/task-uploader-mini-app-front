@@ -8,7 +8,7 @@ import {
     Search,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import React, { createRef, useLayoutEffect, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -18,6 +18,7 @@ import { useGetTesteesQuery, useGetTaskIdQuery, useGetTaskResultsQuery } from '@
 import { setSelectedChats, setSelectedMembers } from '@/api/state';
 import type { GetTesteesResponse, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
+import { ListContainer } from '@/components/ListContainer';
 
 import { MembersList } from './components';
 import { useMembersSelection } from '../hooks';
@@ -40,6 +41,9 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
 
     const [search, setSearch] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+
+    const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
+    const fixedLayoutRef = createRef<HTMLDivElement>();
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
 
@@ -64,6 +68,10 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
         }
     }, [isLoading, testees]);
 
+    useLayoutEffect(() => {
+        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
+    }, [fixedLayoutRef]);
+
     const goBack = () => {
         router.popPage();
     };
@@ -84,48 +92,52 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
 
     return (
         <Panel id={PANEL_ADD_MEMBERS}>
-            <FixedLayout
-                filled
-                vertical='top'
-            >
-                <PanelHeader
-                    separator={false}
-                    before={<PanelHeaderBack onClick={goBack} />}
+            <div ref={fixedLayoutRef}>
+                <FixedLayout
+                    filled
+                    vertical='top'
                 >
-                    {currentTask ? (
-                        <PanelHeaderContent status={currentTask.name}>
-                            Добавьте участников
-                        </PanelHeaderContent>
-                    ) : (
-                        <PanelHeaderSkeleton />
-                    )}
-                </PanelHeader>
+                    <PanelHeader
+                        separator={false}
+                        before={<PanelHeaderBack onClick={goBack} />}
+                    >
+                        {currentTask ? (
+                            <PanelHeaderContent status={currentTask.name}>
+                                Добавьте участников
+                            </PanelHeaderContent>
+                        ) : (
+                            <PanelHeaderSkeleton />
+                        )}
+                    </PanelHeader>
 
-                <Search
-                    after=''
-                    value={search}
-                    onChange={changeSeacrh}
-                />
-            </FixedLayout>
+                    <Search
+                        after=''
+                        value={search}
+                        onChange={changeSeacrh}
+                    />
+                </FixedLayout>
+            </div>
 
-            <InfiniteScroll
-                hasMore
-                dataLength={itemLength}
-                next={() => setConversationsCount(conversationsCount + 50)}
-                scrollThreshold={0.7}
-                loader={false}
-            >
-                <>
-                    {!isLoading && testees.profiles.length > 0 ? (
-                        <MembersList
-                            selection={selection}
-                            searchMembers={testees}
-                        />
-                    ) : (
-                        <MembersNotFound />
-                    )}
-                </>
-            </InfiniteScroll>
+            <ListContainer $fixedLayoutHeight={`${fixLayoutHeight}`}>
+                <InfiniteScroll
+                    hasMore
+                    dataLength={itemLength}
+                    next={() => setConversationsCount(conversationsCount + 50)}
+                    scrollThreshold={0.7}
+                    loader={false}
+                >
+                    <>
+                        {!isLoading && testees.profiles.length > 0 ? (
+                            <MembersList
+                                selection={selection}
+                                searchMembers={testees}
+                            />
+                        ) : (
+                            <MembersNotFound />
+                        )}
+                    </>
+                </InfiniteScroll>
+            </ListContainer>
 
             <FooterWithButton
                 options={[
