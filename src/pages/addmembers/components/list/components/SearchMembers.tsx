@@ -25,15 +25,10 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                         collection?.items?.map((chat) => (
                             <Members
                                 key={chat.peer.id}
+                                mode='selectable'
+                                checked={Boolean(selection?.isChatActive(chat))}
                                 before={
                                     <>
-                                        <Checkbox
-                                            checked={Boolean(selection?.isChatActive(chat))}
-                                            onChange={(e) => {
-                                                selection?.handleSelectChat(e, chat);
-                                            }}
-                                        />
-
                                         <Avatar
                                             size={40}
                                             src={
@@ -47,6 +42,9 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                                     </>
                                 }
                                 subtitle={`${chat.chat_settings.members_count} участников`}
+                                onChange={(e) => {
+                                    selection?.handleSelectChat(e, chat);
+                                }}
                                 onClick={(e) => {
                                     selection?.handleSelectChat(e, chat);
                                 }}

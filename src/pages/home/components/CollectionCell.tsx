@@ -4,7 +4,7 @@ import {
     ActionSheetItem,
     IconButton,
     Platform,
-    SimpleCell,
+    SimpleCell as SimpleCellRoot,
     Text,
     usePlatform,
 } from '@vkontakte/vkui';
@@ -138,6 +138,12 @@ export const CollectionCell: FC<CollectionCellProps> = ({
         </SimpleCell>
     );
 };
+
+const SimpleCell = styled(SimpleCellRoot)`
+    .vkuiSimpleCell__main {
+        width: 265px;
+    }
+`;
 
 const GreenText = styled(Text)`
     color: var(--vkui--color_text_positive);

@@ -108,7 +108,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                             </SimpleCell>
                         </AccordionSummaryWidth>
 
-                        <ListCustomPadding>
+                        <ListCustomPadding $isMobilePlatform={isMobilePlatform}>
                             {subTaskResults[0].content.map(({ title, docId, url }) => (
                                 <SimpleCell
                                     key={title}
@@ -155,9 +155,9 @@ const AccordionSummaryWidth = styled(AccordionSummary)`
     }
 `;
 
-const ListCustomPadding = styled(List)`
-    padding-left: 16px;
-    padding-right: 50px;
+const ListCustomPadding = styled(List)<{ $isMobilePlatform: boolean }>`
+    padding-left: ${({ $isMobilePlatform }) => `${$isMobilePlatform ? 16 : 12}px`};
+    padding-right: ${({ $isMobilePlatform }) => `${$isMobilePlatform ? 50 : 46}px`};
 `;
 
 type OnClickArgs = {
