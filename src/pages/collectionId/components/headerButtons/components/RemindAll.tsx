@@ -75,7 +75,11 @@ export const RemindAll: FC<RemindAllProps> = ({
             }
             data-automation-id='collectionId-page-remindAll-button'
             subtitle={apiMessageError ? apiMessageError.text : null}
-            disabled={!!apiMessageError || reminds?.allowedUserIds?.length > 50}
+            disabled={
+                !!apiMessageError ||
+                reminds?.allowedUserIds?.length > 50 ||
+                reminds?.allowedUserIds.length === 0
+            }
             onClick={() => setPopout(popoutRemindAll)}
         >
             Напомнить всем
