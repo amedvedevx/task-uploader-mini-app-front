@@ -10,6 +10,7 @@ import type {
 } from '@/app/types';
 import { UPLOAD_URL } from '@/app/config';
 
+import type { BridgeMessagesSendResponce } from './bridge';
 import {
     BridgeGetConversationsMembers,
     BridgeMessagesSend,
@@ -41,10 +42,10 @@ const testeesSlice = apiSlice
                         ),
                         profiles: testees.profiles
                             ? testees.profiles.filter(
-                                  (el) =>
-                                      !invitedMemberIds?.includes(el.id) &&
+                                (el) =>
+                                    !invitedMemberIds?.includes(el.id) &&
                                       el.id !== userInfo.userId,
-                              )
+                            )
                             : [],
                     };
 
@@ -106,7 +107,7 @@ const testeesSlice = apiSlice
                 ],
             }),
 
-            sendNotification: builder.mutation<string, SendNotificationProps>({
+            sendNotification: builder.mutation<BridgeMessagesSendResponce, SendNotificationProps>({
                 queryFn: async ({ whoToSend, taskName, ownerName, taskId }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
 
@@ -124,7 +125,7 @@ const testeesSlice = apiSlice
                         return { data: 'success' };
                     }
 
-                    return { data: 'error' };
+                    return { data: result };
                 },
                 invalidatesTags: (result, error, arg) => [
                     { type: 'AllowedRemindIds', id: arg.taskId },

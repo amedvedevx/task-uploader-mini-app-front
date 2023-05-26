@@ -50,7 +50,11 @@ export const RemindAll: FC<RemindAllProps> = ({
             setSnackbarText({ type: 'success', text: 'Напоминания отправлены' });
             updateReminds({ taskId: collectionId, userIds: allowedIds });
         } else {
-            setSnackbarText({ type: 'error', text: 'Произошла ошибка' });
+            setSnackbarText({
+                type: 'error',
+                text: 'Не удалось отправить уведомления некоторым пользлователям, данные обновлены',
+            });
+            updateReminds({ taskId: collectionId, userIds: result.forbiddenUsers });
         }
     };
     const popoutRemindAll = (
