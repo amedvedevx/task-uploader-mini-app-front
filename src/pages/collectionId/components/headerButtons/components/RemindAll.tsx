@@ -34,6 +34,7 @@ export const RemindAll: FC<RemindAllProps> = ({
         taskId: collectionId,
         userIds: notificationTesteeIds,
     });
+
     const [updateReminds] = useUpdateAllowedForRemindIdsMutation();
 
     const remindAllClick = async () => {
