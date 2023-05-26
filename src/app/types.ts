@@ -151,17 +151,14 @@ export interface CreateTaskProps {
     description: string;
     unlimited: boolean;
     deadLine: number;
+    subTasks: CreateSubTaskPayload[];
 }
 
-export interface CreateSubTaskProps {
-    taskId: string;
-    payload: {
-        rows: Array<{
-            name: string;
-            description: string;
-            subTaskType: string;
-        }>;
-    };
+export interface CreateSubTaskPayload {
+    name: string;
+    description: string;
+    sortOrder: number;
+    subTaskType: string;
 }
 
 export interface UpdateTaskProps {

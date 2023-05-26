@@ -1,8 +1,6 @@
 import type {
     AppointTaskProps,
-    CreateSubTaskProps,
     CreateTaskProps,
-    CreateWideTask,
     DeleteSubTaskProps,
     DeleteTaskProps,
     GetTaskIdProps,
@@ -37,7 +35,7 @@ const taskResultSlice = apiSlice
                 }),
                 providesTags: ['Task'],
             }),
-            apointTask: builder.mutation<void, AppointTaskProps>({
+            appointUsersToTask: builder.mutation<void, AppointTaskProps>({
                 query: ({ payload }) => ({
                     url: `/task/assign`,
                     method: 'PUT',
@@ -48,14 +46,6 @@ const taskResultSlice = apiSlice
             createTask: builder.mutation<{ taskId: string }, CreateTaskProps>({
                 query: (payload) => ({
                     url: `/task`,
-                    method: 'POST',
-                    body: { ...payload },
-                }),
-                invalidatesTags: ['Task'],
-            }),
-            createSubTask: builder.mutation<void, CreateSubTaskProps>({
-                query: ({ taskId, payload }) => ({
-                    url: `/task/sub-task/${taskId}`,
                     method: 'POST',
                     body: { ...payload },
                 }),
@@ -84,47 +74,15 @@ const taskResultSlice = apiSlice
                 }),
                 invalidatesTags: ['Task'],
             }),
-
-            createWideTask: builder.mutation<string, CreateWideTask>({
-                queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
-                    const createTaskResponse = await fetchWithBQ({
-                        url: `/task`,
-                        method: 'POST',
-                        body: { ...payload },
-                    });
-
-                    const { taskId } = createTaskResponse.data as { taskId: string };
-
-                    await fetchWithBQ({
-                        url: `/task/sub-task/${taskId}`,
-                        method: 'POST',
-                        body: {
-                            rows: [
-                                {
-                                    name: `Подзадание ${payload.name}`,
-                                    description: payload.description,
-                                    sortOrder: 1,
-                                    subTaskType: 'FILE',
-                                },
-                            ],
-                        },
-                    });
-
-                    return { data: taskId };
-                },
-                invalidatesTags: ['Task', 'AllowedRemindIds', 'TaskResult'],
-            }),
         }),
     });
 
 export const {
-    useApointTaskMutation,
-    useCreateSubTaskMutation,
+    useAppointUsersToTaskMutation,
     useCreateTaskMutation,
     useDeleteSubTaskMutation,
     useDeleteTaskMutation,
     useUpdateTaskMutation,
-    useCreateWideTaskMutation,
     useGetTaskIdQuery,
     useGetTasksQuery,
 } = taskResultSlice;

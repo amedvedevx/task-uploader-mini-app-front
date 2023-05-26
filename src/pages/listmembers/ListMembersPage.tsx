@@ -19,7 +19,7 @@ import {
     useSendNotificationMutation,
     useGetTaskResultsQuery,
     useGetTaskIdQuery,
-    useApointTaskMutation,
+    useAppointUsersToTaskMutation,
 } from '@/api';
 import { useSearch } from '@/hooks';
 import type { TaskType, TesteeType } from '@/app/types';
@@ -52,7 +52,7 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
     });
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
-    const [apointTask] = useApointTaskMutation();
+    const [appointUsersToTask] = useAppointUsersToTaskMutation();
     const [sendNotification] = useSendNotificationMutation();
 
     const [localMembers, setLocalMembers] = useState<TesteeType[]>([]);
@@ -82,7 +82,7 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
             vkUserIds: membersIds,
         };
 
-        await apointTask({ payload }).unwrap();
+        await appointUsersToTask({ payload }).unwrap();
 
         await sendNotification({
             taskId: collectionId,
