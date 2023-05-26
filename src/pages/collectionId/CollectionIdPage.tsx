@@ -301,5 +301,3 @@ const ListContainer = styled.div<{ $fixedLayoutHeight: string }>`
     flex-direction: column;
     flex-grow: 1;
 `;
-
-export default CollectionIdPage;

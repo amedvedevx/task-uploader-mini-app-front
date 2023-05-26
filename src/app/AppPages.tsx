@@ -26,17 +26,44 @@ import {
     VIEW_UPLOAD,
 } from './router';
 
-const HomePage = lazyWithRetries(() => import('@/pages/home/HomePage'));
+const HomePage = lazyWithRetries(
+    () => import('@/pages/home/HomePage').then((module) => ({ default: module.HomePage })),
+    'HomePage',
+);
 
-const UploadPage = lazyWithRetries(() => import('@/pages/upload/UploadPage'));
+const UploadPage = lazyWithRetries(
+    () => import('@/pages/upload/UploadPage').then((module) => ({ default: module.UploadPage })),
+    'UploadPage',
+);
 
-const CreatePage = lazyWithRetries(() => import('@/pages/create/CreatePage'));
+const CreatePage = lazyWithRetries(
+    () => import('@/pages/create/CreatePage').then((module) => ({ default: module.CreatePage })),
+    'CreatePage',
+);
 
-const AddMembersPage = lazyWithRetries(() => import('@/pages/addmembers/AddMembersPage'));
+const AddMembersPage = lazyWithRetries(
+    () =>
+        import('@/pages/addmembers/AddMembersPage').then((module) => ({
+            default: module.AddMembersPage,
+        })),
+    'AddMembersPage',
+);
 
-const ListMembersPage = lazyWithRetries(() => import('@/pages/listmembers/ListMembersPage'));
+const ListMembersPage = lazyWithRetries(
+    () =>
+        import('@/pages/listmembers/ListMembersPage').then((module) => ({
+            default: module.ListMembersPage,
+        })),
+    'ListMembersPage',
+);
 
-const CollectionIdPage = lazyWithRetries(() => import('@/pages/collectionId/CollectionIdPage'));
+const CollectionIdPage = lazyWithRetries(
+    () =>
+        import('@/pages/collectionId/CollectionIdPage').then((module) => ({
+            default: module.CollectionIdPage,
+        })),
+    'CollectionIdPage',
+);
 
 export const AppPages: FC = () => {
     const location = useLocation();
