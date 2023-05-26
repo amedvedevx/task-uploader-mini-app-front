@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Avatar, Button, Group, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Avatar, Button, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
 import type { GetAllowedForRemindIdsResponce, SnackBarText, TaskResults } from '@/app/types';
@@ -30,7 +30,8 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
     apiMessageError,
 }) => {
     const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
-    const [sendNotification, { isLoading: isSendingNotification }] = useSendNotificationMutation();
+    const [sendNotification, { isLoading: isSendingNotification, originalArgs }] =
+        useSendNotificationMutation();
 
     const { data: reminds } = useGetAllowedForRemindIdsQuery({ taskId: collectionId });
     const [updateReminds] = useUpdateAllowedForRemindIdsMutation();
@@ -77,6 +78,10 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
                                 reminds={reminds}
                                 vkUserId={vkUserId}
                                 isSendingNotification={isSendingNotification}
+                                loading={
+                                    isSendingNotification &&
+                                    originalArgs?.whoToSend?.includes(vkUserId)
+                                }
                                 fullName={fullName}
                                 apiMessageError={apiMessageError}
                                 onClickHandler={onClickHandler}
@@ -103,26 +108,26 @@ type OnClickArgs = {
 interface RemindButtonProps {
     reminds: GetAllowedForRemindIdsResponce | undefined;
     vkUserId: number;
-    isSendingNotification: boolean;
     onClickHandler: (arg: { vkUserId: number; fullName: string }) => void;
     fullName: string;
     apiMessageError: ErrorsState | undefined;
+    loading: boolean;
 }
 
 const RemindButton: FC<RemindButtonProps> = ({
     reminds,
     vkUserId,
-    isSendingNotification,
     onClickHandler,
     fullName,
     apiMessageError,
+    loading,
 }) => (
     <Button
         appearance='accent'
         size='s'
         mode='secondary'
         disabled={!reminds?.allowedUserIds.includes(vkUserId) || !!apiMessageError}
-        loading={isSendingNotification}
+        loading={loading}
         onClick={() => onClickHandler({ vkUserId, fullName })}
     >
         Напомнить
