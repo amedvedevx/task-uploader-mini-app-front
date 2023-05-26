@@ -8,21 +8,24 @@ interface BridgeMessagesSendArgs {
     message: string;
     taskId: string;
 }
+type ErrorCantSend = {
+    peer_id: number;
+    message_id: number;
+    error: { code: number; description: string };
+};
+type ErrorSuccessSend = {
+    peer_id: number;
+    message_id: number;
+    conversation_message_id: number;
+};
 
 type ErrorResponce = {
-    response: [
-        {
-            peer_id: number;
-            message_id: number;
-            error: { code: number; description: string };
-        },
-        { peer_id: number; message_id: number; conversation_message_id: number },
-    ];
+    response: ErrorCantSend[] & ErrorSuccessSend;
 };
 
 type Error = {
     error: string;
-    forbiddenUsers: number[];
+    successUsers: number[];
 };
 
 export type BridgeMessagesSendResponce = 'success' | Error;
@@ -57,10 +60,12 @@ export const BridgeMessagesSend = async ({
         })
         .then((res: ErrorResponce) => {
             if (res.response[0].error) {
-                const forbiddenUsers = res.response.slice(1).map((user) => user.peer_id);
+                const successUsers = res.response
+                    .filter((user) => !user.error)
+                    .map((user) => user.peer_id);
                 const errorData = {
                     error: res.response[0].error.description,
-                    forbiddenUsers,
+                    successUsers,
                 };
 
                 return errorData;

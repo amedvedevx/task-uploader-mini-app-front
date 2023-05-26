@@ -16,7 +16,7 @@ import { apiSlice } from './apiSlice';
 import { tasksDateSorting } from './mappers';
 
 const taskResultSlice = apiSlice
-    .enhanceEndpoints({ addTagTypes: ['Task', 'TaskResult'] })
+    .enhanceEndpoints({ addTagTypes: ['Task', 'TaskResult', 'AllowedRemindIds'] })
     .injectEndpoints({
         endpoints: (builder) => ({
             getTasks: builder.query<GetTasksResponce, GetTasksProps>({
@@ -46,6 +46,7 @@ const taskResultSlice = apiSlice
                 invalidatesTags: (result, error, arg) => [
                     { type: 'Task', id: arg.payload.taskId },
                     { type: 'TaskResult', id: arg.payload.taskId },
+                    { type: 'AllowedRemindIds', id: arg.payload.taskId },
                 ],
             }),
             createTask: builder.mutation<{ taskId: string }, CreateTaskProps>({
