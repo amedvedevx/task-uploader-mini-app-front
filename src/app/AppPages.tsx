@@ -26,29 +26,17 @@ import {
     VIEW_UPLOAD,
 } from './router';
 
-const HomePage = lazyWithRetries(() =>
-    import('@/pages/home/HomePage')
-);
+const HomePage = lazyWithRetries(() => import('@/pages/home/HomePage'));
 
-const UploadPage = lazyWithRetries(() =>
-    import('@/pages/upload/UploadPage')
-);
+const UploadPage = lazyWithRetries(() => import('@/pages/upload/UploadPage'));
 
-const CreatePage = lazyWithRetries(() =>
-    import('@/pages/create/CreatePage')
-);
+const CreatePage = lazyWithRetries(() => import('@/pages/create/CreatePage'));
 
-const AddMembersPage = lazyWithRetries(() =>
-    import('@/pages/addmembers/AddMembersPage')
-);
+const AddMembersPage = lazyWithRetries(() => import('@/pages/addmembers/AddMembersPage'));
 
-const ListMembersPage = lazyWithRetries(() =>
-    import('@/pages/listmembers/ListMembersPage')
-);
+const ListMembersPage = lazyWithRetries(() => import('@/pages/listmembers/ListMembersPage'));
 
-const CollectionIdPage = lazyWithRetries(() =>
-    import('@/pages/collectionId/CollectionIdPage')
-);
+const CollectionIdPage = lazyWithRetries(() => import('@/pages/collectionId/CollectionIdPage'));
 
 export const AppPages: FC = () => {
     const location = useLocation();
