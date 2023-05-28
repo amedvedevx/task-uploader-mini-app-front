@@ -17,22 +17,15 @@ interface RemindAllProps {
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: (arg: SnackBarText) => void;
     apiMessageError: ErrorsState | undefined;
-    notificationTesteeIds: number[];
 }
 
-export const RemindAll: FC<RemindAllProps> = ({
-    setPopout,
-    setSnackbarText,
-    apiMessageError,
-    notificationTesteeIds,
-}) => {
+export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiMessageError }) => {
     const { collectionId } = useParams();
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [sendNotification] = useSendNotificationMutation();
 
     const { data: reminds } = useGetAllowedForRemindIdsQuery({
         taskId: collectionId,
-        userIds: notificationTesteeIds,
     });
 
     const [updateReminds] = useUpdateAllowedForRemindIdsMutation();

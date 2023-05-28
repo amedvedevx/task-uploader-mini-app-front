@@ -24,7 +24,7 @@ import {
     useUpdateTaskMutation,
 } from '@/api';
 import type { SnackBarText, TaskType } from '@/app/types';
-import { TaskStatusTypesForTestee, TaskStatusTypesForOrganizer } from '@/app/types';
+import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useBridgePlatform, useSearch } from '@/hooks';
 import { checkIsMobilePlatform, errorParser, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
@@ -77,10 +77,6 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const { filteredData, search, changeSearch } = useSearch(taskResults, ['testee', 'fullName']);
 
     const normalizedTestees = normalizeTestees(filteredData);
-
-    const notificationTesteeIds = taskResults
-        .filter((el) => el.taskResultStatus !== TaskStatusTypesForTestee.UPLOADED)
-        .map((el) => el.testee.vkUserId);
 
     const isTaskClosed = currentTask.status === TaskStatusTypesForOrganizer.DONE;
 
@@ -243,7 +239,6 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                             setPopout={setPopout}
                             setSnackbarText={setSnackbarText}
                             apiMessageError={apiMessageError}
-                            notificationTesteeIds={notificationTesteeIds}
                         />
                     )}
 
