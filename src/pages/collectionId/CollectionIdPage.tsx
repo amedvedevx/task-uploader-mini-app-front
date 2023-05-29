@@ -10,7 +10,7 @@ import {
     Spacing,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { createRef, useLayoutEffect, useState } from 'react';
+import { useEffect, createRef, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Icon20ReportOutline } from '@vkontakte/icons';
 
@@ -23,8 +23,8 @@ import {
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import { SnackBarText, TaskStatusTypesForTestee, TaskType } from '@/app/types';
-import { TaskStatusTypesForOrganizer } from '@/app/types';
+import type { SnackBarText, TaskType } from '@/app/types';
+import { TaskStatusTypesForTestee, TaskStatusTypesForOrganizer } from '@/app/types';
 import { useBridgePlatform, useSearch } from '@/hooks';
 import { checkIsMobilePlatform, errorParser, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
@@ -157,6 +157,12 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const handleUpdateTask = () => {
         setPopout(popoutCloseTask);
     };
+
+    useEffect(() => {
+        if (selectedTab) {
+            setSnackbarText(null);
+        }
+    }, [selectedTab]);
 
     useLayoutEffect(() => {
         setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
