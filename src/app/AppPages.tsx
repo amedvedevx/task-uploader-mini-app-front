@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { lazy, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
@@ -12,6 +12,7 @@ import { useBridgePlatform, useVkUserId } from '@/hooks';
 import { PreloadScreen } from '@/components';
 import { checkIsMobilePlatform } from '@/lib';
 
+import { lazyWithRetries } from './utils';
 import {
     PAGE_COLLECTION_ID,
     PAGE_UPLOAD_ID,
@@ -25,40 +26,43 @@ import {
     VIEW_UPLOAD,
 } from './router';
 
-const HomePage = lazy(() =>
-    import('@/pages/home/HomePage').then((module) => ({
-        default: module.HomePage,
-    })),
+const HomePage = lazyWithRetries(
+    () => import('@/pages/home/HomePage').then((module) => ({ default: module.HomePage })),
+    'HomePage',
 );
 
-const UploadPage = lazy(() =>
-    import('@/pages/upload/UploadPage').then((module) => ({
-        default: module.UploadPage,
-    })),
+const UploadPage = lazyWithRetries(
+    () => import('@/pages/upload/UploadPage').then((module) => ({ default: module.UploadPage })),
+    'UploadPage',
 );
 
-const CreatePage = lazy(() =>
-    import('@/pages/create/CreatePage').then((module) => ({
-        default: module.CreatePage,
-    })),
+const CreatePage = lazyWithRetries(
+    () => import('@/pages/create/CreatePage').then((module) => ({ default: module.CreatePage })),
+    'CreatePage',
 );
 
-const AddMembersPage = lazy(() =>
-    import('@/pages/addmembers/AddMembersPage').then((module) => ({
-        default: module.AddMembersPage,
-    })),
+const AddMembersPage = lazyWithRetries(
+    () =>
+        import('@/pages/addmembers/AddMembersPage').then((module) => ({
+            default: module.AddMembersPage,
+        })),
+    'AddMembersPage',
 );
 
-const ListMembersPage = lazy(() =>
-    import('@/pages/listmembers/ListMembersPage').then((module) => ({
-        default: module.ListMembersPage,
-    })),
+const ListMembersPage = lazyWithRetries(
+    () =>
+        import('@/pages/listmembers/ListMembersPage').then((module) => ({
+            default: module.ListMembersPage,
+        })),
+    'ListMembersPage',
 );
 
-const CollectionIdPage = lazy(() =>
-    import('@/pages/collectionId/CollectionIdPage').then((module) => ({
-        default: module.CollectionIdPage,
-    })),
+const CollectionIdPage = lazyWithRetries(
+    () =>
+        import('@/pages/collectionId/CollectionIdPage').then((module) => ({
+            default: module.CollectionIdPage,
+        })),
+    'CollectionIdPage',
 );
 
 export const AppPages: FC = () => {
