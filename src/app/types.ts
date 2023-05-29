@@ -117,6 +117,15 @@ export interface DownloadSingleFileProps {
     vkUserId: number;
 }
 
+export interface PreUploadFilesResponce {
+    data: {
+        file: string;
+        error: string;
+        error_desc: string;
+    };
+    error: unknown;
+}
+
 export interface GetSubTaskResultStatusProps {
     taskId: string;
     subTaskId: string;

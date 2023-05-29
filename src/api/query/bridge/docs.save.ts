@@ -43,8 +43,8 @@ export const BridgeDocsSave = async ({
 
             return res.response as BridgeDocsSaveResponce;
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((error) => {
+            console.error('VKWebAppCallAPIMethod-docs.save', error);
 
             return 'error';
         });

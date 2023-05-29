@@ -4,6 +4,7 @@ import type {
     UploadFilesResponce,
     TaskDetailResult,
     DownloadSingleFileProps,
+    PreUploadFilesResponce,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
@@ -110,10 +111,12 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
 
                         const filesData = new FormData();
 
-                        filesData.append('url', uploadUrl?.upload_url);
-                        filesData.append('file', fileToSend);
+                        if (uploadUrl !== 'error') {
+                            filesData.append('url', uploadUrl?.upload_url);
+                            filesData.append('file', fileToSend);
+                        }
 
-                        const uploadResponse = await fetchWithBQ({
+                        const uploadResponse: PreUploadFilesResponce = await fetchWithBQ({
                             url: `/files`,
                             method: 'POST',
                             body: filesData,
@@ -127,6 +130,10 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                         return saveResponce;
                     }),
                 );
+
+                if (result.includes('error')) {
+                    return { error: 'error' };
+                }
 
                 const preparedFiles = result.map((saveResult) => saveResult?.doc);
 

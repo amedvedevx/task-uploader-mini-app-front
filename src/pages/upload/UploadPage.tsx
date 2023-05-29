@@ -80,7 +80,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     useEffect(() => {
         const errorMessage = statusFromVk?.exception;
 
-        if (statusFromVk?.isError) {
+        if (statusFromVk?.isError || statusFromServer?.isError) {
             finalizeUpload({
                 type: 'error',
                 text: errorMessage || 'Загрузка файлов не удалась',
@@ -113,7 +113,10 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED ||
             statusFromServer.isError
         ) {
-            finalizeUpload({ type: 'error', text: 'Загрузка файлов не удалась' });
+            finalizeUpload({
+                type: 'error',
+                text: 'Загрузка файлов не удалась',
+            });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [statusFromServer]);
