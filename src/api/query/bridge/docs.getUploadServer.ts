@@ -27,8 +27,8 @@ export const BridgeDocsUploadServer = async ({
 
             return res.response as BridgeDocsUploadServerResponce;
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((error) => {
+            console.error('VKWebAppCallAPIMethod-docs.getUploadServer', error);
 
             return 'error';
         });

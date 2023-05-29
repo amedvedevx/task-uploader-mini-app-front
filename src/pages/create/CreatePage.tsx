@@ -6,7 +6,7 @@ import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PAGE_COLLECTION_HOME, PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
-import { useCreateSubTaskMutation, useCreateTaskMutation } from '@/api';
+import { useCreateTaskMutation } from '@/api';
 import { FooterWithButton } from '@/components';
 import type { SnackBarText } from '@/app/types';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
@@ -30,8 +30,6 @@ export const CreatePage: FC<CreatePageProps> = () => {
 
     const [createTask, { isLoading: isTaskCreating, isError: isTaskError }] =
         useCreateTaskMutation();
-    const [createSubTask, { isLoading: isSubTaskCreating, isError: isSubTaskError }] =
-        useCreateSubTaskMutation();
 
     const {
         control,
@@ -58,12 +56,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
             description: data.collectionDescription.trim(),
             unlimited: true,
             deadLine: deadLineDate,
-        };
-
-        const { taskId } = await createTask(payload).unwrap();
-
-        const payloadSubTask = {
-            rows: [
+            subTasks: [
                 {
                     name: `Подзадание 1 задания ${data.collectionName}`,
                     description: `Описание подзадания 1`,
@@ -72,7 +65,8 @@ export const CreatePage: FC<CreatePageProps> = () => {
                 },
             ],
         };
-        await createSubTask({ taskId, payload: payloadSubTask });
+
+        const { taskId } = await createTask(payload).unwrap();
         router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
     };
 
@@ -80,7 +74,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
         router.pushPage(PAGE_COLLECTION_HOME);
     };
 
-    if (isTaskError || isSubTaskError) {
+    if (isTaskError) {
         setSnackbarText({ type: 'error', text: 'Не удалось создать сбор' });
     }
 
@@ -142,7 +136,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
                     {
                         text: 'Готово',
                         onClick: handleSubmit(onSubmit),
-                        loading: isTaskCreating || isSubTaskCreating,
+                        loading: isTaskCreating,
                         disabled: watch('collectionName').trim().length === 0,
                     },
                 ]}

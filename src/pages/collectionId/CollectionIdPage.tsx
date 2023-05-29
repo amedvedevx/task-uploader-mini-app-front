@@ -10,7 +10,7 @@ import {
     Spacing,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { createRef, useLayoutEffect, useState } from 'react';
+import { createRef, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Icon20ReportOutline } from '@vkontakte/icons';
 
@@ -23,7 +23,7 @@ import {
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import { SnackBarText, TaskStatusTypesForTestee, TaskType } from '@/app/types';
+import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useBridgePlatform, useSearch } from '@/hooks';
 import { checkIsMobilePlatform, errorParser, normalizeTestees } from '@/lib/utils';
@@ -56,12 +56,16 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         data = { taskResults: [] },
         isLoading,
         error,
+        refetch: refetchResults,
     } = useGetTaskResultsQuery({
         taskId: collectionId,
     });
+
     const { taskResults } = data;
 
-    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
+    const { data: currentTask = {} as TaskType, refetch: refetchTask } = useGetTaskIdQuery({
+        taskId: collectionId,
+    });
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
     const [downloadFiles, { isLoading: isFileDownloading }] = useLazyDownloadFilesQuery();
 
@@ -74,10 +78,6 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const normalizedTestees = normalizeTestees(filteredData);
 
-    const notificationTesteeIds = taskResults
-        .filter((el) => el.taskResultStatus !== TaskStatusTypesForTestee.UPLOADED)
-        .map((el) => el.testee.vkUserId);
-
     const isTaskClosed = currentTask.status === TaskStatusTypesForOrganizer.DONE;
 
     const stateErrors = store.getState().errors;
@@ -87,6 +87,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
+
     const fixedLayoutRef = createRef<HTMLDivElement>();
 
     const popoutCloseTask = (
@@ -162,6 +163,11 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
 
+    useEffect(() => {
+        refetchResults();
+        refetchTask();
+    }, [selectedTab]);
+
     if (error?.status) {
         const errorMessage = errorParser(error?.status);
 
@@ -233,7 +239,6 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                             setPopout={setPopout}
                             setSnackbarText={setSnackbarText}
                             apiMessageError={apiMessageError}
-                            notificationTesteeIds={notificationTesteeIds}
                         />
                     )}
 
