@@ -98,6 +98,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                             originalArgs={originalArgs}
                                             vkUserId={vkUserId}
                                             isDownloading={isDownloading}
+                                            counter={subTaskResults[0].content.length}
                                             onClickHandler={onClickHandler}
                                         />
                                     )
@@ -107,7 +108,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                             </SimpleCell>
                         </AccordionSummaryWidth>
 
-                        <List>
+                        <ListCustomPadding $isMobilePlatform={isMobilePlatform}>
                             {subTaskResults[0].content.map(({ title, docId, url }) => (
                                 <SimpleCell
                                     key={title}
@@ -140,7 +141,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                     {title}
                                 </SimpleCell>
                             ))}
-                        </List>
+                        </ListCustomPadding>
                     </Accordion>
                 ),
             )}
@@ -152,6 +153,11 @@ const AccordionSummaryWidth = styled(AccordionSummary)`
     .vkuiSimpleCell__children {
         width: 100%;
     }
+`;
+
+const ListCustomPadding = styled(List)<{ $isMobilePlatform: boolean }>`
+    padding-left: ${({ $isMobilePlatform }) => `${$isMobilePlatform ? 16 : 12}px`};
+    padding-right: ${({ $isMobilePlatform }) => `${$isMobilePlatform ? 50 : 46}px`};
 `;
 
 type OnClickArgs = {

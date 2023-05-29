@@ -34,7 +34,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                         top={
                             <InputLabel
                                 label={label}
-                                curLength={value?.length || 0}
+                                curLength={value?.trim().length || 0}
                                 maxLength={maxLength}
                             />
                         }
@@ -53,7 +53,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                             <Input
                                 getRootRef={ref}
                                 placeholder={placeholder}
-                                value={value}
+                                value={value.trimStart()}
                                 status={errors.collectionName && 'error'}
                                 maxLength={maxLength}
                                 data-automation-id='create-page-titleInput'

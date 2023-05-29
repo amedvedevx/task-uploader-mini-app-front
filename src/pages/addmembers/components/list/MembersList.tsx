@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { SimpleCell, Header as HeaderRoot } from '@vkontakte/vkui';
+import { Header as HeaderRoot, Cell } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
 import type { TesteeType, GetTesteesResponse } from '@/app/types';
@@ -22,7 +22,7 @@ export const MembersList: FC<MembersListProps> = ({
     selectedMembers,
     selection,
 }) => (
-    <MembersListWrapper>
+    <>
         {searchMembers && searchMembers?.profiles.length > 0 && (
             <SearchMembers
                 selection={selection}
@@ -36,13 +36,8 @@ export const MembersList: FC<MembersListProps> = ({
                 deleteMember={deleteMember}
             />
         )}
-    </MembersListWrapper>
+    </>
 );
-
-const MembersListWrapper = styled.div`
-    padding-top: 103px;
-    padding-bottom: 45px;
-`;
 
 export const Header = styled(HeaderRoot)`
     .vkuiHeader__main {
@@ -50,6 +45,6 @@ export const Header = styled(HeaderRoot)`
     }
 `;
 
-export const Members = styled(SimpleCell)`
+export const Members = styled(Cell)`
     margin-bottom: 16px;
 `;

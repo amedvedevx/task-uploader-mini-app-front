@@ -4,13 +4,14 @@ import type {
     UploadFilesResponce,
     TaskDetailResult,
     DownloadSingleFileProps,
+    PreUploadFilesResponce,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
 import { BridgeDocsSave, BridgeDocsUploadServer, BridgeDownload } from './bridge';
 import type { RootState } from '../store';
 
-const filesSlice = apiSlice.injectEndpoints({
+const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).injectEndpoints({
     endpoints: (builder) => ({
         downloadFiles: builder.query<void, DownloadFilesProps>({
             queryFn: async (
@@ -110,10 +111,12 @@ const filesSlice = apiSlice.injectEndpoints({
 
                         const filesData = new FormData();
 
-                        filesData.append('url', uploadUrl?.upload_url);
-                        filesData.append('file', fileToSend);
+                        if (uploadUrl !== 'error') {
+                            filesData.append('url', uploadUrl?.upload_url);
+                            filesData.append('file', fileToSend);
+                        }
 
-                        const uploadResponse = await fetchWithBQ({
+                        const uploadResponse: PreUploadFilesResponce = await fetchWithBQ({
                             url: `/files`,
                             method: 'POST',
                             body: filesData,
@@ -128,6 +131,10 @@ const filesSlice = apiSlice.injectEndpoints({
                     }),
                 );
 
+                if (result.includes('error')) {
+                    return { error: 'error' };
+                }
+
                 const preparedFiles = result.map((saveResult) => saveResult?.doc);
 
                 const saveFileLink = await fetchWithBQ({
@@ -140,6 +147,7 @@ const filesSlice = apiSlice.injectEndpoints({
 
                 return saveFileLink;
             },
+            invalidatesTags: ['TaskResult'],
         }),
     }),
 });
