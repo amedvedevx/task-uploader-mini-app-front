@@ -10,6 +10,7 @@ import type {
 } from '@/app/types';
 import { UPLOAD_URL } from '@/app/config';
 
+import type { BridgeMessagesSendResponce } from './bridge';
 import {
     BridgeGetConversationsMembers,
     BridgeMessagesSend,
@@ -41,10 +42,10 @@ const testeesSlice = apiSlice
                         ),
                         profiles: testees.profiles
                             ? testees.profiles.filter(
-                                  (el) =>
-                                      !invitedMemberIds?.includes(el.id) &&
+                                (el) =>
+                                    !invitedMemberIds?.includes(el.id) &&
                                       el.id !== userInfo.userId,
-                              )
+                            )
                             : [],
                     };
 
@@ -86,12 +87,11 @@ const testeesSlice = apiSlice
                 GetAllowedForRemindIdsResponce,
                 GetAllowedForRemindIdsProps
             >({
-                query: ({ taskId }) => ({
+                query: ({ taskId, userIds }) => ({
                     url: `/task-result/get-users-for-notification/${taskId}`,
+                    params: { userIds },
                 }),
-                providesTags: (result, error, arg) => [
-                    { type: 'AllowedRemindIds', id: arg.taskId },
-                ],
+                providesTags: ['AllowedRemindIds'],
             }),
 
             updateAllowedForRemindIds: builder.mutation<void, UpdateAllowedForRemindIdsProps>({
@@ -100,12 +100,10 @@ const testeesSlice = apiSlice
                     params: { userIds },
                     method: 'POST',
                 }),
-                invalidatesTags: (result, error, arg) => [
-                    { type: 'AllowedRemindIds', id: arg.taskId },
-                ],
+                invalidatesTags: ['AllowedRemindIds'],
             }),
 
-            sendNotification: builder.mutation<string, SendNotificationProps>({
+            sendNotification: builder.mutation<BridgeMessagesSendResponce, SendNotificationProps>({
                 queryFn: async ({ whoToSend, taskName, ownerName, taskId }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
 
@@ -123,11 +121,9 @@ const testeesSlice = apiSlice
                         return { data: 'success' };
                     }
 
-                    return { data: 'error' };
+                    return { data: result };
                 },
-                invalidatesTags: (result, error, arg) => [
-                    { type: 'AllowedRemindIds', id: arg.taskId },
-                ],
+                invalidatesTags: ['AllowedRemindIds'],
             }),
         }),
     });

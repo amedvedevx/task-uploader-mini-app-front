@@ -24,7 +24,10 @@ export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiM
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [sendNotification] = useSendNotificationMutation();
 
-    const { data: reminds } = useGetAllowedForRemindIdsQuery({ taskId: collectionId });
+    const { data: reminds } = useGetAllowedForRemindIdsQuery({
+        taskId: collectionId,
+    });
+
     const [updateReminds] = useUpdateAllowedForRemindIdsMutation();
 
     const remindAllClick = async () => {
@@ -40,7 +43,11 @@ export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiM
             setSnackbarText({ type: 'success', text: 'Напоминания отправлены' });
             updateReminds({ taskId: collectionId, userIds: allowedIds });
         } else {
-            setSnackbarText({ type: 'error', text: 'Произошла ошибка' });
+            setSnackbarText({
+                type: 'error',
+                text: 'Не удалось отправить уведомления некоторым пользователям, данные обновлены',
+            });
+            updateReminds({ taskId: collectionId, userIds: result.successUsers });
         }
     };
     const popoutRemindAll = (
@@ -66,7 +73,11 @@ export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiM
             }
             data-automation-id='collectionId-page-remindAll-button'
             subtitle={apiMessageError ? apiMessageError.text : null}
-            disabled={!!apiMessageError || reminds?.allowedUserIds?.length > 50}
+            disabled={
+                !!apiMessageError ||
+                reminds?.allowedUserIds?.length > 50 ||
+                reminds?.allowedUserIds.length === 0
+            }
             onClick={() => setPopout(popoutRemindAll)}
         >
             Напомнить всем
