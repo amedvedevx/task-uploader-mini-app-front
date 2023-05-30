@@ -12,7 +12,7 @@ import {
 import type { FC } from 'react';
 import { createRef, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Icon20ReportOutline } from '@vkontakte/icons';
+import { Icon20FolderOutline, Icon20ReportOutline } from '@vkontakte/icons';
 
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
@@ -199,6 +199,16 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                             <PanelHeaderSkeleton />
                         )}
                     </PanelHeader>
+
+                    {currentTask.description && (
+                        <MiniInfoCell
+                            before={<Icon20FolderOutline />}
+                            textWrap='full'
+                            mode='base'
+                        >
+                            {currentTask.description}
+                        </MiniInfoCell>
+                    )}
 
                     {/* For unpredictable problems caused by vk api */}
                     {apiMessageError && (

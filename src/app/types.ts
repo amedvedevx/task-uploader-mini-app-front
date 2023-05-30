@@ -252,9 +252,8 @@ export type ChatType = {
 
 export interface SendNotificationProps {
     whoToSend: number[];
-    ownerName: string;
-    taskName: string;
     taskId: string;
+    task: TaskType;
 }
 
 export type TesteeType = {

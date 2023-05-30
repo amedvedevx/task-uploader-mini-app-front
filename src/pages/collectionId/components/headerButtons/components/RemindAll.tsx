@@ -34,9 +34,8 @@ export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiM
         const allowedIds = reminds?.allowedUserIds;
         const result = await sendNotification({
             taskId: collectionId,
-            ownerName: currentTask?.owner.fullName,
+            task: currentTask,
             whoToSend: allowedIds || [],
-            taskName: currentTask?.name,
         }).unwrap();
 
         if (result === 'success') {

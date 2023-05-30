@@ -58,7 +58,7 @@ export const getExtenstionInitials = (fileName: string): string =>
     getFileExtension(fileName).slice(0, 3).toUpperCase();
 
 export const copyUploadLinkToClipboard = (task: TaskType): boolean => {
-    const link = `Вы были приглашены пользователем ${task.owner.fullName} для загрузки файлов по заданию: ${task.name}. \n ${UPLOAD_URL}${task.id}`;
+    const link = `Вы были приглашены пользователем ${task.owner.fullName} для загрузки файлов по заданию: ${task.name}. \n Описание: ${task.description}. \n ${UPLOAD_URL}${task.id}`;
 
     if (!navigator?.clipboard) {
         return false;
