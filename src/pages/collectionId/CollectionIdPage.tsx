@@ -159,6 +159,12 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         setPopout(popoutCloseTask);
     };
 
+    useEffect(() => {
+        if (selectedTab) {
+            setSnackbarText(null);
+        }
+    }, [selectedTab]);
+
     useLayoutEffect(() => {
         setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
