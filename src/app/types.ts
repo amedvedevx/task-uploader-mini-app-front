@@ -117,6 +117,15 @@ export interface DownloadSingleFileProps {
     vkUserId: number;
 }
 
+export interface PreUploadFilesResponce {
+    data: {
+        file: string;
+        error: string;
+        error_desc: string;
+    };
+    error: unknown;
+}
+
 export interface GetSubTaskResultStatusProps {
     taskId: string;
     subTaskId: string;
@@ -151,17 +160,14 @@ export interface CreateTaskProps {
     description: string;
     unlimited: boolean;
     deadLine: number;
+    subTasks: CreateSubTaskPayload[];
 }
 
-export interface CreateSubTaskProps {
-    taskId: string;
-    payload: {
-        rows: Array<{
-            name: string;
-            description: string;
-            subTaskType: string;
-        }>;
-    };
+export interface CreateSubTaskPayload {
+    name: string;
+    description: string;
+    sortOrder: number;
+    subTaskType: string;
 }
 
 export interface UpdateTaskProps {
@@ -246,9 +252,8 @@ export type ChatType = {
 
 export interface SendNotificationProps {
     whoToSend: number[];
-    ownerName: string;
-    taskName: string;
     taskId: string;
+    task: TaskType;
 }
 
 export type TesteeType = {

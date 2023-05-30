@@ -17,22 +17,15 @@ interface RemindAllProps {
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: (arg: SnackBarText) => void;
     apiMessageError: ErrorsState | undefined;
-    notificationTesteeIds: number[];
 }
 
-export const RemindAll: FC<RemindAllProps> = ({
-    setPopout,
-    setSnackbarText,
-    apiMessageError,
-    notificationTesteeIds,
-}) => {
+export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiMessageError }) => {
     const { collectionId } = useParams();
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [sendNotification] = useSendNotificationMutation();
 
     const { data: reminds } = useGetAllowedForRemindIdsQuery({
         taskId: collectionId,
-        userIds: notificationTesteeIds,
     });
 
     const [updateReminds] = useUpdateAllowedForRemindIdsMutation();
@@ -41,16 +34,19 @@ export const RemindAll: FC<RemindAllProps> = ({
         const allowedIds = reminds?.allowedUserIds;
         const result = await sendNotification({
             taskId: collectionId,
-            ownerName: currentTask?.owner.fullName,
+            task: currentTask,
             whoToSend: allowedIds || [],
-            taskName: currentTask?.name,
         }).unwrap();
 
         if (result === 'success') {
             setSnackbarText({ type: 'success', text: 'Напоминания отправлены' });
             updateReminds({ taskId: collectionId, userIds: allowedIds });
         } else {
-            setSnackbarText({ type: 'error', text: 'Произошла ошибка' });
+            setSnackbarText({
+                type: 'error',
+                text: 'Не удалось отправить уведомления некоторым пользователям, данные обновлены',
+            });
+            updateReminds({ taskId: collectionId, userIds: result.successUsers });
         }
     };
     const popoutRemindAll = (

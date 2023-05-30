@@ -10,6 +10,7 @@ import type {
 } from '@/app/types';
 import { UPLOAD_URL } from '@/app/config';
 
+import type { BridgeMessagesSendResponce } from './bridge';
 import {
     BridgeGetConversationsMembers,
     BridgeMessagesSend,
@@ -90,9 +91,7 @@ const testeesSlice = apiSlice
                     url: `/task-result/get-users-for-notification/${taskId}`,
                     params: { userIds },
                 }),
-                providesTags: (result, error, arg) => [
-                    { type: 'AllowedRemindIds', id: arg.taskId },
-                ],
+                providesTags: ['AllowedRemindIds'],
             }),
 
             updateAllowedForRemindIds: builder.mutation<void, UpdateAllowedForRemindIdsProps>({
@@ -101,17 +100,15 @@ const testeesSlice = apiSlice
                     params: { userIds },
                     method: 'POST',
                 }),
-                invalidatesTags: (result, error, arg) => [
-                    { type: 'AllowedRemindIds', id: arg.taskId },
-                ],
+                invalidatesTags: ['AllowedRemindIds'],
             }),
 
-            sendNotification: builder.mutation<string, SendNotificationProps>({
-                queryFn: async ({ whoToSend, taskName, ownerName, taskId }, { getState }) => {
+            sendNotification: builder.mutation<BridgeMessagesSendResponce, SendNotificationProps>({
+                queryFn: async ({ whoToSend, taskId, task }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
 
                     const normalizeMembers = whoToSend.join();
-                    const inviteMesage = `Вы были приглашены пользователем ${ownerName} для загрузки файлов по заданию: ${taskName}. \n ${UPLOAD_URL}${taskId}`;
+                    const inviteMesage = `Вы были приглашены пользователем ${task.owner.fullName} для загрузки файлов по заданию: ${task.name}. \n Описание: ${task.description}. \n ${UPLOAD_URL}${taskId}`;
 
                     const result = await BridgeMessagesSend({
                         token: userInfo.token,
@@ -124,11 +121,9 @@ const testeesSlice = apiSlice
                         return { data: 'success' };
                     }
 
-                    return { data: 'error' };
+                    return { data: result };
                 },
-                invalidatesTags: (result, error, arg) => [
-                    { type: 'AllowedRemindIds', id: arg.taskId },
-                ],
+                invalidatesTags: ['AllowedRemindIds'],
             }),
         }),
     });

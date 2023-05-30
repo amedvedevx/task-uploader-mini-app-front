@@ -141,7 +141,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
 
 const SimpleCell = styled(SimpleCellRoot)`
     .vkuiSimpleCell__main {
-        width: 265px;
+        width: 260px;
     }
 `;
 
