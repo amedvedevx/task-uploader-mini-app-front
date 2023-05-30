@@ -13,7 +13,7 @@
     font-family:  -apple-system, system-ui, 'Helvetica Neue', Roboto, sans-serif;
     font-style: normal;
     letter-spacing: -0.013em;
-    color: #000;
+    color: var(--vkui--color_text_primary);
     font-weight: 500;
     font-size: 17px;
     line-height: 22px;
