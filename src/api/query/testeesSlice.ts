@@ -42,10 +42,10 @@ const testeesSlice = apiSlice
                         ),
                         profiles: testees.profiles
                             ? testees.profiles.filter(
-                                (el) =>
-                                    !invitedMemberIds?.includes(el.id) &&
+                                  (el) =>
+                                      !invitedMemberIds?.includes(el.id) &&
                                       el.id !== userInfo.userId,
-                            )
+                              )
                             : [],
                     };
 
@@ -104,11 +104,11 @@ const testeesSlice = apiSlice
             }),
 
             sendNotification: builder.mutation<BridgeMessagesSendResponce, SendNotificationProps>({
-                queryFn: async ({ whoToSend, taskName, ownerName, taskId }, { getState }) => {
+                queryFn: async ({ whoToSend, taskId, task }, { getState }) => {
                     const { userInfo } = (getState() as RootState).authorization;
 
                     const normalizeMembers = whoToSend.join();
-                    const inviteMesage = `Вы были приглашены пользователем ${ownerName} для загрузки файлов по заданию: ${taskName}. \n ${UPLOAD_URL}${taskId}`;
+                    const inviteMesage = `Вы были приглашены пользователем ${task.owner.fullName} для загрузки файлов по заданию: ${task.name}. \n Описание: ${task.description}. \n ${UPLOAD_URL}${taskId}`;
 
                     const result = await BridgeMessagesSend({
                         token: userInfo.token,
