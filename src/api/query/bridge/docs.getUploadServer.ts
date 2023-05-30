@@ -17,7 +17,7 @@ export const BridgeDocsUploadServer = async ({
             method: 'docs.getUploadServer',
             params: {
                 access_token: token,
-                v: '5.131',
+                v: '5.189',
             },
         })
         .then((res) => {

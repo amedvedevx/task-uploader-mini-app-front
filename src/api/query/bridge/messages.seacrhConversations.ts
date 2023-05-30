@@ -21,7 +21,7 @@ export const BridgeSearchConversations = async ({
                 q: search,
                 count,
                 extended: 1,
-                v: '5.131',
+                v: '5.189',
                 fields: 'photo_100',
             },
         })

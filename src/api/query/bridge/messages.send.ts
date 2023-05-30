@@ -55,7 +55,7 @@ export const BridgeMessagesSend = async ({
                     }
                 }]`,
 
-                v: '5.131',
+                v: '5.189',
             },
         })
         .then((res: ErrorResponce) => {
