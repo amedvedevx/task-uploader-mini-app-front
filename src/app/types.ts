@@ -1,4 +1,4 @@
-export interface GetTaskResultsResponce {
+export interface GetTaskResultsResponse {
     taskResults: TaskResults[];
 }
 
@@ -36,11 +36,11 @@ export type TaskResults = {
     };
 };
 
-export interface GetTasksResponce {
+export interface GetTasksResponse {
     tasks: TaskType[];
 }
 
-export interface GetTaskIdResponce extends TaskType {}
+export interface GetTaskIdResponse extends TaskType {}
 
 export type TaskType = {
     id: string;
@@ -87,13 +87,22 @@ export interface DeleteTaskResultProps {
     subTaskId: string;
 }
 
-export interface UploadFilesProps {
+export interface UploadFileProps {
     taskId: string;
     subTaskId: string;
-    files: File[];
+    file: File;
 }
 
-export interface UploadFilesResponce {
+export interface PreUploadFilesResponse {
+    data: {
+        file: string;
+        error: string;
+        error_desc: string;
+    };
+    error?: any;
+}
+
+export interface UploadFileResponse {
     taskId: string;
     subTaskId: string;
     status: AddResultStatusTypes;
@@ -105,7 +114,7 @@ export interface DownloadFilesProps {
     vkUserId?: number;
 }
 
-export interface DownloadFilesResponce {
+export interface DownloadFileResponse {
     files: Record<string, unknown>;
 }
 
@@ -117,21 +126,12 @@ export interface DownloadSingleFileProps {
     vkUserId: number;
 }
 
-export interface PreUploadFilesResponce {
-    data: {
-        file: string;
-        error: string;
-        error_desc: string;
-    };
-    error: unknown;
-}
-
 export interface GetSubTaskResultStatusProps {
     taskId: string;
     subTaskId: string;
 }
 
-export interface GetSubTaskResultStatusResponce {
+export interface GetSubTaskResultStatusResponse {
     taskResultId: string;
     subtaskId: string;
     status: AddResultStatusTypes;
@@ -197,7 +197,7 @@ export interface DeleteSubTaskProps {
     subTaskId: string;
 }
 
-export interface GetMembersResponce {
+export interface GetMembersResponse {
     friends: TesteeType[];
 }
 
@@ -211,9 +211,10 @@ export interface GetTesteesProps {
     search: string;
     count: number;
     invitedMemberIds?: number[];
+    userId: number;
 }
 
-export interface GetAllowedForRemindIdsResponce {
+export interface GetAllowedForRemindIdsResponse {
     allowedUserIds: number[];
 }
 
@@ -302,4 +303,5 @@ export enum AddResultStatusTypes {
 export type SnackBarText = {
     type: 'error' | 'success';
     text: string;
+    fileName?: string;
 } | null;
