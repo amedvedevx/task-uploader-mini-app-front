@@ -20,48 +20,24 @@ interface StubProps {
     image?: string;
 }
 
-export const Stub: FC<StubProps> = ({ children, title, subtitle, image }) => {
-    const appearance = useAppearance();
-    const platform = useBridgePlatform();
-    const isMobilePlatform = checkIsMobilePlatform(platform);
+export const Stub: FC<StubProps> = ({ children, title, subtitle, image }) => (
+    <StubContainer>
+        <StubImageContainer>
+            <StubImage
+                src={image || DocAndImageIcon}
+                border='2px solid white'
+            />
+        </StubImageContainer>
 
-    console.log('appearance', appearance);
+        <StubTitle
+            color='var(--vkui--color_text_primary)'
+            weight='1'
+        >
+            {title}
+        </StubTitle>
 
-    const handleColor = () => {
-        if (isMobilePlatform) {
-            if (appearance === 'dark') {
-                return 'white';
-            }
+        <StubSubtitle color='var(--vkui--color_text_secondary)'>{subtitle}</StubSubtitle>
 
-            return 'black';
-        }
-
-        if (appearance === 'light') {
-            return 'var(--vkui--color_text_primary)';
-        }
-
-        return 'black';
-    };
-
-    return (
-        <StubContainer>
-            <StubImageContainer>
-                <StubImage
-                    src={image || DocAndImageIcon}
-                    border='2px solid white'
-                />
-            </StubImageContainer>
-
-            <StubTitle
-                color={handleColor()}
-                weight='1'
-            >
-                {title}
-            </StubTitle>
-
-            <StubSubtitle color='var(--vkui--color_text_secondary)'>{subtitle}</StubSubtitle>
-
-            {children}
-        </StubContainer>
-    );
-};
+        {children}
+    </StubContainer>
+);
