@@ -1,9 +1,6 @@
 import type { FC, ReactNode } from 'react';
-import { useAppearance } from '@vkontakte/vkui';
 
 import DocAndImageIcon from '@/assets/docAndImgIcon.svg';
-import { checkIsMobilePlatform } from '@/lib';
-import { useBridgePlatform } from '@/hooks';
 
 import {
     StubContainer,

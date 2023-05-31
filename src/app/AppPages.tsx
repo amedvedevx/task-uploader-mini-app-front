@@ -100,7 +100,7 @@ export const AppPages: FC = () => {
 
     useEffect(() => {
         if (isMobilePlatform) {
-            bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
+            bridge.send('VKWebAppSetSwipeSettings', { history: isFirst }).catch(() => {});
         }
     }, [isFirst, isMobilePlatform]);
 
