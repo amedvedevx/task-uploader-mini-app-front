@@ -5,12 +5,7 @@ import { useParams } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
-import {
-    useGetTaskIdQuery,
-    useGetSubTaskResultStatusQuery,
-    useUploadFilesMutation,
-    useGetTaskResultsQuery,
-} from '@/api';
+import { useGetTaskIdQuery, useUploadFileMutation, useGetTaskResultsQuery } from '@/api';
 import type { SnackBarText } from '@/app/types';
 import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
@@ -37,18 +32,9 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const taskId = uploadId;
     const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
-    const [uploadFiles, statusFromServer] = useUploadFilesMutation();
+    const [uploadFile, statusFromServer] = useUploadFileMutation();
 
     const [isLoading, setLoading] = useState(false);
-    const [isUploading, setUploading] = useState(false);
-
-    const { currentData: statusFromVk } = useGetSubTaskResultStatusQuery(
-        {
-            taskId,
-            subTaskId,
-        },
-        { skip: !isUploading, pollingInterval: 5000 },
-    );
 
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
@@ -60,69 +46,58 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         setFiles(filteredState);
     };
 
-    const clearState = () => setFiles([]);
+    const removeSuccessFileFromStack = (fileName: string) => {
+        setFiles((prevState) => {
+            const newState = prevState.filter((file) => file.name !== fileName);
 
-    const sendFiles = () => {
-        setLoading(true);
-        uploadFiles({ taskId, subTaskId, files }).then(() => {
-            setUploading(true);
+            return newState;
         });
     };
 
-    const finalizeUpload = (result: SnackBarText) => {
+    const clearState = () => setFiles([]);
+
+    const sendFiles = async () => {
+        setLoading(true);
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const file of files) {
+            // eslint-disable-next-line no-await-in-loop
+            await uploadFile({ taskId, subTaskId, file });
+        }
+
         setLoading(false);
-        setSnackbarText(result);
-        setUploading(false);
-
-        if (result?.type === 'success') clearState();
     };
-
-    useEffect(() => {
-        const errorMessage = statusFromVk?.exception;
-
-        if (statusFromVk?.isError || statusFromServer?.isError) {
-            finalizeUpload({
-                type: 'error',
-                text: errorMessage || 'Загрузка файлов не удалась',
-            });
-
-            return;
-        }
-        switch (statusFromVk?.status) {
-            case AddResultStatusTypes.IN_PROGRESS:
-                setLoading(true);
-                break;
-            case AddResultStatusTypes.NOT_LOADED:
-                finalizeUpload({
-                    type: 'error',
-                    text: errorMessage || 'Загрузка файлов не удалась',
-                });
-                break;
-            case AddResultStatusTypes.LOADED:
-                finalizeUpload({ type: 'success', text: 'Файлы загружены' });
-                break;
-
-            default:
-                break;
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [statusFromVk]);
 
     useEffect(() => {
         if (
             statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED ||
             statusFromServer.isError
         ) {
-            finalizeUpload({
+            setSnackbarText({
                 type: 'error',
-                text: 'Загрузка файлов не удалась',
+                text: `Загрузка файла ${
+                    statusFromServer?.originalArgs?.file?.name || ''
+                } не удалась`,
             });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        if (statusFromServer.isSuccess) {
+            const fileName = statusFromServer.originalArgs?.file?.name || '';
+
+            setSnackbarText({
+                type: 'success',
+                text: `Файл ${statusFromServer?.originalArgs?.file?.name || ''} загружен`,
+                fileName,
+            });
+
+            if (fileName) {
+                removeSuccessFileFromStack(fileName);
+            }
+        }
     }, [statusFromServer]);
 
-    if (error?.status) {
-        const errorMessage = errorParser(error?.status);
+    if (error && 'status' in error) {
+        const errorMessage = errorParser(error.status as number);
 
         throw Error(errorMessage);
     }

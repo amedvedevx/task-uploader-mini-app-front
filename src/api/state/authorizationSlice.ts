@@ -2,16 +2,13 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface AuthorizationState {
-    value: string;
-    userInfo: { token: string; userId: number | null };
+    bearer: string;
+    token: string;
 }
 
 const initialState: AuthorizationState = {
-    value: '',
-    userInfo: {
-        token: '',
-        userId: null,
-    },
+    bearer: '',
+    token: '',
 };
 
 export const authorizationSlice = createSlice({
@@ -19,17 +16,14 @@ export const authorizationSlice = createSlice({
     initialState,
     reducers: {
         setBearer: (state, action: PayloadAction<string>) => {
-            state.value = action.payload;
+            state.bearer = action.payload;
         },
-        setUserToken: (state, action: PayloadAction<{ token: string }>) => {
-            state.userInfo.token = action.payload.token;
-        },
-        setUserId: (state, action: PayloadAction<{ userId: number }>) => {
-            state.userInfo.userId = action.payload.userId;
+        setToken: (state, action: PayloadAction<{ token: string }>) => {
+            state.token = action.payload.token;
         },
     },
 });
 
-export const { setBearer, setUserId, setUserToken } = authorizationSlice.actions;
+export const { setBearer, setToken } = authorizationSlice.actions;
 
 export default authorizationSlice.reducer;

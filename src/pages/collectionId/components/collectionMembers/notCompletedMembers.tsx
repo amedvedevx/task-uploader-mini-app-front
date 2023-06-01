@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { Avatar, Button, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
-import type { GetAllowedForRemindIdsResponce, SnackBarText, TaskResults } from '@/app/types';
+import type { GetAllowedForRemindIdsResponse, SnackBarText, TaskResults } from '@/app/types';
 import { getInitials } from '@/lib/utils';
 import {
     useGetAllowedForRemindIdsQuery,
@@ -77,7 +77,6 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
                             <RemindButton
                                 reminds={reminds}
                                 vkUserId={vkUserId}
-                                isSendingNotification={isSendingNotification}
                                 loading={
                                     isSendingNotification &&
                                     originalArgs?.whoToSend?.includes(vkUserId)
@@ -106,12 +105,12 @@ type OnClickArgs = {
 };
 
 interface RemindButtonProps {
-    reminds: GetAllowedForRemindIdsResponce | undefined;
+    reminds: GetAllowedForRemindIdsResponse | undefined;
     vkUserId: number;
     onClickHandler: (arg: { vkUserId: number; fullName: string }) => void;
     fullName: string;
     apiMessageError: ErrorsState | undefined;
-    loading: boolean;
+    loading: boolean | undefined;
 }
 
 const RemindButton: FC<RemindButtonProps> = ({
