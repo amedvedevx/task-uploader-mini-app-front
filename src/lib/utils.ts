@@ -90,11 +90,7 @@ export const isForbiddenFile = (fileName: string): boolean => {
 
     const fileExt = getFileExtension(fileName);
 
-    if (forbiddenFileExtension.includes(fileExt)) {
-        return true;
-    }
-
-    return false;
+    return forbiddenFileExtension.includes(fileExt);
 };
 
 export const copyUploadLinkToClipboard = (task: TaskType): boolean => {
