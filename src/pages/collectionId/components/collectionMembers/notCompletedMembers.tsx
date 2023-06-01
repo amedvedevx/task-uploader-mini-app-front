@@ -41,9 +41,8 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
         if (currentTask) {
             const result = await sendNotification({
                 taskId: collectionId,
-                ownerName: currentTask?.owner.fullName,
+                task: currentTask,
                 whoToSend: [vkUserId],
-                taskName: currentTask?.name,
             }).unwrap();
 
             if (result === 'success') {
