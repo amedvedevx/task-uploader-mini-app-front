@@ -59,7 +59,9 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const sendFiles = async () => {
         setLoading(true);
 
+        // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
+            // eslint-disable-next-line no-await-in-loop
             await uploadFile({ taskId, subTaskId, file });
         }
 
