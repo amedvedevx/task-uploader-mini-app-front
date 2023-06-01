@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useState } from 'react';
 import {
     Accordion,
     Avatar,
@@ -13,13 +14,14 @@ import styled from 'styled-components';
 import { AccordionSummary } from '@vkontakte/vkui/dist/components/Accordion/AccordionSummary';
 
 import type { TaskResults } from '@/app/types';
-import { getInitials } from '@/lib/utils';
+import { getInitials, isForbiddenFile } from '@/lib/utils';
 import {
     useLazyDownloadFilesQuery,
     useLazyDownloadFilesOnMobileQuery,
     useLazyDownloadSingleFileQuery,
 } from '@/api';
 import { BridgeDownload } from '@/api/query/bridge';
+import { Popout } from '@/components';
 
 import { DownloadButton } from './components/DownloadButton';
 
@@ -39,6 +41,8 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     const [downloadFiles, { isLoading: isDownloading, originalArgs }] = useLazyDownloadFilesQuery();
     const [downloadFilesOnMobile] = useLazyDownloadFilesOnMobileQuery();
     const [downloadSingleFile] = useLazyDownloadSingleFileQuery();
+
+    const [popout, setPopout] = useState<JSX.Element | null>(null);
 
     const platform = usePlatform();
     const isIOSPlatform = platform === Platform.IOS;
@@ -70,82 +74,108 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
         }
     };
 
-    return (
-        <List data-automation-id='collectionId-page-membersList'>
-            {taskResults.map(
-                ({
-                    testee: { vkUserId, firstName, lastName, fullName, photo },
-                    subTaskResults,
-                    taskId,
-                }) => (
-                    <Accordion key={vkUserId}>
-                        <AccordionSummaryWidth>
-                            <SimpleCell
-                                key={vkUserId}
-                                disabled
-                                before={
-                                    <Avatar
-                                        size={40}
-                                        src={photo === avatarStub ? '#' : photo}
-                                        alt='icon'
-                                        gradientColor={calcInitialsAvatarColor(vkUserId)}
-                                        initials={getInitials(`${firstName} ${lastName}`)}
-                                    />
-                                }
-                                after={
-                                    !isIOSPlatform && (
-                                        <DownloadButton
-                                            originalArgs={originalArgs}
-                                            vkUserId={vkUserId}
-                                            isDownloading={isDownloading}
-                                            counter={subTaskResults[0].content.length}
-                                            onClickHandler={onClickHandler}
-                                        />
-                                    )
-                                }
-                            >
-                                {fullName}
-                            </SimpleCell>
-                        </AccordionSummaryWidth>
+    const handleDownloadFile = (args: OnClickArgs) => {
+        if (isForbiddenFile(String(args.title))) {
+            const popoutForbiddenFile = (
+                <Popout
+                    text='Этот файл может быть потенциально опасным, вы уверены что хотите скачать его?'
+                    header='Предупреждение'
+                    action={() => {
+                        onClickHandler({ ...args });
+                    }}
+                    actionText='Скачать'
+                    setPopout={setPopout}
+                />
+            );
 
-                        <ListCustomPadding $isMobilePlatform={isMobilePlatform}>
-                            {subTaskResults[0].content.map(({ title, docId, url }) => (
+            setPopout(popoutForbiddenFile);
+        } else {
+            onClickHandler({ ...args });
+        }
+    };
+
+    return (
+        <>
+            <List data-automation-id='collectionId-page-membersList'>
+                {taskResults.map(
+                    ({
+                        testee: { vkUserId, firstName, lastName, fullName, photo },
+                        subTaskResults,
+                        taskId,
+                    }) => (
+                        <Accordion key={vkUserId}>
+                            <AccordionSummaryWidth>
                                 <SimpleCell
-                                    key={title}
+                                    key={vkUserId}
+                                    disabled
+                                    before={
+                                        <Avatar
+                                            size={40}
+                                            src={photo === avatarStub ? '#' : photo}
+                                            alt='icon'
+                                            gradientColor={calcInitialsAvatarColor(vkUserId)}
+                                            initials={getInitials(`${firstName} ${lastName}`)}
+                                        />
+                                    }
                                     after={
-                                        <Button
-                                            appearance='accent'
-                                            size='s'
-                                            mode='secondary'
-                                            disabled={
-                                                originalArgs?.vkUserId === vkUserId && isDownloading
-                                            }
-                                            loading={
-                                                originalArgs?.vkUserId === vkUserId && isDownloading
-                                            }
-                                            onClick={() =>
-                                                onClickHandler({
-                                                    vkUserId,
-                                                    url,
-                                                    title,
-                                                    taskId,
-                                                    docId,
-                                                    subTaskId: subTaskResults[0].subTaskId,
-                                                })
-                                            }
-                                        >
-                                            Скачать
-                                        </Button>
+                                        !isIOSPlatform && (
+                                            <DownloadButton
+                                                originalArgs={originalArgs}
+                                                vkUserId={vkUserId}
+                                                isDownloading={isDownloading}
+                                                counter={subTaskResults[0].content.length}
+                                                onClickHandler={onClickHandler}
+                                            />
+                                        )
                                     }
                                 >
-                                    {title}
+                                    {fullName}
                                 </SimpleCell>
-                            ))}
-                        </ListCustomPadding>
-                    </Accordion>
-                ),
-            )}
-        </List>
+                            </AccordionSummaryWidth>
+
+                            <ListCustomPadding $isMobilePlatform={isMobilePlatform}>
+                                {subTaskResults[0].content.map(({ title, docId, url }) => (
+                                    <SimpleCell
+                                        key={title}
+                                        after={
+                                            <Button
+                                                appearance='accent'
+                                                size='s'
+                                                mode='secondary'
+                                                disabled={
+                                                    originalArgs?.vkUserId === vkUserId &&
+                                                    isDownloading
+                                                }
+                                                loading={
+                                                    originalArgs?.vkUserId === vkUserId &&
+                                                    isDownloading
+                                                }
+                                                onClick={() =>
+                                                    handleDownloadFile({
+                                                        vkUserId,
+                                                        url,
+                                                        title,
+                                                        taskId,
+                                                        docId,
+                                                        subTaskId: subTaskResults[0].subTaskId,
+                                                    })
+                                                }
+                                            >
+                                                Скачать
+                                            </Button>
+                                        }
+                                    >
+                                        {title}
+                                    </SimpleCell>
+                                ))}
+                            </ListCustomPadding>
+                        </Accordion>
+                    ),
+                )}
+            </List>
+
+            {popout}
+        </>
     );
 };
 
