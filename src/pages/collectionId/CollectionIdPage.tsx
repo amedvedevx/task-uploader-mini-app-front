@@ -12,12 +12,13 @@ import {
 import type { FC } from 'react';
 import { createRef, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Icon20ReportOutline } from '@vkontakte/icons';
+import { Icon20FolderOutline, Icon20ReportOutline } from '@vkontakte/icons';
 
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import {
     store,
+    useGetPlatformQuery,
     useGetTaskIdQuery,
     useGetTaskResultsQuery,
     useLazyDownloadFilesQuery,
@@ -25,7 +26,7 @@ import {
 } from '@/api';
 import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
-import { useBridgePlatform, useSearch } from '@/hooks';
+import { useSearch } from '@/hooks';
 import { checkIsMobilePlatform, errorParser, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
@@ -56,18 +57,18 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         data = { taskResults: [] },
         isLoading,
         error,
-        refetch: refetchResults,
     } = useGetTaskResultsQuery({
         taskId: collectionId,
     });
 
     const { taskResults } = data;
 
-    const { data: currentTask = {} as TaskType, refetch: refetchTask } = useGetTaskIdQuery({
+    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({
         taskId: collectionId,
     });
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
     const [downloadFiles, { isLoading: isFileDownloading }] = useLazyDownloadFilesQuery();
+    const { data: platform = '' } = useGetPlatformQuery();
 
     const [popout, setPopout] = useState<JSX.Element | null>(null);
 
@@ -83,7 +84,6 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const stateErrors = store.getState().errors;
     const apiMessageError = stateErrors.find((errorObj) => errorObj.type === 'api-messages');
 
-    const platform = useBridgePlatform();
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
@@ -159,17 +159,18 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         setPopout(popoutCloseTask);
     };
 
+    useEffect(() => {
+        if (selectedTab) {
+            setSnackbarText(null);
+        }
+    }, [selectedTab]);
+
     useLayoutEffect(() => {
         setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
 
-    useEffect(() => {
-        refetchResults();
-        refetchTask();
-    }, [selectedTab]);
-
-    if (error?.status) {
-        const errorMessage = errorParser(error?.status);
+    if (error && 'status' in error) {
+        const errorMessage = errorParser(error.status as number);
 
         throw Error(errorMessage);
     }
@@ -199,6 +200,16 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                             <PanelHeaderSkeleton />
                         )}
                     </PanelHeader>
+
+                    {currentTask.description && (
+                        <MiniInfoCell
+                            before={<Icon20FolderOutline />}
+                            textWrap='full'
+                            mode='base'
+                        >
+                            {currentTask.description}
+                        </MiniInfoCell>
+                    )}
 
                     {/* For unpredictable problems caused by vk api */}
                     {apiMessageError && (

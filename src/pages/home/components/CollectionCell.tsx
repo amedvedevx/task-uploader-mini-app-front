@@ -55,7 +55,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
     const [deleteTask, { error: deleteError, isLoading: deleteLoading }] = useDeleteTaskMutation();
     const [updateTask, { error: updateError, isLoading: updateLoading }] = useUpdateTaskMutation();
 
-    const baseTargetRef = useRef();
+    const baseTargetRef = useRef(null);
 
     const actionsList = (
         <ActionSheet
@@ -141,7 +141,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
 
 const SimpleCell = styled(SimpleCellRoot)`
     .vkuiSimpleCell__main {
-        width: 260px;
+        width: 100px;
     }
 `;
 

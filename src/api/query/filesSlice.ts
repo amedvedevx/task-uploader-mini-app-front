@@ -1,10 +1,10 @@
 import type {
-    UploadFilesProps,
+    UploadFileProps,
     DownloadFilesProps,
-    UploadFilesResponce,
+    UploadFileResponse,
     TaskDetailResult,
     DownloadSingleFileProps,
-    PreUploadFilesResponce,
+    PreUploadFilesResponse,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
@@ -86,48 +86,15 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
             },
         }),
         downloadFilesOnMobile: builder.query<void, TaskDetailResult[]>({
-            queryFn: (resultsData) => {
-                resultsData[0].content.forEach((fileData) => {
-                    BridgeDownload({ url: fileData.url, fileName: fileData.title });
-                });
-
-                return { data: 'success' as unknown as void };
-            },
-        }),
-        uploadFiles: builder.mutation<UploadFilesResponce, UploadFilesProps>({
-            queryFn: async (
-                { taskId, subTaskId, files },
-                _queryApi,
-                _extraOptions,
-                fetchWithBQ,
-            ) => {
-                const { userInfo } = (_queryApi.getState() as RootState).authorization;
-
+            queryFn: async (resultsData) => {
                 const result = await Promise.all(
-                    files.map(async (fileToSend) => {
-                        const uploadUrl = await BridgeDocsUploadServer({
-                            token: userInfo.token,
+                    resultsData[0].content.map(async (fileData) => {
+                        const dwnlResult = await BridgeDownload({
+                            url: fileData.url,
+                            fileName: fileData.title,
                         });
 
-                        const filesData = new FormData();
-
-                        if (uploadUrl !== 'error') {
-                            filesData.append('url', uploadUrl?.upload_url);
-                            filesData.append('file', fileToSend);
-                        }
-
-                        const uploadResponse: PreUploadFilesResponce = await fetchWithBQ({
-                            url: `/files`,
-                            method: 'POST',
-                            body: filesData,
-                        });
-
-                        const saveResponce = await BridgeDocsSave({
-                            token: userInfo.token,
-                            file: uploadResponse?.data?.file,
-                        });
-
-                        return saveResponce;
+                        return dwnlResult;
                     }),
                 );
 
@@ -135,17 +102,53 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     return { error: 'error' };
                 }
 
-                const preparedFiles = result.map((saveResult) => saveResult?.doc);
+                return { data: 'success' };
+            },
+        }),
+        uploadFile: builder.mutation<UploadFileResponse, UploadFileProps>({
+            queryFn: async (
+                { taskId, subTaskId, file },
+                { getState },
+                _extraOptions,
+                fetchWithBQ,
+            ) => {
+                const { token } = (getState() as RootState).authorization;
 
-                const saveFileLink = await fetchWithBQ({
+                const uploadUrl = await BridgeDocsUploadServer({
+                    token,
+                });
+
+                const filesData = new FormData();
+
+                if (uploadUrl !== 'error') {
+                    filesData.append('url', uploadUrl?.upload_url);
+                    filesData.append('file', file);
+                }
+
+                const uploadResponse: PreUploadFilesResponse = await fetchWithBQ({
+                    url: `/files`,
+                    method: 'POST',
+                    body: filesData,
+                });
+
+                const saveResponse = await BridgeDocsSave({
+                    token,
+                    file: uploadResponse?.data?.file,
+                });
+
+                if (saveResponse?.error_code) {
+                    return { error: saveResponse?.error_msg };
+                }
+
+                const saveFileLinkResponse = await fetchWithBQ({
                     url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
                     method: 'PUT',
                     body: {
-                        data: preparedFiles,
+                        data: [saveResponse?.doc],
                     },
                 });
 
-                return saveFileLink;
+                return saveFileLinkResponse;
             },
             invalidatesTags: ['TaskResult'],
         }),
@@ -156,5 +159,5 @@ export const {
     useLazyDownloadFilesQuery,
     useLazyDownloadFilesOnMobileQuery,
     useLazyDownloadSingleFileQuery,
-    useUploadFilesMutation,
+    useUploadFileMutation,
 } = filesSlice;
