@@ -13,7 +13,7 @@ import {
 import styled from 'styled-components';
 import { AccordionSummary } from '@vkontakte/vkui/dist/components/Accordion/AccordionSummary';
 
-import type { TaskResults } from '@/app/types';
+import type { TaskDetailResultContent, TaskResults } from '@/app/types';
 import { getInitials, isForbiddenFile } from '@/lib/utils';
 import {
     useLazyDownloadFilesQuery,
@@ -74,7 +74,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
         }
     };
 
-    const handleDownloadFile = (args: OnClickArgs) => {
+    const handleDownloadFile = (args: OnClickArgs, files?: TaskDetailResultContent[]) => {
         if (isForbiddenFile(String(args.title))) {
             const popoutForbiddenFile = (
                 <Popout
@@ -89,6 +89,20 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
             );
 
             setPopout(popoutForbiddenFile);
+        } else if (files && files.some((el) => isForbiddenFile(el.title))) {
+            const popoutForbiddenFiles = (
+                <Popout
+                    text='Этот архив может содержать потенциально опасные файлы, вы уверены что хотите скачать его?'
+                    header='Предупреждение'
+                    action={() => {
+                        onClickHandler({ ...args });
+                    }}
+                    actionText='Скачать'
+                    setPopout={setPopout}
+                />
+            );
+
+            setPopout(popoutForbiddenFiles);
         } else {
             onClickHandler({ ...args });
         }
@@ -124,7 +138,8 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                                 vkUserId={vkUserId}
                                                 isDownloading={isDownloading}
                                                 counter={subTaskResults[0].content.length}
-                                                onClickHandler={onClickHandler}
+                                                files={subTaskResults[0].content}
+                                                handleDownloadFile={handleDownloadFile}
                                             />
                                         )
                                     }
