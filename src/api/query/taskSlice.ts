@@ -52,10 +52,31 @@ const taskResultSlice = apiSlice
                 invalidatesTags: ['Task'],
             }),
             deleteTask: builder.mutation<void, DeleteTaskProps>({
-                query: ({ taskId }) => ({
-                    url: `/task/${taskId}`,
-                    method: 'DELETE',
-                }),
+                queryFn: async ({ taskId }, _queryApi, _extraOptions, fetchWithBQ) => {
+                    const payloadCloseTask = {
+                        fields: [{ fieldName: 'status', value: 'DONE' }],
+                    };
+                    const closeTaskResponse = await fetchWithBQ({
+                        url: `/task/${taskId}`,
+                        method: 'PATCH',
+                        body: { ...payloadCloseTask },
+                    });
+
+                    if (closeTaskResponse.error) {
+                        return { error: 'error' };
+                    }
+
+                    const deleteResponse = await fetchWithBQ({
+                        url: `/task/${taskId}`,
+                        method: 'DELETE',
+                    });
+
+                    if (deleteResponse.error) {
+                        return { error: 'error' };
+                    }
+
+                    return { data: 'success' };
+                },
                 invalidatesTags: ['Task'],
             }),
             deleteSubTask: builder.mutation<void, DeleteSubTaskProps>({
