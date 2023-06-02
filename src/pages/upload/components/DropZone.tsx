@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Icon56CancelCircleOutline, Icon56DocumentOutline } from '@vkontakte/icons';
+import { Icon56CancelCircleOutline } from '@vkontakte/icons';
 import { Div, Placeholder, File, Spinner } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -72,8 +72,7 @@ export const DropZone: FC<DropZoneProps> = ({
                         <Spinner size='large' />
                     ) : (
                         <PlaceholderCentered
-                            icon={<Icon56DocumentOutline color='var(--vkui--color_icon_accent)' />}
-                            action={
+                            icon={
                                 !isDragActive && (
                                     <File
                                         data-automation-id='upload-page-placeholder'
@@ -83,12 +82,12 @@ export const DropZone: FC<DropZoneProps> = ({
                                             e.preventDefault();
                                         }}
                                     >
-                                        Выбрать файл
+                                        Выберите файл
                                     </File>
                                 )
                             }
                         >
-                            Для загрузки файла перенесите его в эту область
+                            или перенесите его в эту область для загрузки
                         </PlaceholderCentered>
                     )}
                 </DropZoneContainer>

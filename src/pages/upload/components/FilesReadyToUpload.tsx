@@ -1,14 +1,9 @@
-import { Header, List, Cell, Avatar, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Header, HorizontalScroll } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import styled from 'styled-components';
 
-import {
-    inclinationWord,
-    getFileExtension,
-    formatFileDate,
-    parseFileSize,
-    getExtenstionInitials,
-} from '@/lib';
+import { inclinationWord } from '@/lib';
+
+import { HorizontalFileCell } from './HorizontalFileCell';
 
 interface FilesReadyToUploadProps {
     files: File[];
@@ -22,30 +17,20 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({ files, removeF
                     ${inclinationWord(files.length, ['файл', 'файла', 'файлов'])}`}
         </Header>
 
-        <List data-automation-id='upload-page-filesList'>
-            {files.map(({ name, lastModified, size }) => (
-                <Cell
-                    key={lastModified}
-                    data-automation-id='upload-page-cellFile'
-                    mode='removable'
-                    subtitle={`${getFileExtension(name)} - ${formatFileDate(
-                        lastModified,
-                    )} - ${parseFileSize(size)}`}
-                    before={
-                        <AvatarSquared
-                            initials={getExtenstionInitials(name)}
-                            gradientColor={calcInitialsAvatarColor(size)}
-                        />
-                    }
-                    onRemove={() => removeFile(lastModified)}
-                >
-                    {name}
-                </Cell>
-            ))}
-        </List>
+        <HorizontalScroll
+            showArrows
+            data-automation-id='upload-page-filesList'
+        >
+            <div style={{ display: 'flex' }}>
+                {files.map(({ name, lastModified }) => (
+                    <HorizontalFileCell
+                        key={lastModified}
+                        title={name}
+                        type='delete'
+                        onClick={() => removeFile(lastModified)}
+                    />
+                ))}
+            </div>
+        </HorizontalScroll>
     </>
 );
-
-const AvatarSquared = styled(Avatar)`
-    border-radius: 4px;
-`;
