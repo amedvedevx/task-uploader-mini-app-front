@@ -1,6 +1,6 @@
-import type { GetTasksResponce } from '@/app/types';
+import type { GetTasksResponse } from '@/app/types';
 
-export const tasksDateSorting = (data: GetTasksResponce): GetTasksResponce => {
+export const tasksDateSorting = (data: GetTasksResponse): GetTasksResponse => {
     data.tasks = data.tasks.sort((a, b) => b.dateCreate - a.dateCreate);
 
     return data;

@@ -1,9 +1,9 @@
 import type {
     DeleteTaskResultProps,
     GetSubTaskResultStatusProps,
-    GetSubTaskResultStatusResponce,
+    GetSubTaskResultStatusResponse,
     GetTaskResultsProps,
-    GetTaskResultsResponce,
+    GetTaskResultsResponse,
     TaskResults,
 } from '@/app/types';
 
@@ -11,7 +11,7 @@ import { apiSlice } from './apiSlice';
 
 const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).injectEndpoints({
     endpoints: (builder) => ({
-        getTaskResults: builder.query<GetTaskResultsResponce, GetTaskResultsProps>({
+        getTaskResults: builder.query<GetTaskResultsResponse, GetTaskResultsProps>({
             query: ({ taskId }) => ({
                 url: `/task-result/${taskId}`,
             }),
@@ -28,7 +28,7 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] 
             invalidatesTags: ['TaskResult'],
         }),
         getSubTaskResultStatus: builder.query<
-            GetSubTaskResultStatusResponce,
+            GetSubTaskResultStatusResponse,
             GetSubTaskResultStatusProps
         >({
             query: ({ taskId, subTaskId }) => ({

@@ -4,13 +4,13 @@ import type {
     SendNotificationProps,
     GetChatTesteesProps,
     GetAllowedForRemindIdsProps,
-    GetAllowedForRemindIdsResponce,
+    GetAllowedForRemindIdsResponse,
     UpdateAllowedForRemindIdsProps,
     TesteeType,
 } from '@/app/types';
 import { UPLOAD_URL } from '@/app/config';
 
-import type { BridgeMessagesSendResponce } from './bridge';
+import type { BridgeMessagesSendResponse } from './bridge';
 import {
     BridgeGetConversationsMembers,
     BridgeMessagesSend,
@@ -24,13 +24,13 @@ const testeesSlice = apiSlice
     .injectEndpoints({
         endpoints: (builder) => ({
             getTestees: builder.query<GetTesteesResponse, GetTesteesProps>({
-                queryFn: async ({ search, count, invitedMemberIds }, { getState }) => {
-                    const { userInfo } = (getState() as RootState).authorization;
+                queryFn: async ({ search, count, invitedMemberIds, userId }, { getState }) => {
+                    const { token } = (getState() as RootState).authorization;
 
                     let filteredTestees = {} as GetTesteesResponse;
 
                     const testees = await BridgeSearchConversations({
-                        token: userInfo.token,
+                        token,
                         search,
                         count,
                     });
@@ -44,7 +44,7 @@ const testeesSlice = apiSlice
                             ? testees.profiles.filter(
                                 (el) =>
                                     !invitedMemberIds?.includes(el.id) &&
-                                      el.id !== userInfo.userId,
+                                      el.id !== userId,
                             )
                             : [],
                     };
@@ -55,13 +55,13 @@ const testeesSlice = apiSlice
 
             getChatTestees: builder.query<TesteeType[], GetChatTesteesProps>({
                 queryFn: async ({ selectedChats, invitedMemberIds }, { getState }) => {
-                    const { userInfo } = (getState() as RootState).authorization;
+                    const { token } = (getState() as RootState).authorization;
 
                     const convMembers: TesteeType[] = [];
 
                     const promises = selectedChats.map(async ({ peer, chat_settings }) => {
                         const result = await BridgeGetConversationsMembers({
-                            token: userInfo.token,
+                            token,
                             peerId: peer.id,
                         });
 
@@ -84,7 +84,7 @@ const testeesSlice = apiSlice
                 },
             }),
             getAllowedForRemindIds: builder.query<
-                GetAllowedForRemindIdsResponce,
+                GetAllowedForRemindIdsResponse,
                 GetAllowedForRemindIdsProps
             >({
                 query: ({ taskId, userIds }) => ({
@@ -103,15 +103,15 @@ const testeesSlice = apiSlice
                 invalidatesTags: ['AllowedRemindIds'],
             }),
 
-            sendNotification: builder.mutation<BridgeMessagesSendResponce, SendNotificationProps>({
-                queryFn: async ({ whoToSend, taskName, ownerName, taskId }, { getState }) => {
-                    const { userInfo } = (getState() as RootState).authorization;
+            sendNotification: builder.mutation<BridgeMessagesSendResponse, SendNotificationProps>({
+                queryFn: async ({ whoToSend, task, taskId }, { getState }) => {
+                    const { token } = (getState() as RootState).authorization;
 
                     const normalizeMembers = whoToSend.join();
-                    const inviteMesage = `Вы были приглашены пользователем ${ownerName} для загрузки файлов по заданию: ${taskName}. \n ${UPLOAD_URL}${taskId}`;
+                    const inviteMesage = `Вы были приглашены пользователем ${task.owner.fullName} для загрузки файлов по заданию: ${task.name}. ${task.description? `\n Описание: ${task.description}.`: ''} \n ${UPLOAD_URL}${taskId}`;
 
                     const result = await BridgeMessagesSend({
-                        token: userInfo.token,
+                        token,
                         peers: normalizeMembers,
                         message: inviteMesage,
                         taskId,
@@ -123,7 +123,6 @@ const testeesSlice = apiSlice
 
                     return { data: result };
                 },
-                invalidatesTags: ['AllowedRemindIds'],
             }),
         }),
     });

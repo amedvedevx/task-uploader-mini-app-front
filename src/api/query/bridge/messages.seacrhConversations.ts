@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import bridge from '@vkontakte/vk-bridge';
 
 import type { GetTesteesResponse } from '@/app/types';
@@ -12,8 +13,8 @@ export const BridgeSearchConversations = async ({
     token,
     search,
     count,
-}: BridgeSeacrhConversationsArgs): Promise<GetTesteesResponse> => {
-    const result: GetTesteesResponse = await bridge
+}: BridgeSeacrhConversationsArgs): Promise<GetTesteesResponse | void> => {
+    const result: GetTesteesResponse | void = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'messages.searchConversations',
             params: {
@@ -25,7 +26,10 @@ export const BridgeSearchConversations = async ({
                 fields: 'photo_100',
             },
         })
-        .then((data: { response: GetTesteesResponse }) => data.response);
+        .then((data: { response: GetTesteesResponse }) => data.response)
+        .catch((error) => {
+            console.error('VKWebAppCallAPIMethod - messages.searchConversations', error);
+        });
 
     return result;
 };

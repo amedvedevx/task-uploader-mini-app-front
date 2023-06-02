@@ -4,9 +4,9 @@ import type {
     DeleteSubTaskProps,
     DeleteTaskProps,
     GetTaskIdProps,
-    GetTaskIdResponce,
+    GetTaskIdResponse,
     GetTasksProps,
-    GetTasksResponce,
+    GetTasksResponse,
     UpdateTaskProps,
 } from '@/app/types';
 
@@ -17,7 +17,7 @@ const taskResultSlice = apiSlice
     .enhanceEndpoints({ addTagTypes: ['Task', 'TaskResult', 'AllowedRemindIds'] })
     .injectEndpoints({
         endpoints: (builder) => ({
-            getTasks: builder.query<GetTasksResponce, GetTasksProps>({
+            getTasks: builder.query<GetTasksResponse, GetTasksProps>({
                 query: ({ name, statuses, sort }) => ({
                     url: `/task`,
                     params: { name, statuses, sort },
@@ -29,7 +29,7 @@ const taskResultSlice = apiSlice
                         ? [...result.tasks.map(({ id }) => ({ type: 'Task' as const, id })), 'Task']
                         : ['Task'],
             }),
-            getTaskId: builder.query<GetTaskIdResponce, GetTaskIdProps>({
+            getTaskId: builder.query<GetTaskIdResponse, GetTaskIdProps>({
                 query: ({ taskId }) => ({
                     url: `/task/${taskId}`,
                 }),
@@ -52,10 +52,31 @@ const taskResultSlice = apiSlice
                 invalidatesTags: ['Task'],
             }),
             deleteTask: builder.mutation<void, DeleteTaskProps>({
-                query: ({ taskId }) => ({
-                    url: `/task/${taskId}`,
-                    method: 'DELETE',
-                }),
+                queryFn: async ({ taskId }, _queryApi, _extraOptions, fetchWithBQ) => {
+                    const payloadCloseTask = {
+                        fields: [{ fieldName: 'status', value: 'DONE' }],
+                    };
+                    const closeTaskResponse = await fetchWithBQ({
+                        url: `/task/${taskId}`,
+                        method: 'PATCH',
+                        body: { ...payloadCloseTask },
+                    });
+
+                    if (closeTaskResponse.error) {
+                        return { error: 'error' };
+                    }
+
+                    const deleteResponse = await fetchWithBQ({
+                        url: `/task/${taskId}`,
+                        method: 'DELETE',
+                    });
+
+                    if (deleteResponse.error) {
+                        return { error: 'error' };
+                    }
+
+                    return { data: 'success' };
+                },
                 invalidatesTags: ['Task'],
             }),
             deleteSubTask: builder.mutation<void, DeleteSubTaskProps>({
