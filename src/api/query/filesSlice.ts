@@ -6,7 +6,6 @@ import type {
     DownloadSingleFileProps,
     PreUploadFilesResponse,
 } from '@/app/types';
-import { isForbiddenFile } from '@/lib';
 
 import { apiSlice } from './apiSlice';
 import { BridgeDocsSave, BridgeDocsUploadServer, BridgeDownload } from './bridge';
@@ -43,10 +42,6 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     textblob: response.data as Blob,
                     fileName: decodeURI(fileName.substring(5)),
                 };
-
-                // if (isForbiddenFile(result.fileName)) {
-                //     return '';
-                // }
 
                 const dwnlnk = document.createElement('a');
                 dwnlnk.download = result.fileName;

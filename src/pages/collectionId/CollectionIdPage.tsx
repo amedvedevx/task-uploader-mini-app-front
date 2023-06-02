@@ -24,7 +24,7 @@ import {
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import type { SnackBarText, TaskType } from '@/app/types';
+import { SnackBarText, TaskStatusTypesForTestee, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
 import { checkIsMobilePlatform, errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
@@ -115,17 +115,15 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         />
     );
 
+    const isForbiddenAllFiles = taskResults.some(({ subTaskResults }) =>
+        subTaskResults.some(({ content }) => content.some((el) => isForbiddenFile(el.title))),
+    );
+
     const prepareButtonsOptions = (): ButtonOption[] => {
         const downloadAllButton: ButtonOption = {
             text: 'Скачать все файлы',
             onClick: () => {
-                if (
-                    taskResults.some(({ subTaskResults }) =>
-                        subTaskResults.map(({ content }) =>
-                            content.map((el) => isForbiddenFile(el.title)),
-                        ),
-                    )
-                ) {
+                if (isForbiddenAllFiles) {
                     setPopout(popoutForbiddenFiles);
                 } else {
                     downloadFiles({ taskId: collectionId });
