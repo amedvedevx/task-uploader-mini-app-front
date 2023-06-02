@@ -156,4 +156,7 @@ const DropZoneContainer = styled.div<DropZoneContainerProps>`
 
 const PlaceholderCentered = styled(Placeholder)`
     height: 100%;
+    .vkuiPlaceholder__in {
+        padding: 0px;
+    }
 `;

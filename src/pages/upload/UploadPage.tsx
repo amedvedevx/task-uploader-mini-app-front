@@ -133,7 +133,14 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     setSnackbarText={setSnackbarText}
                 />
 
-                {uploadedFiles && <UploadedFiles files={uploadedFiles} />}
+                {uploadedFiles && (
+                    <Group
+                        separator='hide'
+                        data-automation-id='upload-page-filesGroup'
+                    >
+                        <UploadedFiles files={uploadedFiles} />
+                    </Group>
+                )}
 
                 {!!files.length && (
                     <Group

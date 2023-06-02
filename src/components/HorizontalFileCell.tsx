@@ -1,11 +1,7 @@
-import { HorizontalCell, Image, IconButton } from '@vkontakte/vkui';
+import { HorizontalCell, Image, IconButton, PanelHeader } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import styled from 'styled-components';
-import {
-    Icon28CancelCircleOutline,
-    Icon28DownloadOutline,
-    Icon32DocumentOutline,
-} from '@vkontakte/icons';
+import { Icon24DismissDark, Icon24DownloadOutline, Icon32DocumentOutline } from '@vkontakte/icons';
 
 interface HorizontalFileCellProps {
     title: string;
@@ -14,8 +10,8 @@ interface HorizontalFileCellProps {
 }
 
 const iconType = {
-    download: <Icon28DownloadOutline />,
-    delete: <Icon28CancelCircleOutline />,
+    download: <Icon24DownloadOutline />,
+    delete: <Icon24DismissDark />,
 };
 
 export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, onClick }) => (
@@ -26,19 +22,19 @@ export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, o
     >
         <Image size={66}>
             <Icon32DocumentOutline />
-        </Image>
 
-        <CellButton
-            aria-label='fileIconButton'
-            onClick={onClick}
-        >
-            {type && iconType[type]}
-        </CellButton>
+            <CellButton
+                aria-label='fileIconButton'
+                onClick={onClick}
+            >
+                {type && iconType[type]}
+            </CellButton>
+        </Image>
     </HorizontalCell>
 );
 
 const CellButton = styled(IconButton)`
     position: absolute;
-    top: -10px;
-    right: 2px;
+    top: -22px;
+    right: -22px;
 `;
