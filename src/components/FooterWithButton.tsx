@@ -2,7 +2,7 @@ import { Button, ButtonGroup, Counter, Div, FixedLayout, Separator } from '@vkon
 import type { FC } from 'react';
 
 export type ButtonOption = {
-    onClick: () => unknown;
+    onClick: () => void;
     text: string;
     appearance?: 'accent' | 'positive' | 'negative' | 'neutral' | 'overlay' | 'accent-invariable';
     mode?: 'link' | 'primary' | 'secondary' | 'tertiary' | 'outline';
