@@ -1,21 +1,25 @@
 import { Button, Counter } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
-import type { DownloadFilesProps } from '@/app/types';
+import type { DownloadFilesProps, TaskDetailResultContent } from '@/app/types';
 
 interface DownloadButtonProps {
     originalArgs: DownloadFilesProps | undefined;
     vkUserId: number;
     isDownloading: boolean;
     counter: number;
-    onClickHandler: (arg: {
-        vkUserId: number;
-        url?: string;
-        title?: string;
-        taskId?: string;
-        subTaskId?: string;
-        docId?: number;
-    }) => void;
+    files: TaskDetailResultContent[];
+    handleDownloadFile: (
+        arg: {
+            vkUserId: number;
+            url?: string;
+            title?: string;
+            taskId?: string;
+            subTaskId?: string;
+            docId?: number;
+        },
+        files: TaskDetailResultContent[],
+    ) => void;
 }
 
 export const DownloadButton: FC<DownloadButtonProps> = ({
@@ -23,7 +27,8 @@ export const DownloadButton: FC<DownloadButtonProps> = ({
     vkUserId,
     isDownloading,
     counter,
-    onClickHandler,
+    handleDownloadFile,
+    files,
 }) => (
     <Button
         appearance='accent'
@@ -32,7 +37,7 @@ export const DownloadButton: FC<DownloadButtonProps> = ({
         after={<Counter size='s'>{counter}</Counter>}
         disabled={originalArgs?.vkUserId === vkUserId && isDownloading}
         loading={originalArgs?.vkUserId === vkUserId && isDownloading}
-        onClick={() => onClickHandler({ vkUserId })}
+        onClick={() => handleDownloadFile({ vkUserId }, files)}
     >
         Скачать все
     </Button>
