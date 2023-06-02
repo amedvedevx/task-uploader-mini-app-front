@@ -123,7 +123,6 @@ const testeesSlice = apiSlice
 
                     return { data: result };
                 },
-                invalidatesTags: ['AllowedRemindIds'],
             }),
         }),
     });
