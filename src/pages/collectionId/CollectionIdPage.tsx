@@ -27,7 +27,7 @@ import {
 import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
-import { checkIsMobilePlatform, errorParser, normalizeTestees } from '@/lib/utils';
+import { checkIsMobilePlatform, errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
@@ -103,10 +103,34 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         />
     );
 
+    const popoutForbiddenFiles = (
+        <Popout
+            text='Этот архив может содержать потенциально опасные файлы, вы уверены что хотите скачать его?'
+            header='Предупреждение'
+            action={() => {
+                downloadFiles({ taskId: collectionId });
+            }}
+            actionText='Скачать'
+            setPopout={setPopout}
+        />
+    );
+
     const prepareButtonsOptions = (): ButtonOption[] => {
         const downloadAllButton: ButtonOption = {
             text: 'Скачать все файлы',
-            onClick: () => downloadFiles({ taskId: collectionId }),
+            onClick: () => {
+                if (
+                    taskResults.some(({ subTaskResults }) =>
+                        subTaskResults.map(({ content }) =>
+                            content.map((el) => isForbiddenFile(el.title)),
+                        ),
+                    )
+                ) {
+                    setPopout(popoutForbiddenFiles);
+                } else {
+                    downloadFiles({ taskId: collectionId });
+                }
+            },
             loading: isFileDownloading,
             mode: 'primary',
         };

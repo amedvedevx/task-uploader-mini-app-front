@@ -89,7 +89,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
             );
 
             setPopout(popoutForbiddenFile);
-        } else if (files && files?.some((el) => isForbiddenFile(el.title))) {
+        } else if (files && files.some((el) => isForbiddenFile(el.title))) {
             const popoutForbiddenFiles = (
                 <Popout
                     text='Этот архив может содержать потенциально опасные файлы, вы уверены что хотите скачать его?'
