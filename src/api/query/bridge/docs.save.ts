@@ -7,7 +7,7 @@ interface BridgeDocsSaveArgs {
     title?: string;
 }
 
-type BridgeDocsSaveResponce = {
+type BridgeDocsSaveResponse = {
     type: string;
     doc: {
         id: number;
@@ -20,13 +20,23 @@ type BridgeDocsSaveResponce = {
         url: string;
     };
 };
+type ErrorData = {
+    error_code: number;
+    error_msg: string;
+    request_params: Record<string, unknown>[];
+};
+
+type ErrorType = {
+    error_data: ErrorData;
+    error_type: string;
+};
 
 export const BridgeDocsSave = async ({
     token,
     file,
     title,
-}: BridgeDocsSaveArgs): Promise<BridgeDocsSaveResponce | 'error'> => {
-    const result: BridgeDocsSaveResponce | 'error' = await bridge
+}: BridgeDocsSaveArgs): Promise<BridgeDocsSaveResponse | ErrorData | 'error'> => {
+    const result: BridgeDocsSaveResponse | ErrorData | 'error' = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'docs.save',
             params: {
@@ -37,16 +47,17 @@ export const BridgeDocsSave = async ({
             },
         })
         .then((res) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (res.response?.[0]?.error) {
                 return 'error';
             }
 
-            return res.response as BridgeDocsSaveResponce;
+            return res.response as BridgeDocsSaveResponse;
         })
-        .catch((error) => {
+        .catch((error: ErrorType) => {
             console.error('VKWebAppCallAPIMethod-docs.save', error);
 
-            return 'error';
+            return error.error_data;
         });
 
     return result;

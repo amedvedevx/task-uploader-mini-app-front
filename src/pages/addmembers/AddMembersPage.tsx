@@ -14,7 +14,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import { useGetTesteesQuery, useGetTaskIdQuery, useGetTaskResultsQuery } from '@/api';
+import { useGetTesteesQuery, useGetTaskIdQuery, useGetTaskResultsQuery, useGetUserIdQuery } from '@/api';
 import { setSelectedChats, setSelectedMembers } from '@/api/state';
 import type { GetTesteesResponse, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
@@ -33,6 +33,8 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
     const { collectionId } = useParams();
     const dispatch = useDispatch();
     const router = useRouter();
+
+    const { data: userId } = useGetUserIdQuery();
 
     const [timer, setTimer] = useState<NodeJS.Timeout>();
 
@@ -58,6 +60,7 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
         search: searchQuery,
         count: conversationsCount,
         invitedMemberIds,
+        userId,
     });
 
     const selection = useMembersSelection();

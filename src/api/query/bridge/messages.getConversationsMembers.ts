@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import bridge from '@vkontakte/vk-bridge';
 
 import type { TesteeType } from '@/app/types';
@@ -10,9 +11,9 @@ interface BridgeGetConversationsMembersArgs {
 export const BridgeGetConversationsMembers = async ({
     token,
     peerId,
-}: BridgeGetConversationsMembersArgs): Promise<TesteeType[]> => {
+}: BridgeGetConversationsMembersArgs): Promise<TesteeType[] | void> => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const result: TesteeType[] = await bridge
+    const result: TesteeType[] | void = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'messages.getConversationMembers',
             params: {
@@ -22,7 +23,9 @@ export const BridgeGetConversationsMembers = async ({
             },
         })
         .then((data: { response: { profiles: TesteeType[] } }) => data.response.profiles)
-        .catch((err) => err);
+        .catch((error) => {
+            console.error('VKWebAppCallAPIMethod - messages.getConversationMembers', error);
+        });
 
     return result;
 };

@@ -86,9 +86,8 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
 
         await sendNotification({
             taskId: collectionId,
-            ownerName: currentTask.owner.fullName,
+            task: currentTask,
             whoToSend: membersIds,
-            taskName: currentTask.name,
         }).unwrap();
         router.pushPage(PAGE_COLLECTION_ID, { collectionId });
     };

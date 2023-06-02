@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import bridge from '@vkontakte/vk-bridge';
 
 import { UPLOAD_URL } from '@/app/config';
@@ -19,7 +20,7 @@ type ErrorSuccessSend = {
     conversation_message_id: number;
 };
 
-type ErrorResponce = {
+type ErrorResponse = {
     response: ErrorCantSend[] & ErrorSuccessSend;
 };
 
@@ -28,15 +29,15 @@ type Error = {
     successUsers: number[];
 };
 
-export type BridgeMessagesSendResponce = 'success' | Error;
+export type BridgeMessagesSendResponse = 'success' | Error;
 
 export const BridgeMessagesSend = async ({
     token,
     peers,
     message,
     taskId,
-}: BridgeMessagesSendArgs): Promise<BridgeMessagesSendResponce> => {
-    const result: BridgeMessagesSendResponce = await bridge
+}: BridgeMessagesSendArgs): Promise<BridgeMessagesSendResponse> => {
+    const result: BridgeMessagesSendResponse = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'messages.send',
             params: {
@@ -58,7 +59,7 @@ export const BridgeMessagesSend = async ({
                 v: '5.189',
             },
         })
-        .then((res: ErrorResponce) => {
+        .then((res: ErrorResponse) => {
             if (res.response[0].error) {
                 const successUsers = res.response
                     .filter((user) => !user.error)
@@ -73,7 +74,11 @@ export const BridgeMessagesSend = async ({
 
             return 'success';
         })
-        .catch((err) => 'error');
+        .catch((error) => {
+            console.error('VKWebAppCallAPIMethod - messages.send', error);
+
+            return 'error';
+        });
 
     return result;
 };

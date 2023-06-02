@@ -5,14 +5,14 @@ interface BridgeDocsUploadServerArgs {
     token: string;
 }
 
-type BridgeDocsUploadServerResponce = {
+type BridgeDocsUploadServerResponse = {
     upload_url: string;
 };
 
 export const BridgeDocsUploadServer = async ({
     token,
-}: BridgeDocsUploadServerArgs): Promise<BridgeDocsUploadServerResponce | 'error'> => {
-    const result: BridgeDocsUploadServerResponce | 'error' = await bridge
+}: BridgeDocsUploadServerArgs): Promise<BridgeDocsUploadServerResponse | 'error'> => {
+    const result: BridgeDocsUploadServerResponse | 'error' = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'docs.getUploadServer',
             params: {
@@ -21,11 +21,12 @@ export const BridgeDocsUploadServer = async ({
             },
         })
         .then((res) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (res.response?.[0]?.error) {
                 return 'error';
             }
 
-            return res.response as BridgeDocsUploadServerResponce;
+            return res.response as BridgeDocsUploadServerResponse;
         })
         .catch((error) => {
             console.error('VKWebAppCallAPIMethod-docs.getUploadServer', error);
