@@ -131,6 +131,26 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     body: filesData,
                 });
 
+                if (uploadResponse.data.error) {
+                    if (uploadResponse.data.error === 'empty_file') {
+                        return { error: 'Невозможно загрузить пустой файл' };
+                    }
+
+                    if (uploadResponse.data.error === 'no extension found') {
+                        return { error: 'Невозможно загрузить файл без расширения' };
+                    }
+
+                    if (uploadResponse?.meta?.response.status === 413) {
+                        return { error: 'Размер файла слишком большой' };
+                    }
+
+                    if (uploadResponse?.meta?.response.status === 404) {
+                        return { error: 'Попробуйте снова' };
+                    }
+
+                    return { error: 'error' };
+                }
+
                 const saveResponse = await BridgeDocsSave({
                     token,
                     file: uploadResponse?.data?.file,

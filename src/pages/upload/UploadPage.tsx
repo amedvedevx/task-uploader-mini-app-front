@@ -77,7 +77,11 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                 type: 'error',
                 text: `Загрузка файла ${
                     statusFromServer?.originalArgs?.file?.name || ''
-                } не удалась`,
+                } не удалась${
+                    statusFromServer.error && statusFromServer.error !== 'error'
+                        ? `: ${statusFromServer.error}`
+                        : '.'
+                }`,
             });
         }
 
