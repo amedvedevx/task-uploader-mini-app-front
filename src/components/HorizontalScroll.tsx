@@ -4,15 +4,16 @@ import styled from 'styled-components';
 
 interface HorizontalScrollProps {
     children: ReactNode;
+    isDownload?: boolean;
 }
 
-export const HorizontalScroll: FC<HorizontalScrollProps> = ({ children }) => (
+export const HorizontalScroll: FC<HorizontalScrollProps> = ({ children, isDownload }) => (
     <HorizontalScrollVkUi data-automation-id='upload-page-filesList'>
-        <HorizontalScrollContainer>{children}</HorizontalScrollContainer>
+        <HorizontalScrollContainer $isDownload={isDownload}>{children}</HorizontalScrollContainer>
     </HorizontalScrollVkUi>
 );
 
-const HorizontalScrollContainer = styled.div`
+const HorizontalScrollContainer = styled.div<{ $isDownload?: boolean }>`
     display: flex;
-    padding: 8px 0px;
+    padding: ${({ $isDownload }) => ($isDownload ? '18px 0px' : '8px 0px')};
 `;
