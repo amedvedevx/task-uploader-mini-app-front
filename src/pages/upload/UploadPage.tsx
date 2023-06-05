@@ -125,16 +125,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                 description={data?.description}
             />
 
-            {uploadedFiles && <UploadedFiles files={uploadedFiles} />}
-
             <UploadPageWrapper>
-                {!!files.length && (
-                    <FilesReadyToUpload
-                        files={files}
-                        removeFile={removeFile}
-                    />
-                )}
-
                 <DropZone
                     isTaskComplete={isTaskComplete}
                     isLoading={isLoading}
@@ -142,11 +133,25 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     setSnackbarText={setSnackbarText}
                 />
 
+                {uploadedFiles && (
+                    <Group
+                        separator='hide'
+                        data-automation-id='upload-page-filesGroup'
+                    >
+                        <UploadedFiles files={uploadedFiles} />
+                    </Group>
+                )}
+
                 {!!files.length && (
                     <Group
                         separator='hide'
                         data-automation-id='upload-page-filesGroup'
                     >
+                        <FilesReadyToUpload
+                            files={files}
+                            removeFile={removeFile}
+                        />
+
                         <Separator wide />
 
                         <UploadPageActions
