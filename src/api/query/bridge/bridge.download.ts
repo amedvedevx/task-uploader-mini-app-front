@@ -6,13 +6,13 @@ interface BridgeDownloadArgs {
     fileName: string;
 }
 
-type BridgeDownloadResponce = 'error' | 'success';
+type BridgeDownloadResponse = 'error' | 'success';
 
 export const BridgeDownload = async ({
     url,
     fileName,
-}: BridgeDownloadArgs): Promise<BridgeDownloadResponce> => {
-    const result: BridgeDownloadResponce = await bridge
+}: BridgeDownloadArgs): Promise<BridgeDownloadResponse> => {
+    const result: BridgeDownloadResponse = await bridge
         .send('VKWebAppDownloadFile', {
             url,
             filename: fileName,
@@ -24,8 +24,8 @@ export const BridgeDownload = async ({
 
             return 'error';
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((error) => {
+            console.error('VKWebAppDownloadFile', error);
 
             return 'error';
         });

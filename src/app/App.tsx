@@ -17,9 +17,9 @@ const App: FC = () => {
     const { theme } = useTheme();
 
     return (
-        <ErrorBoundary FallbackComponent={FallbackComponent}>
-            <RouterContext.Provider value={appRouter}>
-                <ConfigProvider appearance={theme}>
+        <RouterContext.Provider value={appRouter}>
+            <ConfigProvider appearance={theme}>
+                <ErrorBoundary FallbackComponent={FallbackComponent}>
                     <AdaptivityProvider>
                         <AppRoot>
                             <GlobalStyles theme={theme} />
@@ -27,9 +27,9 @@ const App: FC = () => {
                             <AppPages />
                         </AppRoot>
                     </AdaptivityProvider>
-                </ConfigProvider>
-            </RouterContext.Provider>
-        </ErrorBoundary>
+                </ErrorBoundary>
+            </ConfigProvider>
+        </RouterContext.Provider>
     );
 };
 

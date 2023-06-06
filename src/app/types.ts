@@ -1,4 +1,4 @@
-export interface GetTaskResultsResponce {
+export interface GetTaskResultsResponse {
     taskResults: TaskResults[];
 }
 
@@ -36,11 +36,11 @@ export type TaskResults = {
     };
 };
 
-export interface GetTasksResponce {
+export interface GetTasksResponse {
     tasks: TaskType[];
 }
 
-export interface GetTaskIdResponce extends TaskType {}
+export interface GetTaskIdResponse extends TaskType {}
 
 export type TaskType = {
     id: string;
@@ -87,13 +87,22 @@ export interface DeleteTaskResultProps {
     subTaskId: string;
 }
 
-export interface UploadFilesProps {
+export interface UploadFileProps {
     taskId: string;
     subTaskId: string;
-    files: File[];
+    file: File;
 }
 
-export interface UploadFilesResponce {
+export interface PreUploadFilesResponse {
+    data: {
+        file: string;
+        error: string;
+        error_desc: string;
+    };
+    error?: any;
+}
+
+export interface UploadFileResponse {
     taskId: string;
     subTaskId: string;
     status: AddResultStatusTypes;
@@ -105,7 +114,7 @@ export interface DownloadFilesProps {
     vkUserId?: number;
 }
 
-export interface DownloadFilesResponce {
+export interface DownloadFileResponse {
     files: Record<string, unknown>;
 }
 
@@ -122,7 +131,7 @@ export interface GetSubTaskResultStatusProps {
     subTaskId: string;
 }
 
-export interface GetSubTaskResultStatusResponce {
+export interface GetSubTaskResultStatusResponse {
     taskResultId: string;
     subtaskId: string;
     status: AddResultStatusTypes;
@@ -151,17 +160,14 @@ export interface CreateTaskProps {
     description: string;
     unlimited: boolean;
     deadLine: number;
+    subTasks: CreateSubTaskPayload[];
 }
 
-export interface CreateSubTaskProps {
-    taskId: string;
-    payload: {
-        rows: Array<{
-            name: string;
-            description: string;
-            subTaskType: string;
-        }>;
-    };
+export interface CreateSubTaskPayload {
+    name: string;
+    description: string;
+    sortOrder: number;
+    subTaskType: string;
 }
 
 export interface UpdateTaskProps {
@@ -191,7 +197,7 @@ export interface DeleteSubTaskProps {
     subTaskId: string;
 }
 
-export interface GetMembersResponce {
+export interface GetMembersResponse {
     friends: TesteeType[];
 }
 
@@ -205,9 +211,10 @@ export interface GetTesteesProps {
     search: string;
     count: number;
     invitedMemberIds?: number[];
+    userId: number;
 }
 
-export interface GetAllowedForRemindIdsResponce {
+export interface GetAllowedForRemindIdsResponse {
     allowedUserIds: number[];
 }
 
@@ -246,9 +253,8 @@ export type ChatType = {
 
 export interface SendNotificationProps {
     whoToSend: number[];
-    ownerName: string;
-    taskName: string;
     taskId: string;
+    task: TaskType;
 }
 
 export type TesteeType = {
@@ -297,4 +303,5 @@ export enum AddResultStatusTypes {
 export type SnackBarText = {
     type: 'error' | 'success';
     text: string;
+    fileName?: string;
 } | null;

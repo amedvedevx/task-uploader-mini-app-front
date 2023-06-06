@@ -10,14 +10,15 @@ import {
     Spacing,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { createRef, useLayoutEffect, useState } from 'react';
+import { createRef, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Icon20ReportOutline } from '@vkontakte/icons';
+import { Icon20FolderOutline, Icon20ReportOutline } from '@vkontakte/icons';
 
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import {
     store,
+    useGetPlatformQuery,
     useGetTaskIdQuery,
     useGetTaskResultsQuery,
     useLazyDownloadFilesQuery,
@@ -25,8 +26,8 @@ import {
 } from '@/api';
 import { SnackBarText, TaskStatusTypesForTestee, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
-import { useBridgePlatform, useSearch } from '@/hooks';
-import { checkIsMobilePlatform, errorParser, normalizeTestees } from '@/lib/utils';
+import { useSearch } from '@/hooks';
+import { checkIsMobilePlatform, errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
@@ -59,11 +60,15 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     } = useGetTaskResultsQuery({
         taskId: collectionId,
     });
+
     const { taskResults } = data;
 
-    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
+    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({
+        taskId: collectionId,
+    });
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
     const [downloadFiles, { isLoading: isFileDownloading }] = useLazyDownloadFilesQuery();
+    const { data: platform = '' } = useGetPlatformQuery();
 
     const [popout, setPopout] = useState<JSX.Element | null>(null);
 
@@ -74,19 +79,15 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const normalizedTestees = normalizeTestees(filteredData);
 
-    const notificationTesteeIds = taskResults
-        .filter((el) => el.taskResultStatus !== TaskStatusTypesForTestee.UPLOADED)
-        .map((el) => el.testee.vkUserId);
-
     const isTaskClosed = currentTask.status === TaskStatusTypesForOrganizer.DONE;
 
     const stateErrors = store.getState().errors;
     const apiMessageError = stateErrors.find((errorObj) => errorObj.type === 'api-messages');
 
-    const platform = useBridgePlatform();
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
+
     const fixedLayoutRef = createRef<HTMLDivElement>();
 
     const popoutCloseTask = (
@@ -102,10 +103,32 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         />
     );
 
+    const popoutForbiddenFiles = (
+        <Popout
+            text='Этот архив может содержать потенциально опасные файлы, вы уверены что хотите скачать его?'
+            header='Предупреждение'
+            action={() => {
+                downloadFiles({ taskId: collectionId });
+            }}
+            actionText='Скачать'
+            setPopout={setPopout}
+        />
+    );
+
+    const isForbiddenAllFiles = taskResults.some(({ subTaskResults }) =>
+        subTaskResults.some(({ content }) => content.some((el) => isForbiddenFile(el.title))),
+    );
+
     const prepareButtonsOptions = (): ButtonOption[] => {
         const downloadAllButton: ButtonOption = {
             text: 'Скачать все файлы',
-            onClick: () => downloadFiles({ taskId: collectionId }),
+            onClick: () => {
+                if (isForbiddenAllFiles) {
+                    setPopout(popoutForbiddenFiles);
+                } else {
+                    downloadFiles({ taskId: collectionId });
+                }
+            },
             loading: isFileDownloading,
             mode: 'primary',
         };
@@ -158,12 +181,18 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         setPopout(popoutCloseTask);
     };
 
+    useEffect(() => {
+        if (selectedTab) {
+            setSnackbarText(null);
+        }
+    }, [selectedTab]);
+
     useLayoutEffect(() => {
         setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
 
-    if (error?.status) {
-        const errorMessage = errorParser(error?.status);
+    if (error && 'status' in error) {
+        const errorMessage = errorParser(error.status as number);
 
         throw Error(errorMessage);
     }
@@ -193,6 +222,16 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                             <PanelHeaderSkeleton />
                         )}
                     </PanelHeader>
+
+                    {currentTask.description && (
+                        <MiniInfoCell
+                            before={<Icon20FolderOutline />}
+                            textWrap='full'
+                            mode='base'
+                        >
+                            {currentTask.description}
+                        </MiniInfoCell>
+                    )}
 
                     {/* For unpredictable problems caused by vk api */}
                     {apiMessageError && (
@@ -233,7 +272,6 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                             setPopout={setPopout}
                             setSnackbarText={setSnackbarText}
                             apiMessageError={apiMessageError}
-                            notificationTesteeIds={notificationTesteeIds}
                         />
                     )}
 

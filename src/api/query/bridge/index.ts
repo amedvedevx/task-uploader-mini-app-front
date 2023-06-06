@@ -4,3 +4,7 @@ export * from './messages.getConversationsMembers';
 export * from './docs.getUploadServer';
 export * from './docs.save';
 export * from './bridge.download';
+export * from './bridge.createHash';
+export * from './bridge.getPlatform';
+export * from './bridge.getUserId';
+export * from './bridge.getAuthToken';

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import bridge from '@vkontakte/vk-bridge';
 
 import { UPLOAD_URL } from '@/app/config';
@@ -8,16 +9,35 @@ interface BridgeMessagesSendArgs {
     message: string;
     taskId: string;
 }
+type ErrorCantSend = {
+    peer_id: number;
+    message_id: number;
+    error: { code: number; description: string };
+};
+type ErrorSuccessSend = {
+    peer_id: number;
+    message_id: number;
+    conversation_message_id: number;
+};
 
-type BridgeMessagesSendResponce = 'success' | 'error';
+type ErrorResponse = {
+    response: ErrorCantSend[] & ErrorSuccessSend;
+};
+
+type Error = {
+    error: string;
+    successUsers: number[];
+};
+
+export type BridgeMessagesSendResponse = 'success' | Error;
 
 export const BridgeMessagesSend = async ({
     token,
     peers,
     message,
     taskId,
-}: BridgeMessagesSendArgs): Promise<BridgeMessagesSendResponce> => {
-    const result: BridgeMessagesSendResponce = await bridge
+}: BridgeMessagesSendArgs): Promise<BridgeMessagesSendResponse> => {
+    const result: BridgeMessagesSendResponse = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'messages.send',
             params: {
@@ -36,17 +56,29 @@ export const BridgeMessagesSend = async ({
                     }
                 }]`,
 
-                v: '5.131',
+                v: '5.189',
             },
         })
-        .then((res) => {
+        .then((res: ErrorResponse) => {
             if (res.response[0].error) {
-                return 'error';
+                const successUsers = res.response
+                    .filter((user) => !user.error)
+                    .map((user) => user.peer_id);
+                const errorData = {
+                    error: res.response[0].error.description,
+                    successUsers,
+                };
+
+                return errorData;
             }
 
             return 'success';
         })
-        .catch((err) => 'error');
+        .catch((error) => {
+            console.error('VKWebAppCallAPIMethod - messages.send', error);
+
+            return 'error';
+        });
 
     return result;
 };

@@ -1,9 +1,10 @@
 import type {
-    UploadFilesProps,
+    UploadFileProps,
     DownloadFilesProps,
-    UploadFilesResponce,
+    UploadFileResponse,
     TaskDetailResult,
     DownloadSingleFileProps,
+    PreUploadFilesResponse,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
@@ -85,61 +86,96 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
             },
         }),
         downloadFilesOnMobile: builder.query<void, TaskDetailResult[]>({
-            queryFn: (resultsData) => {
-                resultsData[0].content.forEach((fileData) => {
-                    BridgeDownload({ url: fileData.url, fileName: fileData.title });
-                });
-
-                return { data: 'success' as unknown as void };
-            },
-        }),
-        uploadFiles: builder.mutation<UploadFilesResponce, UploadFilesProps>({
-            queryFn: async (
-                { taskId, subTaskId, files },
-                _queryApi,
-                _extraOptions,
-                fetchWithBQ,
-            ) => {
-                const { userInfo } = (_queryApi.getState() as RootState).authorization;
-
+            queryFn: async (resultsData) => {
                 const result = await Promise.all(
-                    files.map(async (fileToSend) => {
-                        const uploadUrl = await BridgeDocsUploadServer({
-                            token: userInfo.token,
+                    resultsData[0].content.map(async (fileData) => {
+                        const dwnlResult = await BridgeDownload({
+                            url: fileData.url,
+                            fileName: fileData.title,
                         });
 
-                        const filesData = new FormData();
-
-                        filesData.append('url', uploadUrl?.upload_url);
-                        filesData.append('file', fileToSend);
-
-                        const uploadResponse = await fetchWithBQ({
-                            url: `/files`,
-                            method: 'POST',
-                            body: filesData,
-                        });
-
-                        const saveResponce = await BridgeDocsSave({
-                            token: userInfo.token,
-                            file: uploadResponse?.data?.file,
-                        });
-
-                        return saveResponce;
+                        return dwnlResult;
                     }),
                 );
 
-                const preparedFiles = result.map((saveResult) => saveResult?.doc);
+                if (result.includes('error')) {
+                    return { error: 'error' };
+                }
 
-                const saveFileLink = await fetchWithBQ({
+                return { data: 'success' };
+            },
+        }),
+        uploadFile: builder.mutation<UploadFileResponse, UploadFileProps>({
+            queryFn: async (
+                { taskId, subTaskId, file },
+                { getState },
+                _extraOptions,
+                fetchWithBQ,
+            ) => {
+                const { token } = (getState() as RootState).authorization;
+
+                const uploadUrl = await BridgeDocsUploadServer({
+                    token,
+                });
+
+                const filesData = new FormData();
+
+                if (uploadUrl !== 'error') {
+                    filesData.append('url', uploadUrl?.upload_url);
+                    filesData.append('file', file);
+                }
+
+                const uploadResponse: PreUploadFilesResponse = await fetchWithBQ({
+                    url: `/files`,
+                    method: 'POST',
+                    body: filesData,
+                });
+
+                // TODO: ME-42094 - refactor error parser
+                if (uploadResponse?.data?.error || uploadResponse?.error) {
+                    if (uploadResponse?.data?.error === 'empty_file') {
+                        return { error: 'Невозможно загрузить пустой файл' };
+                    }
+
+                    if (uploadResponse?.data?.error === 'no extension found') {
+                        return { error: 'Невозможно загрузить файл без расширения' };
+                    }
+
+                    if (uploadResponse?.error?.data.status === 400) {
+                        return { error: 'Попробуйте снова' };
+                    }
+
+                    if (uploadResponse?.meta?.response.status === 413) {
+                        return { error: 'Размер файла слишком большой' };
+                    }
+
+                    if (uploadResponse?.meta?.response.status === 404) {
+                        return { error: 'Попробуйте снова' };
+                    }
+
+                    return { error: 'error' };
+                }
+
+                const saveResponse = await BridgeDocsSave({
+                    token,
+                    file: uploadResponse?.data?.file,
+                });
+
+                if (saveResponse?.error_code) {
+                    return { error: saveResponse?.error_msg };
+                }
+
+                const saveFileLinkResponse = await fetchWithBQ({
                     url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
                     method: 'PUT',
                     body: {
-                        data: preparedFiles,
+                        data: [saveResponse?.doc],
                     },
                 });
-                return saveFileLink;
+
+                return saveFileLinkResponse;
             },
-            invalidatesTags: (result, error, arg) => [{ type: 'TaskResult', id: arg.taskId }],
+            invalidatesTags: ['TaskResult'],
         }),
     }),
 });
@@ -148,5 +184,5 @@ export const {
     useLazyDownloadFilesQuery,
     useLazyDownloadFilesOnMobileQuery,
     useLazyDownloadSingleFileQuery,
-    useUploadFilesMutation,
+    useUploadFileMutation,
 } = filesSlice;

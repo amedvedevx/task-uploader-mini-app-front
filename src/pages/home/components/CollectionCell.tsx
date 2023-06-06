@@ -4,7 +4,7 @@ import {
     ActionSheetItem,
     IconButton,
     Platform,
-    SimpleCell,
+    SimpleCell as SimpleCellRoot,
     Text,
     usePlatform,
 } from '@vkontakte/vkui';
@@ -25,7 +25,7 @@ import type {
     TaskStatusTypesForTestee,
     TaskUserConsolidatedData,
 } from '@/app/types';
-import { useDeleteTaskMutation, useUpdateTaskMutation } from '@/api';
+import { useDeleteTaskMutation } from '@/api';
 import { Popout } from '@/components/Popout';
 
 interface CollectionCellProps {
@@ -36,10 +36,6 @@ interface CollectionCellProps {
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: React.Dispatch<React.SetStateAction<SnackBarText>>;
 }
-
-const payloadCloseTask = {
-    fields: [{ fieldName: 'status', value: 'DONE' }],
-};
 
 export const CollectionCell: FC<CollectionCellProps> = ({
     id,
@@ -53,9 +49,8 @@ export const CollectionCell: FC<CollectionCellProps> = ({
     const platform = usePlatform();
 
     const [deleteTask, { error: deleteError, isLoading: deleteLoading }] = useDeleteTaskMutation();
-    const [updateTask, { error: updateError, isLoading: updateLoading }] = useUpdateTaskMutation();
 
-    const baseTargetRef = useRef();
+    const baseTargetRef = useRef(null);
 
     const actionsList = (
         <ActionSheet
@@ -87,10 +82,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
         <Popout
             text='Вы уверены, что хотите удалить сбор?'
             header='Удаление задания'
-            action={async () => {
-                await updateTask({ taskId: id, payload: payloadCloseTask });
-                await deleteTask({ taskId: id });
-            }}
+            action={() => deleteTask({ taskId: id })}
             actionText='Удалить сбор'
             setPopout={setPopout}
             data-automation-id='home-page-deleteTaskButton'
@@ -104,18 +96,19 @@ export const CollectionCell: FC<CollectionCellProps> = ({
     };
 
     useEffect(() => {
-        if (deleteError?.status || updateError?.status) {
+        if (deleteError && 'status' in deleteError) {
             setSnackbarText({
                 type: 'error',
-                text: deleteError.data.message || updateError.data.message,
+                text: deleteError.data.message,
             });
         }
-    }, [deleteError, updateError]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [deleteError]);
 
     return (
         <SimpleCell
             key={id}
-            disabled={deleteLoading || updateLoading}
+            disabled={deleteLoading}
             indicator={
                 status === 'DONE' ? <GrayText>завершен</GrayText> : <GreenText>открыт</GreenText>
             }
@@ -138,6 +131,12 @@ export const CollectionCell: FC<CollectionCellProps> = ({
         </SimpleCell>
     );
 };
+
+const SimpleCell = styled(SimpleCellRoot)`
+    .vkuiSimpleCell__main {
+        width: 100px;
+    }
+`;
 
 const GreenText = styled(Text)`
     color: var(--vkui--color_text_positive);

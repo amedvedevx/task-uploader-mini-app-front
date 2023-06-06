@@ -12,7 +12,6 @@ interface HeaderButtonsProps {
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: (arg: SnackBarText) => void;
     apiMessageError: ErrorsState | undefined;
-    notificationTesteeIds: number[];
 }
 
 export const HeaderButtons: FC<HeaderButtonsProps> = ({
@@ -21,7 +20,6 @@ export const HeaderButtons: FC<HeaderButtonsProps> = ({
     setPopout,
     setSnackbarText,
     apiMessageError,
-    notificationTesteeIds,
 }) => (
     <ButtonGroup
         stretched
@@ -38,7 +36,6 @@ export const HeaderButtons: FC<HeaderButtonsProps> = ({
                 setPopout={setPopout}
                 setSnackbarText={setSnackbarText}
                 apiMessageError={apiMessageError}
-                notificationTesteeIds={notificationTesteeIds}
             />
         )}
     </ButtonGroup>

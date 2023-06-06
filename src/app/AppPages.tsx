@@ -1,16 +1,15 @@
 import type { FC } from 'react';
-import { useEffect, lazy } from 'react';
+import { lazy, useEffect } from 'react';
 import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
-import { useGenerateBearer } from '@/api';
-import { useVkToken } from '@/hooks/useVkToken';
-import { useBridgePlatform, useVkUserId } from '@/hooks';
 import { PreloadScreen } from '@/components';
 import { checkIsMobilePlatform } from '@/lib';
+import { useGenerateBearer } from '@/hooks';
+import { useGetAuthTokenQuery, useGetPlatformQuery } from '@/api';
 
 import {
     PAGE_COLLECTION_ID,
@@ -59,11 +58,9 @@ export const AppPages: FC = () => {
     const location = useLocation();
     const router = useRouter();
     const isFirst = useFirstPageCheck();
-    const platform = useBridgePlatform();
+    const { data: platform = '' } = useGetPlatformQuery();
+    useGetAuthTokenQuery();
     const isMobilePlatform = checkIsMobilePlatform(platform);
-
-    useVkToken();
-    useVkUserId();
     const bearer = useGenerateBearer();
 
     useEffect(() => {
@@ -93,7 +90,7 @@ export const AppPages: FC = () => {
 
     useEffect(() => {
         if (isMobilePlatform) {
-            bridge.send('VKWebAppSetSwipeSettings', { history: isFirst });
+            bridge.send('VKWebAppSetSwipeSettings', { history: isFirst }).catch(() => {});
         }
     }, [isFirst, isMobilePlatform]);
 
