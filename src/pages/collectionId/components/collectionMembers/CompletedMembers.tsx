@@ -3,7 +3,6 @@ import { useState } from 'react';
 import {
     Accordion,
     Avatar,
-    Button,
     List,
     Platform,
     SimpleCell,
@@ -22,6 +21,8 @@ import {
 } from '@/api';
 import { BridgeDownload } from '@/api/query/bridge';
 import { Popout } from '@/components';
+import { HorizontalFileCell } from '@/components/HorizontalFileCell';
+import { HorizontalScroll } from '@/components/HorizontalScroll';
 
 import { DownloadButton } from './components/DownloadButton';
 
@@ -149,40 +150,25 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                             </AccordionSummaryWidth>
 
                             <ListCustomPadding $isMobilePlatform={isMobilePlatform}>
-                                {subTaskResults[0].content.map(({ title, docId, url }) => (
-                                    <SimpleCell
-                                        key={title}
-                                        after={
-                                            <Button
-                                                appearance='accent'
-                                                size='s'
-                                                mode='secondary'
-                                                disabled={
-                                                    originalArgs?.vkUserId === vkUserId &&
-                                                    isDownloading
-                                                }
-                                                loading={
-                                                    originalArgs?.vkUserId === vkUserId &&
-                                                    isDownloading
-                                                }
-                                                onClick={() =>
-                                                    handleDownloadFile({
-                                                        vkUserId,
-                                                        url,
-                                                        title,
-                                                        taskId,
-                                                        docId,
-                                                        subTaskId: subTaskResults[0].subTaskId,
-                                                    })
-                                                }
-                                            >
-                                                Скачать
-                                            </Button>
-                                        }
-                                    >
-                                        {title}
-                                    </SimpleCell>
-                                ))}
+                                <HorizontalScroll isDownload>
+                                    {subTaskResults[0].content.map(({ title, docId, url }) => (
+                                        <HorizontalFileCell
+                                            key={docId}
+                                            title={title}
+                                            type='download'
+                                            onClick={() =>
+                                                handleDownloadFile({
+                                                    vkUserId,
+                                                    url,
+                                                    title,
+                                                    taskId,
+                                                    docId,
+                                                    subTaskId: subTaskResults[0].subTaskId,
+                                                })
+                                            }
+                                        />
+                                    ))}
+                                </HorizontalScroll>
                             </ListCustomPadding>
                         </Accordion>
                     ),

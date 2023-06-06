@@ -28,18 +28,16 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                                 mode='selectable'
                                 checked={Boolean(selection?.isChatActive(chat))}
                                 before={
-                                    <>
-                                        <Avatar
-                                            size={40}
-                                            src={
-                                                !chat.chat_settings.photo
-                                                    ? avatarStub
-                                                    : chat.chat_settings.photo.photo_100
-                                            }
-                                            alt='icon'
-                                            gradientColor={calcInitialsAvatarColor(chat.peer.id)}
-                                        />
-                                    </>
+                                    <Avatar
+                                        size={40}
+                                        src={
+                                            !chat.chat_settings.photo
+                                                ? avatarStub
+                                                : chat.chat_settings.photo.photo_100
+                                        }
+                                        alt='icon'
+                                        gradientColor={calcInitialsAvatarColor(chat.peer.id)}
+                                    />
                                 }
                                 subtitle={`${chat.chat_settings.members_count} участников`}
                                 onChange={(e) => {
@@ -57,30 +55,24 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                         collection.profiles?.map((member) => (
                             <Members
                                 key={member.id}
+                                mode='selectable'
+                                checked={Boolean(selection?.isMemberActive(member))}
                                 before={
-                                    <>
-                                        <Checkbox
-                                            checked={Boolean(selection?.isMemberActive(member))}
-                                            onChange={(e) => {
-                                                selection?.handleSelectMember(e, member);
-                                            }}
-                                        />
-
-                                        <Avatar
-                                            size={40}
-                                            src={
-                                                member.photo_100 === avatarStub
-                                                    ? '#'
-                                                    : member.photo_100
-                                            }
-                                            alt='icon'
-                                            gradientColor={calcInitialsAvatarColor(member.id)}
-                                            initials={getInitials(
-                                                `${member.first_name} ${member.last_name}`,
-                                            )}
-                                        />
-                                    </>
+                                    <Avatar
+                                        size={40}
+                                        src={
+                                            member.photo_100 === avatarStub ? '#' : member.photo_100
+                                        }
+                                        alt='icon'
+                                        gradientColor={calcInitialsAvatarColor(member.id)}
+                                        initials={getInitials(
+                                            `${member.first_name} ${member.last_name}`,
+                                        )}
+                                    />
                                 }
+                                onChange={(e) => {
+                                    selection?.handleSelectMember(e, member);
+                                }}
                                 onClick={(e) => selection?.handleSelectMember(e, member)}
                             >
                                 {`${member.first_name} ${member.last_name}`}
