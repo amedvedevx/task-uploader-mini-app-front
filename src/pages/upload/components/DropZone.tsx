@@ -43,8 +43,10 @@ export const DropZone: FC<DropZoneProps> = ({
         });
     };
 
-    const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept, isDragReject } =
-        useDropzone({ onDrop, validator: filesValidator });
+    const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
+        onDrop,
+        validator: filesValidator,
+    });
 
     return (
         <DivStretched>
@@ -73,18 +75,16 @@ export const DropZone: FC<DropZoneProps> = ({
                     ) : (
                         <PlaceholderCentered
                             icon={
-                                !isDragActive && (
-                                    <File
-                                        data-automation-id='upload-page-placeholder'
-                                        size='m'
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            e.preventDefault();
-                                        }}
-                                    >
-                                        Выберите файл
-                                    </File>
-                                )
+                                <File
+                                    data-automation-id='upload-page-placeholder'
+                                    size='m'
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                    }}
+                                >
+                                    Выберите файл
+                                </File>
                             }
                         >
                             или перенесите его в эту область для загрузки
