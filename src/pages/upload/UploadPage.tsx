@@ -11,6 +11,7 @@ import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { errorParser } from '@/lib/utils';
+import { FooterWithButton, type ButtonOption } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
@@ -66,6 +67,27 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         }
 
         setLoading(false);
+    };
+
+    const prepareButtonsOptions = (): ButtonOption[] => {
+        const sendFilesButton: ButtonOption = {
+            text: 'Отправить',
+            onClick: () => sendFiles(),
+            disabled: isLoading,
+            mode: 'primary',
+            appearance: 'accent',
+            dataAutomationId: 'upload-page-sendFilesButton',
+        };
+        const removeFilesButton: ButtonOption = {
+            text: 'Отменить',
+            onClick: () => clearState(),
+            disabled: isLoading,
+            mode: 'secondary',
+            appearance: 'accent',
+            dataAutomationId: 'upload-page-cancelButton',
+        };
+
+        return [removeFilesButton, sendFilesButton];
     };
 
     useEffect(() => {
@@ -155,14 +177,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                             files={files}
                             removeFile={removeFile}
                         />
-
-                        <Separator wide />
-
-                        <UploadPageActions
-                            clearState={clearState}
-                            sendFiles={sendFiles}
-                            isLoading={isLoading}
-                        />
                     </Group>
                 )}
 
@@ -173,6 +187,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         setSnackbarText={setSnackbarText}
                     />
                 )}
+
+                <FooterWithButton options={prepareButtonsOptions()} />
             </UploadPageWrapper>
         </Panel>
     );
@@ -183,4 +199,6 @@ const UploadPageWrapper = styled.div`
     flex-direction: column;
     flex-grow: 1;
     overflow-x: hidden;
+
+    padding-bottom: 52px;
 `;
