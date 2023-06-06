@@ -1,14 +1,9 @@
-import { Header, List, Cell, Avatar, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Header } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import styled from 'styled-components';
 
-import {
-    inclinationWord,
-    getFileExtension,
-    formatFileDate,
-    parseFileSize,
-    getExtenstionInitials,
-} from '@/lib';
+import { inclinationWord } from '@/lib';
+import { HorizontalScroll } from '@/components/HorizontalScroll';
+import { HorizontalFileCell } from '@/components/HorizontalFileCell';
 
 interface FilesReadyToUploadProps {
     files: File[];
@@ -22,30 +17,15 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({ files, removeF
                     ${inclinationWord(files.length, ['файл', 'файла', 'файлов'])}`}
         </Header>
 
-        <List data-automation-id='upload-page-filesList'>
-            {files.map(({ name, lastModified, size }) => (
-                <Cell
+        <HorizontalScroll data-automation-id='upload-page-filesList'>
+            {files.map(({ name, lastModified }) => (
+                <HorizontalFileCell
                     key={lastModified}
-                    data-automation-id='upload-page-cellFile'
-                    mode='removable'
-                    subtitle={`${getFileExtension(name)} - ${formatFileDate(
-                        lastModified,
-                    )} - ${parseFileSize(size)}`}
-                    before={
-                        <AvatarSquared
-                            initials={getExtenstionInitials(name)}
-                            gradientColor={calcInitialsAvatarColor(size)}
-                        />
-                    }
-                    onRemove={() => removeFile(lastModified)}
-                >
-                    {name}
-                </Cell>
+                    title={name}
+                    type='delete'
+                    onClick={() => removeFile(lastModified)}
+                />
             ))}
-        </List>
+        </HorizontalScroll>
     </>
 );
-
-const AvatarSquared = styled(Avatar)`
-    border-radius: 4px;
-`;
