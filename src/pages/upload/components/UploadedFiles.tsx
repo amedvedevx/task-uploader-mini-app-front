@@ -1,9 +1,10 @@
-import { Header, List, Cell, Avatar, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Header } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import styled from 'styled-components';
 
-import { inclinationWord, getFileExtension, parseFileSize, getExtenstionInitials } from '@/lib';
+import { inclinationWord } from '@/lib';
 import type { TaskDetailResultContent } from '@/app/types';
+import { HorizontalScroll } from '@/components/HorizontalScroll';
+import { HorizontalFileCell } from '@/components/HorizontalFileCell';
 
 interface UploadedFilesProps {
     files: TaskDetailResultContent[];
@@ -16,25 +17,13 @@ export const UploadedFiles: FC<UploadedFilesProps> = ({ files }) => (
                     ${inclinationWord(files.length, ['файл', 'файла', 'файлов'])}`}
         </Header>
 
-        <List data-automation-id='upload-page-filesList'>
-            {files.map(({ title, docId, size }) => (
-                <Cell
+        <HorizontalScroll data-automation-id='upload-page-filesList'>
+            {files.map(({ title, docId }) => (
+                <HorizontalFileCell
                     key={docId}
-                    subtitle={`${getFileExtension(title)} - ${parseFileSize(size)}`}
-                    before={
-                        <AvatarSquared
-                            initials={getExtenstionInitials(title)}
-                            gradientColor={calcInitialsAvatarColor(size)}
-                        />
-                    }
-                >
-                    {title}
-                </Cell>
+                    title={title}
+                />
             ))}
-        </List>
+        </HorizontalScroll>
     </>
 );
-
-const AvatarSquared = styled(Avatar)`
-    border-radius: 4px;
-`;
