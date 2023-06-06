@@ -131,6 +131,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     body: filesData,
                 });
 
+                // TODO: ME-42094 - refactor error parser
                 if (uploadResponse?.data?.error || uploadResponse?.error) {
                     if (uploadResponse?.data?.error === 'empty_file') {
                         return { error: 'Невозможно загрузить пустой файл' };
