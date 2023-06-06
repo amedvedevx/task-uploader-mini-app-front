@@ -14,7 +14,8 @@ interface HorizontalFileCellProps {
 }
 
 export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, onClick }) => (
-    <HorizontalCell
+    <HorizontalCellOverflow
+        disabled
         header={title}
         size='m'
         data-automation-id='upload-page-cellFile'
@@ -29,13 +30,23 @@ export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, o
                 {type && iconType[type]}
             </CellButton>
         </Image>
-    </HorizontalCell>
+    </HorizontalCellOverflow>
 );
 
 const CellButton = styled(IconButton)`
     position: absolute;
     top: -22px;
     right: -22px;
+`;
+
+const HorizontalCellOverflow = styled(HorizontalCell)`
+    .vkuiSubhead {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        -webkit-line-clamp: 4;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
 `;
 
 const DownloadIcon = styled(Icon24DoorArrowLeftOutline)`
