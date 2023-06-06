@@ -131,13 +131,17 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     body: filesData,
                 });
 
-                if (uploadResponse.data.error) {
-                    if (uploadResponse.data.error === 'empty_file') {
+                if (uploadResponse?.data?.error || uploadResponse?.error) {
+                    if (uploadResponse?.data?.error === 'empty_file') {
                         return { error: 'Невозможно загрузить пустой файл' };
                     }
 
-                    if (uploadResponse.data.error === 'no extension found') {
+                    if (uploadResponse?.data?.error === 'no extension found') {
                         return { error: 'Невозможно загрузить файл без расширения' };
+                    }
+
+                    if (uploadResponse?.error?.data.status === 400) {
+                        return { error: 'Попробуйте снова' };
                     }
 
                     if (uploadResponse?.meta?.response.status === 413) {
