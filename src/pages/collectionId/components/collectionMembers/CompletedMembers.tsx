@@ -8,6 +8,8 @@ import {
     SimpleCell,
     calcInitialsAvatarColor,
     usePlatform,
+    Separator,
+    Spacing,
 } from '@vkontakte/vkui';
 import styled from 'styled-components';
 import { AccordionSummary } from '@vkontakte/vkui/dist/components/Accordion/AccordionSummary';
@@ -149,7 +151,11 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                 </SimpleCell>
                             </AccordionSummaryWidth>
 
-                            <HorizontalScroll>
+                            <Spacing size={16}>
+                                <Separator wide />
+                            </Spacing>
+
+                            <HorizontalScroll isDownload>
                                 {subTaskResults[0].content.map(({ title, docId, url }) => (
                                     <HorizontalFileCell
                                         key={docId}
@@ -168,6 +174,8 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                     />
                                 ))}
                             </HorizontalScroll>
+
+                            <Separator wide />
                         </Accordion>
                     ),
                 )}

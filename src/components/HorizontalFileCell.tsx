@@ -1,4 +1,4 @@
-import { HorizontalCell, Image, IconButton } from '@vkontakte/vkui';
+import { HorizontalCell, Image as ImageRoot, IconButton } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import styled from 'styled-components';
 import {
@@ -21,7 +21,7 @@ export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, o
         data-automation-id='upload-page-cellFile'
     >
         <Image size={66}>
-            <Icon32DocumentOutline />
+            <Icon32DocumentOutline fill='var(--vkui--color_background_content)' />
 
             <CellButton
                 aria-label='fileIconButton'
@@ -47,6 +47,10 @@ const HorizontalCellOverflow = styled(HorizontalCell)`
         display: -webkit-box;
         -webkit-box-orient: vertical;
     }
+`;
+
+const Image = styled(ImageRoot)`
+    background: #aeb7c2;
 `;
 
 const DownloadIcon = styled(Icon24DoorArrowLeftOutline)`
