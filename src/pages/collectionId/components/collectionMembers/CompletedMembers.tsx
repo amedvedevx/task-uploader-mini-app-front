@@ -149,27 +149,25 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                 </SimpleCell>
                             </AccordionSummaryWidth>
 
-                            <ListCustomPadding $isMobilePlatform={isMobilePlatform}>
-                                <HorizontalScroll isDownload>
-                                    {subTaskResults[0].content.map(({ title, docId, url }) => (
-                                        <HorizontalFileCell
-                                            key={docId}
-                                            title={title}
-                                            type='download'
-                                            onClick={() =>
-                                                handleDownloadFile({
-                                                    vkUserId,
-                                                    url,
-                                                    title,
-                                                    taskId,
-                                                    docId,
-                                                    subTaskId: subTaskResults[0].subTaskId,
-                                                })
-                                            }
-                                        />
-                                    ))}
-                                </HorizontalScroll>
-                            </ListCustomPadding>
+                            <HorizontalScroll>
+                                {subTaskResults[0].content.map(({ title, docId, url }) => (
+                                    <HorizontalFileCell
+                                        key={docId}
+                                        title={title}
+                                        type='download'
+                                        onClick={() =>
+                                            handleDownloadFile({
+                                                vkUserId,
+                                                url,
+                                                title,
+                                                taskId,
+                                                docId,
+                                                subTaskId: subTaskResults[0].subTaskId,
+                                            })
+                                        }
+                                    />
+                                ))}
+                            </HorizontalScroll>
                         </Accordion>
                     ),
                 )}
@@ -184,11 +182,6 @@ const AccordionSummaryWidth = styled(AccordionSummary)`
     .vkuiSimpleCell__children {
         width: 100%;
     }
-`;
-
-const ListCustomPadding = styled(List)<{ $isMobilePlatform: boolean }>`
-    padding-left: ${({ $isMobilePlatform }) => `${$isMobilePlatform ? 16 : 12}px`};
-    padding-right: ${({ $isMobilePlatform }) => `${$isMobilePlatform ? 50 : 46}px`};
 `;
 
 type OnClickArgs = {

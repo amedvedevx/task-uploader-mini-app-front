@@ -1,7 +1,11 @@
-import { HorizontalCell, Image, IconButton, PanelHeader } from '@vkontakte/vkui';
+import { HorizontalCell, Image, IconButton } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import styled from 'styled-components';
-import { Icon24DismissDark, Icon24DownloadOutline, Icon32DocumentOutline } from '@vkontakte/icons';
+import {
+    Icon24DismissDark,
+    Icon24DoorArrowLeftOutline,
+    Icon32DocumentOutline,
+} from '@vkontakte/icons';
 
 interface HorizontalFileCellProps {
     title: string;
@@ -9,13 +13,9 @@ interface HorizontalFileCellProps {
     onClick?: () => void;
 }
 
-const iconType = {
-    download: <Icon24DownloadOutline />,
-    delete: <Icon24DismissDark />,
-};
-
 export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, onClick }) => (
-    <HorizontalCell
+    <HorizontalCellOverflow
+        disabled
         header={title}
         size='m'
         data-automation-id='upload-page-cellFile'
@@ -30,7 +30,7 @@ export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, o
                 {type && iconType[type]}
             </CellButton>
         </Image>
-    </HorizontalCell>
+    </HorizontalCellOverflow>
 );
 
 const CellButton = styled(IconButton)`
@@ -38,3 +38,31 @@ const CellButton = styled(IconButton)`
     top: -22px;
     right: -22px;
 `;
+
+const HorizontalCellOverflow = styled(HorizontalCell)`
+    .vkuiSubhead {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        -webkit-line-clamp: 4;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
+`;
+
+const DownloadIcon = styled(Icon24DoorArrowLeftOutline)`
+    transform: rotate(90deg);
+    color: var(--vkui--color_icon_accent);
+
+    box-shadow: 0px 1px 4px var(--vkui--color_image_border_alpha);
+    background-clip: content-box;
+    background-color: var(--vkui--color_background_content);
+    border-radius: 50%;
+
+    padding: 0px !important;
+    margin: 12px !important;
+`;
+
+const iconType = {
+    download: <DownloadIcon />,
+    delete: <Icon24DismissDark />,
+};
