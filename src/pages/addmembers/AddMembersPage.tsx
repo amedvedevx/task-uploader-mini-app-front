@@ -126,24 +126,26 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
                 </FixedLayout>
             </div>
 
-            <InfiniteScroll
-                hasMore
-                dataLength={itemLength}
-                next={() => setConversationsCount(conversationsCount + 50)}
-                scrollThreshold={0.7}
-                loader={false}
-            >
-                <>
-                    {(!isLoading && testees.profiles.length > 0) || testees.items.length > 0 ? (
-                        <MembersList
-                            selection={selection}
-                            searchMembers={testees}
-                        />
-                    ) : (
-                        <MembersNotFound />
-                    )}
-                </>
-            </InfiniteScroll>
+            <ListContainer $fixedLayoutHeight={`${fixLayoutHeight}`}>
+                <InfiniteScroll
+                    hasMore
+                    dataLength={itemLength}
+                    next={() => setConversationsCount(conversationsCount + 50)}
+                    scrollThreshold={0.7}
+                    loader={false}
+                >
+                    <>
+                        {!isLoading && testees.profiles.length > 0 ? (
+                            <MembersList
+                                selection={selection}
+                                searchMembers={testees}
+                            />
+                        ) : (
+                            <MembersNotFound />
+                        )}
+                    </>
+                </InfiniteScroll>
+            </ListContainer>
 
             <FooterWithButton
                 options={[
