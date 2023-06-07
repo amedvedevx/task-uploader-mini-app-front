@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { Button, ButtonGroup, Counter, Div, FixedLayout, Separator } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
@@ -6,9 +7,10 @@ export type ButtonOption = {
     text: string;
     appearance?: 'accent' | 'positive' | 'negative' | 'neutral' | 'overlay' | 'accent-invariable';
     mode?: 'link' | 'primary' | 'secondary' | 'tertiary' | 'outline';
-    loading: boolean;
+    loading?: boolean;
     counter?: number;
     disabled?: boolean;
+    dataAutomationId?: string;
 };
 
 interface FooterWithButtonProps {
@@ -29,20 +31,32 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                 gap='s'
                 data-automation-id='common-footerButtons'
             >
-                {options.map(({ appearance, mode, text, onClick, loading, disabled, counter }) => (
-                    <Button
-                        key={text}
-                        stretched
-                        mode={mode || 'primary'}
-                        appearance={appearance || 'accent'}
-                        loading={loading}
-                        disabled={loading || disabled}
-                        after={<Counter size='s'>{counter}</Counter>}
-                        onClick={onClick}
-                    >
-                        {text}
-                    </Button>
-                ))}
+                {options.map(
+                    ({
+                        appearance,
+                        mode,
+                        text,
+                        onClick,
+                        loading,
+                        disabled,
+                        counter,
+                        dataAutomationId,
+                    }) => (
+                        <Button
+                            key={text}
+                            stretched
+                            mode={mode || 'primary'}
+                            appearance={appearance || 'accent'}
+                            loading={loading}
+                            disabled={loading || disabled}
+                            after={<Counter size='s'>{counter}</Counter>}
+                            data-automation-id={dataAutomationId}
+                            onClick={onClick}
+                        >
+                            {text}
+                        </Button>
+                    ),
+                )}
             </ButtonGroup>
         </Div>
     </FixedLayout>
