@@ -14,7 +14,12 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import { useGetTesteesQuery, useGetTaskIdQuery, useGetTaskResultsQuery, useGetUserIdQuery } from '@/api';
+import {
+    useGetTesteesQuery,
+    useGetTaskIdQuery,
+    useGetTaskResultsQuery,
+    useGetUserIdQuery,
+} from '@/api';
 import { setSelectedChats, setSelectedMembers } from '@/api/state';
 import type { GetTesteesResponse, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
@@ -121,26 +126,24 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
                 </FixedLayout>
             </div>
 
-            <ListContainer $fixedLayoutHeight={`${fixLayoutHeight}`}>
-                <InfiniteScroll
-                    hasMore
-                    dataLength={itemLength}
-                    next={() => setConversationsCount(conversationsCount + 50)}
-                    scrollThreshold={0.7}
-                    loader={false}
-                >
-                    <>
-                        {!isLoading && testees.profiles.length > 0 ? (
-                            <MembersList
-                                selection={selection}
-                                searchMembers={testees}
-                            />
-                        ) : (
-                            <MembersNotFound />
-                        )}
-                    </>
-                </InfiniteScroll>
-            </ListContainer>
+            <InfiniteScroll
+                hasMore
+                dataLength={itemLength}
+                next={() => setConversationsCount(conversationsCount + 50)}
+                scrollThreshold={0.7}
+                loader={false}
+            >
+                <>
+                    {(!isLoading && testees.profiles.length > 0) || testees.items.length > 0 ? (
+                        <MembersList
+                            selection={selection}
+                            searchMembers={testees}
+                        />
+                    ) : (
+                        <MembersNotFound />
+                    )}
+                </>
+            </InfiniteScroll>
 
             <FooterWithButton
                 options={[
