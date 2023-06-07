@@ -131,29 +131,13 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     body: filesData,
                 });
 
-                // TODO: ME-42094 - refactor error parser
-                if (uploadResponse?.data?.error || uploadResponse?.error) {
-                    if (uploadResponse?.data?.error === 'empty_file') {
-                        return { error: 'Невозможно загрузить пустой файл' };
-                    }
+                if (uploadResponse?.error) {
+                    const errorMessage =
+                        uploadErrorMessages[
+                            uploadResponse?.error.data?.error as keyof typeof uploadErrorMessages
+                        ] || 'error';
 
-                    if (uploadResponse?.data?.error === 'no extension found') {
-                        return { error: 'Невозможно загрузить файл без расширения' };
-                    }
-
-                    if (uploadResponse?.error?.data.status === 400) {
-                        return { error: 'Попробуйте снова' };
-                    }
-
-                    if (uploadResponse?.meta?.response.status === 413) {
-                        return { error: 'Размер файла слишком большой' };
-                    }
-
-                    if (uploadResponse?.meta?.response.status === 404) {
-                        return { error: 'Попробуйте снова' };
-                    }
-
-                    return { error: 'error' };
+                    return { error: errorMessage };
                 }
 
                 const saveResponse = await BridgeDocsSave({
@@ -186,3 +170,10 @@ export const {
     useLazyDownloadSingleFileQuery,
     useUploadFileMutation,
 } = filesSlice;
+
+const uploadErrorMessages = {
+    empty_file: 'Невозможно загрузить пустой файл',
+    'no extension found': 'Невозможно загрузить файл без расширения',
+    no_file_exists: 'Недопустимый формат файла',
+    unknown_error: 'Попробуйте снова',
+};
