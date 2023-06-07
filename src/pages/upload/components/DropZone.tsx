@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Icon56CancelCircleOutline, Icon56DocumentOutline } from '@vkontakte/icons';
+import { Icon56CancelCircleOutline } from '@vkontakte/icons';
 import { Div, Placeholder, File, Spinner } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -43,8 +43,10 @@ export const DropZone: FC<DropZoneProps> = ({
         });
     };
 
-    const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept, isDragReject } =
-        useDropzone({ onDrop, validator: filesValidator });
+    const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
+        onDrop,
+        validator: filesValidator,
+    });
 
     return (
         <DivStretched>
@@ -72,23 +74,20 @@ export const DropZone: FC<DropZoneProps> = ({
                         <Spinner size='large' />
                     ) : (
                         <PlaceholderCentered
-                            icon={<Icon56DocumentOutline color='var(--vkui--color_icon_accent)' />}
-                            action={
-                                !isDragActive && (
-                                    <File
-                                        data-automation-id='upload-page-placeholder'
-                                        size='m'
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            e.preventDefault();
-                                        }}
-                                    >
-                                        Выбрать файл
-                                    </File>
-                                )
+                            icon={
+                                <File
+                                    data-automation-id='upload-page-placeholder'
+                                    size='m'
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                    }}
+                                >
+                                    Выберите файл
+                                </File>
                             }
                         >
-                            Для загрузки файла перенесите его в эту область
+                            или перенесите его в эту область для загрузки
                         </PlaceholderCentered>
                     )}
                 </DropZoneContainer>
@@ -157,4 +156,7 @@ const DropZoneContainer = styled.div<DropZoneContainerProps>`
 
 const PlaceholderCentered = styled(Placeholder)`
     height: 100%;
+    .vkuiPlaceholder__in {
+        padding: 0px;
+    }
 `;
