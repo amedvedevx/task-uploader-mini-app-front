@@ -3,7 +3,6 @@ import { useState } from 'react';
 import {
     Accordion,
     Avatar,
-    Button,
     List,
     Platform,
     SimpleCell,
@@ -22,6 +21,8 @@ import {
 } from '@/api';
 import { BridgeDownload } from '@/api/query/bridge';
 import { Popout } from '@/components';
+import { HorizontalFileCell } from '@/components/HorizontalFileCell';
+import { HorizontalScroll } from '@/components/HorizontalScroll';
 
 import { DownloadButton } from './components/DownloadButton';
 
@@ -148,42 +149,25 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                 </SimpleCell>
                             </AccordionSummaryWidth>
 
-                            <ListCustomPadding $isMobilePlatform={isMobilePlatform}>
+                            <HorizontalScroll>
                                 {subTaskResults[0].content.map(({ title, docId, url }) => (
-                                    <SimpleCell
-                                        key={title}
-                                        after={
-                                            <Button
-                                                appearance='accent'
-                                                size='s'
-                                                mode='secondary'
-                                                disabled={
-                                                    originalArgs?.vkUserId === vkUserId &&
-                                                    isDownloading
-                                                }
-                                                loading={
-                                                    originalArgs?.vkUserId === vkUserId &&
-                                                    isDownloading
-                                                }
-                                                onClick={() =>
-                                                    handleDownloadFile({
-                                                        vkUserId,
-                                                        url,
-                                                        title,
-                                                        taskId,
-                                                        docId,
-                                                        subTaskId: subTaskResults[0].subTaskId,
-                                                    })
-                                                }
-                                            >
-                                                Скачать
-                                            </Button>
+                                    <HorizontalFileCell
+                                        key={docId}
+                                        title={title}
+                                        type='download'
+                                        onClick={() =>
+                                            handleDownloadFile({
+                                                vkUserId,
+                                                url,
+                                                title,
+                                                taskId,
+                                                docId,
+                                                subTaskId: subTaskResults[0].subTaskId,
+                                            })
                                         }
-                                    >
-                                        {title}
-                                    </SimpleCell>
+                                    />
                                 ))}
-                            </ListCustomPadding>
+                            </HorizontalScroll>
                         </Accordion>
                     ),
                 )}
@@ -198,11 +182,6 @@ const AccordionSummaryWidth = styled(AccordionSummary)`
     .vkuiSimpleCell__children {
         width: 100%;
     }
-`;
-
-const ListCustomPadding = styled(List)<{ $isMobilePlatform: boolean }>`
-    padding-left: ${({ $isMobilePlatform }) => `${$isMobilePlatform ? 16 : 12}px`};
-    padding-right: ${({ $isMobilePlatform }) => `${$isMobilePlatform ? 50 : 46}px`};
 `;
 
 type OnClickArgs = {

@@ -131,6 +131,15 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     body: filesData,
                 });
 
+                if (uploadResponse?.error) {
+                    const errorMessage =
+                        uploadErrorMessages[
+                            uploadResponse?.error.data?.error as keyof typeof uploadErrorMessages
+                        ] || 'error';
+
+                    return { error: errorMessage };
+                }
+
                 const saveResponse = await BridgeDocsSave({
                     token,
                     file: uploadResponse?.data?.file,
@@ -161,3 +170,10 @@ export const {
     useLazyDownloadSingleFileQuery,
     useUploadFileMutation,
 } = filesSlice;
+
+const uploadErrorMessages = {
+    empty_file: 'Невозможно загрузить пустой файл',
+    'no extension found': 'Невозможно загрузить файл без расширения',
+    no_file_exists: 'Недопустимый формат файла',
+    unknown_error: 'Попробуйте снова',
+};

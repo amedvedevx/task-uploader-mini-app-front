@@ -11,6 +11,7 @@ import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { errorParser } from '@/lib/utils';
+import { FooterWithButton, type ButtonOption } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
@@ -68,6 +69,27 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         setLoading(false);
     };
 
+    const prepareButtonsOptions = (): ButtonOption[] => {
+        const sendFilesButton: ButtonOption = {
+            text: 'Отправить',
+            onClick: () => sendFiles(),
+            disabled: isLoading,
+            mode: 'primary',
+            appearance: 'accent',
+            dataAutomationId: 'upload-page-sendFilesButton',
+        };
+        const removeFilesButton: ButtonOption = {
+            text: 'Отменить',
+            onClick: () => clearState(),
+            disabled: isLoading,
+            mode: 'secondary',
+            appearance: 'accent',
+            dataAutomationId: 'upload-page-cancelButton',
+        };
+
+        return [removeFilesButton, sendFilesButton];
+    };
+
     useEffect(() => {
         if (
             statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED ||
@@ -77,7 +99,11 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                 type: 'error',
                 text: `Загрузка файла ${
                     statusFromServer?.originalArgs?.file?.name || ''
-                } не удалась`,
+                } не удалась${
+                    statusFromServer.error && statusFromServer.error !== 'error'
+                        ? `: ${statusFromServer.error}`
+                        : '.'
+                }`,
             });
         }
 
@@ -125,16 +151,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                 description={data?.description}
             />
 
-            {uploadedFiles && <UploadedFiles files={uploadedFiles} />}
-
             <UploadPageWrapper>
-                {!!files.length && (
-                    <FilesReadyToUpload
-                        files={files}
-                        removeFile={removeFile}
-                    />
-                )}
-
                 <DropZone
                     isTaskComplete={isTaskComplete}
                     isLoading={isLoading}
@@ -142,17 +159,23 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     setSnackbarText={setSnackbarText}
                 />
 
+                {uploadedFiles && (
+                    <Group
+                        separator='hide'
+                        data-automation-id='upload-page-filesGroup'
+                    >
+                        <UploadedFiles files={uploadedFiles} />
+                    </Group>
+                )}
+
                 {!!files.length && (
                     <Group
                         separator='hide'
                         data-automation-id='upload-page-filesGroup'
                     >
-                        <Separator wide />
-
-                        <UploadPageActions
-                            clearState={clearState}
-                            sendFiles={sendFiles}
-                            isLoading={isLoading}
+                        <FilesReadyToUpload
+                            files={files}
+                            removeFile={removeFile}
                         />
                     </Group>
                 )}
@@ -164,6 +187,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         setSnackbarText={setSnackbarText}
                     />
                 )}
+
+                <FooterWithButton options={prepareButtonsOptions()} />
             </UploadPageWrapper>
         </Panel>
     );
@@ -174,4 +199,6 @@ const UploadPageWrapper = styled.div`
     flex-direction: column;
     flex-grow: 1;
     overflow-x: hidden;
+
+    padding-bottom: 52px;
 `;
