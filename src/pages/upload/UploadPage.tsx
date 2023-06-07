@@ -1,4 +1,4 @@
-import { Panel, Group, Separator, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from '@happysanta/router';
@@ -11,11 +11,11 @@ import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { errorParser } from '@/lib/utils';
-import { FooterWithButton, type ButtonOption } from '@/components';
+import type { ButtonOption } from '@/components';
+import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
-import { UploadPageActions } from './components/UploadPageActions';
 import { TaskDescription } from './components/TaskDescription';
 import { UploadedFiles } from './components/UploadedFiles';
 
@@ -37,6 +37,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
     const [isLoading, setLoading] = useState(false);
 
+    const [tries, setTries] = useState(0);
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
 
@@ -64,6 +65,23 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
             await uploadFile({ taskId, subTaskId, file });
+
+            if (statusFromServer.isError) {
+                setTries((prev) => prev + 1);
+
+                console.log(tries);
+
+                if (tries <= 3) {
+                    setTimeout(() => {
+                        uploadFile({ taskId, subTaskId, file });
+                    }, 500);
+                } else {
+                    setSnackbarText({
+                        type: 'error',
+                        text: 'Возникли проблемы при загрузке, попробуйте позже',
+                    });
+                }
+            }
         }
 
         setLoading(false);
