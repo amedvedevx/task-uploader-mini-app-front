@@ -11,11 +11,11 @@ import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { errorParser } from '@/lib/utils';
-import { FooterWithButton, type ButtonOption } from '@/components';
+import type { ButtonOption } from '@/components';
+import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
-import { UploadPageActions } from './components/UploadPageActions';
 import { TaskDescription } from './components/TaskDescription';
 import { UploadedFiles } from './components/UploadedFiles';
 
