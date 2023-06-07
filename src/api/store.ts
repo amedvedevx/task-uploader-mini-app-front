@@ -1,4 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/dist/query';
 
 import { apiSlice } from '@/api/query/apiSlice';
 import authorizationReducer from '@/api/state/authorizationSlice';
@@ -20,6 +21,8 @@ export const store = configureStore({
             serializableCheck: false,
         }).concat(apiSlice.middleware),
 });
+
+setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

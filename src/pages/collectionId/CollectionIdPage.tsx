@@ -24,7 +24,7 @@ import {
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import { SnackBarText, TaskStatusTypesForTestee, TaskType } from '@/app/types';
+import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
 import { checkIsMobilePlatform, errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
