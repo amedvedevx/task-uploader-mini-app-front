@@ -63,7 +63,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const { taskResults } = data;
 
-    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({
+    const { data: currentTask = {} as TaskType, refetch } = useGetTaskIdQuery({
         taskId: collectionId,
     });
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
@@ -183,6 +183,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     useEffect(() => {
         if (selectedTab) {
+            refetch();
             setSnackbarText(null);
         }
     }, [selectedTab]);
@@ -260,9 +261,9 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                     )}
 
                     <CollectionTabs
-                        collectionId={collectionId}
                         selectedTab={selectedTab}
                         setSelectedTab={setSelectedTab}
+                        taskUsersConsolidated={currentTask.consolidatedData}
                     />
 
                     {selectedTab === 'notCompleted' && !isTaskClosed && (
