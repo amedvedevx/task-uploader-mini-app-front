@@ -1,25 +1,32 @@
 import { Div, SegmentedControl } from '@vkontakte/vkui';
 import type { FC } from 'react';
 
-import type { TaskUserConsolidatedData } from '@/app/types';
+import type { TaskType } from '@/app/types';
 import type { TabType } from '@/pages';
+import { useGetTaskIdQuery } from '@/api';
 
 interface CollectionTabsProps {
+    collectionId: string;
     selectedTab: TabType;
     setSelectedTab: (arg: TabType) => void;
-    taskUsersConsolidated: TaskUserConsolidatedData;
 }
 
 export const CollectionTabs: FC<CollectionTabsProps> = ({
+    collectionId,
     selectedTab,
     setSelectedTab,
-    taskUsersConsolidated,
 }) => {
-    const usersCompletedTask = taskUsersConsolidated?.executedUsersCount || 0;
+    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({
+        taskId: collectionId,
+    });
+
+    const { consolidatedData } = currentTask;
+
+    const usersCompletedTask = consolidatedData?.executedUsersCount || 0;
 
     const usersNotCompletedTask =
-        taskUsersConsolidated?.notExecutedUsersCount +
-            taskUsersConsolidated?.partiallyExecutedUsersCount || 0;
+        consolidatedData?.notExecutedUsersCount + consolidatedData?.partiallyExecutedUsersCount ||
+        0;
 
     return (
         <Div>

@@ -7,7 +7,6 @@ import type { RootState } from '../store';
 
 export const apiSlice = createApi({
     reducerPath: 'api',
-    tagTypes: ['Task'],
     baseQuery: fetchBaseQuery({
         baseUrl: API_BASE_URL,
         prepareHeaders: (headers, { getState, endpoint }) => {
@@ -24,6 +23,5 @@ export const apiSlice = createApi({
             return headers;
         },
     }),
-    refetchOnFocus: true,
     endpoints: () => ({}),
 });

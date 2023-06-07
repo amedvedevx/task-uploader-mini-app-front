@@ -260,9 +260,9 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                     )}
 
                     <CollectionTabs
+                        collectionId={collectionId}
                         selectedTab={selectedTab}
                         setSelectedTab={setSelectedTab}
-                        taskUsersConsolidated={currentTask.consolidatedData}
                     />
 
                     {selectedTab === 'notCompleted' && !isTaskClosed && (
