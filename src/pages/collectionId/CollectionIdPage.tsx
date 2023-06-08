@@ -57,13 +57,14 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         data = { taskResults: [] },
         isLoading,
         error,
+        refetch: refetchTaskResults,
     } = useGetTaskResultsQuery({
         taskId: collectionId,
     });
 
     const { taskResults } = data;
 
-    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({
+    const { data: currentTask = {} as TaskType, refetch: refetchTask } = useGetTaskIdQuery({
         taskId: collectionId,
     });
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
@@ -185,6 +186,14 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         if (selectedTab) {
             setSnackbarText(null);
         }
+    }, [selectedTab]);
+
+    useEffect(() => {
+        if (selectedTab) {
+            refetchTaskResults();
+            refetchTask();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedTab]);
 
     useLayoutEffect(() => {

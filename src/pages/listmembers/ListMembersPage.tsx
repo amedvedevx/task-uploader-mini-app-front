@@ -52,8 +52,8 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
     });
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
-    const [appointUsersToTask] = useAppointUsersToTaskMutation();
-    const [sendNotification] = useSendNotificationMutation();
+    const [appointUsersToTask, appointStatus] = useAppointUsersToTaskMutation();
+    const [sendNotification, statusNotification] = useSendNotificationMutation();
 
     const [localMembers, setLocalMembers] = useState<TesteeType[]>([]);
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
@@ -155,9 +155,8 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
                         counter: vkUserIds.length,
                         onClick: () => {
                             assignMembers(vkUserIds);
-                            router.pushPage(PAGE_COLLECTION_ID, { collectionId: currentTask.id });
                         },
-                        loading: false,
+                        loading: appointStatus.isLoading || statusNotification.isLoading,
                     },
                 ]}
             />
