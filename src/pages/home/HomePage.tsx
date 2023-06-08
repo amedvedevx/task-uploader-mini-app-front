@@ -10,7 +10,7 @@ import {
     Div,
 } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
 
@@ -29,8 +29,13 @@ interface HomePageProps {
 export const HomePage: FC<HomePageProps> = () => {
     const router = useRouter();
 
-    const { data, isLoading } = useGetTasksQuery({});
+    const { data, isLoading, refetch: refetchTasks } = useGetTasksQuery({});
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
+
+    useEffect(() => {
+        refetchTasks();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <Panel

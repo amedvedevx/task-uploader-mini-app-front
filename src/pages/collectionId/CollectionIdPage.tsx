@@ -24,7 +24,7 @@ import {
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import { SnackBarText, TaskStatusTypesForTestee, TaskType } from '@/app/types';
+import type { SnackBarText, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { useSearch } from '@/hooks';
 import { checkIsMobilePlatform, errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
@@ -57,13 +57,14 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         data = { taskResults: [] },
         isLoading,
         error,
+        refetch: refetchTaskResults,
     } = useGetTaskResultsQuery({
         taskId: collectionId,
     });
 
     const { taskResults } = data;
 
-    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({
+    const { data: currentTask = {} as TaskType, refetch: refetchTask } = useGetTaskIdQuery({
         taskId: collectionId,
     });
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
@@ -185,6 +186,14 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         if (selectedTab) {
             setSnackbarText(null);
         }
+    }, [selectedTab]);
+
+    useEffect(() => {
+        if (selectedTab) {
+            refetchTaskResults();
+            refetchTask();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedTab]);
 
     useLayoutEffect(() => {
