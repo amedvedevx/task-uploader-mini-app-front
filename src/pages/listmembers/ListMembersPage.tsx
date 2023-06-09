@@ -1,4 +1,4 @@
-import { useParams, useRouter } from '@happysanta/router';
+import { useLocation, useRouter } from '@happysanta/router';
 import {
     FixedLayout,
     Panel,
@@ -34,7 +34,11 @@ interface ListMembersPageProps {
 }
 
 export const ListMembersPage: FC<ListMembersPageProps> = () => {
-    const { collectionId } = useParams();
+    const {
+        route: {
+            params: { collectionId },
+        },
+    } = useLocation();
     const router = useRouter();
 
     const { data = { taskResults: [] } } = useGetTaskResultsQuery({
