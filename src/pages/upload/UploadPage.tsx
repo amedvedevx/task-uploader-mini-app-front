@@ -11,8 +11,7 @@ import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { errorParser } from '@/lib/utils';
-import type { ButtonOption } from '@/components';
-import { FooterWithButton } from '@/components';
+import { FooterWithButton, type ButtonOption } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
