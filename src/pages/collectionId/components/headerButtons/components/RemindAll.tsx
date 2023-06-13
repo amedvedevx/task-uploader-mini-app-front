@@ -1,7 +1,7 @@
 import { Icon24NotificationOutline } from '@vkontakte/icons';
 import { CellButton, Avatar } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useParams } from '@happysanta/router';
+import { useLocation } from '@happysanta/router';
 
 import { Popout } from '@/components';
 import {
@@ -20,7 +20,11 @@ interface RemindAllProps {
 }
 
 export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiMessageError }) => {
-    const { collectionId } = useParams();
+    const {
+        route: {
+            params: { collectionId },
+        },
+    } = useLocation();
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [sendNotification] = useSendNotificationMutation();
 

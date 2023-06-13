@@ -1,4 +1,4 @@
-import { useParams, useRouter } from '@happysanta/router';
+import { useLocation, useRouter } from '@happysanta/router';
 import {
     FixedLayout,
     MiniInfoCell,
@@ -24,10 +24,10 @@ import {
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import { SnackBarText, TaskStatusTypesForTestee, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
+import type { SnackBarText, TaskType } from '@/app/types';
 import { useSearch } from '@/hooks';
-import { checkIsMobilePlatform, errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
+import { checkIsMobilePlatform, isForbiddenFile, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
@@ -51,12 +51,16 @@ interface CollectionIdProps {
 
 export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const router = useRouter();
-    const { collectionId } = useParams();
+
+    const {
+        route: {
+            params: { collectionId },
+        },
+    } = useLocation();
 
     const {
         data = { taskResults: [] },
         isLoading,
-        error,
         refetch: refetchTaskResults,
     } = useGetTaskResultsQuery({
         taskId: collectionId,
@@ -199,12 +203,6 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     useLayoutEffect(() => {
         setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
-
-    if (error && 'status' in error) {
-        const errorMessage = errorParser(error.status as number);
-
-        throw Error(errorMessage);
-    }
 
     return (
         <Panel
