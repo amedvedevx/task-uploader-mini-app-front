@@ -27,7 +27,7 @@ import {
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import type { SnackBarText, TaskType } from '@/app/types';
 import { useSearch } from '@/hooks';
-import { checkIsMobilePlatform, isForbiddenFile, normalizeTestees } from '@/lib/utils';
+import { checkIsMobilePlatform, errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
@@ -56,21 +56,21 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         route: {
             params: { collectionId },
         },
-    } = useLocation();
+    } = useLocation(true, PANEL_COLLECTION_ID);
 
     const {
         data = { taskResults: [] },
         isLoading,
+        error,
         refetch: refetchTaskResults,
-    } = useGetTaskResultsQuery({
-        taskId: collectionId,
-    });
+    } = useGetTaskResultsQuery({ taskId: collectionId }, { skip: !collectionId });
 
     const { taskResults } = data;
 
-    const { data: currentTask = {} as TaskType, refetch: refetchTask } = useGetTaskIdQuery({
-        taskId: collectionId,
-    });
+    const { data: currentTask = {} as TaskType, refetch: refetchTask } = useGetTaskIdQuery(
+        { taskId: collectionId },
+        { skip: !collectionId },
+    );
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
     const [downloadFiles, { isLoading: isFileDownloading }] = useLazyDownloadFilesQuery();
     const { data: platform = '' } = useGetPlatformQuery();
@@ -203,6 +203,12 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     useLayoutEffect(() => {
         setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
+
+    if (error && 'status' in error) {
+        const errorMessage = errorParser(error.status as number);
+
+        throw Error(errorMessage);
+    }
 
     return (
         <Panel
