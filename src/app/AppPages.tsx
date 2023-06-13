@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { lazy, useEffect } from 'react';
+import { lazy, useEffect, useRef } from 'react';
 import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
@@ -62,29 +62,37 @@ export const AppPages: FC = () => {
     useGetAuthTokenQuery();
     const isMobilePlatform = checkIsMobilePlatform(platform);
     const bearer = useGenerateBearer();
+    const canRedirectToMain = useRef<boolean>(true);
+
+    const bridgeEvents = ({ detail: { type, data } }: VKBridgeEvent<keyof ReceiveDataMap>) => {
+        if (type === 'VKWebAppChangeFragment') {
+            canRedirectToMain.current = false;
+            const dataTyped = data as ChangeFragmentResponse;
+            const index = dataTyped.location?.lastIndexOf('/');
+            const id = dataTyped.location.substring(index + 1);
+
+            if (dataTyped.location.includes('upload')) {
+                router.pushPage(PAGE_UPLOAD_ID, { uploadId: id });
+                isFirst = true;
+            } else if (dataTyped.location.includes('collectionId')) {
+                router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
+            }
+        }
+
+        if (type === 'VKWebAppViewRestore') {
+            if (canRedirectToMain.current) {
+                router.pushPage('/');
+            }
+
+            canRedirectToMain.current = true;
+        }
+    };
 
     useEffect(() => {
-        const changeFragment = ({
-            detail: { type, data },
-        }: VKBridgeEvent<keyof ReceiveDataMap>) => {
-            if (type === 'VKWebAppChangeFragment') {
-                const dataTyped = data as ChangeFragmentResponse;
-                const index = dataTyped.location?.lastIndexOf('/');
-                const id = dataTyped.location.substring(index + 1);
-
-                if (dataTyped.location.includes('upload')) {
-                    router.pushPage(PAGE_UPLOAD_ID, { uploadId: id });
-                    isFirst = true;
-                } else if (dataTyped.location.includes('collectionId')) {
-                    router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
-                }
-            }
-        };
-
-        bridge.subscribe(changeFragment);
+        bridge.subscribe(bridgeEvents);
 
         return () => {
-            bridge.unsubscribe(changeFragment);
+            bridge.unsubscribe(bridgeEvents);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
