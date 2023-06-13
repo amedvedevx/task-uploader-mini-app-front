@@ -75,7 +75,7 @@ export const HomePage: FC<HomePageProps> = () => {
                         </Spacing>
 
                         <CollectionHistory
-                            collections={data?.tasks}
+                            collections={data.tasks}
                             isLoading={isLoading}
                             setSnackbarText={setSnackbarText}
                         />

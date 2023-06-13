@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { lazy, useEffect, useRef } from 'react';
+import { lazy, useEffect } from 'react';
 import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
@@ -62,11 +62,10 @@ export const AppPages: FC = () => {
     useGetAuthTokenQuery();
     const isMobilePlatform = checkIsMobilePlatform(platform);
     const bearer = useGenerateBearer();
-    const canRedirectToMain = useRef<boolean>(true);
 
     const bridgeEvents = ({ detail: { type, data } }: VKBridgeEvent<keyof ReceiveDataMap>) => {
         if (type === 'VKWebAppChangeFragment') {
-            canRedirectToMain.current = false;
+            // canRedirectToMain.current = false;
             const dataTyped = data as ChangeFragmentResponse;
             const index = dataTyped.location?.lastIndexOf('/');
             const id = dataTyped.location.substring(index + 1);
@@ -79,13 +78,13 @@ export const AppPages: FC = () => {
             }
         }
 
-        if (type === 'VKWebAppViewRestore') {
-            if (canRedirectToMain.current) {
-                router.pushPage('/');
-            }
+        // if (type === 'VKWebAppViewRestore') {
+        //     if (canRedirectToMain.current) {
+        //         router.pushPage('/');
+        //     }
 
-            canRedirectToMain.current = true;
-        }
+        //     canRedirectToMain.current = true;
+        // }
     };
 
     useEffect(() => {
