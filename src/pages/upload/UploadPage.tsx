@@ -1,7 +1,7 @@
-import { Panel, Group, Separator, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
-import { useParams } from '@happysanta/router';
+import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
@@ -10,12 +10,11 @@ import type { SnackBarText } from '@/app/types';
 import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
-import { errorParser } from '@/lib/utils';
-import { FooterWithButton, type ButtonOption } from '@/components';
+import type { ButtonOption } from '@/components';
+import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
-import { UploadPageActions } from './components/UploadPageActions';
 import { TaskDescription } from './components/TaskDescription';
 import { UploadedFiles } from './components/UploadedFiles';
 
@@ -24,9 +23,13 @@ interface ListMembersPageProps {
 }
 
 export const UploadPage: FC<ListMembersPageProps> = () => {
-    const { uploadId } = useParams();
+    const {
+        route: {
+            params: { uploadId },
+        },
+    } = useLocation();
 
-    const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
+    const { data } = useGetTaskIdQuery({ taskId: uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({
         taskId: uploadId,
     });
@@ -121,12 +124,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             }
         }
     }, [statusFromServer]);
-
-    if (error && 'status' in error) {
-        const errorMessage = errorParser(error.status as number);
-
-        throw Error(errorMessage);
-    }
 
     return (
         <Panel

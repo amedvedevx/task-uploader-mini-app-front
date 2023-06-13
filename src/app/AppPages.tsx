@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useEffect } from 'react';
+import { lazy, useEffect } from 'react';
 import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
 import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
@@ -11,7 +11,6 @@ import { checkIsMobilePlatform } from '@/lib';
 import { useGenerateBearer } from '@/hooks';
 import { useGetAuthTokenQuery, useGetPlatformQuery } from '@/api';
 
-import { lazyWithRetries } from './utils';
 import {
     PAGE_COLLECTION_ID,
     PAGE_UPLOAD_ID,
@@ -25,49 +24,40 @@ import {
     VIEW_UPLOAD,
 } from './router';
 
-const HomePage = lazyWithRetries(
-    () => import('@/pages/home/HomePage').then((module) => ({ default: module.HomePage })),
-    'HomePage',
+const HomePage = lazy(() =>
+    import('@/pages/home/HomePage').then((module) => ({ default: module.HomePage })),
 );
 
-const UploadPage = lazyWithRetries(
-    () => import('@/pages/upload/UploadPage').then((module) => ({ default: module.UploadPage })),
-    'UploadPage',
+const UploadPage = lazy(() =>
+    import('@/pages/upload/UploadPage').then((module) => ({ default: module.UploadPage })),
 );
 
-const CreatePage = lazyWithRetries(
-    () => import('@/pages/create/CreatePage').then((module) => ({ default: module.CreatePage })),
-    'CreatePage',
+const CreatePage = lazy(() =>
+    import('@/pages/create/CreatePage').then((module) => ({ default: module.CreatePage })),
 );
 
-const AddMembersPage = lazyWithRetries(
-    () =>
-        import('@/pages/addmembers/AddMembersPage').then((module) => ({
-            default: module.AddMembersPage,
-        })),
-    'AddMembersPage',
+const AddMembersPage = lazy(() =>
+    import('@/pages/addmembers/AddMembersPage').then((module) => ({
+        default: module.AddMembersPage,
+    })),
 );
 
-const ListMembersPage = lazyWithRetries(
-    () =>
-        import('@/pages/listmembers/ListMembersPage').then((module) => ({
-            default: module.ListMembersPage,
-        })),
-    'ListMembersPage',
+const ListMembersPage = lazy(() =>
+    import('@/pages/listmembers/ListMembersPage').then((module) => ({
+        default: module.ListMembersPage,
+    })),
 );
 
-const CollectionIdPage = lazyWithRetries(
-    () =>
-        import('@/pages/collectionId/CollectionIdPage').then((module) => ({
-            default: module.CollectionIdPage,
-        })),
-    'CollectionIdPage',
+const CollectionIdPage = lazy(() =>
+    import('@/pages/collectionId/CollectionIdPage').then((module) => ({
+        default: module.CollectionIdPage,
+    })),
 );
 
 export const AppPages: FC = () => {
     const location = useLocation();
     const router = useRouter();
-    const isFirst = useFirstPageCheck();
+    let isFirst = useFirstPageCheck();
     const { data: platform = '' } = useGetPlatformQuery();
     useGetAuthTokenQuery();
     const isMobilePlatform = checkIsMobilePlatform(platform);
@@ -84,6 +74,7 @@ export const AppPages: FC = () => {
 
                 if (dataTyped.location.includes('upload')) {
                     router.pushPage(PAGE_UPLOAD_ID, { uploadId: id });
+                    isFirst = true;
                 } else if (dataTyped.location.includes('collectionId')) {
                     router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
                 }
