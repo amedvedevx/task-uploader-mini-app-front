@@ -11,7 +11,8 @@ import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { errorParser } from '@/lib/utils';
-import { FooterWithButton, type ButtonOption } from '@/components';
+import type { ButtonOption } from '@/components';
+import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
@@ -35,7 +36,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const [uploadFile, statusFromServer] = useUploadFileMutation();
 
     const [isLoading, setLoading] = useState(false);
-
     const [tries, setTries] = useState(0);
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
@@ -60,29 +60,31 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const sendFiles = async () => {
         setLoading(true);
 
+        const fileStatuses = [];
+
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
-            await uploadFile({ taskId, subTaskId, file });
-
-            if (statusFromServer.isError) {
-                setTries((prev) => prev + 1);
-
-                console.log(tries);
-
-                if (tries <= 3) {
-                    setTimeout(() => {
-                        uploadFile({ taskId, subTaskId, file });
-                    }, 500);
-                } else {
-                    setSnackbarText({
-                        type: 'error',
-                        text: 'Возникли проблемы при загрузке, попробуйте позже',
-                    });
-                }
-            }
+            await uploadFile({ taskId, subTaskId, file }).then((res) => {
+                fileStatuses.push(res);
+            });
         }
 
+        if (fileStatuses[0]?.data?.status === AddResultStatusTypes.NOT_LOADED) {
+            setTries((prev) => prev + 1);
+
+            if (tries <= 3) {
+                // eslint-disable-next-line no-restricted-syntax
+                for (const file of files) {
+                    uploadFile({ taskId, subTaskId, file });
+                }
+            } else {
+                setSnackbarText({
+                    type: 'error',
+                    text: 'Возникли проблемы при загрузке, попробуйте позже',
+                });
+            }
+        }
         setLoading(false);
     };
 
@@ -90,6 +92,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         const sendFilesButton: ButtonOption = {
             text: 'Отправить',
             onClick: () => sendFiles(),
+
             disabled: isLoading,
             mode: 'primary',
             appearance: 'accent',
