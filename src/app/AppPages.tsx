@@ -12,6 +12,7 @@ import { useGenerateBearer } from '@/hooks';
 import { useGetAuthTokenQuery, useGetPlatformQuery } from '@/api';
 
 import {
+    PAGE_COLLECTION_HOME,
     PAGE_COLLECTION_ID,
     PAGE_UPLOAD_ID,
     PANEL_ADD_MEMBERS,
@@ -75,16 +76,10 @@ export const AppPages: FC = () => {
                 isFirst = true;
             } else if (dataTyped.location.includes('collectionId')) {
                 router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
+            } else if (dataTyped.location === '') {
+                router.pushPage(PAGE_COLLECTION_HOME);
             }
         }
-
-        // if (type === 'VKWebAppViewRestore') {
-        //     if (canRedirectToMain.current) {
-        //         router.pushPage('/');
-        //     }
-
-        //     canRedirectToMain.current = true;
-        // }
     };
 
     useEffect(() => {
