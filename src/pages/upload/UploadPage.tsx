@@ -190,7 +190,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     />
                 )}
 
-                <FooterWithButton options={prepareButtonsOptions()} />
+                {!!files.length && <FooterWithButton options={prepareButtonsOptions()} />}
             </UploadPageWrapper>
         </Panel>
     );
