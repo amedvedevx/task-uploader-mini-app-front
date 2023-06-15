@@ -8,13 +8,13 @@ import { HeaderShort } from '@/components/HeaderShort';
 interface FilesReadyToUploadProps {
     files: File[];
     removeFile: (lastModified: number) => void;
-    hadnleTypeFile: () => 'success' | 'loading' | 'delete';
+    getFileStatus: () => 'success' | 'loading' | 'delete';
 }
 
 export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
     files,
     removeFile,
-    hadnleTypeFile,
+    getFileStatus,
 }) => (
     <>
         <HeaderShort mode='secondary'>
@@ -27,7 +27,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
                 <HorizontalFileCell
                     key={lastModified}
                     title={name}
-                    type={hadnleTypeFile()}
+                    type={getFileStatus()}
                     onClick={() => removeFile(lastModified)}
                 />
             ))}

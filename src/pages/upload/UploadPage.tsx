@@ -101,7 +101,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         return [removeFilesButton, sendFilesButton];
     };
 
-    const hadnleTypeFile = () => {
+    const getFileStatus = () => {
         if (isLoading) {
             if (statusFromServer.isSuccess) {
                 return 'success';
@@ -198,7 +198,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         data-automation-id='upload-page-filesGroup'
                     >
                         <FilesReadyToUpload
-                            hadnleTypeFile={hadnleTypeFile}
+                            getFileStatus={getFileStatus}
                             files={files}
                             removeFile={removeFile}
                         />
