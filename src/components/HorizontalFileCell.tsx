@@ -1,15 +1,16 @@
-import { HorizontalCell, Image, IconButton } from '@vkontakte/vkui';
+import { HorizontalCell, Image, IconButton, Spinner } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import styled from 'styled-components';
 import {
     Icon24DismissDark,
     Icon24DoorArrowLeftOutline,
     Icon32DocumentOutline,
+    Icon16DoneCircle,
 } from '@vkontakte/icons';
 
 interface HorizontalFileCellProps {
     title: string;
-    type?: 'download' | 'delete';
+    type?: 'download' | 'delete' | 'loading' | 'success';
     onClick?: () => void;
 }
 
@@ -62,7 +63,33 @@ const DownloadIcon = styled(Icon24DoorArrowLeftOutline)`
     margin: 12px !important;
 `;
 
+const SpinnerIcon = styled(Spinner)`
+    .vkuiIconButton {
+        padding: 0;
+    }
+
+    color: white;
+
+    height: 40px;
+    width: 40px;
+
+    box-shadow: 0px 1px 4px var(--vkui--color_image_border_alpha);
+    background-clip: content-box;
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 50%;
+
+    padding: 0px !important;
+`;
+
 const iconType = {
     download: <DownloadIcon />,
     delete: <Icon24DismissDark />,
+    loading: <SpinnerIcon size='regular' />,
+    success: (
+        <Icon16DoneCircle
+            fill='#50b251'
+            width={40}
+            height={24}
+        />
+    ),
 };

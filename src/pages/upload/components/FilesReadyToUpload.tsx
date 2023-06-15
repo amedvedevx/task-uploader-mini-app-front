@@ -8,9 +8,14 @@ import { HeaderShort } from '@/components/HeaderShort';
 interface FilesReadyToUploadProps {
     files: File[];
     removeFile: (lastModified: number) => void;
+    hadnleTypeFile: () => 'success' | 'loading' | 'delete';
 }
 
-export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({ files, removeFile }) => (
+export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
+    files,
+    removeFile,
+    hadnleTypeFile,
+}) => (
     <>
         <HeaderShort mode='secondary'>
             {`Готово к загрузке ${files.length} 
@@ -22,7 +27,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({ files, removeF
                 <HorizontalFileCell
                     key={lastModified}
                     title={name}
-                    type='delete'
+                    type={hadnleTypeFile()}
                     onClick={() => removeFile(lastModified)}
                 />
             ))}

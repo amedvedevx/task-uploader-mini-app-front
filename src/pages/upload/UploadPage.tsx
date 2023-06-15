@@ -1,23 +1,28 @@
-import { Panel, Group, Separator, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from '@happysanta/router';
-import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
-import { useGetTaskIdQuery, useUploadFileMutation, useGetTaskResultsQuery } from '@/api';
+import {
+    useGetTaskIdQuery,
+    useUploadFileMutation,
+    useGetTaskResultsQuery,
+    useGetPlatformQuery,
+} from '@/api';
 import type { SnackBarText } from '@/app/types';
 import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
-import { errorParser } from '@/lib/utils';
-import { FooterWithButton, type ButtonOption } from '@/components';
+import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
+import type { ButtonOption } from '@/components';
+import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
-import { UploadPageActions } from './components/UploadPageActions';
 import { TaskDescription } from './components/TaskDescription';
 import { UploadedFiles } from './components/UploadedFiles';
+import styled from 'styled-components';
 
 interface ListMembersPageProps {
     id?: string;
@@ -26,10 +31,14 @@ interface ListMembersPageProps {
 export const UploadPage: FC<ListMembersPageProps> = () => {
     const { uploadId } = useParams();
 
+    const { data: platform = '' } = useGetPlatformQuery();
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({
         taskId: uploadId,
     });
+
+    const isMobilePlatform = checkIsMobilePlatform(platform);
+
     const taskId = uploadId;
     const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
@@ -63,7 +72,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
-            await uploadFile({ taskId, subTaskId, file });
+            await uploadFile({ taskId, subTaskId, file }).then((res) => console.log('res', res));
         }
 
         setLoading(false);
@@ -88,6 +97,18 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         };
 
         return [removeFilesButton, sendFilesButton];
+    };
+
+    const hadnleTypeFile = () => {
+        if (isLoading) {
+            if (statusFromServer.isSuccess) {
+                return 'success';
+            }
+
+            return 'loading';
+        }
+
+        return 'delete';
     };
 
     useEffect(() => {
@@ -153,6 +174,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
             <UploadPageWrapper>
                 <DropZone
+                    isMobilePlatform={isMobilePlatform}
                     isTaskComplete={isTaskComplete}
                     isLoading={isLoading}
                     setFiles={setFiles}
@@ -174,6 +196,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         data-automation-id='upload-page-filesGroup'
                     >
                         <FilesReadyToUpload
+                            hadnleTypeFile={hadnleTypeFile}
                             files={files}
                             removeFile={removeFile}
                         />
