@@ -66,7 +66,6 @@ export const AppPages: FC = () => {
 
     const bridgeEvents = ({ detail: { type, data } }: VKBridgeEvent<keyof ReceiveDataMap>) => {
         if (type === 'VKWebAppChangeFragment') {
-            // canRedirectToMain.current = false;
             const dataTyped = data as ChangeFragmentResponse;
             const index = dataTyped.location?.lastIndexOf('/');
             const id = dataTyped.location.substring(index + 1);
