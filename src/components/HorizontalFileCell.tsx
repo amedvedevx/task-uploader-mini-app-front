@@ -25,6 +25,7 @@ export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, o
             <Icon32DocumentOutline />
 
             <CellButton
+                type={type}
                 aria-label='fileIconButton'
                 onClick={onClick}
             >
@@ -34,10 +35,10 @@ export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, o
     </HorizontalCellOverflow>
 );
 
-const CellButton = styled(IconButton)`
+const CellButton = styled(IconButton)<{ $type?: 'download' | 'delete' | 'loading' | 'success' }>`
     position: absolute;
     top: -22px;
-    right: -22px;
+    right: ${({ $type }) => ($type === 'loading' ? '-11px' : '-22px')};
 `;
 
 const HorizontalCellOverflow = styled(HorizontalCell)`
@@ -64,14 +65,14 @@ const DownloadIcon = styled(Icon24DoorArrowLeftOutline)`
 `;
 
 const SpinnerIcon = styled(Spinner)`
-    .vkuiIconButton {
+    .vkuiIcon--24 {
         padding: 0;
     }
 
     color: white;
 
-    height: 40px;
-    width: 40px;
+    height: 24px;
+    width: 24px;
 
     box-shadow: 0px 1px 4px var(--vkui--color_image_border_alpha);
     background-clip: content-box;
@@ -79,6 +80,7 @@ const SpinnerIcon = styled(Spinner)`
     border-radius: 50%;
 
     padding: 0px !important;
+    margin: 12px !important;
 `;
 
 const iconType = {
@@ -88,7 +90,7 @@ const iconType = {
     success: (
         <Icon16DoneCircle
             fill='#50b251'
-            width={40}
+            width={24}
             height={24}
         />
     ),
