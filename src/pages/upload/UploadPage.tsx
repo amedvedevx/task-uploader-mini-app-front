@@ -1,7 +1,8 @@
 import { Panel, Group, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
-import { useParams } from '@happysanta/router';
+import { useLocation } from '@happysanta/router';
+import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import {
@@ -22,20 +23,21 @@ import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
 import { TaskDescription } from './components/TaskDescription';
 import { UploadedFiles } from './components/UploadedFiles';
-import styled from 'styled-components';
 
 interface ListMembersPageProps {
     id?: string;
 }
 
 export const UploadPage: FC<ListMembersPageProps> = () => {
-    const { uploadId } = useParams();
+    const {
+        route: {
+            params: { uploadId },
+        },
+    } = useLocation();
 
     const { data: platform = '' } = useGetPlatformQuery();
-    const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
-    const { data: taskResults } = useGetTaskResultsQuery({
-        taskId: uploadId,
-    });
+    const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
+    const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
 
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
