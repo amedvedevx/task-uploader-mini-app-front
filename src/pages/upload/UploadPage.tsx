@@ -70,14 +70,16 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             });
         }
 
-        if (fileStatuses[0]?.data?.status === AddResultStatusTypes.NOT_LOADED) {
-            setTries((prev) => prev + 1);
+        setLoading(false);
+    };
 
+    const handleSendFiles = async () => {
+        await sendFiles();
+
+        if (statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED) {
             if (tries <= 3) {
-                // eslint-disable-next-line no-restricted-syntax
-                for (const file of files) {
-                    uploadFile({ taskId, subTaskId, file });
-                }
+                await sendFiles();
+                setTries((prev) => prev + 1);
             } else {
                 setSnackbarText({
                     type: 'error',
@@ -85,13 +87,12 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                 });
             }
         }
-        setLoading(false);
     };
 
     const prepareButtonsOptions = (): ButtonOption[] => {
         const sendFilesButton: ButtonOption = {
             text: 'Отправить',
-            onClick: () => sendFiles(),
+            onClick: () => handleSendFiles(),
 
             disabled: isLoading,
             mode: 'primary',
