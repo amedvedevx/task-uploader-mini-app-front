@@ -54,3 +54,13 @@ export const StubSubtitle = styled(Text)<StubSubtitleProps>`
     color: ${({ color }) => `${color}`};
     width: ${({ width }) => width};
 `;
+
+export const StubСacheSubtitle = styled(Text)`
+    display: flex;
+    margin-bottom: 10px;
+
+    white-space: pre-wrap;
+    text-align: center;
+
+    color: var(--vkui--color_text_secondary);
+`;

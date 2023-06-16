@@ -45,7 +45,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const [uploadFile, statusFromServer] = useUploadFileMutation();
 
     const [isLoading, setLoading] = useState(false);
-
+    const [tries, setTries] = useState(0);
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
 
@@ -67,13 +67,33 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const sendFiles = async () => {
         setLoading(true);
 
+        const fileStatuses = [];
+
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
-            await uploadFile({ taskId, subTaskId, file });
+            await uploadFile({ taskId, subTaskId, file }).then((res) => {
+                fileStatuses.push(res);
+            });
         }
 
         setLoading(false);
+    };
+
+    const handleSendFiles = async () => {
+        await sendFiles();
+
+        if (statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED) {
+            if (tries <= 3) {
+                await sendFiles();
+                setTries((prev) => prev + 1);
+            } else {
+                setSnackbarText({
+                    type: 'error',
+                    text: 'Возникли проблемы при загрузке, попробуйте позже',
+                });
+            }
+        }
     };
 
     const getFileStatus = (uploadDate: string) => {
@@ -184,18 +204,20 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     />
                 )}
 
-                <FooterWithButton
-                    options={[
-                        {
-                            text: 'Отправить',
-                            onClick: () => sendFiles(),
-                            disabled: isLoading,
-                            mode: 'primary',
-                            appearance: 'accent',
-                            dataAutomationId: 'upload-page-sendFilesButton',
-                        },
-                    ]}
-                />
+                {!!files.length && (
+                    <FooterWithButton
+                        options={[
+                            {
+                                text: 'Отправить',
+                                onClick: () => sendFiles(),
+                                disabled: isLoading,
+                                mode: 'primary',
+                                appearance: 'accent',
+                                dataAutomationId: 'upload-page-sendFilesButton',
+                            },
+                        ]}
+                    />
+                )}
             </UploadPageWrapper>
         </Panel>
     );
