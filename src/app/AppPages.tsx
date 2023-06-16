@@ -1,20 +1,16 @@
 import type { FC } from 'react';
 import { lazy, useEffect } from 'react';
-import { useFirstPageCheck, useLocation, useRouter } from '@happysanta/router';
+import { useFirstPageCheck, useLocation } from '@happysanta/router';
 import '@vkontakte/vkui/dist/vkui.css';
-import type { ChangeFragmentResponse, ReceiveDataMap, VKBridgeEvent } from '@vkontakte/vk-bridge';
 import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
 import { PreloadScreen } from '@/components';
 import { checkIsMobilePlatform } from '@/lib';
-import { useGenerateBearer } from '@/hooks';
+import { useChangeFragment, useGenerateBearer } from '@/hooks';
 import { useGetAuthTokenQuery, useGetPlatformQuery } from '@/api';
 
 import {
-    PAGE_COLLECTION_HOME,
-    PAGE_COLLECTION_ID,
-    PAGE_UPLOAD_ID,
     PANEL_ADD_MEMBERS,
     PANEL_COLLECTION_HOME,
     PANEL_COLLECTION_ID,
@@ -57,39 +53,12 @@ const CollectionIdPage = lazy(() =>
 
 export const AppPages: FC = () => {
     const location = useLocation();
-    const router = useRouter();
     let isFirst = useFirstPageCheck();
+    isFirst = useChangeFragment({ isFirst });
     const { data: platform = '' } = useGetPlatformQuery();
     useGetAuthTokenQuery();
     const isMobilePlatform = checkIsMobilePlatform(platform);
     const bearer = useGenerateBearer();
-
-    const bridgeEvents = ({ detail: { type, data } }: VKBridgeEvent<keyof ReceiveDataMap>) => {
-        if (type === 'VKWebAppChangeFragment') {
-            // canRedirectToMain.current = false;
-            const dataTyped = data as ChangeFragmentResponse;
-            const index = dataTyped.location?.lastIndexOf('/');
-            const id = dataTyped.location.substring(index + 1);
-
-            if (dataTyped.location.includes('upload')) {
-                router.pushPage(PAGE_UPLOAD_ID, { uploadId: id });
-                isFirst = true;
-            } else if (dataTyped.location.includes('collectionId')) {
-                router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
-            } else if (dataTyped.location === '') {
-                router.pushPage(PAGE_COLLECTION_HOME);
-            }
-        }
-    };
-
-    useEffect(() => {
-        bridge.subscribe(bridgeEvents);
-
-        return () => {
-            bridge.unsubscribe(bridgeEvents);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     useEffect(() => {
         if (isMobilePlatform) {
