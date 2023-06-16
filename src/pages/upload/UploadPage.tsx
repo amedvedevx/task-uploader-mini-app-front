@@ -16,13 +16,11 @@ import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
-import type { ButtonOption } from '@/components';
 import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
 import { TaskDescription } from './components/TaskDescription';
-import { UploadedFiles } from './components/UploadedFiles';
 
 interface ListMembersPageProps {
     id?: string;
@@ -66,8 +64,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         });
     };
 
-    const clearState = () => setFiles([]);
-
     const sendFiles = async () => {
         setLoading(true);
 
@@ -100,30 +96,12 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         }
     };
 
-    const prepareButtonsOptions = (): ButtonOption[] => {
-        const sendFilesButton: ButtonOption = {
-            text: 'Отправить',
-            onClick: () => handleSendFiles(),
+    const getFileStatus = (uploadDate: string) => {
+        if (uploadDate) {
+            return 'success';
+        }
 
-            disabled: isLoading,
-            mode: 'primary',
-            appearance: 'accent',
-            dataAutomationId: 'upload-page-sendFilesButton',
-        };
-        const removeFilesButton: ButtonOption = {
-            text: 'Отменить',
-            onClick: () => clearState(),
-            disabled: isLoading,
-            mode: 'secondary',
-            appearance: 'accent',
-            dataAutomationId: 'upload-page-cancelButton',
-        };
-
-        return [removeFilesButton, sendFilesButton];
-    };
-
-    const getFileStatus = () => {
-        if (isLoading) {
+        if (isLoading && !uploadDate) {
             if (statusFromServer.isSuccess) {
                 return 'success';
             }
@@ -145,7 +123,11 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     statusFromServer?.originalArgs?.file?.name || ''
                 } не удалась${
                     statusFromServer.error && statusFromServer.error !== 'error'
-                        ? `: ${statusFromServer.error}`
+                        ? `: ${
+                              statusFromServer.error?.data?.message
+                                  ? statusFromServer.error.data.message
+                                  : statusFromServer.error
+                          }`
                         : '.'
                 }`,
             });
@@ -204,23 +186,15 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     setSnackbarText={setSnackbarText}
                 />
 
-                {uploadedFiles && (
-                    <Group
-                        separator='hide'
-                        data-automation-id='upload-page-filesGroup'
-                    >
-                        <UploadedFiles files={uploadedFiles} />
-                    </Group>
-                )}
-
-                {!!files.length && (
+                {(!!files.length || !!uploadedFiles?.length) && (
                     <Group
                         separator='hide'
                         data-automation-id='upload-page-filesGroup'
                     >
                         <FilesReadyToUpload
-                            getFileStatus={getFileStatus}
                             files={files}
+                            uploadedFiles={uploadedFiles}
+                            getFileStatus={getFileStatus}
                             removeFile={removeFile}
                         />
                     </Group>
@@ -234,7 +208,20 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     />
                 )}
 
-                {!!files.length && <FooterWithButton options={prepareButtonsOptions()} />}
+                {!!files.length && (
+                    <FooterWithButton
+                        options={[
+                            {
+                                text: 'Отправить',
+                                onClick: () => handleSendFiles(),
+                                disabled: isLoading,
+                                mode: 'primary',
+                                appearance: 'accent',
+                                dataAutomationId: 'upload-page-sendFilesButton',
+                            },
+                        ]}
+                    />
+                )}
             </UploadPageWrapper>
         </Panel>
     );
