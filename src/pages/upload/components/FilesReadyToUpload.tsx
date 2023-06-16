@@ -19,12 +19,14 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
     removeFile,
     getFileStatus,
 }) => {
-    const allFiles = files?.concat(uploadedFiles);
+    const filesToUpload = files || [];
+    const filesUploaded = uploadedFiles || [];
+    const allFiles = [...filesToUpload, ...filesUploaded];
 
     return (
         <>
             <HeaderShort mode='secondary'>
-                {!!files.length
+                {files.length
                     ? `К отправке ${files.length}  ${inclinationWord(files.length, [
                           'файл',
                           'файла',
