@@ -33,14 +33,13 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
     const taskId = uploadId;
-    const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
     const [uploadFile, statusFromServer] = useUploadFileMutation();
 
     const [isLoading, setLoading] = useState(false);
 
     const [files, setFiles] = useState<File[]>([]);
-    const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
+    const uploadedFiles = taskResults?.taskResults?.[0].content;
 
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
@@ -65,7 +64,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
-            await uploadFile({ taskId, subTaskId, file });
+            await uploadFile({ taskId, file });
         }
 
         setLoading(false);

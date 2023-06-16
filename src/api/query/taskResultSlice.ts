@@ -21,26 +21,13 @@ const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] 
             }),
         }),
         deleteTaskResult: builder.mutation<void, DeleteTaskResultProps>({
-            query: ({ taskId, subTaskId }) => ({
-                url: `/task-result/${taskId}/${subTaskId}`,
+            query: ({ taskId }) => ({
+                url: `/task-result/${taskId}`,
                 method: 'DELETE',
             }),
             invalidatesTags: ['TaskResult'],
         }),
-        getSubTaskResultStatus: builder.query<
-            GetSubTaskResultStatusResponse,
-            GetSubTaskResultStatusProps
-        >({
-            query: ({ taskId, subTaskId }) => ({
-                url: `/task-result/${taskId}/${subTaskId}`,
-            }),
-            keepUnusedDataFor: 0,
-        }),
     }),
 });
 
-export const {
-    useGetTaskResultsQuery,
-    useDeleteTaskResultMutation,
-    useGetSubTaskResultStatusQuery,
-} = taskResultSlice;
+export const { useGetTaskResultsQuery, useDeleteTaskResultMutation } = taskResultSlice;

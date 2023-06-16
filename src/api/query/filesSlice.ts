@@ -2,9 +2,9 @@ import type {
     UploadFileProps,
     DownloadFilesProps,
     UploadFileResponse,
-    TaskDetailResult,
     DownloadSingleFileProps,
     PreUploadFilesResponse,
+    TaskResults,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
@@ -14,16 +14,11 @@ import type { RootState } from '../store';
 const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).injectEndpoints({
     endpoints: (builder) => ({
         downloadFiles: builder.query<void, DownloadFilesProps>({
-            queryFn: async (
-                { taskId, subTaskId, vkUserId },
-                _queryApi,
-                _extraOptions,
-                fetchWithBQ,
-            ) => {
+            queryFn: async ({ taskId, docId, vkUserId }, _queryApi, _extraOptions, fetchWithBQ) => {
                 const response = await fetchWithBQ({
                     url: `/files/${taskId}`,
                     responseHandler: (res) => res.blob(),
-                    params: { subTaskId, vkUserId },
+                    params: { vkUserId },
                 });
 
                 let fileName = '';
@@ -57,13 +52,13 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
         }),
         downloadSingleFile: builder.query<void, DownloadSingleFileProps>({
             queryFn: async (
-                { title, taskId, subTaskId, docId, vkUserId },
+                { title, taskId, docId, vkUserId },
                 _queryApi,
                 _extraOptions,
                 fetchWithBQ,
             ) => {
                 const response = await fetchWithBQ({
-                    url: `/files/${taskId}/${subTaskId}`,
+                    url: `/files/${taskId}`,
                     responseHandler: (res) => res.blob(),
                     params: { docId, vkUserId },
                 });
@@ -85,10 +80,10 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 return { data: dwnlnk.click() };
             },
         }),
-        downloadFilesOnMobile: builder.query<void, TaskDetailResult[]>({
+        downloadFilesOnMobile: builder.query<void, TaskResults>({
             queryFn: async (resultsData) => {
                 const result = await Promise.all(
-                    resultsData[0].content.map(async (fileData) => {
+                    resultsData.content.map(async (fileData) => {
                         const dwnlResult = await BridgeDownload({
                             url: fileData.url,
                             fileName: fileData.title,
@@ -106,12 +101,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
             },
         }),
         uploadFile: builder.mutation<UploadFileResponse, UploadFileProps>({
-            queryFn: async (
-                { taskId, subTaskId, file },
-                { getState },
-                _extraOptions,
-                fetchWithBQ,
-            ) => {
+            queryFn: async ({ taskId, file }, { getState }, _extraOptions, fetchWithBQ) => {
                 const { token } = (getState() as RootState).authorization;
 
                 const uploadUrl = await BridgeDocsUploadServer({
@@ -150,7 +140,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 }
 
                 const saveFileLinkResponse = await fetchWithBQ({
-                    url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
+                    url: `/files?taskId=${taskId}`,
                     method: 'PUT',
                     body: {
                         data: [saveResponse?.doc],

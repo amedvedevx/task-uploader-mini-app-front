@@ -10,22 +10,14 @@ export type TaskDetailResultContent = {
     url: string;
 };
 
-export type TaskDetailResult = {
-    resultId: string;
-    subTaskId: string;
-    taskDetailId: string;
-    completeDate: number;
-    status: 'LOADED';
-    content: TaskDetailResultContent[];
-};
-
 export type TaskResults = {
     id: number;
     taskId: string;
     completeDate: number;
     assignDate: string;
+    exception: string;
     taskResultStatus: TaskStatusTypesForTestee;
-    subTaskResults: TaskDetailResult[];
+    content: TaskDetailResultContent[];
     testee: {
         vkUserId: number;
         firstName: string;
@@ -57,16 +49,6 @@ export type TaskType = {
     description: string;
     dateCreate: number;
     deadLine: number;
-    subTasks: [
-        {
-            id: string;
-            name: string;
-            description: string;
-            sortOrder: number;
-            subTaskType: FileTypes;
-            dateCreate: number;
-        },
-    ];
     unlimited: boolean;
     consolidatedData: TaskUserConsolidatedData;
 };
@@ -84,12 +66,10 @@ export interface GetTaskResultsProps {
 
 export interface DeleteTaskResultProps {
     taskId: string;
-    subTaskId: string;
 }
 
 export interface UploadFileProps {
     taskId: string;
-    subTaskId: string;
     file: File;
 }
 
@@ -110,7 +90,7 @@ export interface UploadFileResponse {
 
 export interface DownloadFilesProps {
     taskId: string;
-    subTaskId?: string;
+    docId?: string;
     vkUserId?: number;
 }
 
@@ -160,7 +140,6 @@ export interface CreateTaskProps {
     description: string;
     unlimited: boolean;
     deadLine: number;
-    subTasks: CreateSubTaskPayload[];
 }
 
 export interface CreateSubTaskPayload {

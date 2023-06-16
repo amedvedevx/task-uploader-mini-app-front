@@ -65,7 +65,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                 );
 
                 if (resultsForUser) {
-                    downloadFilesOnMobile(resultsForUser.subTaskResults);
+                    downloadFilesOnMobile(resultsForUser);
                 }
             }
         } else if (docId && title && taskId && subTaskId) {
@@ -115,7 +115,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                 {taskResults.map(
                     ({
                         testee: { vkUserId, firstName, lastName, fullName, photo },
-                        subTaskResults,
+                        content,
                         taskId,
                     }) => (
                         <Accordion key={vkUserId}>
@@ -138,8 +138,8 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                                 originalArgs={originalArgs}
                                                 vkUserId={vkUserId}
                                                 isDownloading={isDownloading}
-                                                counter={subTaskResults[0].content.length}
-                                                files={subTaskResults[0].content}
+                                                counter={content.length}
+                                                files={content}
                                                 handleDownloadFile={handleDownloadFile}
                                             />
                                         )
@@ -150,7 +150,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                             </AccordionSummaryWidth>
 
                             <HorizontalScroll>
-                                {subTaskResults[0].content.map(({ title, docId, url }) => (
+                                {content.map(({ title, docId, url }) => (
                                     <HorizontalFileCell
                                         key={docId}
                                         title={title}
@@ -162,7 +162,6 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                                 title,
                                                 taskId,
                                                 docId,
-                                                subTaskId: subTaskResults[0].subTaskId,
                                             })
                                         }
                                     />
