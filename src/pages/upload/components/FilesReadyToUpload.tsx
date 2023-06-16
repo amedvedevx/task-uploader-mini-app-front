@@ -19,7 +19,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
     removeFile,
     getFileStatus,
 }) => {
-    const allFiles = uploadedFiles?.concat(files);
+    const allFiles = files?.concat(uploadedFiles);
 
     return (
         <>
