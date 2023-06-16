@@ -123,7 +123,11 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     statusFromServer?.originalArgs?.file?.name || ''
                 } не удалась${
                     statusFromServer.error && statusFromServer.error !== 'error'
-                        ? `: ${statusFromServer.error}`
+                        ? `: ${
+                              statusFromServer.error?.data?.message
+                                  ? statusFromServer.error.data.message
+                                  : statusFromServer.error
+                          }`
                         : '.'
                 }`,
             });

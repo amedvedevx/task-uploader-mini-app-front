@@ -25,7 +25,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
         <>
             <HeaderShort mode='secondary'>
                 {!!files.length
-                    ? `Готово к отправке ${files.length}  ${inclinationWord(files.length, [
+                    ? `К отправке ${files.length}  ${inclinationWord(files.length, [
                           'файл',
                           'файла',
                           'файлов',
