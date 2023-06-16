@@ -209,7 +209,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         options={[
                             {
                                 text: 'Отправить',
-                                onClick: () => sendFiles(),
+                                onClick: () => handleSendFiles(),
                                 disabled: isLoading,
                                 mode: 'primary',
                                 appearance: 'accent',
