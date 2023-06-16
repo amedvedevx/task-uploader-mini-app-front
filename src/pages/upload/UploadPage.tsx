@@ -16,7 +16,6 @@ import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
-import type { ButtonOption } from '@/components';
 import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
@@ -65,8 +64,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         });
     };
 
-    const clearState = () => setFiles([]);
-
     const sendFiles = async () => {
         setLoading(true);
 
@@ -77,27 +74,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         }
 
         setLoading(false);
-    };
-
-    const prepareButtonsOptions = (): ButtonOption[] => {
-        const sendFilesButton: ButtonOption = {
-            text: 'Отправить',
-            onClick: () => sendFiles(),
-            disabled: isLoading,
-            mode: 'primary',
-            appearance: 'accent',
-            dataAutomationId: 'upload-page-sendFilesButton',
-        };
-        const removeFilesButton: ButtonOption = {
-            text: 'Отменить',
-            onClick: () => clearState(),
-            disabled: isLoading,
-            mode: 'secondary',
-            appearance: 'accent',
-            dataAutomationId: 'upload-page-cancelButton',
-        };
-
-        return [removeFilesButton, sendFilesButton];
     };
 
     const getFileStatus = (uploadDate: string) => {
@@ -208,7 +184,18 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     />
                 )}
 
-                <FooterWithButton options={prepareButtonsOptions()} />
+                <FooterWithButton
+                    options={[
+                        {
+                            text: 'Отправить',
+                            onClick: () => sendFiles(),
+                            disabled: isLoading,
+                            mode: 'primary',
+                            appearance: 'accent',
+                            dataAutomationId: 'upload-page-sendFilesButton',
+                        },
+                    ]}
+                />
             </UploadPageWrapper>
         </Panel>
     );
