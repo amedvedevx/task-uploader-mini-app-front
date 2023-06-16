@@ -22,7 +22,6 @@ import { FooterWithButton } from '@/components';
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
 import { TaskDescription } from './components/TaskDescription';
-import { UploadedFiles } from './components/UploadedFiles';
 
 interface ListMembersPageProps {
     id?: string;
@@ -101,8 +100,12 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         return [removeFilesButton, sendFilesButton];
     };
 
-    const getFileStatus = () => {
-        if (isLoading) {
+    const getFileStatus = (uploadDate: string) => {
+        if (uploadDate) {
+            return 'success';
+        }
+
+        if (isLoading && !uploadDate) {
             if (statusFromServer.isSuccess) {
                 return 'success';
             }
@@ -183,23 +186,15 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     setSnackbarText={setSnackbarText}
                 />
 
-                {uploadedFiles && (
-                    <Group
-                        separator='hide'
-                        data-automation-id='upload-page-filesGroup'
-                    >
-                        <UploadedFiles files={uploadedFiles} />
-                    </Group>
-                )}
-
-                {!!files.length && (
+                {(!!files.length || !!uploadedFiles?.length) && (
                     <Group
                         separator='hide'
                         data-automation-id='upload-page-filesGroup'
                     >
                         <FilesReadyToUpload
-                            getFileStatus={getFileStatus}
                             files={files}
+                            uploadedFiles={uploadedFiles}
+                            getFileStatus={getFileStatus}
                             removeFile={removeFile}
                         />
                     </Group>

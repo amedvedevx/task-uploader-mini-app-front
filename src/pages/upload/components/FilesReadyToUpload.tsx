@@ -4,33 +4,48 @@ import { inclinationWord } from '@/lib';
 import { HorizontalScroll } from '@/components/HorizontalScroll';
 import { HorizontalFileCell } from '@/components/HorizontalFileCell';
 import { HeaderShort } from '@/components/HeaderShort';
+import type { TaskDetailResultContent } from '@/app/types';
 
 interface FilesReadyToUploadProps {
     files: File[];
+    uploadedFiles?: TaskDetailResultContent[];
     removeFile: (lastModified: number) => void;
-    getFileStatus: () => 'success' | 'loading' | 'delete';
+    getFileStatus: (uploadDate: string) => 'success' | 'loading' | 'delete';
 }
 
 export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
     files,
+    uploadedFiles,
     removeFile,
     getFileStatus,
-}) => (
-    <>
-        <HeaderShort mode='secondary'>
-            {`Готово к загрузке ${files.length} 
-                    ${inclinationWord(files.length, ['файл', 'файла', 'файлов'])}`}
-        </HeaderShort>
+}) => {
+    const allFiles = uploadedFiles?.concat(files);
 
-        <HorizontalScroll data-automation-id='upload-page-filesList'>
-            {files.map(({ name, lastModified }) => (
-                <HorizontalFileCell
-                    key={lastModified}
-                    title={name}
-                    type={getFileStatus()}
-                    onClick={() => removeFile(lastModified)}
-                />
-            ))}
-        </HorizontalScroll>
-    </>
-);
+    return (
+        <>
+            <HeaderShort mode='secondary'>
+                {!!files.length
+                    ? `Готово к отправке ${files.length}  ${inclinationWord(files.length, [
+                          'файл',
+                          'файла',
+                          'файлов',
+                      ])} `
+                    : `Отправлено ${Number(uploadedFiles?.length)}  ${inclinationWord(
+                          Number(uploadedFiles?.length),
+                          ['файл', 'файла', 'файлов'],
+                      )}`}
+            </HeaderShort>
+
+            <HorizontalScroll data-automation-id='upload-page-filesList'>
+                {allFiles.map(({ name, lastModified, title, uploadDate }) => (
+                    <HorizontalFileCell
+                        key={lastModified}
+                        title={name || title}
+                        type={getFileStatus(uploadDate)}
+                        onClick={() => removeFile(lastModified)}
+                    />
+                ))}
+            </HorizontalScroll>
+        </>
+    );
+};
