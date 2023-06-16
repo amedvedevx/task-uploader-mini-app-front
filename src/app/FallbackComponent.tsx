@@ -1,6 +1,7 @@
 import type { FC } from 'react';
+import { AppRoot, Button, Div } from '@vkontakte/vkui';
+import { Icon20More, Icon28ClearDataOutline } from '@vkontakte/icons';
 import { useEffect } from 'react';
-import { AppRoot, Button } from '@vkontakte/vkui';
 import styled from 'styled-components';
 import bridge from '@vkontakte/vk-bridge';
 import { useFirstPageCheck } from '@happysanta/router';
@@ -8,6 +9,7 @@ import { useFirstPageCheck } from '@happysanta/router';
 import { Stub } from '@/components';
 import { AUTH_ERROR_MESSAGE } from '@/app/constants';
 import { StubAuth } from '@/components/Stub/StubAuth';
+import { StubSubtitle, StubСacheSubtitle } from '@/components/Stub/components/components';
 import { useGetPlatformQuery } from '@/api';
 import { checkIsMobilePlatform } from '@/lib';
 import { useChangeFragment } from '@/hooks';
@@ -42,13 +44,42 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
                         <br />
 
                         {resetErrorBoundary && (
-                            <Button
-                                stretched
-                                type='button'
-                                onClick={resetErrorBoundary}
-                            >
-                                Попробовать еще раз
-                            </Button>
+                            <>
+                                <StubSubtitle color='var(--vkui--color_text_secondary)'>
+                                    Попробуйте очистить кэш приложения
+                                </StubSubtitle>
+
+                                <Div>
+                                    <StubСacheSubtitle>
+                                        1. откройте
+                                        <MoreIcon />
+                                        Меню приложения
+                                    </StubСacheSubtitle>
+
+                                    <StubСacheSubtitle>
+                                        2. выберите
+                                        <ClearDataIcon
+                                            width={20}
+                                            height={20}
+                                        />
+                                        Очистить кэш
+                                    </StubСacheSubtitle>
+                                </Div>
+
+                                <StubSubtitle color='var(--vkui--color_text_secondary)'>
+                                    Или обновите страницу
+                                </StubSubtitle>
+
+                                <br />
+
+                                <Button
+                                    stretched
+                                    type='button'
+                                    onClick={resetErrorBoundary}
+                                >
+                                    Обновить
+                                </Button>
+                            </>
                         )}
                     </Stub>
                 )}
@@ -62,4 +93,12 @@ const StubWrapper = styled.div`
 
     display: flex;
     justify-content: center;
+`;
+
+const MoreIcon = styled(Icon20More)`
+    padding: 0 8px;
+`;
+
+const ClearDataIcon = styled(Icon28ClearDataOutline)`
+    padding: 0 8px;
 `;
