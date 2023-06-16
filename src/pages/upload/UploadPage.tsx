@@ -5,12 +5,17 @@ import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
-import { useGetTaskIdQuery, useUploadFileMutation, useGetTaskResultsQuery } from '@/api';
+import {
+    useGetTaskIdQuery,
+    useUploadFileMutation,
+    useGetTaskResultsQuery,
+    useGetPlatformQuery,
+} from '@/api';
 import type { SnackBarText } from '@/app/types';
 import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
-import { errorParser } from '@/lib/utils';
+import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { FooterWithButton } from '@/components';
 
@@ -30,8 +35,12 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         },
     } = useLocation();
 
+    const { data: platform = '' } = useGetPlatformQuery();
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
+
+    const isMobilePlatform = checkIsMobilePlatform(platform);
+
     const taskId = uploadId;
     const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
@@ -90,6 +99,18 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         };
 
         return [removeFilesButton, sendFilesButton];
+    };
+
+    const getFileStatus = () => {
+        if (isLoading) {
+            if (statusFromServer.isSuccess) {
+                return 'success';
+            }
+
+            return 'loading';
+        }
+
+        return 'delete';
     };
 
     useEffect(() => {
@@ -155,6 +176,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
             <UploadPageWrapper>
                 <DropZone
+                    isMobilePlatform={isMobilePlatform}
                     isTaskComplete={isTaskComplete}
                     isLoading={isLoading}
                     setFiles={setFiles}
@@ -176,6 +198,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         data-automation-id='upload-page-filesGroup'
                     >
                         <FilesReadyToUpload
+                            getFileStatus={getFileStatus}
                             files={files}
                             removeFile={removeFile}
                         />
