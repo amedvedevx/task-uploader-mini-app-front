@@ -4,7 +4,7 @@ import type {
     UploadFileResponse,
     TaskDetailResult,
     DownloadSingleFileProps,
-    PreUploadFilesResponse,
+    UploadFilesResponse,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
@@ -118,14 +118,19 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     token,
                 });
 
-                const filesData = new FormData();
-
-                if (uploadUrl !== 'error') {
-                    filesData.append('url', uploadUrl?.upload_url);
-                    filesData.append('file', file);
+                if (uploadUrl === 'error') {
+                    return {
+                        data: undefined,
+                        error: 'Ошибка получения url',
+                    };
                 }
 
-                const uploadResponse: PreUploadFilesResponse = await fetchWithBQ({
+                const filesData = new FormData();
+
+                filesData.append('url', uploadUrl?.upload_url);
+                filesData.append('file', file);
+
+                const uploadResponse = await fetchWithBQ({
                     url: `/files`,
                     method: 'POST',
                     body: filesData,
@@ -137,7 +142,10 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                             uploadResponse?.error.data?.error as keyof typeof uploadErrorMessages
                         ] || 'error';
 
-                    return { error: errorMessage };
+                    return {
+                        data: undefined,
+                        error: errorMessage
+                    };
                 }
 
                 const saveResponse = await BridgeDocsSave({
@@ -145,19 +153,20 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     file: uploadResponse?.data?.file,
                 });
 
-                if (saveResponse?.error_code) {
-                    return { error: saveResponse?.error_msg };
+                if ('error_code' in saveResponse && saveResponse?.error_code) {
+                    return {
+                        data: undefined,
+                        error: saveResponse?.error_code,
+                    };
                 }
 
-                const saveFileLinkResponse = await fetchWithBQ({
+                return fetchWithBQ({
                     url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
                     method: 'PUT',
                     body: {
                         data: [saveResponse?.doc],
                     },
                 });
-
-                return saveFileLinkResponse;
             },
             invalidatesTags: ['TaskResult'],
         }),

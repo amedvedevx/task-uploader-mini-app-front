@@ -36,6 +36,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const { data: platform = '' } = useGetPlatformQuery();
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
+    const [uploadedWithErrors, setUploadedWithErrors] = useState<boolean>(false);
 
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
@@ -47,7 +48,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
     const [isLoading, setLoading] = useState(false);
     const tries = useRef(0);
-    const isError = useRef(false);
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
 
@@ -62,18 +62,64 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     };
 
     const sendFiles = useCallback(async () => {
-        setLoading(true);
+        if (tries.current === 3) {
+            setSnackbarText({
+                type: 'error',
+                text: 'Ошибка при загрузке файлов, повторите позже',
+            });
+
+            return;
+        }
+
+        setUploadedWithErrors(false);
+
         tries.current += 1;
+
+        setLoading(true);
+
+        let hasErrors = false;
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
-            await uploadFile({ taskId, subTaskId, file });
+            const result = await uploadFile({ taskId, subTaskId, file });
+
+            if (result.error) {
+                const errorText = `Загрузка файла ${
+                    result?.originalArgs?.file?.name || ''
+                } не удалась${
+                    result.error && result.error !== 'error'
+                        ? `: ${
+                            result.error?.data?.message ? result.error.data.message : result.error
+                        }`
+                        : '.'
+                }`;
+                setSnackbarText({
+                    type: 'error',
+                    text: errorText,
+                });
+
+                hasErrors = true;
+            } else {
+                const fileName = originalArgs?.file?.name || '';
+
+                setSnackbarText({
+                    type: 'success',
+                    text: `Файл ${originalArgs?.file?.name || ''} загружен`,
+                    fileName,
+                });
+
+                removeSuccessFileFromStack(fileName);
+            }
+        }
+
+        if (hasErrors) {
+            setUploadedWithErrors(true);
         }
 
         setLoading(false);
-    }, [files, subTaskId, taskId, uploadFile]);
+    }, [files, originalArgs?.file?.name, subTaskId, taskId, uploadFile]);
 
-    const handleSendFiles = useCallback(async () => {
+    /* const handleSendFiles = useCallback(async () => {
         await sendFiles();
 
         if (isError) {
@@ -85,10 +131,11 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     type: 'error',
                     text: 'Возникли проблемы при загрузке, попробуйте позже',
                 });
+
                 isError.current = false;
             }
         }
-    }, [sendFiles]);
+    }, [sendFiles]); */
 
     const getFileStatus = (uploadDate: string) => {
         if (uploadDate) {
@@ -107,6 +154,12 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     };
 
     useEffect(() => {
+        if (uploadedWithErrors) {
+            void sendFiles();
+        }
+    }, [sendFiles, uploadedWithErrors]);
+
+    /* useEffect(() => {
         if (uploadResult.data?.status === AddResultStatusTypes.NOT_LOADED || uploadResult.isError) {
             const errorText = `Загрузка файла ${
                 uploadResult?.originalArgs?.file?.name || ''
@@ -130,9 +183,9 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         uploadResult.error,
         uploadResult.isError,
         uploadResult?.originalArgs?.file?.name,
-    ]);
+    ]); */
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (!isSuccess) {
             return;
         }
@@ -148,7 +201,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         if (fileName) {
             removeSuccessFileFromStack(fileName);
         }
-    }, [isSuccess, originalArgs?.file?.name, originalArgs?.file]);
+    }, [isSuccess, originalArgs?.file?.name, originalArgs?.file]); */
 
     if (error && 'status' in error) {
         const errorMessage = errorParser(error.status as number);
@@ -215,7 +268,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         options={[
                             {
                                 text: 'Отправить',
-                                onClick: handleSendFiles,
+                                onClick: sendFiles,
                                 disabled: isLoading,
                                 mode: 'primary',
                                 appearance: 'accent',
