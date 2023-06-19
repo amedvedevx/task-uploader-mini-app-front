@@ -1,9 +1,8 @@
 import { Panel, Group, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
-import { QueryStatus } from '@reduxjs/toolkit/dist/query';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import {
@@ -46,7 +45,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const [uploadFile, statusFromServer] = useUploadFileMutation();
 
     const [isLoading, setLoading] = useState(false);
-    const [tries, setTries] = useState(0);
+    const tries = useRef(0);
+    const isError = useRef(false);
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
 
@@ -67,7 +67,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
     const sendFiles = async () => {
         setLoading(true);
-
+        tries.current += 1;
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
@@ -80,15 +80,16 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const handleSendFiles = async () => {
         await sendFiles();
 
-        if (statusFromServer.isError || statusFromServer.status === QueryStatus.uninitialized) {
-            if (tries < 3) {
-                await sendFiles();
-                setTries((prev) => prev + 1);
+        if (isError) {
+            if (tries.current < 3) {
+                //need to push here updated state
+                await handleSendFiles();
             } else {
                 setSnackbarText({
                     type: 'error',
                     text: 'Возникли проблемы при загрузке, попробуйте позже',
                 });
+                isError.current = false;
             }
         }
     };
@@ -121,13 +122,14 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                 } не удалась${
                     statusFromServer.error && statusFromServer.error !== 'error'
                         ? `: ${
-                              statusFromServer.error?.data?.message
-                                  ? statusFromServer.error.data.message
-                                  : statusFromServer.error
-                          }`
+                            statusFromServer.error?.data?.message
+                                ? statusFromServer.error.data.message
+                                : statusFromServer.error
+                        }`
                         : '.'
                 }`,
             });
+            isError.current = true;
         }
 
         if (statusFromServer.isSuccess) {
