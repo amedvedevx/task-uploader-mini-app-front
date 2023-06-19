@@ -21,7 +21,6 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
 }) => {
     const filesToUpload = files || [];
     const filesUploaded = uploadedFiles || [];
-    const allFiles = [...filesToUpload, ...filesUploaded];
 
     return (
         <>
@@ -42,12 +41,20 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
             </HeaderShort>
 
             <HorizontalScroll data-automation-id='upload-page-filesList'>
-                {allFiles.map(({ name, lastModified, title, uploadDate }) => (
+                {filesToUpload.map(({ name, lastModified }) => (
                     <HorizontalFileCell
                         key={lastModified}
-                        title={name || title}
-                        type={getFileStatus(uploadDate)}
+                        title={name}
+                        type='delete'
                         onClick={() => removeFile(lastModified)}
+                    />
+                ))}
+
+                {filesUploaded.map(({ title, docId, uploadDate }) => (
+                    <HorizontalFileCell
+                        key={docId}
+                        title={title}
+                        type={getFileStatus(uploadDate)}
                     />
                 ))}
             </HorizontalScroll>

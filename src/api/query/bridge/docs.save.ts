@@ -35,8 +35,8 @@ export const BridgeDocsSave = async ({
     token,
     file,
     title,
-}: BridgeDocsSaveArgs): Promise<BridgeDocsSaveResponse | ErrorData | 'error'> => {
-    const result: BridgeDocsSaveResponse | ErrorData | 'error' = await bridge
+}: BridgeDocsSaveArgs): Promise<BridgeDocsSaveResponse | ErrorData> => {
+    const result: BridgeDocsSaveResponse | ErrorData = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'docs.save',
             params: {
@@ -49,7 +49,11 @@ export const BridgeDocsSave = async ({
         .then((res) => {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (res.response?.[0]?.error) {
-                return 'error';
+                return {
+                    error_msg: res?.response?.[0]?.error as string,
+                    error_code: 0,
+                    request_params: [],
+                };
             }
 
             return res.response as BridgeDocsSaveResponse;

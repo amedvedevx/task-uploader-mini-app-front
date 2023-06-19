@@ -1,9 +1,8 @@
 import { Panel, Group, PanelHeader, PanelHeaderContent, MiniInfoCell } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
-import { QueryStatus } from '@reduxjs/toolkit/dist/query';
 import { Icon20Info } from '@vkontakte/icons';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
@@ -14,7 +13,7 @@ import {
     useGetPlatformQuery,
 } from '@/api';
 import type { SnackBarText } from '@/app/types';
-import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
+import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
@@ -37,61 +36,79 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const { data: platform = '' } = useGetPlatformQuery();
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
+    const [uploadedWithErrors, setUploadedWithErrors] = useState<boolean>(false);
 
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
     const taskId = uploadId;
     const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
-    const [uploadFile, statusFromServer] = useUploadFileMutation();
+    const [uploadFile, uploadResult] = useUploadFileMutation();
 
     const [isLoading, setLoading] = useState(false);
-    const [tries, setTries] = useState(0);
+    const tries = useRef(0);
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
 
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     const removeFile = (lastModified: number) => {
-        const filteredState = files.filter((file) => file.lastModified !== lastModified);
-        setFiles(filteredState);
+        setFiles((prevState) => prevState.filter((file) => file.lastModified !== lastModified));
     };
 
-    const removeSuccessFileFromStack = (fileName: string) => {
-        setFiles((prevState) => {
-            const newState = prevState.filter((file) => file.name !== fileName);
+    const sendFiles = useCallback(async () => {
+        if (tries.current === 3) {
+            setSnackbarText({
+                type: 'error',
+                text: 'Ошибка при загрузке файлов, повторите позже',
+            });
+            tries.current = 0;
+            setUploadedWithErrors(false);
 
-            return newState;
-        });
-    };
+            return;
+        }
 
-    const sendFiles = async () => {
+        tries.current += 1;
+        setUploadedWithErrors(false);
         setLoading(true);
+        let hasErrors = false;
 
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
-            await uploadFile({ taskId, subTaskId, file });
+            const result = await uploadFile({ taskId, subTaskId, file });
+
+            if ('error' in result && result.error) {
+                const errorText = `Загрузка файла ${file?.name || ''} не удалась${
+                    result.error !== 'error'
+                        ? `: ${result.error?.data?.message || result.error}`
+                        : '.'
+                }`;
+                setSnackbarText({
+                    type: 'error',
+                    text: errorText,
+                });
+
+                hasErrors = true;
+            } else {
+                const fileName = file?.name || '';
+
+                setSnackbarText({
+                    type: 'success',
+                    text: `Файл ${fileName} загружен`,
+                    fileName,
+                });
+
+                removeFile(file.lastModified);
+            }
+        }
+
+        if (hasErrors) {
+            setUploadedWithErrors(true);
         }
 
         setLoading(false);
-    };
-
-    const handleSendFiles = async () => {
-        await sendFiles();
-
-        if (statusFromServer.isError || statusFromServer.status === QueryStatus.uninitialized) {
-            if (tries < 3) {
-                await sendFiles();
-                setTries((prev) => prev + 1);
-            } else {
-                setSnackbarText({
-                    type: 'error',
-                    text: 'Возникли проблемы при загрузке, попробуйте позже',
-                });
-            }
-        }
-    };
+    }, [files, subTaskId, taskId, uploadFile]);
 
     const getFileStatus = (uploadDate: string) => {
         if (uploadDate) {
@@ -99,7 +116,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         }
 
         if (isLoading && !uploadDate) {
-            if (statusFromServer.isSuccess) {
+            if (uploadResult.isSuccess) {
                 return 'success';
             }
 
@@ -110,40 +127,10 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     };
 
     useEffect(() => {
-        if (
-            statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED ||
-            statusFromServer.isError
-        ) {
-            setSnackbarText({
-                type: 'error',
-                text: `Загрузка файла ${
-                    statusFromServer?.originalArgs?.file?.name || ''
-                } не удалась${
-                    statusFromServer.error && statusFromServer.error !== 'error'
-                        ? `: ${
-                              statusFromServer.error?.data?.message
-                                  ? statusFromServer.error.data.message
-                                  : statusFromServer.error
-                          }`
-                        : '.'
-                }`,
-            });
+        if (uploadedWithErrors) {
+            void sendFiles();
         }
-
-        if (statusFromServer.isSuccess) {
-            const fileName = statusFromServer.originalArgs?.file?.name || '';
-
-            setSnackbarText({
-                type: 'success',
-                text: `Файл ${statusFromServer?.originalArgs?.file?.name || ''} загружен`,
-                fileName,
-            });
-
-            if (fileName) {
-                removeSuccessFileFromStack(fileName);
-            }
-        }
-    }, [statusFromServer]);
+    }, [sendFiles, uploadedWithErrors]);
 
     if (error && 'status' in error) {
         const errorMessage = errorParser(error.status as number);
@@ -215,7 +202,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         options={[
                             {
                                 text: 'Отправить',
-                                onClick: () => handleSendFiles(),
+                                onClick: sendFiles,
                                 disabled: isLoading,
                                 mode: 'primary',
                                 appearance: 'accent',
