@@ -3,6 +3,8 @@ import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
+import { QueryStatus } from '@reduxjs/toolkit/dist/query';
+import { Icon20Info } from '@vkontakte/icons';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import {
@@ -20,8 +22,6 @@ import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
-import { TaskDescription } from './components/TaskDescription';
-import { Icon20Info } from '@vkontakte/icons';
 
 interface ListMembersPageProps {
     id?: string;
@@ -68,14 +68,10 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const sendFiles = async () => {
         setLoading(true);
 
-        const fileStatuses = [];
-
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
-            await uploadFile({ taskId, subTaskId, file }).then((res) => {
-                fileStatuses.push(res);
-            });
+            await uploadFile({ taskId, subTaskId, file });
         }
 
         setLoading(false);
@@ -84,8 +80,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const handleSendFiles = async () => {
         await sendFiles();
 
-        if (statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED) {
-            if (tries <= 3) {
+        if (statusFromServer.isError || statusFromServer.status === QueryStatus.uninitialized) {
+            if (tries < 3) {
                 await sendFiles();
                 setTries((prev) => prev + 1);
             } else {
