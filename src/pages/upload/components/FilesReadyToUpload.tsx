@@ -31,10 +31,14 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
                           'файл',
                           'файла',
                           'файлов',
-                      ])}, отправлено - ${Number(uploadedFiles?.length)}  ${inclinationWord(
-                          Number(uploadedFiles?.length),
-                          ['файл', 'файла', 'файлов'],
-                      )} `
+                      ])} ${
+                          uploadedFiles?.length
+                              ? `, отправлено - ${Number(uploadedFiles?.length)}  ${inclinationWord(
+                                    Number(uploadedFiles?.length),
+                                    ['файл', 'файла', 'файлов'],
+                                )}`
+                              : ''
+                      }`
                     : `Отправлено - ${Number(uploadedFiles?.length)}  ${inclinationWord(
                           Number(uploadedFiles?.length),
                           ['файл', 'файла', 'файлов'],
