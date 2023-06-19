@@ -52,8 +52,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
-    const removeFile = (fileName: string) => {
-        setFiles((prevState) => prevState.filter((file) => file.name !== fileName));
+    const removeFile = (lastModified: number) => {
+        setFiles((prevState) => prevState.filter((file) => file.lastModified !== lastModified));
     };
 
     const sendFiles = useCallback(async () => {
@@ -62,27 +62,26 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                 type: 'error',
                 text: 'Ошибка при загрузке файлов, повторите позже',
             });
+            tries.current = 0;
+            setUploadedWithErrors(false);
 
             return;
         }
 
         tries.current += 1;
         setUploadedWithErrors(false);
-
         setLoading(true);
-
         let hasErrors = false;
+
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
             const result = await uploadFile({ taskId, subTaskId, file });
 
-            if (result.error) {
+            if ('error' in result && result.error) {
                 const errorText = `Загрузка файла ${file?.name || ''} не удалась${
-                    result.error && result.error !== 'error'
-                        ? `: ${
-                            result.error?.data?.message ? result.error.data.message : result.error
-                        }`
+                    result.error !== 'error'
+                        ? `: ${result.error?.data?.message || result.error}`
                         : '.'
                 }`;
                 setSnackbarText({
@@ -100,7 +99,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                     fileName,
                 });
 
-                removeFile(fileName);
+                removeFile(file.lastModified);
             }
         }
 
@@ -203,10 +202,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         options={[
                             {
                                 text: 'Отправить',
-                                onClick: () => {
-                                    sendFiles();
-                                    tries.current = 0;
-                                },
+                                onClick: sendFiles,
                                 disabled: isLoading,
                                 mode: 'primary',
                                 appearance: 'accent',

@@ -148,7 +148,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 });
 
                 if ('error_code' in saveResponse && saveResponse?.error_code) {
-                    return { error: saveResponse?.error_code };
+                    return { error: saveResponse.error_msg };
                 }
 
                 const uploadLink = fetchWithBQ({

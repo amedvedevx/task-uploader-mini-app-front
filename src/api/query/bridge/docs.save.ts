@@ -61,11 +61,7 @@ export const BridgeDocsSave = async ({
         .catch((error: ErrorType) => {
             console.error('VKWebAppCallAPIMethod-docs.save', error);
 
-            return {
-                error_msg: error.error_type,
-                error_code: 0,
-                request_params: [],
-            };
+            return error.error_data;
         });
 
     return result;
