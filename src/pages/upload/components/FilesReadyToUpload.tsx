@@ -32,7 +32,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
                           'файла',
                           'файлов',
                       ])} ${
-                          uploadedFiles?.length
+                          uploadedFiles?.length > 0
                               ? `, отправлено - ${Number(uploadedFiles?.length)}  ${inclinationWord(
                                     Number(uploadedFiles?.length),
                                     ['файл', 'файла', 'файлов'],
