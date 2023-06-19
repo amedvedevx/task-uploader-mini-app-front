@@ -11,13 +11,10 @@ export const capitalizeString = (stringToCap: string): string =>
     stringToCap[0].toUpperCase() + stringToCap.slice(1);
 
 export const inclinationWord = (quanty: number, words: string[]): string => {
-    if (quanty === 1) return words[0];
+    const n = Math.trunc(Math.abs(Number(quanty)));
+    const cases = [2, 0, 1, 1, 1, 2];
 
-    if (quanty <= 4) return words[1];
-
-    if (quanty > 4) return words[2];
-
-    return '';
+    return words[n % 100 > 4 && n % 100 < 20 ? 2 : cases[n % 10 < 5 ? n % 10 : 5]];
 };
 
 export const parseFileSize = (size: number): string => {

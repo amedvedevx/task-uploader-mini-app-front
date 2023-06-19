@@ -27,7 +27,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
         <>
             <HeaderShort mode='secondary'>
                 {files.length
-                    ? `К отправке ${files.length}  ${inclinationWord(files.length, [
+                    ? `К отправке - ${files.length}  ${inclinationWord(files.length, [
                           'файл',
                           'файла',
                           'файлов',
@@ -35,7 +35,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
                           Number(uploadedFiles?.length),
                           ['файл', 'файла', 'файлов'],
                       )} `
-                    : `Отправлено ${Number(uploadedFiles?.length)}  ${inclinationWord(
+                    : `Отправлено - ${Number(uploadedFiles?.length)}  ${inclinationWord(
                           Number(uploadedFiles?.length),
                           ['файл', 'файла', 'файлов'],
                       )}`}

@@ -25,7 +25,7 @@ export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({ title, type, o
             <Icon32DocumentOutline />
 
             <CellButton
-                type={type}
+                $type={type}
                 aria-label='fileIconButton'
                 onClick={onClick}
             >
@@ -39,6 +39,8 @@ const CellButton = styled(IconButton)<{ $type?: 'download' | 'delete' | 'loading
     position: absolute;
     top: -22px;
     right: ${({ $type }) => ($type === 'loading' ? '-11px' : '-22px')};
+
+    ${({ $type }) => ($type === 'success' ? 'pointer-events: none;' : '')};
 `;
 
 const HorizontalCellOverflow = styled(HorizontalCell)`
