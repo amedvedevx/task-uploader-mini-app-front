@@ -91,14 +91,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
                 hasErrors = true;
             } else {
-                const fileName = file?.name || '';
-
-                setSnackbarText({
-                    type: 'success',
-                    text: `Файл ${fileName} загружен`,
-                    fileName,
-                });
-
                 removeFile(file.lastModified);
             }
         }
@@ -128,7 +120,9 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
     useEffect(() => {
         if (uploadedWithErrors) {
-            void sendFiles();
+            setTimeout(() => {
+                sendFiles();
+            }, 1000);
         }
     }, [sendFiles, uploadedWithErrors]);
 

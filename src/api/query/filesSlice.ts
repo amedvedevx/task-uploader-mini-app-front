@@ -139,7 +139,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                             uploadResponse?.error.data?.error as keyof typeof uploadErrorMessages
                         ] || 'error';
 
-                    return { error: errorMessage };
+                    return { error: errorMessage || 'Общая ошибка' };
                 }
 
                 const saveResponse = await BridgeDocsSave({
@@ -148,7 +148,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 });
 
                 if ('error_code' in saveResponse && saveResponse?.error_code) {
-                    return { error: saveResponse.error_msg };
+                    return { error: saveResponse.error_msg || 'Общая ошибка' };
                 }
 
                 const uploadLink = fetchWithBQ({
@@ -163,9 +163,9 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     const errorMessage =
                         uploadErrorMessages[
                             uploadLink?.error.data?.error as keyof typeof uploadErrorMessages
-                        ] || 'error';
+                        ] || 'Общая ошибка';
 
-                    return { error: errorMessage };
+                    return { error: errorMessage || 'Общая ошибка' };
                 }
 
                 return { data: uploadLink };
