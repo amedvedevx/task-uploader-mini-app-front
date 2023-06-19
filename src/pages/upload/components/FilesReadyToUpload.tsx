@@ -22,23 +22,32 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
     const filesToUpload = files || [];
     const filesUploaded = uploadedFiles || [];
 
+    const hasUploadedFiles = !!uploadedFiles && uploadedFiles?.length > 0;
+
+    const uploadedCount = hasUploadedFiles
+        ? `${Number(uploadedFiles.length)}  ${inclinationWord(Number(uploadedFiles.length), [
+              'файл',
+              'файла',
+              'файлов',
+          ])}`
+        : '';
+
+    const stringSent = hasUploadedFiles ? `Отправлено - ${uploadedCount}` : '';
+
+    const stringToSend =
+        files?.length > 0
+            ? `К отправке - ${files.length}  ${inclinationWord(files.length, [
+                  'файл',
+                  'файла',
+                  'файлов',
+              ])} ${hasUploadedFiles ? `, отправлено - ${uploadedCount}` : ''}`
+            : stringSent;
+
+    const filesLabel = `${stringToSend}`;
+
     return (
         <>
-            <HeaderShort mode='secondary'>
-                {files.length
-                    ? `К отправке - ${files.length}  ${inclinationWord(files.length, [
-                          'файл',
-                          'файла',
-                          'файлов',
-                      ])}, отправлено - ${Number(uploadedFiles?.length)}  ${inclinationWord(
-                          Number(uploadedFiles?.length),
-                          ['файл', 'файла', 'файлов'],
-                      )} `
-                    : `Отправлено - ${Number(uploadedFiles?.length)}  ${inclinationWord(
-                          Number(uploadedFiles?.length),
-                          ['файл', 'файла', 'файлов'],
-                      )}`}
-            </HeaderShort>
+            <HeaderShort mode='secondary'>{filesLabel}</HeaderShort>
 
             <HorizontalScroll data-automation-id='upload-page-filesList'>
                 {filesToUpload.map(({ name, lastModified }) => (
