@@ -22,31 +22,30 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
     const filesToUpload = files || [];
     const filesUploaded = uploadedFiles || [];
     const allFiles = [...filesToUpload, ...filesUploaded];
+    const hasUploadedFiles = !!uploadedFiles && uploadedFiles?.length > 0;
+    const stringToSend =
+        files?.length > 0
+            ? `К отправке - ${files.length}  ${inclinationWord(files.length, [
+                'файл',
+                'файла',
+                'файлов',
+            ])}`
+            : '';
+    const stringSent = hasUploadedFiles
+        ? `, отправлено - ${Number(uploadedFiles.length)}  ${inclinationWord(
+              Number(uploadedFiles.length),
+              ['файл', 'файла', 'файлов'],
+        )}`
+        : '';
+
+    const filesLabel = `${stringToSend}${stringSent}`;
 
     return (
         <>
-            <HeaderShort mode='secondary'>
-                {files.length
-                    ? `К отправке - ${files.length}  ${inclinationWord(files.length, [
-                          'файл',
-                          'файла',
-                          'файлов',
-                      ])} ${
-                          uploadedFiles?.length > 0
-                              ? `, отправлено - ${Number(uploadedFiles?.length)}  ${inclinationWord(
-                                    Number(uploadedFiles?.length),
-                                    ['файл', 'файла', 'файлов'],
-                                )}`
-                              : ''
-                      }`
-                    : `Отправлено - ${Number(uploadedFiles?.length)}  ${inclinationWord(
-                          Number(uploadedFiles?.length),
-                          ['файл', 'файла', 'файлов'],
-                      )}`}
-            </HeaderShort>
+            <HeaderShort mode='secondary'>{filesLabel}</HeaderShort>
 
             <HorizontalScroll data-automation-id='upload-page-filesList'>
-                {allFiles.map(({ name, lastModified, title, uploadDate }) => (
+                {allFiles?.map(({ name, lastModified, title, uploadDate }) => (
                     <HorizontalFileCell
                         key={lastModified}
                         title={name || title}
