@@ -1,6 +1,6 @@
 import { Panel, Group, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
 
@@ -61,7 +61,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         setFiles((prevState) => prevState.filter((file) => file.name !== fileName));
     };
 
-    const sendFiles = async () => {
+    const sendFiles = useCallback(async () => {
         setLoading(true);
         tries.current += 1;
         // eslint-disable-next-line no-restricted-syntax
@@ -71,9 +71,9 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         }
 
         setLoading(false);
-    };
+    }, [files, subTaskId, taskId, uploadFile]);
 
-    const handleSendFiles = async () => {
+    const handleSendFiles = useCallback(async () => {
         await sendFiles();
 
         if (isError) {
@@ -88,7 +88,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                 isError.current = false;
             }
         }
-    };
+    }, [sendFiles]);
 
     const getFileStatus = (uploadDate: string) => {
         if (uploadDate) {
@@ -215,7 +215,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         options={[
                             {
                                 text: 'Отправить',
-                                onClick: () => handleSendFiles(),
+                                onClick: handleSendFiles,
                                 disabled: isLoading,
                                 mode: 'primary',
                                 appearance: 'accent',
