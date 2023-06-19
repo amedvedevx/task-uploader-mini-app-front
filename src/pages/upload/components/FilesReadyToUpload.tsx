@@ -33,7 +33,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
           ])}`
         : '';
 
-    const stringSend = hasUploadedFiles ? `Отправлено - ${uploadedCount}` : '';
+    const stringSent = hasUploadedFiles ? `Отправлено - ${uploadedCount}` : '';
 
     const stringToSend =
         files?.length > 0
@@ -42,7 +42,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
                   'файла',
                   'файлов',
               ])} ${hasUploadedFiles ? `, отправлено - ${uploadedCount}` : ''}`
-            : stringSend;
+            : stringSent;
 
     const filesLabel = `${stringToSend}`;
 
