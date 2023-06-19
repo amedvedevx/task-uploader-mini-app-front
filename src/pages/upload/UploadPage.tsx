@@ -1,8 +1,9 @@
-import { Panel, Group, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, PanelHeaderContent, MiniInfoCell } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
+import { Icon20Info } from '@vkontakte/icons';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import {
@@ -20,7 +21,6 @@ import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
-import { TaskDescription } from './components/TaskDescription';
 
 interface ListMembersPageProps {
     id?: string;
@@ -150,17 +150,22 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         data-automation-id='upload-page-headerContent'
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
-                        Сбор документов
+                        {data.name}
                     </PanelHeaderContent>
                 ) : (
                     <PanelHeaderSkeleton />
                 )}
             </PanelHeader>
 
-            <TaskDescription
-                taskName={data?.name}
-                description={data?.description}
-            />
+            {data?.description && (
+                <MiniInfoCell
+                    before={<Icon20Info />}
+                    textWrap='full'
+                    mode='base'
+                >
+                    {data.description}
+                </MiniInfoCell>
+            )}
 
             <UploadPageWrapper>
                 <DropZone
