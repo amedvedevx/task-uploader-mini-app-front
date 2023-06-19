@@ -25,12 +25,15 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
 
     const hasUploadedFiles = !!uploadedFiles && uploadedFiles?.length > 0;
 
-    const stringSend = hasUploadedFiles
-        ? `Отправлено - ${Number(uploadedFiles.length)}  ${inclinationWord(
-              Number(uploadedFiles.length),
-              ['файл', 'файла', 'файлов'],
-          )}`
+    const uploadedCount = hasUploadedFiles
+        ? `${Number(uploadedFiles.length)}  ${inclinationWord(Number(uploadedFiles.length), [
+              'файл',
+              'файла',
+              'файлов',
+          ])}`
         : '';
+
+    const stringSend = hasUploadedFiles ? `Отправлено - ${uploadedCount}` : '';
 
     const stringToSend =
         files?.length > 0
@@ -38,14 +41,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
                   'файл',
                   'файла',
                   'файлов',
-              ])} ${
-                  hasUploadedFiles
-                      ? `, отправлено - ${Number(uploadedFiles.length)}  ${inclinationWord(
-                            Number(uploadedFiles.length),
-                            ['файл', 'файла', 'файлов'],
-                        )}`
-                      : ''
-              }`
+              ])} ${hasUploadedFiles ? `, отправлено - ${uploadedCount}` : ''}`
             : stringSend;
 
     const filesLabel = `${stringToSend}`;
