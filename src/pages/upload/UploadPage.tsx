@@ -54,16 +54,11 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     const removeFile = (lastModified: number) => {
-        const filteredState = files.filter((file) => file.lastModified !== lastModified);
-        setFiles(filteredState);
+        setFiles((prevState) => prevState.filter((file) => file.lastModified !== lastModified));
     };
 
     const removeSuccessFileFromStack = (fileName: string) => {
-        setFiles((prevState) => {
-            const newState = prevState.filter((file) => file.name !== fileName);
-
-            return newState;
-        });
+        setFiles((prevState) => prevState.filter((file) => file.name !== fileName));
     };
 
     const sendFiles = async () => {
