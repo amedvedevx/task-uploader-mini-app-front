@@ -119,10 +119,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 });
 
                 if (uploadUrl === 'error') {
-                    return {
-                        data: undefined,
-                        error: 'Ошибка получения url',
-                    };
+                    return { error: 'Ошибка получения url' };
                 }
 
                 const filesData = new FormData();
@@ -142,10 +139,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                             uploadResponse?.error.data?.error as keyof typeof uploadErrorMessages
                         ] || 'error';
 
-                    return {
-                        data: undefined,
-                        error: errorMessage
-                    };
+                    return { error: errorMessage };
                 }
 
                 const saveResponse = await BridgeDocsSave({
@@ -154,19 +148,27 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 });
 
                 if ('error_code' in saveResponse && saveResponse?.error_code) {
-                    return {
-                        data: undefined,
-                        error: saveResponse?.error_code,
-                    };
+                    return { error: saveResponse?.error_code };
                 }
 
-                return fetchWithBQ({
+                const uploadLink = fetchWithBQ({
                     url: `/files?taskId=${taskId}&subTaskId=${subTaskId}`,
                     method: 'PUT',
                     body: {
                         data: [saveResponse?.doc],
                     },
                 });
+
+                if (uploadLink?.error) {
+                    const errorMessage =
+                        uploadErrorMessages[
+                            uploadLink?.error.data?.error as keyof typeof uploadErrorMessages
+                        ] || 'error';
+
+                    return { error: errorMessage };
+                }
+
+                return { data: uploadLink };
             },
             invalidatesTags: ['TaskResult'],
         }),

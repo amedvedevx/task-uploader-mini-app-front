@@ -12,7 +12,7 @@ import {
     useGetPlatformQuery,
 } from '@/api';
 import type { SnackBarText } from '@/app/types';
-import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
+import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
@@ -44,7 +44,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
     const [uploadFile, uploadResult] = useUploadFileMutation();
-    const { isSuccess, originalArgs } = uploadResult;
 
     const [isLoading, setLoading] = useState(false);
     const tries = useRef(0);
@@ -53,11 +52,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
-    const removeFile = (lastModified: number) => {
-        setFiles((prevState) => prevState.filter((file) => file.lastModified !== lastModified));
-    };
-
-    const removeSuccessFileFromStack = (fileName: string) => {
+    const removeFile = (fileName: string) => {
         setFiles((prevState) => prevState.filter((file) => file.name !== fileName));
     };
 
@@ -71,9 +66,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             return;
         }
 
-        setUploadedWithErrors(false);
-
         tries.current += 1;
+        setUploadedWithErrors(false);
 
         setLoading(true);
 
@@ -84,9 +78,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             const result = await uploadFile({ taskId, subTaskId, file });
 
             if (result.error) {
-                const errorText = `Загрузка файла ${
-                    result?.originalArgs?.file?.name || ''
-                } не удалась${
+                const errorText = `Загрузка файла ${file?.name || ''} не удалась${
                     result.error && result.error !== 'error'
                         ? `: ${
                             result.error?.data?.message ? result.error.data.message : result.error
@@ -100,15 +92,15 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
                 hasErrors = true;
             } else {
-                const fileName = originalArgs?.file?.name || '';
+                const fileName = file?.name || '';
 
                 setSnackbarText({
                     type: 'success',
-                    text: `Файл ${originalArgs?.file?.name || ''} загружен`,
+                    text: `Файл ${fileName} загружен`,
                     fileName,
                 });
 
-                removeSuccessFileFromStack(fileName);
+                removeFile(fileName);
             }
         }
 
@@ -117,25 +109,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         }
 
         setLoading(false);
-    }, [files, originalArgs?.file?.name, subTaskId, taskId, uploadFile]);
-
-    /* const handleSendFiles = useCallback(async () => {
-        await sendFiles();
-
-        if (isError) {
-            if (tries.current < 3) {
-                // need to push here updated state
-                await handleSendFiles();
-            } else {
-                setSnackbarText({
-                    type: 'error',
-                    text: 'Возникли проблемы при загрузке, попробуйте позже',
-                });
-
-                isError.current = false;
-            }
-        }
-    }, [sendFiles]); */
+    }, [files, subTaskId, taskId, uploadFile]);
 
     const getFileStatus = (uploadDate: string) => {
         if (uploadDate) {
@@ -158,50 +132,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             void sendFiles();
         }
     }, [sendFiles, uploadedWithErrors]);
-
-    /* useEffect(() => {
-        if (uploadResult.data?.status === AddResultStatusTypes.NOT_LOADED || uploadResult.isError) {
-            const errorText = `Загрузка файла ${
-                uploadResult?.originalArgs?.file?.name || ''
-            } не удалась${
-                uploadResult.error && uploadResult.error !== 'error'
-                    ? `: ${
-                        uploadResult.error?.data?.message
-                            ? uploadResult.error.data.message
-                            : uploadResult.error
-                    }`
-                    : '.'
-            }`;
-            setSnackbarText({
-                type: 'error',
-                text: errorText,
-            });
-            isError.current = true;
-        }
-    }, [
-        uploadResult.data,
-        uploadResult.error,
-        uploadResult.isError,
-        uploadResult?.originalArgs?.file?.name,
-    ]); */
-
-    /* useEffect(() => {
-        if (!isSuccess) {
-            return;
-        }
-
-        const fileName = originalArgs?.file?.name || '';
-
-        setSnackbarText({
-            type: 'success',
-            text: `Файл ${originalArgs?.file?.name || ''} загружен`,
-            fileName,
-        });
-
-        if (fileName) {
-            removeSuccessFileFromStack(fileName);
-        }
-    }, [isSuccess, originalArgs?.file?.name, originalArgs?.file]); */
 
     if (error && 'status' in error) {
         const errorMessage = errorParser(error.status as number);
@@ -268,7 +198,10 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         options={[
                             {
                                 text: 'Отправить',
-                                onClick: sendFiles,
+                                onClick: () => {
+                                    sendFiles();
+                                    tries.current = 0;
+                                },
                                 disabled: isLoading,
                                 mode: 'primary',
                                 appearance: 'accent',

@@ -51,7 +51,7 @@ export const DropZone: FC<DropZoneProps> = ({
     });
 
     return (
-        <DivStretched isMobilePlatform={isMobilePlatform}>
+        <DivStretched $isMobilePlatform={isMobilePlatform}>
             {isTaskComplete ? (
                 <DropZoneContainer isDisabled>
                     <PlaceholderCentered
@@ -120,9 +120,9 @@ const getColor = ({ isDragAccept, isDragReject, isFocused }: DropZoneColors) => 
     return 'var(--vkui--color_icon_secondary)';
 };
 
-const DivStretched = styled(Div)<{ isMobilePlatform: boolean }>`
+const DivStretched = styled(Div)<{ $isMobilePlatform: boolean }>`
     display: flex;
-    ${({ isMobilePlatform }) => (isMobilePlatform ? '' : 'flex-grow: 1;')};
+    ${({ $isMobilePlatform }) => ($isMobilePlatform ? '' : 'flex-grow: 1;')};
 `;
 
 interface DropZoneContainerProps {
