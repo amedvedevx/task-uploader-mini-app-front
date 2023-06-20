@@ -137,9 +137,9 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     const errorMessage =
                         uploadErrorMessages[
                             uploadResponse?.error.data?.error as keyof typeof uploadErrorMessages
-                        ] || 'error';
+                        ];
 
-                    return { error: errorMessage };
+                    return { error: errorMessage || 'Ошибка загрузки на сервер' };
                 }
 
                 const saveResponse = await BridgeDocsSave({
@@ -148,7 +148,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 });
 
                 if ('error_code' in saveResponse && saveResponse?.error_code) {
-                    return { error: saveResponse.error_msg };
+                    return { error: saveResponse.error_msg || 'Ошибка сохранения файла' };
                 }
 
                 const uploadLink = fetchWithBQ({
@@ -163,9 +163,9 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                     const errorMessage =
                         uploadErrorMessages[
                             uploadLink?.error.data?.error as keyof typeof uploadErrorMessages
-                        ] || 'error';
+                        ];
 
-                    return { error: errorMessage };
+                    return { error: errorMessage || 'Ошибка сохранения файла на сервер' };
                 }
 
                 return { data: uploadLink };
