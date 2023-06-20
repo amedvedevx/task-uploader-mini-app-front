@@ -19,8 +19,8 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
     removeFile,
     getFileStatus,
 }) => {
-    const filesToUpload = files || [];
-    const filesUploaded = uploadedFiles || [];
+    const filesToUpload = files?.toReversed() || [];
+    const filesUploaded = uploadedFiles?.toReversed() || [];
 
     const hasUploadedFiles = !!uploadedFiles && uploadedFiles?.length > 0;
 
