@@ -48,7 +48,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const [isLoading, setLoading] = useState(false);
     const tries = useRef(0);
     const [files, setFiles] = useState<File[]>([]);
-    const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
+    const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content || [];
 
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 

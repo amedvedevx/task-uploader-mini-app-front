@@ -8,7 +8,7 @@ import type { TaskDetailResultContent } from '@/app/types';
 
 interface FilesReadyToUploadProps {
     files: File[];
-    uploadedFiles?: TaskDetailResultContent[];
+    uploadedFiles: TaskDetailResultContent[];
     removeFile: (lastModified: number) => void;
     getFileStatus: (uploadDate: string) => 'success' | 'loading' | 'delete';
 }
@@ -19,8 +19,8 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
     removeFile,
     getFileStatus,
 }) => {
-    const filesToUpload = files?.toReversed() || [];
-    const filesUploaded = uploadedFiles?.toReversed() || [];
+    const filesToUpload = [...files].reverse();
+    const filesUploaded = [...uploadedFiles].reverse();
 
     const hasUploadedFiles = !!uploadedFiles && uploadedFiles?.length > 0;
 
