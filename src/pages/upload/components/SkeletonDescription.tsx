@@ -1,4 +1,4 @@
-import { Div, Spacing } from '@vkontakte/vkui';
+import { Div } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import styled from 'styled-components';
 
@@ -11,17 +11,6 @@ export const SkeletonDescription: FC = () => (
 
             <SkeletonRectangle
                 height='20px'
-                width='100%'
-            />
-        </DescriptionRow>
-
-        <Spacing size={12} />
-
-        <DescriptionRow>
-            <SkeletonCircular radius={20} />
-
-            <SkeletonRectangle
-                height='60px'
                 width='100%'
             />
         </DescriptionRow>

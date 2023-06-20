@@ -93,8 +93,8 @@ export interface UploadFileProps {
     file: File;
 }
 
-export interface PreUploadFilesResponse {
-    data: {
+export interface UploadFilesResponse {
+    data?: {
         file: string;
         error: string;
         error_desc: string;

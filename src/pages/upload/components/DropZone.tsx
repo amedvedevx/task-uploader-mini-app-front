@@ -12,6 +12,7 @@ interface DropZoneProps {
     isTaskComplete: boolean;
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
     setSnackbarText: (arg: SnackBarText) => void;
+    isMobilePlatform: boolean;
 }
 
 // 200 MB
@@ -23,6 +24,7 @@ export const DropZone: FC<DropZoneProps> = ({
     isLoading,
     setFiles,
     setSnackbarText,
+    isMobilePlatform,
 }) => {
     const filesValidator = (file: File) => {
         if (file.size > maxFileSize) {
@@ -49,7 +51,7 @@ export const DropZone: FC<DropZoneProps> = ({
     });
 
     return (
-        <DivStretched>
+        <DivStretched $isMobilePlatform={isMobilePlatform}>
             {isTaskComplete ? (
                 <DropZoneContainer isDisabled>
                     <PlaceholderCentered
@@ -118,9 +120,9 @@ const getColor = ({ isDragAccept, isDragReject, isFocused }: DropZoneColors) => 
     return 'var(--vkui--color_icon_secondary)';
 };
 
-const DivStretched = styled(Div)`
+const DivStretched = styled(Div)<{ $isMobilePlatform: boolean }>`
     display: flex;
-    flex-grow: 1;
+    ${({ $isMobilePlatform }) => ($isMobilePlatform ? '' : 'flex-grow: 1;')};
 `;
 
 interface DropZoneContainerProps {
