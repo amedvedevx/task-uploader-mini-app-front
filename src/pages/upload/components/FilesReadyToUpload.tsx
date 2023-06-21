@@ -4,28 +4,69 @@ import { inclinationWord } from '@/lib';
 import { HorizontalScroll } from '@/components/HorizontalScroll';
 import { HorizontalFileCell } from '@/components/HorizontalFileCell';
 import { HeaderShort } from '@/components/HeaderShort';
+import type { TaskDetailResultContent } from '@/app/types';
 
 interface FilesReadyToUploadProps {
     files: File[];
+    uploadedFiles: TaskDetailResultContent[];
     removeFile: (lastModified: number) => void;
+    getFileStatus: (uploadDate: string) => 'success' | 'loading' | 'delete';
 }
 
-export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({ files, removeFile }) => (
-    <>
-        <HeaderShort mode='secondary'>
-            {`Готово к загрузке ${files.length} 
-                    ${inclinationWord(files.length, ['файл', 'файла', 'файлов'])}`}
-        </HeaderShort>
+export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
+    files,
+    uploadedFiles,
+    removeFile,
+    getFileStatus,
+}) => {
+    const filesToUpload = [...files].reverse();
+    const filesUploaded = [...uploadedFiles].reverse();
 
-        <HorizontalScroll data-automation-id='upload-page-filesList'>
-            {files.map(({ name, lastModified }) => (
-                <HorizontalFileCell
-                    key={lastModified}
-                    title={name}
-                    type='delete'
-                    onClick={() => removeFile(lastModified)}
-                />
-            ))}
-        </HorizontalScroll>
-    </>
-);
+    const hasUploadedFiles = !!uploadedFiles && uploadedFiles?.length > 0;
+
+    const uploadedCount = hasUploadedFiles
+        ? `${Number(uploadedFiles.length)}  ${inclinationWord(Number(uploadedFiles.length), [
+              'файл',
+              'файла',
+              'файлов',
+          ])}`
+        : '';
+
+    const stringSent = hasUploadedFiles ? `Отправлено - ${uploadedCount}` : '';
+
+    const stringToSend =
+        files?.length > 0
+            ? `К отправке - ${files.length}  ${inclinationWord(files.length, [
+                  'файл',
+                  'файла',
+                  'файлов',
+              ])} ${hasUploadedFiles ? `, отправлено - ${uploadedCount}` : ''}`
+            : stringSent;
+
+    const filesLabel = `${stringToSend}`;
+
+    return (
+        <>
+            <HeaderShort mode='secondary'>{filesLabel}</HeaderShort>
+
+            <HorizontalScroll data-automation-id='upload-page-filesList'>
+                {filesToUpload.map(({ name, lastModified }) => (
+                    <HorizontalFileCell
+                        key={lastModified}
+                        title={name}
+                        type='delete'
+                        onClick={() => removeFile(lastModified)}
+                    />
+                ))}
+
+                {filesUploaded.map(({ title, docId, uploadDate }) => (
+                    <HorizontalFileCell
+                        key={docId}
+                        title={title}
+                        type={getFileStatus(uploadDate)}
+                    />
+                ))}
+            </HorizontalScroll>
+        </>
+    );
+};
