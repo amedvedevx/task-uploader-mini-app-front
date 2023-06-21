@@ -18,7 +18,7 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 const response = await fetchWithBQ({
                     url: `/files/${taskId}`,
                     responseHandler: (res) => res.blob(),
-                    params: { vkUserId },
+                    params: { vkUserId, docId },
                 });
 
                 let fileName = '';

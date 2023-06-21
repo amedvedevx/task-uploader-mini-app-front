@@ -1,7 +1,5 @@
 import type {
     DeleteTaskResultProps,
-    GetSubTaskResultStatusProps,
-    GetSubTaskResultStatusResponse,
     GetTaskResultsProps,
     GetTaskResultsResponse,
     TaskResults,

@@ -56,7 +56,6 @@ export type TaskType = {
 export type TaskUserConsolidatedData = {
     total: number;
     executedUsersCount: number;
-    partiallyExecutedUsersCount: number;
     notExecutedUsersCount: number;
 };
 
@@ -84,7 +83,7 @@ export interface PreUploadFilesResponse {
 
 export interface UploadFileResponse {
     taskId: string;
-    subTaskId: string;
+    exception: string;
     status: AddResultStatusTypes;
 }
 
@@ -101,21 +100,8 @@ export interface DownloadFileResponse {
 export interface DownloadSingleFileProps {
     title: string;
     taskId: string;
-    subTaskId: string;
     docId: number;
     vkUserId: number;
-}
-
-export interface GetSubTaskResultStatusProps {
-    taskId: string;
-    subTaskId: string;
-}
-
-export interface GetSubTaskResultStatusResponse {
-    taskResultId: string;
-    subtaskId: string;
-    status: AddResultStatusTypes;
-    exception: string;
 }
 
 export interface GetTaskIdProps {
@@ -142,13 +128,6 @@ export interface CreateTaskProps {
     deadLine: number;
 }
 
-export interface CreateSubTaskPayload {
-    name: string;
-    description: string;
-    sortOrder: number;
-    subTaskType: string;
-}
-
 export interface UpdateTaskProps {
     taskId: string;
     payload: {
@@ -170,10 +149,6 @@ export interface CreateWideTask {
 
 export interface DeleteTaskProps {
     taskId: string;
-}
-export interface DeleteSubTaskProps {
-    taskId: string;
-    subTaskId: string;
 }
 
 export interface GetMembersResponse {

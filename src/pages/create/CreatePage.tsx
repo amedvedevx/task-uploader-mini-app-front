@@ -59,6 +59,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
         };
 
         const { id } = await createTask(payload).unwrap();
+
         router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
     };
 

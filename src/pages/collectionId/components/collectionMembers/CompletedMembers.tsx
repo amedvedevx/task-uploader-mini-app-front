@@ -48,14 +48,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     const platform = usePlatform();
     const isIOSPlatform = platform === Platform.IOS;
 
-    const onClickHandler = async ({
-        vkUserId,
-        url,
-        title,
-        taskId,
-        subTaskId,
-        docId,
-    }: OnClickArgs) => {
+    const onClickHandler = async ({ vkUserId, url, title, taskId, docId }: OnClickArgs) => {
         if (isMobilePlatform) {
             if (url && title) {
                 await BridgeDownload({ url, fileName: title });
@@ -68,8 +61,8 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                     downloadFilesOnMobile(resultsForUser);
                 }
             }
-        } else if (docId && title && taskId && subTaskId) {
-            downloadSingleFile({ taskId, title, docId, subTaskId, vkUserId });
+        } else if (docId && title && taskId) {
+            downloadSingleFile({ taskId, title, docId, vkUserId });
         } else {
             downloadFiles({ taskId: collectionId, vkUserId });
         }
@@ -188,6 +181,5 @@ type OnClickArgs = {
     url?: string;
     title?: string;
     taskId?: string;
-    subTaskId?: string;
     docId?: number;
 };
