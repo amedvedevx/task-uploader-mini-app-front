@@ -103,7 +103,10 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
     const selectedMembers = selection.selectedMembers.concat(selection.selectedChats);
 
     return (
-        <Panel id={PANEL_ADD_MEMBERS}>
+        <Panel
+            id={PANEL_ADD_MEMBERS}
+            data-automation-id='addMembers-page-panel'
+        >
             <div ref={fixedLayoutRef}>
                 <FixedLayout
                     filled
