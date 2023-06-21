@@ -1,4 +1,4 @@
-import { Panel, Group, PanelHeader, PanelHeaderContent, MiniInfoCell } from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, PanelHeaderContent, MiniInfoCell, Div } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from '@happysanta/router';
@@ -151,13 +151,15 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             </PanelHeader>
 
             {data?.description && (
-                <MiniInfoCell
-                    before={<Icon20Info />}
-                    textWrap='full'
-                    mode='base'
-                >
-                    {data.description}
-                </MiniInfoCell>
+                <DescriptionWrapper>
+                    <MiniInfoCell
+                        before={<Icon20Info />}
+                        textWrap='full'
+                        mode='base'
+                    >
+                        {data.description}
+                    </MiniInfoCell>
+                </DescriptionWrapper>
             )}
 
             <UploadPageWrapper>
@@ -217,4 +219,8 @@ const UploadPageWrapper = styled.div`
     overflow-x: hidden;
 
     padding-bottom: 52px;
+`;
+
+const DescriptionWrapper = styled(Div)`
+    padding: 12px 5px 0px 5px;
 `;
