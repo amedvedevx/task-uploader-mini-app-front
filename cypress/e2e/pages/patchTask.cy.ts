@@ -17,14 +17,13 @@ describe('User can create and close task', () => {
         create.FooterButtons.click();
 
         collectionId.HeaderContent.should('contain.text', 'Активное задание');
+        collectionId.HeaderContent.should('contain.text', 'PATCH task test');
 
         common.Footer.click();
-        cy.get('.vkuiAlert__button').contains('Завершить сбор').click();
-        // vkuiAlert__button
-        // common.PopoutButtons.contains('Завершить сбор').click();
+        common.Popout.contains('Завершить задание');
+        cy.get('.vkuiAlert__button').contains('Завершить сбор').trigger('mouseover').click();
 
-        // common.FooterButtons.children().first().should('not.have.attr', 'disabled');
-
-        // common.Footer.contains('Сбор завершен');
+        common.FooterButtons.children().first().should('not.have.attr', 'disabled');
+        common.Footer.contains('Сбор завершен');
     });
 });
