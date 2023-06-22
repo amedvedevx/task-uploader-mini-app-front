@@ -165,7 +165,7 @@ export const checkIsMobilePlatform = (platform: string): boolean => {
     const desktopTypes = [
         EGetLaunchParamsResponsePlatforms.DESKTOP_WEB,
         EGetLaunchParamsResponsePlatforms.MOBILE_WEB,
-        'desktop_web_messenger'
+        'desktop_web_messenger',
         // this type returned by bridge is not consistent with bridge documentation, its 'mvk_external'
         'mkv_external',
         'web_external',
