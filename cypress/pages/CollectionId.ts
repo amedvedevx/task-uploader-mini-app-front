@@ -36,13 +36,9 @@ class CollectionId extends Common {
         return cy.getByAutomationId('collectionId-page-membersList') as Cypress.Chainable;
     }
 
-    // get Panel() {
-    //     return cy.getByAutomationId('collectionId-page-panel') as Cypress.Chainable;
-    // }
-
-    // get Panel() {
-    //     return cy.getByAutomationId('collectionId-page-panel') as Cypress.Chainable;
-    // }
+    get BackButton() {
+        return cy.getByAutomationId('collectionId-page-backButton') as Cypress.Chainable;
+    }
 }
 
 export default CollectionId;
