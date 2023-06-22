@@ -18,6 +18,7 @@ export const Popout: React.FC<PopoutProps> = ({ header, text, setPopout, actionT
     return (
         <PopoutAbsolute hasMask={false}>
             <Alert
+                data-automation-id='common-popout-buttons'
                 header={header}
                 text={text}
                 actions={[

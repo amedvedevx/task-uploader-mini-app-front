@@ -18,6 +18,10 @@ class Common {
     get SearchBar() {
         return cy.getByAutomationId('common-searchBar') as Cypress.Chainable;
     }
+
+    get PopoutButtons() {
+        return cy.getByAutomationId('common-popout-buttons') as Cypress.Chainable;
+    }
 }
 
 export default Common;

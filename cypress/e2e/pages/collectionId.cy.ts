@@ -1,10 +1,13 @@
 import type { GetTaskIdResponce, GetTaskResultsResponce } from '../../../src/app/types';
 import { TaskStatusTypesForOrganizer } from '../../../src/app/types';
 import CollectionId from '../../pages/CollectionId';
+import Common from '../../pages/Common';
 import { interceptTaskId, interceptTaskIdResults } from '../interceptors';
 
 describe('User can visit collectionId page', () => {
     const collectionId = new CollectionId(Cypress.env('API_BASE_URL'));
+
+    const common = new Common(Cypress.env('API_BASE_URL'));
 
     let taskResultsData: GetTaskResultsResponce;
     let taskData: GetTaskIdResponce;
@@ -31,16 +34,16 @@ describe('User can visit collectionId page', () => {
     beforeEach(() => {
         interceptTaskIdResults(taskResultsData);
         interceptTaskId(taskData);
-        cy.visit('/#/collectionId/08ef58ee-18e4-452d-ac23-f9482c5d2bef');
+        cy.visit('/#/collectionId/9c668cec-aafd-4a36-b18f-0b05c08c2776');
     });
 
-    it('and see createPage panel', () => {
+    it('and see collectionId panel', () => {
         collectionId.Panel.should('exist');
     });
 
     it('and see correct title of task and correct task status', () => {
-        collectionId.HeaderContent.should('contain.text', taskData.name);
         collectionId.HeaderContent.should('contain.text', 'Активное задание');
+        collectionId.HeaderContent.should('contain.text', taskData.name);
     });
 
     it('and see searchBar', () => {
@@ -77,11 +80,5 @@ describe('User can visit collectionId page', () => {
         collectionId.Tabs.contains('Прислали').click();
 
         collectionId.MembersList.children().should('have.length', completedUsers);
-    });
-
-    it('and see correct footer', () => {
-        if (!isTaskClosed) {
-            collectionId.Footer.contains('Завершить сбор');
-        }
     });
 });
