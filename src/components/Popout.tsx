@@ -16,7 +16,10 @@ export const Popout: React.FC<PopoutProps> = ({ header, text, setPopout, actionT
     const trimTextForIos = (title: string) => title.split(' ')[0];
 
     return (
-        <PopoutAbsolute hasMask={false}>
+        <PopoutAbsolute
+            hasMask={false}
+            data-automation-id='common-popout'
+        >
             <Alert
                 data-automation-id='common-popout-buttons'
                 header={header}

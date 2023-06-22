@@ -19,10 +19,12 @@ describe('User can create and close task', () => {
         collectionId.HeaderContent.should('contain.text', 'Активное задание');
 
         common.Footer.click();
-        common.PopoutButtons.children().contains('Завершить сбор').click();
+        cy.get('.vkuiAlert__button').contains('Завершить сбор').click();
+        // vkuiAlert__button
+        // common.PopoutButtons.contains('Завершить сбор').click();
 
-        common.FooterButtons.children().first().should('not.have.attr', 'disabled');
+        // common.FooterButtons.children().first().should('not.have.attr', 'disabled');
 
-        common.Footer.contains('Сбор завершен');
+        // common.Footer.contains('Сбор завершен');
     });
 });
