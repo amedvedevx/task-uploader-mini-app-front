@@ -10,22 +10,14 @@ export type TaskDetailResultContent = {
     url: string;
 };
 
-export type TaskDetailResult = {
-    resultId: string;
-    subTaskId: string;
-    taskDetailId: string;
-    completeDate: number;
-    status: 'LOADED';
-    content: TaskDetailResultContent[];
-};
-
 export type TaskResults = {
     id: number;
     taskId: string;
     completeDate: number;
     assignDate: string;
+    exception: string;
     taskResultStatus: TaskStatusTypesForTestee;
-    subTaskResults: TaskDetailResult[];
+    content: TaskDetailResultContent[];
     testee: {
         vkUserId: number;
         firstName: string;
@@ -57,16 +49,6 @@ export type TaskType = {
     description: string;
     dateCreate: number;
     deadLine: number;
-    subTasks: [
-        {
-            id: string;
-            name: string;
-            description: string;
-            sortOrder: number;
-            subTaskType: FileTypes;
-            dateCreate: number;
-        },
-    ];
     unlimited: boolean;
     consolidatedData: TaskUserConsolidatedData;
 };
@@ -74,7 +56,6 @@ export type TaskType = {
 export type TaskUserConsolidatedData = {
     total: number;
     executedUsersCount: number;
-    partiallyExecutedUsersCount: number;
     notExecutedUsersCount: number;
 };
 
@@ -84,12 +65,10 @@ export interface GetTaskResultsProps {
 
 export interface DeleteTaskResultProps {
     taskId: string;
-    subTaskId: string;
 }
 
 export interface UploadFileProps {
     taskId: string;
-    subTaskId: string;
     file: File;
 }
 
@@ -104,13 +83,13 @@ export interface UploadFilesResponse {
 
 export interface UploadFileResponse {
     taskId: string;
-    subTaskId: string;
+    exception: string;
     status: AddResultStatusTypes;
 }
 
 export interface DownloadFilesProps {
     taskId: string;
-    subTaskId?: string;
+    docId?: string;
     vkUserId?: number;
 }
 
@@ -121,21 +100,8 @@ export interface DownloadFileResponse {
 export interface DownloadSingleFileProps {
     title: string;
     taskId: string;
-    subTaskId: string;
     docId: number;
     vkUserId: number;
-}
-
-export interface GetSubTaskResultStatusProps {
-    taskId: string;
-    subTaskId: string;
-}
-
-export interface GetSubTaskResultStatusResponse {
-    taskResultId: string;
-    subtaskId: string;
-    status: AddResultStatusTypes;
-    exception: string;
 }
 
 export interface GetTaskIdProps {
@@ -160,14 +126,6 @@ export interface CreateTaskProps {
     description: string;
     unlimited: boolean;
     deadLine: number;
-    subTasks: CreateSubTaskPayload[];
-}
-
-export interface CreateSubTaskPayload {
-    name: string;
-    description: string;
-    sortOrder: number;
-    subTaskType: string;
 }
 
 export interface UpdateTaskProps {
@@ -191,10 +149,6 @@ export interface CreateWideTask {
 
 export interface DeleteTaskProps {
     taskId: string;
-}
-export interface DeleteSubTaskProps {
-    taskId: string;
-    subTaskId: string;
 }
 
 export interface GetMembersResponse {

@@ -56,18 +56,11 @@ export const CreatePage: FC<CreatePageProps> = () => {
             description: data.collectionDescription.trim(),
             unlimited: true,
             deadLine: deadLineDate,
-            subTasks: [
-                {
-                    name: `Подзадание 1 задания ${data.collectionName}`,
-                    description: `Описание подзадания 1`,
-                    sortOrder: 1,
-                    subTaskType: 'FILE',
-                },
-            ],
         };
 
-        const { taskId } = await createTask(payload).unwrap();
-        router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
+        const { id } = await createTask(payload).unwrap();
+
+        router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
     };
 
     const goBack = () => {
