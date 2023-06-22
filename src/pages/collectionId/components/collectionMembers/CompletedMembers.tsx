@@ -48,14 +48,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     const platform = usePlatform();
     const isIOSPlatform = platform === Platform.IOS;
 
-    const onClickHandler = async ({
-        vkUserId,
-        url,
-        title,
-        taskId,
-        subTaskId,
-        docId,
-    }: OnClickArgs) => {
+    const onClickHandler = async ({ vkUserId, url, title, taskId, docId }: OnClickArgs) => {
         if (isMobilePlatform) {
             if (url && title) {
                 await BridgeDownload({ url, fileName: title });
@@ -65,11 +58,11 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                 );
 
                 if (resultsForUser) {
-                    downloadFilesOnMobile(resultsForUser.subTaskResults);
+                    downloadFilesOnMobile(resultsForUser);
                 }
             }
-        } else if (docId && title && taskId && subTaskId) {
-            downloadSingleFile({ taskId, title, docId, subTaskId, vkUserId });
+        } else if (docId && title && taskId) {
+            downloadSingleFile({ taskId, title, docId, vkUserId });
         } else {
             downloadFiles({ taskId: collectionId, vkUserId });
         }
@@ -115,7 +108,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                 {taskResults.map(
                     ({
                         testee: { vkUserId, firstName, lastName, fullName, photo },
-                        subTaskResults,
+                        content,
                         taskId,
                     }) => (
                         <Accordion key={vkUserId}>
@@ -138,8 +131,8 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                                 originalArgs={originalArgs}
                                                 vkUserId={vkUserId}
                                                 isDownloading={isDownloading}
-                                                counter={subTaskResults[0].content.length}
-                                                files={subTaskResults[0].content}
+                                                counter={content.length}
+                                                files={content}
                                                 handleDownloadFile={handleDownloadFile}
                                             />
                                         )
@@ -150,7 +143,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                             </AccordionSummaryWidth>
 
                             <HorizontalScroll>
-                                {subTaskResults[0].content.map(({ title, docId, url }) => (
+                                {content.map(({ title, docId, url }) => (
                                     <HorizontalFileCell
                                         key={docId}
                                         title={title}
@@ -162,7 +155,6 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                                 title,
                                                 taskId,
                                                 docId,
-                                                subTaskId: subTaskResults[0].subTaskId,
                                             })
                                         }
                                     />
@@ -189,6 +181,5 @@ type OnClickArgs = {
     url?: string;
     title?: string;
     taskId?: string;
-    subTaskId?: string;
     docId?: number;
 };
