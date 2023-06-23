@@ -1,33 +1,33 @@
 {
     "owner": {
-        "firstName": "Наташа",
-        "lastName": "Каллистова",
-        "fullName": "Наташа Каллистова",
+        "firstName": "Серега",
+        "lastName": "Миненков",
+        "fullName": "Серега Миненков",
         "createDate": null,
         "photo": null,
-        "vkUserId": 8789950
+        "vkUserId": 3911458
     },
     "status": "IN_PROGRESS",
-    "name": "Проверка скачивания файлов №2",
-    "description": "хехе",
-    "dateCreate": 1681379251,
-    "deadline": 1683971226,
+    "name": "тест5",
+    "description": "",
+    "dateCreate": 1686207912,
+    "deadline": 1688789109,
     "subTasks": [
         {
-            "name": "Подзадание 1 задания Проверка скачивания файлов №2",
+            "name": "Подзадание 1 задания тест5",
             "description": "Описание подзадания 1",
             "sortOrder": 1,
             "subTaskType": "FILE",
-            "dateCreate": 1681379251,
-            "id": "88b766e7-1ae1-4ed1-9985-2cbbba050f59"
+            "dateCreate": 1686207912,
+            "id": "1bfe6b88-8985-483a-a55a-fd354aff9fd2"
         }
     ],
     "unlimited": true,
     "consolidatedData": {
         "total": null,
-        "executedUsersCount": 3,
+        "executedUsersCount": 1,
         "partiallyExecutedUsersCount": 0,
         "notExecutedUsersCount": 1
     },
-    "id": "08ef58ee-18e4-452d-ac23-f9482c5d2bef"
+    "id": "9c668cec-aafd-4a36-b18f-0b05c08c2776"
 }
