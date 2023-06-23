@@ -1,3 +1,4 @@
+import { Popout } from '@/components';
 class Common {
     get pageHeader() {
         return cy.get('.vkuiPanelHeader__in.PanelHeader__in');
@@ -17,6 +18,14 @@ class Common {
 
     get SearchBar() {
         return cy.getByAutomationId('common-searchBar') as Cypress.Chainable;
+    }
+
+    get Popout() {
+        return cy.getByAutomationId('common-popout') as Cypress.Chainable;
+    }
+
+    get PopoutButtons() {
+        return cy.getByAutomationId('common-popout-buttons') as Cypress.Chainable;
     }
 }
 

@@ -338,7 +338,10 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
             {popout}
 
-            <FooterWithButton options={prepareButtonsOptions()} />
+            <FooterWithButton
+                data-automation-id='collectionId-footer'
+                options={prepareButtonsOptions()}
+            />
         </Panel>
     );
 };

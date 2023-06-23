@@ -1,115 +1,52 @@
 {
     "taskResults": [
         {
+            "completeDate": 1686208363,
+            "assignDate": 1686207923,
+            "taskResultStatus": "UPLOADED",
+            "subTaskResults": [
+                {
+                    "completeDate": 1686208363,
+                    "status": "LOADED",
+                    "exception": null,
+                    "content": [
+                        {
+                            "docId": 662206858,
+                            "uploadDate": "2023-06-08T10:12:43.233196",
+                            "url": "https://vk.com/doc88118688_662206858?hash=1RI8VAynzVR9ob2M0cyNwF3eJ3VGMOAgr3fD1ozGYrX&dl=guNw0bzswXKdgby9vHqZF5aGbILbuXsjLlku8T77m8H&api=1&no_preview=1",
+                            "title": "DA3C3303-D42E-4A7D-BDBE-BA31B80E29EA.jpeg",
+                            "size": 6104968
+                        }
+                    ],
+                    "subTaskId": "1bfe6b88-8985-483a-a55a-fd354aff9fd2"
+                }
+            ],
+            "testee": {
+                "firstName": "Александр",
+                "lastName": "Медведев",
+                "fullName": "Александр Медведев",
+                "createDate": 1685085326,
+                "photo": "https://vk.com/images/camera_100.png",
+                "vkUserId": 88118688
+            },
+            "id": "e2376f29-1d54-47d1-bf0b-a19d28e76ba6",
+            "taskId": "9c668cec-aafd-4a36-b18f-0b05c08c2776"
+        },
+        {
             "completeDate": null,
-            "assignDate": 1681914105,
+            "assignDate": 1686207923,
             "taskResultStatus": "REQUIRES_UPLOAD",
             "subTaskResults": [],
             "testee": {
-                "firstName": "Денис",
-                "lastName": "Зайцев",
-                "fullName": "Денис Зайцев",
-                "createDate": 1679421859,
-                "photo": "https://sun1-15.userapi.com/s/v1/if2/dkRoC2Z9wlbEE-iTvcg2YhaRGnmi2QfN_rZBxOgZxrVsIDN1rWe889_sm6DvKZu0yYtUPCycWo7ae7qlJJ-54GKc.jpg?size=100x100&quality=96&crop=70,70,371,371&ava=1",
-                "vkUserId": 13143065
-            },
-            "id": "aab3394f-2825-4b2a-9c1a-523b6ab0b8ce",
-            "taskId": "08ef58ee-18e4-452d-ac23-f9482c5d2bef"
-        },
-        {
-            "completeDate": 1681379390,
-            "assignDate": 1681379290,
-            "taskResultStatus": "UPLOADED",
-            "subTaskResults": [
-                {
-                    "completeDate": null,
-                    "status": "NOT_LOADED",
-                    "exception": "unable upload file README.md exception: 504 Gateway Time-out: \"<html><EOL><head><EOL><title>The page is temporarily unavailable</title><EOL><style><EOL>body { font-family: Tahoma, Verdana, Arial, sans-serif; }<EOL></style><EOL></head><EOL><body bgcolor=\"white\" text=\"black\"><EOL><table width=\"100%\" height=\"100%\"><EOL><tr><EOL><td align=\"center\" valign=\"middle\"><EOL>The page you are looking for is temporarily unavailable.<br/><EOL>Please try again later.<EOL></td><EOL></tr><EOL></table><EOL></body><EOL></html><EOL>\"",
-                    "content": [
-                        {
-                            "uploadDate": "2023-04-13T09:49:50.276174",
-                            "title": "HELP.md",
-                            "size": 430
-                        }
-                    ],
-                    "subTaskId": "88b766e7-1ae1-4ed1-9985-2cbbba050f59"
-                }
-            ],
-            "testee": {
-                "firstName": "Наташа",
-                "lastName": "Каллистова",
-                "fullName": "Наташа Каллистова",
+                "firstName": "Константин",
+                "lastName": "Поздникин",
+                "fullName": "Константин Поздникин",
                 "createDate": null,
-                "photo": "https://sun1-20.userapi.com/s/v1/if1/50sgK6svbUVqmhBhdR6Wmm_-KTi0EphxFwmxMhj_BkFgHORf5ytH4WpmoygN8iE1H9QtpX_U.jpg?size=100x100&quality=96&crop=0,14,1538,1538&ava=1",
-                "vkUserId": 8789950
+                "photo": "https://sun9-19.userapi.com/s/v1/ig2/Rq6wuV9EZTCOu58kYPP9hGigRiRaKwkAa6VrdTGgeN1ZOXKfBFaJdc7m-yemvPC5iUAfUVC74e4_z44dnv_fkCwh.jpg?size=100x100&quality=95&crop=4,564,479,479&ava=1",
+                "vkUserId": 1845486
             },
-            "id": "d1a7db85-005a-4f56-ad23-3f50e139b78a",
-            "taskId": "08ef58ee-18e4-452d-ac23-f9482c5d2bef"
-        },
-        {
-            "completeDate": 1681406505,
-            "assignDate": 1681406446,
-            "taskResultStatus": "UPLOADED",
-            "subTaskResults": [
-                {
-                    "completeDate": 1681406505,
-                    "status": "LOADED",
-                    "exception": null,
-                    "content": [
-                        {
-                            "uploadDate": "2023-04-13T17:21:45.716984",
-                            "title": "Снимок экрана 2023-03-21 в 23.12.03.png",
-                            "size": 1509082
-                        }
-                    ],
-                    "subTaskId": "88b766e7-1ae1-4ed1-9985-2cbbba050f59"
-                }
-            ],
-            "testee": {
-                "firstName": "Артем",
-                "lastName": "Кучаев",
-                "fullName": "Артем Кучаев",
-                "createDate": 1681406446,
-                "photo": "https://sun1-56.userapi.com/s/v1/ig2/jgLHkmNPh4Iu7PG3kcZptM9MQ4G_jkg_JpUWPgMjwfPEpFICvkiC_-1vwgNLjDjiqB3uC-jKC3QuDNaql2lYAau2.jpg?size=100x100&quality=95&crop=390,631,1157,1157&ava=1",
-                "vkUserId": 53484686
-            },
-            "id": "15f70e59-93d9-44cd-916c-0c631df739d5",
-            "taskId": "08ef58ee-18e4-452d-ac23-f9482c5d2bef"
-        },
-        {
-            "completeDate": 1681913476,
-            "assignDate": 1681913472,
-            "taskResultStatus": "UPLOADED",
-            "subTaskResults": [
-                {
-                    "completeDate": 1681913476,
-                    "status": "LOADED",
-                    "exception": null,
-                    "content": [
-                        {
-                            "uploadDate": "2023-04-19T14:11:16.305629",
-                            "title": "Снимок экрана 2022-12-15 в 11.57.28.png",
-                            "size": 68764
-                        },
-                        {
-                            "uploadDate": "2023-04-19T14:11:16.762876",
-                            "title": "Снимок экрана 2022-12-15 в 11.57.41.png",
-                            "size": 68025
-                        }
-                    ],
-                    "subTaskId": "88b766e7-1ae1-4ed1-9985-2cbbba050f59"
-                }
-            ],
-            "testee": {
-                "firstName": "Серега",
-                "lastName": "Миненков",
-                "fullName": "Серега Миненков",
-                "createDate": null,
-                "photo": "https://sun1-15.userapi.com/s/v1/ig2/b33Ph-1UmNXTAXoDkbstqyYB01JpcYkb9yZsRKxtRSzHrYbNMfD6Gh7pAw-Ia_IzCzFFNGc7kmEkkZez31Oe2tOp.jpg?size=100x100&quality=95&crop=519,480,555,555&ava=1",
-                "vkUserId": 3911458
-            },
-            "id": "b5976bfd-10be-48f4-bf0a-e42a28b9eeb0",
-            "taskId": "08ef58ee-18e4-452d-ac23-f9482c5d2bef"
+            "id": "8a640c08-2819-427e-a7df-bb73271488a8",
+            "taskId": "9c668cec-aafd-4a36-b18f-0b05c08c2776"
         }
     ]
 }
