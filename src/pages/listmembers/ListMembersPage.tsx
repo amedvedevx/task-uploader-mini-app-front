@@ -63,16 +63,7 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
     const fixedLayoutRef = createRef<HTMLDivElement>();
 
-    useEffect(() => {
-        if (isLoading) return;
-
-        const allMembers = selectedMembers.concat(chatMembers);
-        setLocalMembers(normalizeMembers(allMembers));
-    }, [isLoading, selectedMembers, chatMembers]);
-
-    useLayoutEffect(() => {
-        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
-    }, [fixedLayoutRef]);
+    const vkUserIds = localMembers.map((el) => el.id);
 
     const deleteMember = (id: number) => {
         setLocalMembers((prev) => prev.filter((el) => el.id !== id));
@@ -100,8 +91,6 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         router.popPage();
     };
 
-    const vkUserIds = localMembers.map((el) => el.id);
-
     useEffect(() => {
         const timer = setTimeout(() => {
             if (!vkUserIds.length) {
@@ -112,6 +101,17 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         return () => clearTimeout(timer);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vkUserIds]);
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        const allMembers = selectedMembers.concat(chatMembers);
+        setLocalMembers(normalizeMembers(allMembers));
+    }, [isLoading, selectedMembers, chatMembers]);
+
+    useLayoutEffect(() => {
+        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
+    }, [fixedLayoutRef]);
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>

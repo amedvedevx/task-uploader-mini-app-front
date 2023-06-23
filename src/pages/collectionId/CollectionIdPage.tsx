@@ -120,8 +120,8 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         />
     );
 
-    const isForbiddenAllFiles = taskResults.some(({ subTaskResults }) =>
-        subTaskResults.some(({ content }) => content.some((el) => isForbiddenFile(el.title))),
+    const isForbiddenAllFiles = taskResults.some(({ content }) =>
+        content.some((el) => isForbiddenFile(el.title)),
     );
 
     const prepareButtonsOptions = (): ButtonOption[] => {

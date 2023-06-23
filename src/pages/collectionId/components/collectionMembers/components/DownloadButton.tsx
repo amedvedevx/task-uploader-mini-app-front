@@ -15,7 +15,6 @@ interface DownloadButtonProps {
             url?: string;
             title?: string;
             taskId?: string;
-            subTaskId?: string;
             docId?: number;
         },
         files: TaskDetailResultContent[],
