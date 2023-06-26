@@ -37,7 +37,6 @@ export const BridgeMessagesSend = async ({
     message,
     taskId,
 }: BridgeMessagesSendArgs): Promise<BridgeMessagesSendResponse> => {
-    // TODO: Придумать как правильно сделать респонс с 'error'
     const result: BridgeMessagesSendResponse = await bridge
         .send('VKWebAppCallAPIMethod', {
             method: 'messages.send',
