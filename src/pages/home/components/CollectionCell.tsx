@@ -27,6 +27,7 @@ import type {
 } from '@/app/types';
 import { useDeleteTaskMutation } from '@/api';
 import { Popout } from '@/components/Popout';
+import type { ResponseError } from '@/api/query/apiSlice';
 
 interface CollectionCellProps {
     id: string;

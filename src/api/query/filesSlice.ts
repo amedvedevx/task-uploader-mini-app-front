@@ -7,8 +7,11 @@ import type {
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
+import type { BridgeDocsSaveResponce } from './bridge';
 import { BridgeDocsSave, BridgeDocsUploadServer, BridgeDownload } from './bridge';
 import type { RootState } from '../store';
+
+type Meta = { response: { headers: { get: (str: string) => string } } };
 
 const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).injectEndpoints({
     endpoints: (builder) => ({
@@ -21,7 +24,9 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 });
 
                 let fileName = '';
-                const disposition = response.meta?.response?.headers.get('Content-disposition');
+                const disposition: string = (response.meta as Meta)?.response?.headers.get(
+                    'Content-disposition',
+                );
 
                 if (disposition && disposition.indexOf('attachment') !== -1) {
                     const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
