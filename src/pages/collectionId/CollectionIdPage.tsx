@@ -200,7 +200,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     }, [selectedTab]);
 
     useLayoutEffect(() => {
-        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
+        setFixLayoutHeight(fixedLayoutRef?.current?.firstChild?.offsetHeight);
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
 
     if (error && 'status' in error) {
