@@ -221,7 +221,12 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                 >
                     <PanelHeader
                         separator={false}
-                        before={<PanelHeaderBack onClick={goBack} />}
+                        before={
+                            <PanelHeaderBack
+                                data-automation-id='collectionId-page-backButton'
+                                onClick={goBack}
+                            />
+                        }
                     >
                         {currentTask?.name ? (
                             <PanelHeaderContent
