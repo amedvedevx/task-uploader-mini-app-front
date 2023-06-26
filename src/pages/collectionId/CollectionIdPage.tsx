@@ -211,10 +211,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     }
 
     return (
-        <Panel
-            id={PANEL_COLLECTION_ID}
-            data-automation-id='collectionId-page-panel'
-        >
+        <Panel id={PANEL_COLLECTION_ID}>
             <div ref={fixedLayoutRef}>
                 <FixedLayout
                     filled
@@ -222,12 +219,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                 >
                     <PanelHeader
                         separator={false}
-                        before={
-                            <PanelHeaderBack
-                                data-automation-id='collectionId-page-backButton'
-                                onClick={goBack}
-                            />
-                        }
+                        before={<PanelHeaderBack onClick={goBack} />}
                     >
                         {currentTask?.name ? (
                             <PanelHeaderContent
