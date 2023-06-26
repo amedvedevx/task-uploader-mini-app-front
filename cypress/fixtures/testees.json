@@ -1,0 +1,19 @@
+[
+    {
+        "can_access_closed": true,
+        "first_name": "Константин",
+        "id": 1845486,
+        "is_closed": false,
+        "last_name": "Поздникин",
+        "photo_100": "https://sun9-19.userapi.com/s/v1/ig2/Rq6wuV9EZTCOu58kYPP9hGigRiRaKwkAa6VrdTGgeN1ZOXKfBFaJdc7m-yemvPC5iUAfUVC74e4_z44dnv_fkCwh.jpg?size=100x100&quality=95&crop=4,564,479,479&ava=1"
+    },
+
+    {
+        "can_access_closed": true,
+        "first_name": "Серега",
+        "id": 3911458,
+        "is_closed": false,
+        "last_name": "Миненков",
+        "photo_100": "https://sun9-15.userapi.com/s/v1/ig2/b33Ph-1UmNXTAXoDkbstqyYB01JpcYkb9yZsRKxtRSzHrYbNMfD6Gh7pAw-Ia_IzCzFFNGc7kmEkkZez31Oe2tOp.jpg?size=100x100&quality=95&crop=519,480,555,555&ava=1"
+    }
+]

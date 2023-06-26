@@ -1,3 +1,4 @@
+import { Popout } from '@/components';
 class Common {
     get pageHeader() {
         return cy.get('.vkuiPanelHeader__in');
