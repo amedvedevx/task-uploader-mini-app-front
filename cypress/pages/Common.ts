@@ -4,7 +4,7 @@ class Common {
     }
 
     get goBackButton() {
-        return cy.get('.vkuiPanelHeaderBack');
+        return cy.get('.vkuiPanelHeaderButton');
     }
 
     get Footer() {
