@@ -75,7 +75,7 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
                                     type='button'
                                     onClick={errorHandler.onReset}
                                 >
-                                    {errorHandler.resetMessage}
+                                    Обновить
                                 </Button>
                             </>
                         )}
