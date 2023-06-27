@@ -1,7 +1,7 @@
 import Create from '../../pages/Create';
 import Common from '../../pages/Common';
 
-describe('User can create and close task', () => {
+describe('User can create and update task', () => {
     const create = new Create(Cypress.env('API_BASE_URL'));
     const common = new Common(Cypress.env('API_BASE_URL'));
 
@@ -9,7 +9,7 @@ describe('User can create and close task', () => {
         cy.visit('/#/collection');
     });
 
-    it('PATCH /task', () => {
+    it('After updating the task, the user sees in the footer that the collection is completed', () => {
         create.TitleInput.type('PATCH task test');
         common.FooterButtons.children().first().should('not.have.attr', 'disabled');
         common.FooterButtons.click();

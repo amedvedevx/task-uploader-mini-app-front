@@ -1,11 +1,10 @@
-import { Popout } from '@/components';
 class Common {
     get pageHeader() {
         return cy.get('.vkuiPanelHeader__in');
     }
 
     get goBackButton() {
-        return cy.get('.vkuiPanelHeaderBack');
+        return cy.get('.vkuiPanelHeaderButton');
     }
 
     get Footer() {
