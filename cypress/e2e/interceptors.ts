@@ -12,7 +12,7 @@ export const interceptTaskId = (
     bodyData: GetTaskIdResponce,
 ): Cypress.Chainable<GetTaskIdResponce> =>
     cy
-        .intercept('GET', `${ApiBaseUrl}/task/08ef58ee-18e4-452d-ac23-f9482c5d2bef`, {
+        .intercept('GET', `${ApiBaseUrl}/task/9c668cec-aafd-4a36-b18f-0b05c08c2776`, {
             body: bodyData,
         })
         .as('getTaskId');
@@ -27,7 +27,7 @@ export const interceptDeleteTaskId = (bodyData: GetTasksResponce): Cypress.Chain
 
 export const interceptTaskIdResults = (bodyData: GetTaskResultsResponce): Cypress.Chainable<null> =>
     cy
-        .intercept('GET', `${ApiBaseUrl}/collectionId/08ef58ee-18e4-452d-ac23-f9482c5d2bef`, {
+        .intercept('GET', `${ApiBaseUrl}/collectionId/9c668cec-aafd-4a36-b18f-0b05c08c2776`, {
             body: bodyData,
         })
 

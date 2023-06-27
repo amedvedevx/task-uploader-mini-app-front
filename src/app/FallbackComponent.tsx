@@ -10,8 +10,6 @@ import { Stub } from '@/components';
 import { AUTH_ERROR_MESSAGE } from '@/app/constants';
 import { StubAuth } from '@/components/Stub/StubAuth';
 import { StubSubtitle, StubСacheSubtitle } from '@/components/Stub/components/components';
-import { useGetPlatformQuery } from '@/api';
-import { checkIsMobilePlatform } from '@/lib';
 import { useChangeFragment } from '@/hooks';
 
 interface FallbackComponentProps {
@@ -22,14 +20,12 @@ interface FallbackComponentProps {
 export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErrorBoundary }) => {
     let isFirst = useFirstPageCheck();
     isFirst = useChangeFragment({ isFirst, resetErrorBoundary });
-    const { data: platform = '' } = useGetPlatformQuery();
-    const isMobilePlatform = checkIsMobilePlatform(platform);
 
     useEffect(() => {
-        if (isMobilePlatform) {
+        if (bridge.supports('VKWebAppSetSwipeSettings')) {
             bridge.send('VKWebAppSetSwipeSettings', { history: isFirst }).catch(() => {});
         }
-    }, [isFirst, isMobilePlatform]);
+    }, [isFirst]);
 
     return (
         <AppRoot>

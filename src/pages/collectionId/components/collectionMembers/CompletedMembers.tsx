@@ -29,7 +29,7 @@ import { DownloadButton } from './components/DownloadButton';
 interface CompletedMembersProps {
     taskResults: TaskResults[];
     collectionId: string;
-    isMobilePlatform: boolean;
+    isMobileDownloading: boolean;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
@@ -37,7 +37,7 @@ const avatarStub = 'https://vk.com/images/camera_100.png';
 export const CompletedMembers: FC<CompletedMembersProps> = ({
     taskResults,
     collectionId,
-    isMobilePlatform,
+    isMobileDownloading,
 }) => {
     const [downloadFiles, { isLoading: isDownloading, originalArgs }] = useLazyDownloadFilesQuery();
     const [downloadFilesOnMobile] = useLazyDownloadFilesOnMobileQuery();
@@ -49,7 +49,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     const isIOSPlatform = platform === Platform.IOS;
 
     const onClickHandler = async ({ vkUserId, url, title, taskId, docId }: OnClickArgs) => {
-        if (isMobilePlatform) {
+        if (isMobileDownloading) {
             if (url && title) {
                 await BridgeDownload({ url, fileName: title });
             } else {
