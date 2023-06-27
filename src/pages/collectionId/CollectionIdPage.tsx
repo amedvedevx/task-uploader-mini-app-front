@@ -210,7 +210,10 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     }
 
     return (
-        <Panel id={PANEL_COLLECTION_ID}>
+        <Panel
+            id={PANEL_COLLECTION_ID}
+            data-automation-id='collectionId-page-panel'
+        >
             <div ref={fixedLayoutRef}>
                 <FixedLayout
                     filled

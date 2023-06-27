@@ -8,6 +8,10 @@ class CollectionId extends Common {
         this.apiBaseUrl = baseUrl;
     }
 
+    get Panel() {
+        return cy.getByAutomationId('collectionId-page-panel') as Cypress.Chainable;
+    }
+
     get HeaderContent() {
         return cy.getByAutomationId('collectionId-page-headerContent') as Cypress.Chainable;
     }
@@ -30,6 +34,10 @@ class CollectionId extends Common {
 
     get MembersList() {
         return cy.getByAutomationId('collectionId-page-membersList') as Cypress.Chainable;
+    }
+
+    get BackButton() {
+        return cy.getByAutomationId('collectionId-page-backButton') as Cypress.Chainable;
     }
 }
 
