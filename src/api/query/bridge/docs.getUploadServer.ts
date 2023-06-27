@@ -21,8 +21,7 @@ export const BridgeDocsUploadServer = async ({
             },
         })
         .then((res) => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            if (res.response?.[0]?.error) {
+            if (((res.response as unknown[])?.[0] as { error: unknown })?.error) {
                 return 'error';
             }
 

@@ -42,9 +42,7 @@ const testeesSlice = apiSlice
                         ),
                         profiles: testees.profiles
                             ? testees.profiles.filter(
-                                (el) =>
-                                    !invitedMemberIds?.includes(el.id) &&
-                                      el.id !== userId,
+                                (el) => !invitedMemberIds?.includes(el.id) && el.id !== userId,
                             )
                             : [],
                     };
@@ -108,7 +106,11 @@ const testeesSlice = apiSlice
                     const { token } = (getState() as RootState).authorization;
 
                     const normalizeMembers = whoToSend.join();
-                    const inviteMesage = `Вы были приглашены пользователем ${task.owner.fullName} для загрузки файлов по заданию: ${task.name}. ${task.description? `\n Описание: ${task.description}.`: ''} \n ${UPLOAD_URL}${taskId}`;
+                    const inviteMesage = `Вы были приглашены пользователем ${
+                        task.owner.fullName
+                    } для загрузки файлов по заданию: ${task.name}. ${
+                        task.description ? `\n Описание: ${task.description}.` : ''
+                    } \n ${UPLOAD_URL}${taskId}`;
 
                     const result = await BridgeMessagesSend({
                         token,

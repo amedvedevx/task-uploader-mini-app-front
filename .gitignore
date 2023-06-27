@@ -19,3 +19,8 @@ yarn-error.log*
 
 # builds
 dist/
+
+# cypress
+cypress/videos
+cypress/screenshots
+/cypress.env.json

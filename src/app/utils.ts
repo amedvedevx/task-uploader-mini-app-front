@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 import type { FC, ComponentType, LazyExoticComponent } from 'react';
 import { lazy } from 'react';
 
-export const lazyWithRetries = <T extends ComponentType<any>>(
-    importer: () => Promise<{ default: FC<any> }>,
+export const lazyWithRetries = <T extends ComponentType<unknown>>(
+    importer: () => Promise<{ default: FC<unknown> }>,
     moduleName: string,
 ): LazyExoticComponent<T> => {
     const retryImport = async () => {
