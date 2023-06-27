@@ -11,7 +11,7 @@ describe('User can create task', () => {
         cy.visit('/#/collection');
     });
 
-    it('POST /task', () => {
+    it('After creating a collection, the user sees that the created collection is displayed on the home page', () => {
         create.TitleInput.type('POST task test');
         common.FooterButtons.children().first().should('not.have.attr', 'disabled');
         common.FooterButtons.click();
