@@ -210,7 +210,10 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     }
 
     return (
-        <Panel id={PANEL_COLLECTION_ID}>
+        <Panel
+            id={PANEL_COLLECTION_ID}
+            data-automation-id='collectionId-page-panel'
+        >
             <div ref={fixedLayoutRef}>
                 <FixedLayout
                     filled
@@ -218,12 +221,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                 >
                     <PanelHeader
                         separator={false}
-                        before={
-                            <PanelHeaderBack
-                                data-automation-id='collectionId-page-backButton'
-                                onClick={goBack}
-                            />
-                        }
+                        before={<PanelHeaderBack onClick={goBack} />}
                     >
                         {currentTask?.name ? (
                             <PanelHeaderContent
@@ -340,10 +338,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
             {popout}
 
-            <FooterWithButton
-                data-automation-id='collectionId-footer'
-                options={prepareButtonsOptions()}
-            />
+            <FooterWithButton options={prepareButtonsOptions()} />
         </Panel>
     );
 };
