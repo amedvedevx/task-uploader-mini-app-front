@@ -8,10 +8,6 @@ class CollectionId extends Common {
         this.apiBaseUrl = baseUrl;
     }
 
-    get Panel() {
-        return cy.getByAutomationId('collectionId-page-panel') as Cypress.Chainable;
-    }
-
     get HeaderContent() {
         return cy.getByAutomationId('collectionId-page-headerContent') as Cypress.Chainable;
     }
