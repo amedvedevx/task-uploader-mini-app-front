@@ -1,26 +1,23 @@
-import type { GetTaskIdResponce, GetTaskResultsResponce } from '../../../src/app/types';
+import type { GetTaskIdResponse, GetTaskResultsResponse } from '../../../src/app/types';
 import { TaskStatusTypesForOrganizer } from '../../../src/app/types';
 import CollectionId from '../../pages/CollectionId';
-import Common from '../../pages/Common';
 import { interceptTaskId, interceptTaskIdResults } from '../interceptors';
 
 describe('User can visit collectionId page', () => {
     const collectionId = new CollectionId(Cypress.env('API_BASE_URL'));
 
-    const common = new Common(Cypress.env('API_BASE_URL'));
-
-    let taskResultsData: GetTaskResultsResponce;
-    let taskData: GetTaskIdResponce;
+    let taskResultsData: GetTaskResultsResponse;
+    let taskData: GetTaskIdResponse;
 
     let isTaskClosed: boolean;
     let completedUsers: number;
     let notCompletedUsers: number;
 
     before(() => {
-        cy.fixture('taskResults.json').then((fixtureData: GetTaskResultsResponce) => {
+        cy.fixture('taskResults.json').then((fixtureData: GetTaskResultsResponse) => {
             taskResultsData = fixtureData;
         });
-        cy.fixture('task.json').then((fixtureData: GetTaskIdResponce) => {
+        cy.fixture('task.json').then((fixtureData: GetTaskIdResponse) => {
             taskData = fixtureData;
 
             isTaskClosed = taskData.status === TaskStatusTypesForOrganizer.DONE;

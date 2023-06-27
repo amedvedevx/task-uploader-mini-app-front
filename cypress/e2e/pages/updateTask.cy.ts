@@ -19,6 +19,7 @@ describe('User can create and update task', () => {
 
         common.Footer.click();
         common.Popout.contains('Завершить задание');
+        cy.wait(150);
         cy.get('.vkuiAlert__button').contains('Завершить сбор').trigger('mouseover').click();
 
         common.FooterButtons.children().first().should('not.have.attr', 'disabled');
