@@ -1,4 +1,4 @@
-import { useParams, useRouter } from '@happysanta/router';
+import { useLocation, useRouter } from '@happysanta/router';
 import {
     FixedLayout,
     Panel,
@@ -34,7 +34,11 @@ interface ListMembersPageProps {
 }
 
 export const ListMembersPage: FC<ListMembersPageProps> = () => {
-    const { collectionId } = useParams();
+    const {
+        route: {
+            params: { collectionId },
+        },
+    } = useLocation();
     const router = useRouter();
 
     const { data = { taskResults: [] } } = useGetTaskResultsQuery({
@@ -52,23 +56,14 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
     });
 
     const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
-    const [appointUsersToTask] = useAppointUsersToTaskMutation();
-    const [sendNotification] = useSendNotificationMutation();
+    const [appointUsersToTask, appointStatus] = useAppointUsersToTaskMutation();
+    const [sendNotification, statusNotification] = useSendNotificationMutation();
 
     const [localMembers, setLocalMembers] = useState<TesteeType[]>([]);
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
     const fixedLayoutRef = createRef<HTMLDivElement>();
 
-    useEffect(() => {
-        if (isLoading) return;
-
-        const allMembers = selectedMembers.concat(chatMembers);
-        setLocalMembers(normalizeMembers(allMembers));
-    }, [isLoading, selectedMembers, chatMembers]);
-
-    useLayoutEffect(() => {
-        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
-    }, [fixedLayoutRef]);
+    const vkUserIds = localMembers.map((el) => el.id);
 
     const deleteMember = (id: number) => {
         setLocalMembers((prev) => prev.filter((el) => el.id !== id));
@@ -96,8 +91,6 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         router.popPage();
     };
 
-    const vkUserIds = localMembers.map((el) => el.id);
-
     useEffect(() => {
         const timer = setTimeout(() => {
             if (!vkUserIds.length) {
@@ -108,6 +101,17 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         return () => clearTimeout(timer);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vkUserIds]);
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        const allMembers = selectedMembers.concat(chatMembers);
+        setLocalMembers(normalizeMembers(allMembers));
+    }, [isLoading, selectedMembers, chatMembers]);
+
+    useLayoutEffect(() => {
+        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
+    }, [fixedLayoutRef]);
 
     return (
         <Panel id={PANEL_LIST_MEMBERS}>
@@ -155,9 +159,8 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
                         counter: vkUserIds.length,
                         onClick: () => {
                             assignMembers(vkUserIds);
-                            router.pushPage(PAGE_COLLECTION_ID, { collectionId: currentTask.id });
                         },
-                        loading: false,
+                        loading: appointStatus.isLoading || statusNotification.isLoading,
                     },
                 ]}
             />

@@ -11,13 +11,10 @@ export const capitalizeString = (stringToCap: string): string =>
     stringToCap[0].toUpperCase() + stringToCap.slice(1);
 
 export const inclinationWord = (quanty: number, words: string[]): string => {
-    if (quanty === 1) return words[0];
+    const n = Math.trunc(Math.abs(Number(quanty)));
+    const cases = [2, 0, 1, 1, 1, 2];
 
-    if (quanty <= 4) return words[1];
-
-    if (quanty > 4) return words[2];
-
-    return '';
+    return words[n % 100 > 4 && n % 100 < 20 ? 2 : cases[n % 10 < 5 ? n % 10 : 5]];
 };
 
 export const parseFileSize = (size: number): string => {
@@ -168,10 +165,40 @@ export const checkIsMobilePlatform = (platform: string): boolean => {
     const desktopTypes = [
         EGetLaunchParamsResponsePlatforms.DESKTOP_WEB,
         EGetLaunchParamsResponsePlatforms.MOBILE_WEB,
+        'desktop_web_messenger',
         // this type returned by bridge is not consistent with bridge documentation, its 'mvk_external'
         'mkv_external',
         'web_external',
     ];
 
     return !desktopTypes.includes(platform);
+};
+
+type CustomError = {
+    message: string;
+    onReset: () => void;
+    resetMessage: string;
+};
+
+export const createErrorHandler = (error: Error, resetErrorBoundary: () => void): CustomError => {
+    const failedImportedError = 'Failed to fetch dynamically imported module';
+
+    const normalizedError = {
+        message: error.message || 'Что-то пошло не так',
+        onReset: () => resetErrorBoundary(),
+        resetMessage: 'Попробовать еще раз',
+    };
+
+    if (error.message.includes(failedImportedError)) {
+        normalizedError.message = 'Потеряно соединение с сервером';
+        normalizedError.onReset = () => {
+            if (window.navigator.onLine) {
+                window.location.reload();
+            } else {
+                resetErrorBoundary();
+            }
+        };
+    }
+
+    return normalizedError;
 };

@@ -12,6 +12,7 @@ interface DropZoneProps {
     isTaskComplete: boolean;
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
     setSnackbarText: (arg: SnackBarText) => void;
+    isMobilePlatform: boolean;
 }
 
 // 200 MB
@@ -23,6 +24,7 @@ export const DropZone: FC<DropZoneProps> = ({
     isLoading,
     setFiles,
     setSnackbarText,
+    isMobilePlatform,
 }) => {
     const filesValidator = (file: File) => {
         if (file.size > maxFileSize) {
@@ -43,11 +45,13 @@ export const DropZone: FC<DropZoneProps> = ({
         });
     };
 
-    const { getRootProps, getInputProps, isDragActive, isFocused, isDragAccept, isDragReject } =
-        useDropzone({ onDrop, validator: filesValidator });
+    const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
+        onDrop,
+        validator: filesValidator,
+    });
 
     return (
-        <DivStretched>
+        <DivStretched $isMobilePlatform={isMobilePlatform}>
             {isTaskComplete ? (
                 <DropZoneContainer isDisabled>
                     <PlaceholderCentered
@@ -73,18 +77,16 @@ export const DropZone: FC<DropZoneProps> = ({
                     ) : (
                         <PlaceholderCentered
                             icon={
-                                !isDragActive && (
-                                    <File
-                                        data-automation-id='upload-page-placeholder'
-                                        size='m'
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            e.preventDefault();
-                                        }}
-                                    >
-                                        Выберите файл
-                                    </File>
-                                )
+                                <File
+                                    data-automation-id='upload-page-placeholder'
+                                    size='m'
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                    }}
+                                >
+                                    Выберите файл
+                                </File>
                             }
                         >
                             или перенесите его в эту область для загрузки
@@ -118,9 +120,9 @@ const getColor = ({ isDragAccept, isDragReject, isFocused }: DropZoneColors) => 
     return 'var(--vkui--color_icon_secondary)';
 };
 
-const DivStretched = styled(Div)`
+const DivStretched = styled(Div)<{ $isMobilePlatform: boolean }>`
     display: flex;
-    flex-grow: 1;
+    ${({ $isMobilePlatform }) => ($isMobilePlatform ? '' : 'flex-grow: 1;')};
 `;
 
 interface DropZoneContainerProps {
@@ -150,7 +152,7 @@ const DropZoneContainer = styled.div<DropZoneContainerProps>`
 
     &:hover {
         border-color: ${({ isDisabled }) =>
-            isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
+        isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
     }
 `;
 

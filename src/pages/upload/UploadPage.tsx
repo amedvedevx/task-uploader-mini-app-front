@@ -1,104 +1,129 @@
-import { Panel, Group, Separator, PanelHeader, PanelHeaderContent } from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, PanelHeaderContent, MiniInfoCell, Div } from '@vkontakte/vkui';
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
-import { useParams } from '@happysanta/router';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
+import { Icon20Info } from '@vkontakte/icons';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
-import { useGetTaskIdQuery, useUploadFileMutation, useGetTaskResultsQuery } from '@/api';
+import {
+    useGetTaskIdQuery,
+    useUploadFileMutation,
+    useGetTaskResultsQuery,
+    useGetPlatformQuery,
+} from '@/api';
 import type { SnackBarText } from '@/app/types';
-import { AddResultStatusTypes, TaskStatusTypesForOrganizer } from '@/app/types';
+import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
-import { errorParser } from '@/lib/utils';
+import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
+import { FooterWithButton } from '@/components';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
-import { UploadPageActions } from './components/UploadPageActions';
-import { TaskDescription } from './components/TaskDescription';
-import { UploadedFiles } from './components/UploadedFiles';
 
 interface ListMembersPageProps {
     id?: string;
 }
 
 export const UploadPage: FC<ListMembersPageProps> = () => {
-    const { uploadId } = useParams();
+    const {
+        route: {
+            params: { uploadId },
+        },
+    } = useLocation();
 
-    const { data, error } = useGetTaskIdQuery({ taskId: uploadId });
-    const { data: taskResults } = useGetTaskResultsQuery({
-        taskId: uploadId,
-    });
+    const { data: platform = '' } = useGetPlatformQuery();
+    const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
+    const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
+    const [uploadedWithErrors, setUploadedWithErrors] = useState<boolean>(false);
+
+    const isMobilePlatform = checkIsMobilePlatform(platform);
+
     const taskId = uploadId;
-    const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
-    const [uploadFile, statusFromServer] = useUploadFileMutation();
+    const [uploadFile, uploadResult] = useUploadFileMutation();
 
     const [isLoading, setLoading] = useState(false);
-
+    const tries = useRef(0);
     const [files, setFiles] = useState<File[]>([]);
-    const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content;
+    const uploadedFiles = taskResults?.taskResults?.[0]?.content || [];
 
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     const removeFile = (lastModified: number) => {
-        const filteredState = files.filter((file) => file.lastModified !== lastModified);
-        setFiles(filteredState);
+        setFiles((prevState) => prevState.filter((file) => file.lastModified !== lastModified));
     };
 
-    const removeSuccessFileFromStack = (fileName: string) => {
-        setFiles((prevState) => {
-            const newState = prevState.filter((file) => file.name !== fileName);
+    const sendFiles = useCallback(async () => {
+        if (tries.current === 3) {
+            setSnackbarText({
+                type: 'error',
+                text: 'Ошибка при загрузке файлов, повторите позже',
+            });
+            tries.current = 0;
+            setUploadedWithErrors(false);
 
-            return newState;
-        });
-    };
+            return;
+        }
 
-    const clearState = () => setFiles([]);
-
-    const sendFiles = async () => {
+        tries.current += 1;
+        setUploadedWithErrors(false);
         setLoading(true);
+        let hasErrors = false;
 
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
-            await uploadFile({ taskId, subTaskId, file });
+            const result = await uploadFile({ taskId, file });
+
+            if ('error' in result && result.error) {
+                const errorText = `Загрузка файла ${file?.name || ''} не удалась${
+                    result.error !== 'error'
+                        ? `: ${result.error?.data?.message || result.error}`
+                        : '.'
+                }`;
+                setSnackbarText({
+                    type: 'error',
+                    text: errorText,
+                });
+
+                hasErrors = true;
+            } else {
+                removeFile(file.lastModified);
+            }
+        }
+
+        if (hasErrors) {
+            setUploadedWithErrors(true);
         }
 
         setLoading(false);
+    }, [files, taskId, uploadFile]);
+
+    const getFileStatus = (uploadDate: string) => {
+        if (uploadDate) {
+            return 'success';
+        }
+
+        if (isLoading && !uploadDate) {
+            if (uploadResult.isSuccess) {
+                return 'success';
+            }
+
+            return 'loading';
+        }
+
+        return 'delete';
     };
 
     useEffect(() => {
-        if (
-            statusFromServer.data?.status === AddResultStatusTypes.NOT_LOADED ||
-            statusFromServer.isError
-        ) {
-            setSnackbarText({
-                type: 'error',
-                text: `Загрузка файла ${
-                    statusFromServer?.originalArgs?.file?.name || ''
-                } не удалась${
-                    statusFromServer.error && statusFromServer.error !== 'error'
-                        ? `: ${statusFromServer.error}`
-                        : '.'
-                }`,
-            });
+        if (uploadedWithErrors) {
+            setTimeout(() => {
+                sendFiles();
+            }, 1000);
         }
-
-        if (statusFromServer.isSuccess) {
-            const fileName = statusFromServer.originalArgs?.file?.name || '';
-
-            setSnackbarText({
-                type: 'success',
-                text: `Файл ${statusFromServer?.originalArgs?.file?.name || ''} загружен`,
-                fileName,
-            });
-
-            if (fileName) {
-                removeSuccessFileFromStack(fileName);
-            }
-        }
-    }, [statusFromServer]);
+    }, [sendFiles, uploadedWithErrors]);
 
     if (error && 'status' in error) {
         const errorMessage = errorParser(error.status as number);
@@ -117,51 +142,44 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         data-automation-id='upload-page-headerContent'
                         status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
                     >
-                        Сбор документов
+                        {data.name}
                     </PanelHeaderContent>
                 ) : (
                     <PanelHeaderSkeleton />
                 )}
             </PanelHeader>
 
-            <TaskDescription
-                taskName={data?.name}
-                description={data?.description}
-            />
+            {data?.description && (
+                <DescriptionWrapper>
+                    <MiniInfoCell
+                        before={<Icon20Info />}
+                        textWrap='full'
+                        mode='base'
+                    >
+                        {data.description}
+                    </MiniInfoCell>
+                </DescriptionWrapper>
+            )}
 
             <UploadPageWrapper>
                 <DropZone
+                    isMobilePlatform={isMobilePlatform}
                     isTaskComplete={isTaskComplete}
                     isLoading={isLoading}
                     setFiles={setFiles}
                     setSnackbarText={setSnackbarText}
                 />
 
-                {uploadedFiles && (
-                    <Group
-                        separator='hide'
-                        data-automation-id='upload-page-filesGroup'
-                    >
-                        <UploadedFiles files={uploadedFiles} />
-                    </Group>
-                )}
-
-                {!!files.length && (
+                {(!!files.length || !!uploadedFiles?.length) && (
                     <Group
                         separator='hide'
                         data-automation-id='upload-page-filesGroup'
                     >
                         <FilesReadyToUpload
                             files={files}
+                            uploadedFiles={uploadedFiles}
+                            getFileStatus={getFileStatus}
                             removeFile={removeFile}
-                        />
-
-                        <Separator wide />
-
-                        <UploadPageActions
-                            clearState={clearState}
-                            sendFiles={sendFiles}
-                            isLoading={isLoading}
                         />
                     </Group>
                 )}
@@ -171,6 +189,21 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         data-automation-id='upload-page-snackBarMessage'
                         snackbarText={snackbarText}
                         setSnackbarText={setSnackbarText}
+                    />
+                )}
+
+                {!!files.length && (
+                    <FooterWithButton
+                        options={[
+                            {
+                                text: 'Отправить',
+                                onClick: sendFiles,
+                                disabled: isLoading,
+                                mode: 'primary',
+                                appearance: 'accent',
+                                dataAutomationId: 'upload-page-sendFilesButton',
+                            },
+                        ]}
                     />
                 )}
             </UploadPageWrapper>
@@ -183,4 +216,10 @@ const UploadPageWrapper = styled.div`
     flex-direction: column;
     flex-grow: 1;
     overflow-x: hidden;
+
+    padding-bottom: 52px;
+`;
+
+const DescriptionWrapper = styled(Div)`
+    padding: 12px 5px 0px 5px;
 `;

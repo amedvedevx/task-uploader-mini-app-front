@@ -1,4 +1,4 @@
-import { useParams, useRouter } from '@happysanta/router';
+import { useLocation, useRouter } from '@happysanta/router';
 import {
     FixedLayout,
     Panel,
@@ -14,7 +14,12 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_LIST_MEMBERS, PANEL_ADD_MEMBERS } from '@/app/router';
-import { useGetTesteesQuery, useGetTaskIdQuery, useGetTaskResultsQuery, useGetUserIdQuery } from '@/api';
+import {
+    useGetTesteesQuery,
+    useGetTaskIdQuery,
+    useGetTaskResultsQuery,
+    useGetUserIdQuery,
+} from '@/api';
 import { setSelectedChats, setSelectedMembers } from '@/api/state';
 import type { GetTesteesResponse, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
@@ -30,7 +35,11 @@ interface AddMembersPageProps {
 }
 
 export const AddMembersPage: FC<AddMembersPageProps> = () => {
-    const { collectionId } = useParams();
+    const {
+        route: {
+            params: { collectionId },
+        },
+    } = useLocation();
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -94,7 +103,10 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
     const selectedMembers = selection.selectedMembers.concat(selection.selectedChats);
 
     return (
-        <Panel id={PANEL_ADD_MEMBERS}>
+        <Panel
+            id={PANEL_ADD_MEMBERS}
+            data-automation-id='addMembers-page-panel'
+        >
             <div ref={fixedLayoutRef}>
                 <FixedLayout
                     filled

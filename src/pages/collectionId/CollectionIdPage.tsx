@@ -1,4 +1,4 @@
-import { useParams, useRouter } from '@happysanta/router';
+import { useLocation, useRouter } from '@happysanta/router';
 import {
     FixedLayout,
     MiniInfoCell,
@@ -13,21 +13,21 @@ import type { FC } from 'react';
 import { createRef, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Icon20FolderOutline, Icon20ReportOutline } from '@vkontakte/icons';
+import bridge from '@vkontakte/vk-bridge';
 
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import {
     store,
-    useGetPlatformQuery,
     useGetTaskIdQuery,
     useGetTaskResultsQuery,
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import { SnackBarText, TaskStatusTypesForTestee, TaskType } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
+import type { SnackBarText, TaskType } from '@/app/types';
 import { useSearch } from '@/hooks';
-import { checkIsMobilePlatform, errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
+import { errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
@@ -51,24 +51,28 @@ interface CollectionIdProps {
 
 export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const router = useRouter();
-    const { collectionId } = useParams();
+
+    const {
+        route: {
+            params: { collectionId },
+        },
+    } = useLocation(true, PANEL_COLLECTION_ID);
 
     const {
         data = { taskResults: [] },
         isLoading,
         error,
-    } = useGetTaskResultsQuery({
-        taskId: collectionId,
-    });
+        refetch: refetchTaskResults,
+    } = useGetTaskResultsQuery({ taskId: collectionId }, { skip: !collectionId });
 
     const { taskResults } = data;
 
-    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({
-        taskId: collectionId,
-    });
+    const { data: currentTask = {} as TaskType, refetch: refetchTask } = useGetTaskIdQuery(
+        { taskId: collectionId },
+        { skip: !collectionId },
+    );
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
     const [downloadFiles, { isLoading: isFileDownloading }] = useLazyDownloadFilesQuery();
-    const { data: platform = '' } = useGetPlatformQuery();
 
     const [popout, setPopout] = useState<JSX.Element | null>(null);
 
@@ -84,7 +88,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const stateErrors = store.getState().errors;
     const apiMessageError = stateErrors.find((errorObj) => errorObj.type === 'api-messages');
 
-    const isMobilePlatform = checkIsMobilePlatform(platform);
+    const isMobileDownloading = bridge.supports('VKWebAppDownloadFile');
 
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
 
@@ -115,8 +119,8 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         />
     );
 
-    const isForbiddenAllFiles = taskResults.some(({ subTaskResults }) =>
-        subTaskResults.some(({ content }) => content.some((el) => isForbiddenFile(el.title))),
+    const isForbiddenAllFiles = taskResults.some(({ content }) =>
+        content.some((el) => isForbiddenFile(el.title)),
     );
 
     const prepareButtonsOptions = (): ButtonOption[] => {
@@ -151,7 +155,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
         const buttonOptions = [];
 
-        if (normalizedTestees.completed.length > 0 && !isMobilePlatform) {
+        if (normalizedTestees.completed.length > 0 && !isMobileDownloading) {
             buttonOptions.push(downloadAllButton);
         }
 
@@ -187,8 +191,16 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         }
     }, [selectedTab]);
 
+    useEffect(() => {
+        if (selectedTab) {
+            refetchTaskResults();
+            refetchTask();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedTab]);
+
     useLayoutEffect(() => {
-        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
+        setFixLayoutHeight(fixedLayoutRef?.current?.firstChild?.offsetHeight);
     }, [selectedTab, isTaskClosed, fixedLayoutRef]);
 
     if (error && 'status' in error) {
@@ -288,7 +300,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                     <CompletedMembers
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.completed}
-                                        isMobilePlatform={isMobilePlatform}
+                                        isMobileDownloading={isMobileDownloading}
                                     />
                                 )}
                             </>
