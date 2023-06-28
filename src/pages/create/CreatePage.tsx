@@ -143,7 +143,7 @@ const CreateContainer = styled(Div)`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-top: 15vh;
+    padding-top: calc(15vh - var(--vkui--size_panel_header_height--regular));
 `;
 
 const FormWrapper = styled.div`
