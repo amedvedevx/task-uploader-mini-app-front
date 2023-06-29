@@ -1,6 +1,6 @@
 {
   "name": "task-uploader-mini-app",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "author": "k.pozdnikin, s.minenkov, a.medvedev",
   "description": "",
   "homepage": ".",
@@ -18,7 +18,9 @@
     "build:serve:tunnel": "yarn build && concurrently \"yarn serve -p 10888\" \"yarn tunnel\"",
     "dev:tunnel": "concurrently \"yarn dev --config vite.tunnel.config.ts\" \"yarn tunnel --port=10888\"",
     "deploy": "vk-miniapps-deploy",
-    "preview": "vite preview --port 8080"
+    "preview": "vite preview --port 8080",
+    "cypress:open": "cypress open",
+    "eslint": "eslint --format=table --fix ."
   },
   "dependencies": {
     "@happysanta/router": "^0.3.1",
@@ -31,6 +33,7 @@
     "copy-to-clipboard": "^3.3.3",
     "date-fns": "^2.29.3",
     "lodash.get": "^4.4.2",
+    "lodash.omit": "^4.5.0",
     "lodash.uniq": "^4.5.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -44,6 +47,7 @@
   "devDependencies": {
     "@stylelint/postcss-css-in-js": "~0.37.2",
     "@testing-library/cypress": "^8.0.7",
+    "@types/lodash.omit": "^4.5.7",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/styled-components": "^5.1.26",
@@ -74,7 +78,7 @@
     "postcss-jsx": "^0.36.4",
     "postcss-syntax": "^0.36.2",
     "prettier": "^2.7.1",
-    "serve": "14.0.1",
+    "serve": "^14.2.0",
     "stylelint": "^14.14.0",
     "stylelint-config-css-modules": "4.1.0",
     "stylelint-config-prettier": "9.0.3",

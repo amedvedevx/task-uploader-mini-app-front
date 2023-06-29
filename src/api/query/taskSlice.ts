@@ -1,10 +1,10 @@
 import type {
     AppointTaskProps,
     CreateTaskProps,
-    DeleteSubTaskProps,
     DeleteTaskProps,
     GetTaskIdProps,
     GetTaskIdResponse,
+    GetTaskResultsResponse,
     GetTasksProps,
     GetTasksResponse,
     UpdateTaskProps,
@@ -35,7 +35,7 @@ const taskSlice = apiSlice
                 }),
                 providesTags: ['Task'],
             }),
-            appointUsersToTask: builder.mutation<void, AppointTaskProps>({
+            appointUsersToTask: builder.mutation<GetTaskResultsResponse, AppointTaskProps>({
                 query: ({ payload }) => ({
                     url: `/task/assign`,
                     method: 'PUT',
@@ -43,7 +43,7 @@ const taskSlice = apiSlice
                 }),
                 invalidatesTags: ['Task', 'TaskResult', 'AllowedRemindIds'],
             }),
-            createTask: builder.mutation<{ taskId: string }, CreateTaskProps>({
+            createTask: builder.mutation<GetTaskIdResponse, CreateTaskProps>({
                 query: (payload) => ({
                     url: `/task`,
                     method: 'POST',
@@ -77,17 +77,10 @@ const taskSlice = apiSlice
 
                     return { data: 'success' };
                 },
-                invalidatesTags: ['Task'],
-            }),
-            deleteSubTask: builder.mutation<void, DeleteSubTaskProps>({
-                query: ({ taskId, subTaskId }) => ({
-                    url: `/task/${taskId}/${subTaskId}`,
-                    method: 'DELETE',
-                }),
-                invalidatesTags: ['Task'],
+                invalidatesTags: (result, status, arg) => [{ type: 'Task', id: arg.taskId }],
             }),
 
-            updateTask: builder.mutation<void, UpdateTaskProps>({
+            updateTask: builder.mutation<GetTaskIdResponse, UpdateTaskProps>({
                 query: ({ taskId, payload }) => ({
                     url: `/task/${taskId}`,
                     method: 'PATCH',
@@ -101,7 +94,6 @@ const taskSlice = apiSlice
 export const {
     useAppointUsersToTaskMutation,
     useCreateTaskMutation,
-    useDeleteSubTaskMutation,
     useDeleteTaskMutation,
     useUpdateTaskMutation,
     useGetTaskIdQuery,

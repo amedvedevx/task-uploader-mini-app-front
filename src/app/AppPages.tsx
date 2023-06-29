@@ -6,9 +6,8 @@ import bridge from '@vkontakte/vk-bridge';
 import { Root, SplitCol, SplitLayout, View } from '@vkontakte/vkui';
 
 import { PreloadScreen } from '@/components';
-import { checkIsMobilePlatform } from '@/lib';
 import { useChangeFragment, useGenerateBearer } from '@/hooks';
-import { useGetAuthTokenQuery, useGetPlatformQuery } from '@/api';
+import { useGetAuthTokenQuery } from '@/api';
 
 import {
     PANEL_ADD_MEMBERS,
@@ -53,18 +52,18 @@ const CollectionIdPage = lazy(() =>
 
 export const AppPages: FC = () => {
     const location = useLocation();
+
     let isFirst = useFirstPageCheck();
     isFirst = useChangeFragment({ isFirst });
-    const { data: platform = '' } = useGetPlatformQuery();
+
     useGetAuthTokenQuery();
-    const isMobilePlatform = checkIsMobilePlatform(platform);
     const bearer = useGenerateBearer();
 
     useEffect(() => {
-        if (isMobilePlatform) {
+        if (bridge.supports('VKWebAppSetSwipeSettings')) {
             bridge.send('VKWebAppSetSwipeSettings', { history: isFirst }).catch(() => {});
         }
-    }, [isFirst, isMobilePlatform]);
+    }, [isFirst]);
 
     return (
         <>

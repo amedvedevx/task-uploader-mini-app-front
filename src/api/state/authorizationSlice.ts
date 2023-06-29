@@ -1,4 +1,4 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface AuthorizationState {
@@ -11,7 +11,11 @@ const initialState: AuthorizationState = {
     token: '',
 };
 
-export const authorizationSlice = createSlice({
+export const authorizationSlice = createSlice<
+    AuthorizationState,
+    SliceCaseReducers<AuthorizationState>,
+    'bearer'
+>({
     name: 'bearer',
     initialState,
     reducers: {

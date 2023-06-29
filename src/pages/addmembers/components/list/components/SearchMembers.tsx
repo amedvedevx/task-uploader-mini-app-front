@@ -20,7 +20,7 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                 mode='plain'
                 padding='s'
             >
-                <List>
+                <List data-automation-id='addMembers-page-membersList'>
                     {collection?.items &&
                         collection?.items?.map((chat) => (
                             <Members

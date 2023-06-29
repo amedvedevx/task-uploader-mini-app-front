@@ -7,23 +7,25 @@ interface UseSearchResult<T> {
     changeSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const useSearch = <T>(data: T, field: string | string[]): UseSearchResult<T> => {
+export const useSearch = <T extends []>(data: T, field: string | string[]): UseSearchResult<T> => {
     const [search, setSearch] = useState('');
 
-    const doSearch = (searchVal: string) => {
+    const doSearch = (searchVal: string): T => {
         if (!searchVal) {
-            return;
+            return [];
         }
 
         let filteredValues = [];
 
         if (field) {
             filteredValues = data.filter((element) =>
-                get(element, field).toLowerCase().includes(searchVal.toLowerCase()),
+                (get(element, field) as unknown as string)
+                    .toLowerCase()
+                    .includes(searchVal.toLowerCase()),
             );
         } else {
             filteredValues = data.filter((element) =>
-                element.toLowerCase().includes(searchVal.toLowerCase()),
+                (element as string).toLowerCase().includes(searchVal.toLowerCase()),
             );
         }
 
