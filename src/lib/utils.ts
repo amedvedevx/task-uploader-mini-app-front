@@ -185,19 +185,18 @@ export const createErrorHandler = (error: Error, resetErrorBoundary: () => void)
 
     const normalizedError = {
         message: error.message || 'Что-то пошло не так',
-        onReset: () => resetErrorBoundary(),
+        onReset: () => {
+            resetErrorBoundary();
+
+            if (window.navigator.onLine) {
+                window.location.reload();
+            }
+        },
         resetMessage: 'Попробовать еще раз',
     };
 
     if (error.message.includes(failedImportedError)) {
         normalizedError.message = 'Потеряно соединение с сервером';
-        normalizedError.onReset = () => {
-            if (window.navigator.onLine) {
-                window.location.reload();
-            } else {
-                resetErrorBoundary();
-            }
-        };
     }
 
     return normalizedError;
