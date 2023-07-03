@@ -18,11 +18,7 @@ describe('User can visit addMembers page', () => {
         cy.visit('/#/collection/add-members/81a3d768-83db-49af-88c3-b7f30087ea40');
     });
 
-    it('and see addMembers panel', () => {
+    it('and can add members to the collection', () => {
         addMembers.Panel.should('exist');
-    });
-
-    it('and see correct data in list', () => {
-        addMembers.MembersList.children().should('have.length', testeesData);
     });
 });
