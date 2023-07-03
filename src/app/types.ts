@@ -104,6 +104,17 @@ export interface DownloadSingleFileProps {
     vkUserId: number;
 }
 
+export enum VKPlatforms {
+    DESKTOP_APP_MESSENGER = 'desktop_app_messenger',
+    DESKTOP_WEB_MESSENGER = 'desktop_web_messenger',
+}
+
+export interface DownloadOnDesktopProps {
+    title?: string;
+    url?: string;
+    resultsData?: TaskResults;
+}
+
 export interface GetTaskIdProps {
     taskId: string;
 }

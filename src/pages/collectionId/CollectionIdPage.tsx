@@ -19,12 +19,13 @@ import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import {
     store,
+    useGetPlatformQuery,
     useGetTaskIdQuery,
     useGetTaskResultsQuery,
     useLazyDownloadFilesQuery,
     useUpdateTaskMutation,
 } from '@/api';
-import { TaskStatusTypesForOrganizer } from '@/app/types';
+import { TaskStatusTypesForOrganizer, VKPlatforms } from '@/app/types';
 import type { SnackBarText, TaskType } from '@/app/types';
 import { useSearch } from '@/hooks';
 import { errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
@@ -89,6 +90,8 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const apiMessageError = stateErrors.find((errorObj) => errorObj.type === 'api-messages');
 
     const isMobileDownloading = bridge.supports('VKWebAppDownloadFile');
+    const { data: appPlatform = '' } = useGetPlatformQuery();
+    const isDesktopDownloading = appPlatform === VKPlatforms.DESKTOP_APP_MESSENGER;
 
     const [fixLayoutHeight, setFixLayoutHeight] = useState(0);
 
@@ -155,7 +158,11 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
         const buttonOptions = [];
 
-        if (normalizedTestees.completed.length > 0 && !isMobileDownloading) {
+        if (
+            normalizedTestees.completed.length > 0 &&
+            !isMobileDownloading &&
+            !isDesktopDownloading
+        ) {
             buttonOptions.push(downloadAllButton);
         }
 
@@ -301,6 +308,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.completed}
                                         isMobileDownloading={isMobileDownloading}
+                                        isDesktopDownloading={isDesktopDownloading}
                                     />
                                 )}
                             </>

@@ -1,5 +1,7 @@
 import type { EGetLaunchParamsResponsePlatforms } from '@vkontakte/vk-bridge';
 
+import type { VKPlatforms } from '@/app/types';
+
 import { apiSlice } from './apiSlice';
 import type { VKWebAppCreateHashResult } from './bridge';
 import { BridgeCreateHash, BridgeGetPlatform, BridgeGetUserId, BridgeGetAuthToken } from './bridge';
@@ -21,7 +23,7 @@ const bridgeSlice = apiSlice
                 },
                 providesTags: ['Hash'],
             }),
-            getPlatform: builder.query<EGetLaunchParamsResponsePlatforms, void>({
+            getPlatform: builder.query<EGetLaunchParamsResponsePlatforms | VKPlatforms, void>({
                 queryFn: async () => {
                     const result = await BridgeGetPlatform();
 
