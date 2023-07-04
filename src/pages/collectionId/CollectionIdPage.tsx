@@ -306,7 +306,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                             </>
                         ) : (
                             <>
-                                {normalizedTestees.notCompleted.length > 0 ? (
+                                {normalizedTestees.notCompleted.length > 0 && (
                                     <NotCompletedMembers
                                         setSnackbarText={setSnackbarText}
                                         isTaskClosed={isTaskClosed}
@@ -314,7 +314,9 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                         taskResults={normalizedTestees.notCompleted}
                                         apiMessageError={apiMessageError}
                                     />
-                                ) : (
+                                )}
+
+                                {normalizedTestees.notCompleted.length === 0 && !isTaskClosed && (
                                     <ShareLink
                                         currentTask={currentTask}
                                         setSnackbarText={setSnackbarText}

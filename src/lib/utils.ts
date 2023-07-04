@@ -188,8 +188,8 @@ export const createErrorHandler = (error: Error, resetErrorBoundary: () => void)
         onReset: () => {
             resetErrorBoundary();
 
-            if (window.navigator.onLine) {
-                window.location.reload();
+            if (window?.navigator?.onLine) {
+                window?.location?.reload();
             }
         },
         resetMessage: 'Попробовать еще раз',
