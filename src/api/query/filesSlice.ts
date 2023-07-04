@@ -7,7 +7,6 @@ import type {
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
-import type { BridgeDocsSaveResponce } from './bridge';
 import { BridgeDocsSave, BridgeDocsUploadServer, BridgeDownload } from './bridge';
 import type { RootState } from '../store';
 

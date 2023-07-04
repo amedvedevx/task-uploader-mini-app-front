@@ -9,7 +9,7 @@ import type { TaskDetailResultContent } from '@/app/types';
 interface FilesReadyToUploadProps {
     files: File[];
     uploadedFiles: TaskDetailResultContent[];
-    removeFile: (lastModified: number) => void;
+    removeFile: (modifiedPlusSize: number) => void;
     getFileStatus: (uploadDate: string) => 'success' | 'loading' | 'delete';
 }
 
@@ -50,12 +50,12 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
             <HeaderShort mode='secondary'>{filesLabel}</HeaderShort>
 
             <HorizontalScroll data-automation-id='upload-page-filesList'>
-                {filesToUpload.map(({ name, lastModified }) => (
+                {filesToUpload.map(({ name, lastModified, size }) => (
                     <HorizontalFileCell
-                        key={lastModified}
+                        key={lastModified + size}
                         title={name}
                         type='delete'
-                        onClick={() => removeFile(lastModified)}
+                        onClick={() => removeFile(lastModified + size)}
                     />
                 ))}
 
