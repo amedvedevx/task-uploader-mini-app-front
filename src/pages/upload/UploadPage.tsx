@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
 import { Icon20Info } from '@vkontakte/icons';
+import { useForm } from 'react-hook-form';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
 import {
@@ -18,9 +19,12 @@ import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
 import { FooterWithButton } from '@/components';
+import { PopoutCaptcha } from '@/components/PopoutCaptcha';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
+
+const CAPTCHA_ERROR = 'Captcha needed';
 
 interface ListMembersPageProps {
     id?: string;
@@ -37,6 +41,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
     const [uploadedWithErrors, setUploadedWithErrors] = useState<boolean>(false);
+    const [uploadedWithCaptcha, setUploadedWithCaptcha] = useState<boolean>(false);
 
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
@@ -44,16 +49,39 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
     const [uploadFile, uploadResult] = useUploadFileMutation();
 
+    const { control, handleSubmit } = useForm<{ captcha: string }>({
+        defaultValues: {
+            captcha: '',
+        },
+    });
+
     const [isLoading, setLoading] = useState(false);
     const tries = useRef(0);
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = taskResults?.taskResults?.[0]?.content || [];
 
+    const [popout, setPopout] = useState<JSX.Element | null>(null);
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
     const removeFile = (lastModified: number) => {
         setFiles((prevState) => prevState.filter((file) => file.lastModified !== lastModified));
     };
+
+    const handleCaptcha = (values: { captcha: string }) => {
+        console.log(values);
+    };
+
+    const popoutCaptcha = (
+        <PopoutCaptcha
+            control={control}
+            header='Введите код с картинки'
+            action={() => {
+                handleSubmit(handleCaptcha)();
+            }}
+            actionText='Отправить'
+            setPopout={setPopout}
+        />
+    );
 
     const sendFiles = useCallback(async () => {
         if (tries.current === 3) {
@@ -78,6 +106,11 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             const result = await uploadFile({ taskId, file });
 
             if ('error' in result && result.error) {
+                if (result.error === CAPTCHA_ERROR) {
+                    setUploadedWithCaptcha(true);
+                    setPopout(popoutCaptcha);
+                }
+
                 const errorText = `Загрузка файла ${file?.name || ''} не удалась${
                     result.error !== 'error'
                         ? `: ${result.error?.data?.message || result.error}`
@@ -118,16 +151,15 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     };
 
     useEffect(() => {
-        if (uploadedWithErrors) {
+        if (uploadedWithErrors && !uploadedWithCaptcha) {
             setTimeout(() => {
                 sendFiles();
             }, 1000);
         }
-    }, [sendFiles, uploadedWithErrors]);
+    }, [sendFiles, uploadedWithCaptcha, uploadedWithErrors]);
 
     if (error && 'status' in error) {
         const errorMessage = errorParser(error.status as number);
-
         throw Error(errorMessage);
     }
 
@@ -191,6 +223,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
                         setSnackbarText={setSnackbarText}
                     />
                 )}
+
+                {popout}
 
                 {!!files.length && (
                     <FooterWithButton
