@@ -18,6 +18,7 @@ import {
     useLazyDownloadFilesQuery,
     useLazyDownloadFilesOnMobileQuery,
     useLazyDownloadSingleFileQuery,
+    useLazyDownloadOnDesktopQuery,
 } from '@/api';
 import { BridgeDownload } from '@/api/query/bridge';
 import { Popout } from '@/components';
@@ -30,6 +31,7 @@ interface CompletedMembersProps {
     taskResults: TaskResults[];
     collectionId: string;
     isMobileDownloading: boolean;
+    isDesktopDownloading: boolean;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
@@ -38,15 +40,17 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     taskResults,
     collectionId,
     isMobileDownloading,
+    isDesktopDownloading,
 }) => {
     const [downloadFiles, { isLoading: isDownloading, originalArgs }] = useLazyDownloadFilesQuery();
     const [downloadFilesOnMobile] = useLazyDownloadFilesOnMobileQuery();
+    const [downloadFilesOnDesktop] = useLazyDownloadOnDesktopQuery();
     const [downloadSingleFile] = useLazyDownloadSingleFileQuery();
 
     const [popout, setPopout] = useState<JSX.Element | null>(null);
 
-    const platform = usePlatform();
-    const isIOSPlatform = platform === Platform.IOS;
+    const hardWarePlatform = usePlatform();
+    const isIOSPlatform = hardWarePlatform === Platform.IOS;
 
     const onClickHandler = async ({ vkUserId, url, title, taskId, docId }: OnClickArgs) => {
         if (isMobileDownloading) {
@@ -60,6 +64,15 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                 if (resultsForUser) {
                     downloadFilesOnMobile(resultsForUser);
                 }
+            }
+        } else if (isDesktopDownloading) {
+            if (url && title) {
+                downloadFilesOnDesktop({ url, title });
+            } else {
+                const resultsForUser = taskResults.find(
+                    (taskResult) => taskResult.testee.vkUserId === vkUserId,
+                );
+                downloadFilesOnDesktop({ resultsData: resultsForUser });
             }
         } else if (docId && title && taskId) {
             downloadSingleFile({ taskId, title, docId, vkUserId });

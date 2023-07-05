@@ -4,6 +4,7 @@ import type {
     UploadFileResponse,
     DownloadSingleFileProps,
     TaskResults,
+    DownloadOnDesktopProps,
 } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
@@ -81,6 +82,27 @@ const filesSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).in
                 }
 
                 return { data: dwnlnk.click() };
+            },
+        }),
+        downloadOnDesktop: builder.query<void, DownloadOnDesktopProps>({
+            queryFn: ({ title, url, resultsData }) => {
+                if (resultsData) {
+                    resultsData.content.forEach((fileData) => {
+                        const dwnlnk = document.createElement('a');
+                        dwnlnk.download = fileData.title;
+                        dwnlnk.href = fileData.url;
+                        dwnlnk.target = '_blank';
+                        dwnlnk.click();
+                    });
+                } else if (url && title) {
+                    const dwnlnk = document.createElement('a');
+                    dwnlnk.download = title;
+                    dwnlnk.href = url;
+                    dwnlnk.target = '_blank';
+                    dwnlnk.click();
+                }
+
+                return { data: 'success' };
             },
         }),
         downloadFilesOnMobile: builder.query<void, TaskResults>({
@@ -173,6 +195,7 @@ export const {
     useLazyDownloadFilesOnMobileQuery,
     useLazyDownloadSingleFileQuery,
     useUploadFileMutation,
+    useLazyDownloadOnDesktopQuery,
 } = filesSlice;
 
 const uploadErrorMessages = {
