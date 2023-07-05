@@ -51,10 +51,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
-    const removeFile = (modifiedPlusSize: number) => {
-        setFiles((prevState) =>
-            prevState.filter((file) => file.lastModified + file.size !== modifiedPlusSize),
-        );
+    const removeFile = (name: string) => {
+        setFiles((prevState) => prevState.filter((file) => file.name !== name));
     };
 
     const sendFiles = useCallback(async () => {
@@ -92,7 +90,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
                 hasErrors = true;
             } else {
-                removeFile(file.lastModified + file.size);
+                removeFile(file.name);
             }
         }
 
