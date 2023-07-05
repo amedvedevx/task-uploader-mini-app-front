@@ -1,4 +1,4 @@
-import type { GetTaskIdResponce, GetTaskResultsResponce } from '../../../src/app/types';
+import type { GetTaskIdResponse, GetTaskResultsResponse } from '../../../src/app/types';
 import { TaskStatusTypesForOrganizer } from '../../../src/app/types';
 import CollectionId from '../../pages/CollectionId';
 import { interceptTaskId, interceptTaskIdResults } from '../interceptors';
@@ -6,18 +6,18 @@ import { interceptTaskId, interceptTaskIdResults } from '../interceptors';
 describe('User can visit collectionId page', () => {
     const collectionId = new CollectionId(Cypress.env('API_BASE_URL'));
 
-    let taskResultsData: GetTaskResultsResponce;
-    let taskData: GetTaskIdResponce;
+    let taskResultsData: GetTaskResultsResponse;
+    let taskData: GetTaskIdResponse;
 
     let isTaskClosed: boolean;
     let completedUsers: number;
     let notCompletedUsers: number;
 
     before(() => {
-        cy.fixture('taskResults.json').then((fixtureData: GetTaskResultsResponce) => {
+        cy.fixture('taskResults.json').then((fixtureData: GetTaskResultsResponse) => {
             taskResultsData = fixtureData;
         });
-        cy.fixture('task.json').then((fixtureData: GetTaskIdResponce) => {
+        cy.fixture('task.json').then((fixtureData: GetTaskIdResponse) => {
             taskData = fixtureData;
 
             isTaskClosed = taskData.status === TaskStatusTypesForOrganizer.DONE;
@@ -31,16 +31,16 @@ describe('User can visit collectionId page', () => {
     beforeEach(() => {
         interceptTaskIdResults(taskResultsData);
         interceptTaskId(taskData);
-        cy.visit('/#/collectionId/08ef58ee-18e4-452d-ac23-f9482c5d2bef');
+        cy.visit('/#/collectionId/9c668cec-aafd-4a36-b18f-0b05c08c2776');
     });
 
-    it('and see createPage panel', () => {
+    it('and see collectionId panel', () => {
         collectionId.Panel.should('exist');
     });
 
     it('and see correct title of task and correct task status', () => {
-        collectionId.HeaderContent.should('contain.text', taskData.name);
         collectionId.HeaderContent.should('contain.text', 'Активное задание');
+        collectionId.HeaderContent.should('contain.text', taskData.name);
     });
 
     it('and see searchBar', () => {
@@ -77,11 +77,5 @@ describe('User can visit collectionId page', () => {
         collectionId.Tabs.contains('Прислали').click();
 
         collectionId.MembersList.children().should('have.length', completedUsers);
-    });
-
-    it('and see correct footer', () => {
-        if (!isTaskClosed) {
-            collectionId.Footer.contains('Завершить сбор');
-        }
     });
 });

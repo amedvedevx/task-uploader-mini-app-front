@@ -56,18 +56,11 @@ export const CreatePage: FC<CreatePageProps> = () => {
             description: data.collectionDescription.trim(),
             unlimited: true,
             deadLine: deadLineDate,
-            subTasks: [
-                {
-                    name: `Подзадание 1 задания ${data.collectionName}`,
-                    description: `Описание подзадания 1`,
-                    sortOrder: 1,
-                    subTaskType: 'FILE',
-                },
-            ],
         };
 
-        const { taskId } = await createTask(payload).unwrap();
-        router.pushPage(PAGE_COLLECTION_ID, { collectionId: taskId });
+        const { id } = await createTask(payload).unwrap();
+
+        router.pushPage(PAGE_COLLECTION_ID, { collectionId: id });
     };
 
     const goBack = () => {
@@ -150,7 +143,7 @@ const CreateContainer = styled(Div)`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-top: 15vh;
+    padding-top: calc(15vh - var(--vkui--size_panel_header_height--regular));
 `;
 
 const FormWrapper = styled.div`

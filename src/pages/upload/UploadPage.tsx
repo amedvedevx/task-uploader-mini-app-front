@@ -1,4 +1,4 @@
-import { Panel, Group, PanelHeader, PanelHeaderContent, MiniInfoCell } from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, PanelHeaderContent, MiniInfoCell, Div } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from '@happysanta/router';
@@ -41,19 +41,18 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
     const taskId = uploadId;
-    const subTaskId = data?.subTasks[0]?.id as string;
     const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
     const [uploadFile, uploadResult] = useUploadFileMutation();
 
     const [isLoading, setLoading] = useState(false);
     const tries = useRef(0);
     const [files, setFiles] = useState<File[]>([]);
-    const uploadedFiles = taskResults?.taskResults?.[0]?.subTaskResults?.[0]?.content || [];
+    const uploadedFiles = taskResults?.taskResults?.[0]?.content || [];
 
     const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
 
-    const removeFile = (lastModified: number) => {
-        setFiles((prevState) => prevState.filter((file) => file.lastModified !== lastModified));
+    const removeFile = (name: string) => {
+        setFiles((prevState) => prevState.filter((file) => file.name !== name));
     };
 
     const sendFiles = useCallback(async () => {
@@ -76,7 +75,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         // eslint-disable-next-line no-restricted-syntax
         for (const file of files) {
             // eslint-disable-next-line no-await-in-loop
-            const result = await uploadFile({ taskId, subTaskId, file });
+            const result = await uploadFile({ taskId, file });
 
             if ('error' in result && result.error) {
                 const errorText = `Загрузка файла ${file?.name || ''} не удалась${
@@ -91,7 +90,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
                 hasErrors = true;
             } else {
-                removeFile(file.lastModified);
+                removeFile(file.name);
             }
         }
 
@@ -100,7 +99,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         }
 
         setLoading(false);
-    }, [files, subTaskId, taskId, uploadFile]);
+    }, [files, taskId, uploadFile]);
 
     const getFileStatus = (uploadDate: string) => {
         if (uploadDate) {
@@ -151,13 +150,15 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             </PanelHeader>
 
             {data?.description && (
-                <MiniInfoCell
-                    before={<Icon20Info />}
-                    textWrap='full'
-                    mode='base'
-                >
-                    {data.description}
-                </MiniInfoCell>
+                <DescriptionWrapper>
+                    <MiniInfoCell
+                        before={<Icon20Info />}
+                        textWrap='full'
+                        mode='base'
+                    >
+                        {data.description}
+                    </MiniInfoCell>
+                </DescriptionWrapper>
             )}
 
             <UploadPageWrapper>
@@ -217,4 +218,8 @@ const UploadPageWrapper = styled.div`
     overflow-x: hidden;
 
     padding-bottom: 52px;
+`;
+
+const DescriptionWrapper = styled(Div)`
+    padding: 12px 5px 0px 5px;
 `;
