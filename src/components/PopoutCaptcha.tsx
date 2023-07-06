@@ -10,14 +10,12 @@ interface PopoutCaptchaProps {
     setPopout: (arg: JSX.Element | null) => void;
     action: () => void;
     actionText: string;
-    header: string;
     control: Control<{
         captcha: string;
     }>;
 }
 
 export const PopoutCaptcha: React.FC<PopoutCaptchaProps> = ({
-    header,
     control,
     setPopout,
     actionText,
@@ -33,13 +31,8 @@ export const PopoutCaptcha: React.FC<PopoutCaptchaProps> = ({
             data-automation-id='common-popout'
         >
             <Alert
-                header={header}
+                header='Введите код с картинки'
                 actions={[
-                    {
-                        title: 'Отмена',
-                        autoClose: true,
-                        mode: 'cancel',
-                    },
                     {
                         title: platform === Platform.IOS ? trimTextForIos(actionText) : actionText,
                         mode: 'destructive',

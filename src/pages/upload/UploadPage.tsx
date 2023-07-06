@@ -41,7 +41,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
     const [uploadedWithErrors, setUploadedWithErrors] = useState<boolean>(false);
-    const [uploadedWithCaptcha, setUploadedWithCaptcha] = useState<boolean>(false);
 
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
@@ -74,7 +73,6 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const popoutCaptcha = (
         <PopoutCaptcha
             control={control}
-            header='Введите код с картинки'
             action={() => {
                 handleSubmit(handleCaptcha)();
             }}
@@ -107,8 +105,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
             if ('error' in result && result.error) {
                 if (result.error === CAPTCHA_ERROR) {
-                    setUploadedWithCaptcha(true);
                     setPopout(popoutCaptcha);
+                    break;
                 }
 
                 const errorText = `Загрузка файла ${file?.name || ''} не удалась${
@@ -151,12 +149,12 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     };
 
     useEffect(() => {
-        if (uploadedWithErrors && !uploadedWithCaptcha) {
+        if (uploadedWithErrors) {
             setTimeout(() => {
                 sendFiles();
             }, 1000);
         }
-    }, [sendFiles, uploadedWithCaptcha, uploadedWithErrors]);
+    }, [sendFiles, uploadedWithErrors]);
 
     if (error && 'status' in error) {
         const errorMessage = errorParser(error.status as number);
