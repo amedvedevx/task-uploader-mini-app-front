@@ -45,6 +45,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                         <Button
                             key={text}
                             stretched
+                            size='l'
                             mode={mode || 'primary'}
                             appearance={appearance || 'accent'}
                             loading={loading}
