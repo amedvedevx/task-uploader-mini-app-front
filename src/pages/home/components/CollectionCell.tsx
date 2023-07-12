@@ -120,7 +120,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
                     data-automation-id='home-page-taskActionSheet'
                     onClick={(e) => clickIconHandler(e)}
                 >
-                    <Icon24MoreVertical />
+                    <Icon24MoreVertical color='var(--vkui--color_icon_secondary)' />
                 </IconButton>
             }
             subtitle={`Прислали ${consolidatedData.executedUsersCount}`}
