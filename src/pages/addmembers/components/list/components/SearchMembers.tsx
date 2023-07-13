@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { Avatar, calcInitialsAvatarColor, Group, List } from '@vkontakte/vkui';
 
 import type { GetTesteesResponse } from '@/app/types';
-import { getInitials } from '@/lib';
+import { getInitials, inclinationWord } from '@/lib';
 import type { UseMembersSelectionResult } from '@/pages/hooks';
 
 import { avatarStub, Members } from '../MembersList';
@@ -39,7 +39,10 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                                         gradientColor={calcInitialsAvatarColor(chat.peer.id)}
                                     />
                                 }
-                                subtitle={`${chat.chat_settings.members_count} участников`}
+                                subtitle={`${chat.chat_settings.members_count}  ${inclinationWord(
+                                    chat.chat_settings.members_count,
+                                    ['участник', 'участника', 'участников'],
+                                )}`}
                                 onChange={(e) => {
                                     selection?.handleSelectChat(e, chat);
                                 }}

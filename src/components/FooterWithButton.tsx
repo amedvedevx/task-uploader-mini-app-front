@@ -9,6 +9,7 @@ export type ButtonOption = {
     mode?: 'link' | 'primary' | 'secondary' | 'tertiary' | 'outline';
     loading?: boolean;
     counter?: number;
+    membersCounter?: number;
     disabled?: boolean;
     dataAutomationId?: string;
 };
@@ -40,6 +41,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                         loading,
                         disabled,
                         counter,
+                        membersCounter,
                         dataAutomationId,
                     }) => (
                         <Button
@@ -50,7 +52,15 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                             appearance={appearance || 'accent'}
                             loading={loading}
                             disabled={loading || disabled}
-                            after={<Counter size='s'>{counter}</Counter>}
+                            after={
+                                <>
+                                    {membersCounter && (
+                                        <Counter size='s'>{`${membersCounter} / 50`}</Counter>
+                                    )}
+
+                                    {counter && <Counter size='s'>{counter}</Counter>}
+                                </>
+                            }
                             data-automation-id={dataAutomationId}
                             onClick={onClick}
                         >

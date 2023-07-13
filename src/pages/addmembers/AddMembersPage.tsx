@@ -21,12 +21,13 @@ import {
     useGetUserIdQuery,
 } from '@/api';
 import { setSelectedChats, setSelectedMembers } from '@/api/state';
-import type { GetTesteesResponse, TaskType } from '@/app/types';
+import type { GetTesteesResponse, SnackBarText, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 import { ListContainer } from '@/components/ListContainer';
+import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { MembersList } from './components';
-import { useMembersSelection } from '../hooks';
+import { LIMIT_MEMBERS, useMembersSelection } from '../hooks';
 
 const maxTesteeItems = 205;
 
@@ -45,6 +46,7 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
 
     const { data: userId } = useGetUserIdQuery();
 
+    const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
     const [timer, setTimer] = useState<NodeJS.Timeout>();
 
     const [conversationsCount, setConversationsCount] = useState(50);
@@ -75,6 +77,12 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
     const selection = useMembersSelection();
 
     useEffect(() => {
+        if (selection.membersCount >= LIMIT_MEMBERS) {
+            setSnackbarText({ type: 'error', text: 'Лимит добавления пользователя достигнут' });
+        }
+    }, [selection.membersCount, testees]);
+
+    useEffect(() => {
         if (!isLoading && testees.profiles.length < maxTesteeItems) {
             setItemLength(testees.profiles.length);
         }
@@ -100,8 +108,6 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
         setTimer(newTimer);
     };
 
-    const selectedMembers = selection.selectedMembers.concat(selection.selectedChats);
-
     return (
         <Panel
             id={PANEL_ADD_MEMBERS}
@@ -117,9 +123,11 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
                         before={<PanelHeaderBack onClick={goBack} />}
                     >
                         {currentTask ? (
-                            <PanelHeaderContent status={currentTask.name}>
-                                Добавьте участников
-                            </PanelHeaderContent>
+                            <>
+                                <PanelHeaderContent status={currentTask.name}>
+                                    Добавьте участников
+                                </PanelHeaderContent>
+                            </>
                         ) : (
                             <PanelHeaderSkeleton />
                         )}
@@ -154,12 +162,23 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
                 </InfiniteScroll>
             </ListContainer>
 
+            {snackbarText && (
+                <SnackBarMessage
+                    snackbarText={snackbarText}
+                    setSnackbarText={setSnackbarText}
+                />
+            )}
+
             <FooterWithButton
                 options={[
                     {
                         text: 'Продолжить',
-                        disabled: !selectedMembers.length,
+                        disabled: !selection.membersCount,
+                        membersCounter: selection.membersCount,
                         onClick: () => {
+                            if (selection.membersCount >= LIMIT_MEMBERS) {
+                                return;
+                            }
                             dispatch(setSelectedMembers(selection.selectedMembers));
                             dispatch(setSelectedChats(selection.selectedChats));
                             router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
