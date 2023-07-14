@@ -117,6 +117,22 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         return 'delete';
     };
 
+    const isDuplicateFile = () => {
+        const filesNames = files.map((el) => el.name);
+        const uploadedFilesNames = uploadedFiles.map((el) => el.title);
+
+        if (filesNames.map((el) => uploadedFilesNames.includes(el))) {
+            setSnackbarText({
+                type: 'error',
+                text: 'Файл уже загружен',
+            });
+
+            return true;
+        }
+
+        return false;
+    };
+
     useEffect(() => {
         if (uploadedWithErrors) {
             setTimeout(() => {
@@ -163,6 +179,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
             <UploadPageWrapper>
                 <DropZone
+                    isDuplicateFile={isDuplicateFile}
                     isMobilePlatform={isMobilePlatform}
                     isTaskComplete={isTaskComplete}
                     isLoading={isLoading}

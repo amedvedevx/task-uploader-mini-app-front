@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import type { SnackBarText } from '@/app/types';
 
 interface DropZoneProps {
+    isDuplicateFile: () => boolean;
     isLoading: boolean;
     isTaskComplete: boolean;
     setFiles: React.Dispatch<React.SetStateAction<File[]>>;
@@ -20,6 +21,7 @@ const maxFileSize = 209715200;
 const rejectFileMessage = { code: 'reject', message: 'wrong-file' };
 
 export const DropZone: FC<DropZoneProps> = ({
+    isDuplicateFile,
     isTaskComplete,
     isLoading,
     setFiles,
@@ -37,6 +39,9 @@ export const DropZone: FC<DropZoneProps> = ({
     };
 
     const onDrop = (acceptedFiles: File[]) => {
+        if (isDuplicateFile()) {
+            return;
+        }
         setFiles((prevState) => {
             const newState = prevState.concat(acceptedFiles);
             const uniqueObjArray = [...new Map(newState.map((file) => [file.name, file])).values()];
@@ -152,7 +157,7 @@ const DropZoneContainer = styled.div<DropZoneContainerProps>`
 
     &:hover {
         border-color: ${({ isDisabled }) =>
-        isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
+            isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
     }
 `;
 
