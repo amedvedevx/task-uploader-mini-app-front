@@ -25,6 +25,7 @@ export const CreateInput: FC<CreateInputProps> = ({
     required,
 }) => {
     const maxLength = inputName === 'collectionName' ? 48 : 128;
+    const minLength = 5;
 
     return (
         <CreateInputContainer>
@@ -46,7 +47,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                         bottom={
                             inputName === 'collectionName' &&
                             errors.collectionName &&
-                            'Укажите название сбора'
+                            errors.collectionName.message
                         }
                     >
                         {inputName === 'collectionName' ? (
@@ -56,6 +57,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                                 value={value.trimStart()}
                                 status={errors.collectionName && 'error'}
                                 maxLength={maxLength}
+                                minLength={minLength}
                                 data-automation-id='create-page-titleInput'
                                 onChange={onChange}
                                 onBlur={onBlur}
@@ -76,7 +78,18 @@ export const CreateInput: FC<CreateInputProps> = ({
                 )}
                 name={inputName}
                 control={control}
-                rules={{ required, maxLength }}
+                rules={{
+                    required,
+                    maxLength,
+                    minLength: {
+                        value: minLength,
+                        message: `Минимальная длина поля должна быть более ${minLength} символов`,
+                    },
+                    // pattern: {
+                    //     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    //     message: 'Название сбора не должен содержать спец. символы',
+                    // },
+                }}
             />
         </CreateInputContainer>
     );
