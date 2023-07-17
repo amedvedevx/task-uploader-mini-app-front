@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import { AccordionSummary } from '@vkontakte/vkui/dist/components/Accordion/AccordionSummary';
 
 import type { TaskDetailResultContent, TaskResults } from '@/app/types';
-import { getInitials, isForbiddenFile } from '@/lib/utils';
+import { getFileExtension, getInitials, isForbiddenFile } from '@/lib/utils';
 import {
     useLazyDownloadFilesQuery,
     useLazyDownloadFilesOnMobileQuery,
@@ -159,6 +159,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                 {content.map(({ title, docId, url }) => (
                                     <HorizontalFileCell
                                         key={docId}
+                                        fileExtension={getFileExtension(title)}
                                         title={title}
                                         type='download'
                                         onClick={() =>
