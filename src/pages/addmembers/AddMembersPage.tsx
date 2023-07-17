@@ -21,12 +21,13 @@ import {
     useGetUserIdQuery,
 } from '@/api';
 import { setSelectedChats, setSelectedMembers } from '@/api/state';
-import type { GetTesteesResponse, TaskType } from '@/app/types';
+import type { GetTesteesResponse, SnackBarText, TaskType } from '@/app/types';
 import { FooterWithButton, MembersNotFound } from '@/components';
 import { ListContainer } from '@/components/ListContainer';
+import { SnackBarMessage } from '@/components/SnackBarMessage';
 
 import { MembersList } from './components';
-import { useMembersSelection } from '../hooks';
+import { LIMIT_MEMBERS, useMembersSelection } from '../hooks';
 
 const maxTesteeItems = 205;
 
@@ -45,6 +46,7 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
 
     const { data: userId } = useGetUserIdQuery();
 
+    const [snackbarText, setSnackbarText] = useState<SnackBarText>(null);
     const [timer, setTimer] = useState<NodeJS.Timeout>();
 
     const [conversationsCount, setConversationsCount] = useState(50);
@@ -65,14 +67,24 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
 
     const invitedMemberIds = taskResults.map((result) => result.testee.vkUserId);
 
-    const { data: testees = {} as GetTesteesResponse, isLoading } = useGetTesteesQuery({
-        search: searchQuery,
-        count: conversationsCount,
-        invitedMemberIds,
-        userId,
-    });
+    const { data: testees = {} as GetTesteesResponse, isLoading } = useGetTesteesQuery(
+        {
+            search: searchQuery,
+            count: conversationsCount,
+            invitedMemberIds,
+            userId: userId!,
+        },
+        { skip: !userId },
+    );
 
     const selection = useMembersSelection();
+    const { membersCount, selectedChats, selectedMembers } = selection;
+
+    useEffect(() => {
+        if (membersCount >= LIMIT_MEMBERS) {
+            setSnackbarText({ type: 'error', text: 'Лимит добавления пользователя достигнут' });
+        }
+    }, [membersCount]);
 
     useEffect(() => {
         if (!isLoading && testees.profiles.length < maxTesteeItems) {
@@ -81,7 +93,13 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
     }, [isLoading, testees]);
 
     useLayoutEffect(() => {
-        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
+        const childNode: HTMLElement = fixedLayoutRef.current?.firstChild as HTMLElement;
+
+        if (!childNode) {
+            return;
+        }
+
+        setFixLayoutHeight(childNode.offsetHeight);
     }, [fixedLayoutRef]);
 
     const goBack = () => {
@@ -100,7 +118,14 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
         setTimer(newTimer);
     };
 
-    const selectedMembers = selection.selectedMembers.concat(selection.selectedChats);
+    const onNextClick = () => {
+        if (membersCount >= LIMIT_MEMBERS) {
+            return;
+        }
+        dispatch(setSelectedMembers(selectedMembers));
+        dispatch(setSelectedChats(selectedChats));
+        router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
+    };
 
     return (
         <Panel
@@ -154,16 +179,21 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
                 </InfiniteScroll>
             </ListContainer>
 
+            {snackbarText && (
+                <SnackBarMessage
+                    snackbarText={snackbarText}
+                    setSnackbarText={setSnackbarText}
+                />
+            )}
+
             <FooterWithButton
                 options={[
                     {
                         text: 'Продолжить',
-                        disabled: !selectedMembers.length,
-                        onClick: () => {
-                            dispatch(setSelectedMembers(selection.selectedMembers));
-                            dispatch(setSelectedChats(selection.selectedChats));
-                            router.pushPage(PAGE_LIST_MEMBERS, { collectionId: currentTask.id });
-                        },
+                        disabled: !membersCount,
+                        counter: membersCount,
+                        counterLabel: `${membersCount} / 50`,
+                        onClick: onNextClick,
                         loading: false,
                     },
                 ]}

@@ -9,6 +9,7 @@ export type ButtonOption = {
     mode?: 'link' | 'primary' | 'secondary' | 'tertiary' | 'outline';
     loading?: boolean;
     counter?: number;
+    counterLabel?: string;
     disabled?: boolean;
     dataAutomationId?: string;
 };
@@ -40,6 +41,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                         loading,
                         disabled,
                         counter,
+                        counterLabel,
                         dataAutomationId,
                     }) => (
                         <Button
@@ -50,7 +52,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                             appearance={appearance || 'accent'}
                             loading={loading}
                             disabled={loading || disabled}
-                            after={<Counter size='s'>{counter}</Counter>}
+                            after={<Counter size='s'>{counterLabel || counter}</Counter>}
                             data-automation-id={dataAutomationId}
                             onClick={onClick}
                         >
