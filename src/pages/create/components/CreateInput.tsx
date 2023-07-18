@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { FormItem, Input, Textarea } from '@vkontakte/vkui';
+import { FormItem, Input, Platform, Textarea as TextareaRoot, usePlatform } from '@vkontakte/vkui';
 import styled from 'styled-components';
 import type { Control } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
@@ -24,6 +24,9 @@ export const CreateInput: FC<CreateInputProps> = ({
     inputName,
     required,
 }) => {
+    const hardWarePlatform = usePlatform();
+    const isIOSPlatform = hardWarePlatform === Platform.IOS;
+
     const maxLength = inputName === 'collectionName' ? 48 : 128;
 
     return (
@@ -63,6 +66,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                         ) : (
                             <Textarea
                                 grow
+                                $isIOSPlatform={isIOSPlatform}
                                 getRootRef={ref}
                                 placeholder={placeholder}
                                 value={value}
@@ -89,4 +93,10 @@ const CreateInputContainer = styled.div`
 const FormItemRoot = styled(FormItem)`
     padding: 0;
     text-align: left;
+`;
+
+const Textarea = styled(TextareaRoot)<{ $isIOSPlatform: boolean }>`
+    .vkuiTextarea__el {
+        ${({ $isIOSPlatform }) => ($isIOSPlatform ? 'margin-bottom: 12px' : '')};
+    }
 `;
