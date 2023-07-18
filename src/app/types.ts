@@ -65,6 +65,7 @@ export interface GetTaskResultsProps {
 
 export interface DeleteTaskResultProps {
     taskId: string;
+    vkUserIds: number[];
 }
 
 export interface UploadFileProps {

@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { Avatar, Button, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Avatar, Button, Cell, List, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
 import type { GetAllowedForRemindIdsResponse, SnackBarText, TaskResults } from '@/app/types';
@@ -18,6 +18,7 @@ interface NotCompletedMembersProps {
     isTaskClosed: boolean;
     setSnackbarText: (arg: SnackBarText) => void;
     apiMessageError: ErrorsState | undefined;
+    removeMemberHandler: (fullName: string, vkUserId: number) => void;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
@@ -28,6 +29,7 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
     isTaskClosed,
     setSnackbarText,
     apiMessageError,
+    removeMemberHandler,
 }) => {
     const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
     const [sendNotification, { isLoading: isSendingNotification, originalArgs }] =
@@ -86,6 +88,8 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
                             />
                         )
                     }
+                    mode='removable'
+                    onRemove={() => removeMemberHandler(fullName, vkUserId)}
                 >
                     {fullName}
                 </Member>
@@ -94,7 +98,7 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
     );
 };
 
-const Member = styled(SimpleCell)`
+const Member = styled(Cell)`
     margin-bottom: 16px;
 `;
 

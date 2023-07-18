@@ -1,5 +1,6 @@
 import { Button, Counter } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import { Icon24Download } from '@vkontakte/icons';
 
 import type { DownloadFilesProps, TaskDetailResultContent } from '@/app/types';
 
@@ -33,11 +34,12 @@ export const DownloadButton: FC<DownloadButtonProps> = ({
         appearance='accent'
         size='s'
         mode='secondary'
+        align='left'
         after={<Counter size='s'>{counter}</Counter>}
         disabled={originalArgs?.vkUserId === vkUserId && isDownloading}
         loading={originalArgs?.vkUserId === vkUserId && isDownloading}
         onClick={() => handleDownloadFile({ vkUserId }, files)}
     >
-        Скачать все
+        <Icon24Download />
     </Button>
 );

@@ -19,6 +19,7 @@ import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import {
     store,
+    useDeleteTaskResultsMutation,
     useGetPlatformQuery,
     useGetTaskIdQuery,
     useGetTaskResultsQuery,
@@ -74,6 +75,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     );
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
     const [downloadFiles, { isLoading: isFileDownloading }] = useLazyDownloadFilesQuery();
+    const [deleteMember] = useDeleteTaskResultsMutation();
 
     const [popout, setPopout] = useState<JSX.Element | null>(null);
 
@@ -110,6 +112,19 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         />
     );
 
+    const popoutDeleteMember = (fullName: string, vkUserId: number): JSX.Element => (
+        <Popout
+            text={`Вы уверены, что удалить пользователя ${fullName} ?`}
+            header='Удалить пользователя'
+            action={async () => {
+                await deleteMember({ taskId: currentTask?.id, vkUserIds: [vkUserId] });
+                setSnackbarText({ type: 'success', text: `Участник сбора ${fullName} удален` });
+            }}
+            actionText='Удалить'
+            setPopout={setPopout}
+        />
+    );
+
     const popoutForbiddenFiles = (
         <Popout
             text='Этот архив может содержать потенциально опасные файлы, вы уверены что хотите скачать его?'
@@ -125,6 +140,10 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const isForbiddenAllFiles = taskResults.some(({ content }) =>
         content.some((el) => isForbiddenFile(el.title)),
     );
+
+    const removeMemberHandler = (fullName: string, vkUserId: number) => {
+        setPopout(popoutDeleteMember(fullName, vkUserId));
+    };
 
     const prepareButtonsOptions = (): ButtonOption[] => {
         const downloadAllButton: ButtonOption = {
@@ -309,6 +328,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                         taskResults={normalizedTestees.completed}
                                         isMobileDownloading={isMobileDownloading}
                                         isDesktopDownloading={isDesktopDownloading}
+                                        removeMemberHandler={removeMemberHandler}
                                     />
                                 )}
                             </>
@@ -321,6 +341,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.notCompleted}
                                         apiMessageError={apiMessageError}
+                                        removeMemberHandler={removeMemberHandler}
                                     />
                                 )}
 
