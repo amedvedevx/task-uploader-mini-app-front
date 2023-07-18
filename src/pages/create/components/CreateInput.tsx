@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { FormItem, Input, Textarea } from '@vkontakte/vkui';
 import styled from 'styled-components';
-import type { Control } from 'react-hook-form';
+import type { Control, ValidationRule } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
 import { InputLabel } from './InputLabel';
@@ -15,6 +15,7 @@ interface CreateInputProps {
     placeholder: string;
     inputName: 'collectionName' | 'collectionDescription';
     required?: boolean;
+    pattern?: ValidationRule<RegExp>;
 }
 
 export const CreateInput: FC<CreateInputProps> = ({
@@ -23,6 +24,7 @@ export const CreateInput: FC<CreateInputProps> = ({
     placeholder,
     inputName,
     required,
+    pattern,
 }) => {
     const maxLength = inputName === 'collectionName' ? 48 : 128;
 
@@ -46,7 +48,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                         bottom={
                             inputName === 'collectionName' &&
                             errors.collectionName &&
-                            'Укажите название сбора'
+                            parseErrorType(errors.collectionName.type)
                         }
                     >
                         {inputName === 'collectionName' ? (
@@ -76,10 +78,22 @@ export const CreateInput: FC<CreateInputProps> = ({
                 )}
                 name={inputName}
                 control={control}
-                rules={{ required, maxLength }}
+                rules={{ required, maxLength, pattern }}
             />
         </CreateInputContainer>
     );
+};
+
+const parseErrorType = (type: string): string | false => {
+    switch (type) {
+        case 'required':
+            return 'Укажите название сбора';
+        case 'pattern':
+            return 'Спецсимволы запрещены';
+
+        default:
+            return false;
+    }
 };
 
 const CreateInputContainer = styled.div`
