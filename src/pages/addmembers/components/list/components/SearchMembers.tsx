@@ -1,12 +1,11 @@
 import type { FC } from 'react';
-import { Avatar, calcInitialsAvatarColor, Group, List } from '@vkontakte/vkui';
+import { Group, List } from '@vkontakte/vkui';
 
 import type { GetTesteesResponse } from '@/app/types';
-import { getInitials, inclinationWord } from '@/lib';
 import type { UseMembersSelectionResult } from '@/pages/hooks';
+import { Profiles } from '@/pages/addmembers/components/list/components/Profiles';
 
-import { avatarStub, Members } from '../MembersList';
-import { Checkbox } from './Checkbox';
+import { Members } from './Members';
 
 interface SearchMembersProps {
     selection?: UseMembersSelectionResult;
@@ -25,61 +24,18 @@ export const SearchMembers: FC<SearchMembersProps> = ({ collection, selection })
                         collection?.items?.map((chat) => (
                             <Members
                                 key={chat.peer.id}
-                                mode='selectable'
-                                checked={Boolean(selection?.isChatActive(chat))}
-                                before={
-                                    <Avatar
-                                        size={40}
-                                        src={
-                                            !chat.chat_settings.photo
-                                                ? avatarStub
-                                                : chat.chat_settings.photo.photo_100
-                                        }
-                                        alt='icon'
-                                        gradientColor={calcInitialsAvatarColor(chat.peer.id)}
-                                    />
-                                }
-                                subtitle={`${chat.chat_settings.members_count}  ${inclinationWord(
-                                    chat.chat_settings.members_count,
-                                    ['участник', 'участника', 'участников'],
-                                )}`}
-                                onChange={(e) => {
-                                    selection?.handleSelectChat(e, chat);
-                                }}
-                                onClick={(e) => {
-                                    selection?.handleSelectChat(e, chat);
-                                }}
-                            >
-                                {chat.chat_settings.title}
-                            </Members>
+                                chat={chat}
+                                selection={selection}
+                            />
                         ))}
 
                     {collection?.profiles &&
                         collection.profiles?.map((member) => (
-                            <Members
+                            <Profiles
                                 key={member.id}
-                                mode='selectable'
-                                checked={Boolean(selection?.isMemberActive(member))}
-                                before={
-                                    <Avatar
-                                        size={40}
-                                        src={
-                                            member.photo_100 === avatarStub ? '#' : member.photo_100
-                                        }
-                                        alt='icon'
-                                        gradientColor={calcInitialsAvatarColor(member.id)}
-                                        initials={getInitials(
-                                            `${member.first_name} ${member.last_name}`,
-                                        )}
-                                    />
-                                }
-                                onChange={(e) => {
-                                    selection?.handleSelectMember(e, member);
-                                }}
-                                onClick={(e) => selection?.handleSelectMember(e, member)}
-                            >
-                                {`${member.first_name} ${member.last_name}`}
-                            </Members>
+                                member={member}
+                                selection={selection}
+                            />
                         ))}
                 </List>
             </Group>
