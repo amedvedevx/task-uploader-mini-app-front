@@ -109,7 +109,7 @@ const DownloadIcon = styled(Icon24DoorArrowLeftOutline)`
     box-shadow: none;
 
     background: var(--vkui--color_text_accent_themed);
-    padding: 0px !important;
+    padding: 3px !important;
 `;
 
 const DeleteIcon = styled(Icon24DismissSubstract)`
@@ -160,8 +160,8 @@ const SuccessIcon = styled(Icon16DoneCircle)`
 const iconType = {
     download: (
         <DownloadIcon
-            width={22}
-            height={22}
+            width={16}
+            height={16}
         />
     ),
     delete: (
