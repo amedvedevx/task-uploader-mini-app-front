@@ -22,7 +22,6 @@ export const Members: FC<MembersProps> = (props) => {
 
     return (
         <Wrapper
-            key={chat.peer.id}
             mode='selectable'
             checked={Boolean(selection?.isChatActive(chat))}
             before={

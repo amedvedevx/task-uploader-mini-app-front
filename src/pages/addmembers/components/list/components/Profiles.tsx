@@ -17,7 +17,6 @@ export const Profiles: FC<ProfilesProps> = (props) => {
 
     return (
         <Wrapper
-            key={member.id}
             mode='selectable'
             checked={Boolean(selection?.isMemberActive(member))}
             before={
