@@ -20,6 +20,7 @@ import {
     useGetTaskResultsQuery,
     useGetTaskIdQuery,
     useAppointUsersToTaskMutation,
+    useGetUserIdQuery,
 } from '@/api';
 import { useSearch } from '@/hooks';
 import type { TaskType, TesteeType } from '@/app/types';
@@ -40,6 +41,7 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         },
     } = useLocation();
     const router = useRouter();
+    const { data: userId } = useGetUserIdQuery();
 
     const { data = { taskResults: [] } } = useGetTaskResultsQuery({
         taskId: collectionId,
@@ -69,7 +71,7 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
         setLocalMembers((prev) => prev.filter((el) => el.id !== id));
     };
 
-    const { search, changeSearch, filteredData } = useSearch(localMembers, 'full_name');
+    const { search, changeSearch, filteredData } = useSearch<TesteeType>(localMembers, 'full_name');
 
     const assignMembers = async (membersIds: number[]) => {
         const payload = {
@@ -105,12 +107,21 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
     useEffect(() => {
         if (isLoading) return;
 
-        const allMembers = selectedMembers.concat(chatMembers);
+        const allMembers = selectedMembers
+            .concat(chatMembers)
+            .filter((item) => item.id > 0 && item.id !== userId);
+
         setLocalMembers(normalizeMembers(allMembers));
-    }, [isLoading, selectedMembers, chatMembers]);
+    }, [isLoading, selectedMembers, chatMembers, userId]);
 
     useLayoutEffect(() => {
-        setFixLayoutHeight(fixedLayoutRef.current.firstChild.offsetHeight);
+        const childNode: HTMLElement = fixedLayoutRef.current?.firstChild as HTMLElement;
+
+        if (!childNode) {
+            return;
+        }
+
+        setFixLayoutHeight(childNode.offsetHeight);
     }, [fixedLayoutRef]);
 
     return (
