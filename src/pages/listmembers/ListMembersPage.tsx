@@ -171,6 +171,7 @@ export const ListMembersPage: FC<ListMembersPageProps> = () => {
                         onClick: () => {
                             assignMembers(vkUserIds);
                         },
+                        disabled: vkUserIds.length === 0,
                         loading: appointStatus.isLoading || statusNotification.isLoading,
                     },
                 ]}
