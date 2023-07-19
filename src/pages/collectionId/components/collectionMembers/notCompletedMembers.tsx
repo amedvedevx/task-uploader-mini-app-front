@@ -1,15 +1,15 @@
 import type { FC } from 'react';
-import { Avatar, Button, List, SimpleCell, calcInitialsAvatarColor } from '@vkontakte/vkui';
+import { Avatar, Button, Cell, List, calcInitialsAvatarColor } from '@vkontakte/vkui';
 import styled from 'styled-components';
 
-import type { GetAllowedForRemindIdsResponse, SnackBarText, TaskResults } from '@/app/types';
+import type {
+    GetAllowedForRemindIdsResponse,
+    SnackBarText,
+    TaskResults,
+    TaskType,
+} from '@/app/types';
 import { getInitials } from '@/lib/utils';
-import {
-    useGetAllowedForRemindIdsQuery,
-    useGetTaskIdQuery,
-    useSendNotificationMutation,
-    useUpdateAllowedForRemindIdsMutation,
-} from '@/api';
+import { useSendNotificationMutation, useUpdateAllowedForRemindIdsMutation } from '@/api';
 import type { ErrorsState } from '@/api/state';
 
 interface NotCompletedMembersProps {
@@ -18,6 +18,9 @@ interface NotCompletedMembersProps {
     isTaskClosed: boolean;
     setSnackbarText: (arg: SnackBarText) => void;
     apiMessageError: ErrorsState | undefined;
+    removeMemberHandler: (fullName: string, vkUserId: number) => void;
+    currentTask: TaskType;
+    reminds: GetAllowedForRemindIdsResponse | undefined;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
@@ -28,12 +31,12 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
     isTaskClosed,
     setSnackbarText,
     apiMessageError,
+    removeMemberHandler,
+    currentTask,
+    reminds,
 }) => {
-    const { data: currentTask } = useGetTaskIdQuery({ taskId: collectionId });
     const [sendNotification, { isLoading: isSendingNotification, originalArgs }] =
         useSendNotificationMutation();
-
-    const { data: reminds } = useGetAllowedForRemindIdsQuery({ taskId: collectionId });
     const [updateReminds] = useUpdateAllowedForRemindIdsMutation();
     const testees = taskResults.map((el) => el.testee);
 
@@ -86,6 +89,8 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
                             />
                         )
                     }
+                    mode='removable'
+                    onRemove={() => removeMemberHandler(fullName, vkUserId)}
                 >
                     {fullName}
                 </Member>
@@ -94,7 +99,7 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
     );
 };
 
-const Member = styled(SimpleCell)`
+const Member = styled(Cell)`
     margin-bottom: 16px;
 `;
 

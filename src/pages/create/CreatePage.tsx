@@ -105,6 +105,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
                             label='Название*'
                             placeholder='Например: "Документы в лагерь"'
                             inputName='collectionName'
+                            pattern={/^[A-Za-z0-9 ]+$/g}
                         />
 
                         <CreateInput
@@ -130,7 +131,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
                         text: 'Готово',
                         onClick: handleSubmit(onSubmit),
                         loading: isTaskCreating,
-                        disabled: watch('collectionName').trim().length === 0,
+                        disabled: watch('collectionName').trim().length < 3,
                     },
                 ]}
             />

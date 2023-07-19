@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 
-import { inclinationWord } from '@/lib';
+import { getFileExtension, inclinationWord } from '@/lib';
 import { HorizontalScroll } from '@/components/HorizontalScroll';
 import { HorizontalFileCell } from '@/components/HorizontalFileCell';
 import { HeaderShort } from '@/components/HeaderShort';
@@ -50,9 +50,10 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
             <HeaderShort mode='secondary'>{filesLabel}</HeaderShort>
 
             <HorizontalScroll data-automation-id='upload-page-filesList'>
-                {filesToUpload.map(({ name, lastModified, size }) => (
+                {filesToUpload.map(({ name }) => (
                     <HorizontalFileCell
                         key={name}
+                        fileExtension={getFileExtension(name)}
                         title={name}
                         type='delete'
                         onClick={() => removeFile(name)}
@@ -62,6 +63,7 @@ export const FilesReadyToUpload: FC<FilesReadyToUploadProps> = ({
                 {filesUploaded.map(({ title, docId, uploadDate }) => (
                     <HorizontalFileCell
                         key={docId}
+                        fileExtension={getFileExtension(title)}
                         title={title}
                         type={getFileStatus(uploadDate)}
                     />
