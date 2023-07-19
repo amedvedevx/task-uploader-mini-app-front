@@ -39,7 +39,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                         top={
                             <InputLabel
                                 label={label}
-                                curLength={value?.trim().length || 0}
+                                curLength={value?.length || 0}
                                 maxLength={maxLength}
                             />
                         }
