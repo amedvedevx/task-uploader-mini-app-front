@@ -15,6 +15,9 @@ import { CreateInput } from './components';
 
 const monthIsSec = 2592000;
 const deadLineDate = Math.ceil(new Date().getTime() / 1000 + monthIsSec);
+// matches string that not contain only spec`characters
+const regexPattern =
+    /(?!^[`|~|!|@|#|$|%|^|&|*|(|)|+|=|[|{|\]|}|||\\|'|<|,|.|>|?|/|""|;|:|' ']+$)^.+$/g;
 
 type FormValues = {
     collectionName: string;
@@ -105,7 +108,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
                             label='Название*'
                             placeholder='Например: "Документы в лагерь"'
                             inputName='collectionName'
-                            pattern={/^[A-Za-z0-9 ]+$/g}
+                            pattern={regexPattern}
                         />
 
                         <CreateInput
@@ -131,7 +134,6 @@ export const CreatePage: FC<CreatePageProps> = () => {
                         text: 'Готово',
                         onClick: handleSubmit(onSubmit),
                         loading: isTaskCreating,
-                        disabled: watch('collectionName').trim().length < 3,
                     },
                 ]}
             />

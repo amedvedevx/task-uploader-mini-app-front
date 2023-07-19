@@ -61,6 +61,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                                 value={value.trimStart()}
                                 status={errors.collectionName && 'error'}
                                 maxLength={maxLength}
+                                minLength={3}
                                 data-automation-id='create-page-titleInput'
                                 onChange={onChange}
                                 onBlur={onBlur}
@@ -82,7 +83,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                 )}
                 name={inputName}
                 control={control}
-                rules={{ required, maxLength, pattern }}
+                rules={{ required, maxLength, minLength: 3, pattern }}
             />
         </CreateInputContainer>
     );
@@ -92,8 +93,10 @@ const parseErrorType = (type: string): string | false => {
     switch (type) {
         case 'required':
             return 'Укажите название сбора';
+        case 'minLength':
+            return 'Название должно содержать минимум 3 символа';
         case 'pattern':
-            return 'Спецсимволы запрещены';
+            return 'Названия состоящие только из спецсимволов запрещены';
 
         default:
             return false;
