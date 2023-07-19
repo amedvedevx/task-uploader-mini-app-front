@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import type { ChatType, TesteeType } from '@/app/types';
+import { useGetUserIdQuery } from '@/api';
 
 type IsMemberActive = (row: TesteeType) => boolean;
 
@@ -21,11 +22,24 @@ export interface UseMembersSelectionResult {
     selectedChats: SelectedChatsType;
     handleSelectMember: HandleSelectMember;
     handleSelectChat: HandleSelectChat;
+    membersCount: number;
 }
+
+export const LIMIT_MEMBERS = 50;
 
 export const useMembersSelection = (): UseMembersSelectionResult => {
     const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>([]);
     const [selectedChats, setSelectedChats] = useState<SelectedChatsType>([]);
+    const { data: userId } = useGetUserIdQuery();
+
+    const chatMembersCount = selectedChats.reduce(
+        (result, number) =>
+            result +
+            number.chat_settings.active_ids?.filter((item) => item > 0 && item !== userId).length,
+        0,
+    );
+
+    const membersCount = selectedMembers.length + chatMembersCount;
 
     const handleSelectChat: HandleSelectChat = (e, row) => {
         e.preventDefault();
@@ -36,7 +50,7 @@ export const useMembersSelection = (): UseMembersSelectionResult => {
                 return prevState.filter((i) => i.peer.id !== row.peer.id);
             }
 
-            return [...prevState, row];
+            return membersCount >= LIMIT_MEMBERS ? [...prevState] : [...prevState, row];
         });
     };
 
@@ -49,7 +63,7 @@ export const useMembersSelection = (): UseMembersSelectionResult => {
                 return prevState.filter((i) => i.id !== row.id);
             }
 
-            return [...prevState, row];
+            return membersCount >= LIMIT_MEMBERS ? [...prevState] : [...prevState, row];
         });
     };
 
@@ -66,5 +80,6 @@ export const useMembersSelection = (): UseMembersSelectionResult => {
         selectedChats,
         handleSelectMember,
         handleSelectChat,
+        membersCount,
     };
 };

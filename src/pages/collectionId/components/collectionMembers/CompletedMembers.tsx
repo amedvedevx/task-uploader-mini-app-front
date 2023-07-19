@@ -3,9 +3,9 @@ import { useState } from 'react';
 import {
     Accordion,
     Avatar,
+    Cell,
     List,
     Platform,
-    SimpleCell,
     calcInitialsAvatarColor,
     usePlatform,
 } from '@vkontakte/vkui';
@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import { AccordionSummary } from '@vkontakte/vkui/dist/components/Accordion/AccordionSummary';
 
 import type { TaskDetailResultContent, TaskResults } from '@/app/types';
-import { getInitials, isForbiddenFile } from '@/lib/utils';
+import { getFileExtension, getInitials, isForbiddenFile } from '@/lib/utils';
 import {
     useLazyDownloadFilesQuery,
     useLazyDownloadFilesOnMobileQuery,
@@ -32,6 +32,7 @@ interface CompletedMembersProps {
     collectionId: string;
     isMobileDownloading: boolean;
     isDesktopDownloading: boolean;
+    removeMemberHandler: (fullName: string, vkUserId: number) => void;
 }
 
 const avatarStub = 'https://vk.com/images/camera_100.png';
@@ -41,6 +42,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     collectionId,
     isMobileDownloading,
     isDesktopDownloading,
+    removeMemberHandler,
 }) => {
     const [downloadFiles, { isLoading: isDownloading, originalArgs }] = useLazyDownloadFilesQuery();
     const [downloadFilesOnMobile] = useLazyDownloadFilesOnMobileQuery();
@@ -126,7 +128,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                     }) => (
                         <Accordion key={vkUserId}>
                             <AccordionSummaryWidth>
-                                <SimpleCell
+                                <Cell
                                     key={vkUserId}
                                     disabled
                                     before={
@@ -150,15 +152,18 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                             />
                                         )
                                     }
+                                    mode='removable'
+                                    onRemove={() => removeMemberHandler(fullName, vkUserId)}
                                 >
                                     {fullName}
-                                </SimpleCell>
+                                </Cell>
                             </AccordionSummaryWidth>
 
                             <HorizontalScroll>
                                 {content.map(({ title, docId, url }) => (
                                     <HorizontalFileCell
                                         key={docId}
+                                        fileExtension={getFileExtension(title)}
                                         title={title}
                                         type='download'
                                         onClick={() =>
