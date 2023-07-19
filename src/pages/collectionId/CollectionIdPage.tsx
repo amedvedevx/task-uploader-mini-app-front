@@ -20,6 +20,7 @@ import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/a
 import {
     store,
     useDeleteTaskResultsMutation,
+    useGetAllowedForRemindIdsQuery,
     useGetPlatformQuery,
     useGetTaskIdQuery,
     useGetTaskResultsQuery,
@@ -70,6 +71,11 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const { taskResults } = data;
 
     const { data: currentTask = {} as TaskType, refetch: refetchTask } = useGetTaskIdQuery(
+        { taskId: collectionId },
+        { skip: !collectionId },
+    );
+
+    const { data: reminds } = useGetAllowedForRemindIdsQuery(
         { taskId: collectionId },
         { skip: !collectionId },
     );
@@ -310,6 +316,8 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                             setPopout={setPopout}
                             setSnackbarText={setSnackbarText}
                             apiMessageError={apiMessageError}
+                            currentTask={currentTask}
+                            reminds={reminds}
                         />
                     )}
 
@@ -342,6 +350,8 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                         taskResults={normalizedTestees.notCompleted}
                                         apiMessageError={apiMessageError}
                                         removeMemberHandler={removeMemberHandler}
+                                        currentTask={currentTask}
+                                        reminds={reminds}
                                     />
                                 )}
 

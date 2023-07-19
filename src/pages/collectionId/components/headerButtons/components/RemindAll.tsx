@@ -4,33 +4,31 @@ import type { FC } from 'react';
 import { useLocation } from '@happysanta/router';
 
 import { Popout } from '@/components';
-import {
-    useGetAllowedForRemindIdsQuery,
-    useGetTaskIdQuery,
-    useSendNotificationMutation,
-    useUpdateAllowedForRemindIdsMutation,
-} from '@/api';
-import type { SnackBarText, TaskType } from '@/app/types';
+import { useSendNotificationMutation, useUpdateAllowedForRemindIdsMutation } from '@/api';
+import type { GetAllowedForRemindIdsResponse, SnackBarText, TaskType } from '@/app/types';
 import type { ErrorsState } from '@/api/state';
 
 interface RemindAllProps {
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: (arg: SnackBarText) => void;
     apiMessageError: ErrorsState | undefined;
+    reminds: GetAllowedForRemindIdsResponse | undefined;
+    currentTask: TaskType;
 }
 
-export const RemindAll: FC<RemindAllProps> = ({ setPopout, setSnackbarText, apiMessageError }) => {
+export const RemindAll: FC<RemindAllProps> = ({
+    setPopout,
+    setSnackbarText,
+    apiMessageError,
+    reminds,
+    currentTask,
+}) => {
     const {
         route: {
             params: { collectionId },
         },
     } = useLocation();
-    const { data: currentTask = {} as TaskType } = useGetTaskIdQuery({ taskId: collectionId });
     const [sendNotification] = useSendNotificationMutation();
-
-    const { data: reminds } = useGetAllowedForRemindIdsQuery({
-        taskId: collectionId,
-    });
 
     const [updateReminds] = useUpdateAllowedForRemindIdsMutation();
 
