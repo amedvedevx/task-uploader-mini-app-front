@@ -81,8 +81,8 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
     const { membersCount, selectedChats, selectedMembers } = selection;
 
     useEffect(() => {
-        if (membersCount >= LIMIT_MEMBERS) {
-            setSnackbarText({ type: 'error', text: 'Лимит добавления пользователя достигнут' });
+        if (membersCount > LIMIT_MEMBERS) {
+            setSnackbarText({ type: 'error', text: 'Лимит добавления пользователей превышен' });
         }
     }, [membersCount]);
 
@@ -119,7 +119,7 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
     };
 
     const onNextClick = () => {
-        if (membersCount >= LIMIT_MEMBERS) {
+        if (membersCount > LIMIT_MEMBERS) {
             return;
         }
         dispatch(setSelectedMembers(selectedMembers));
