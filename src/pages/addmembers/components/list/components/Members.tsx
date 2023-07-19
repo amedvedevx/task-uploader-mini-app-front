@@ -6,7 +6,6 @@ import { avatarStub } from '@/pages/addmembers/components';
 import { inclinationWord } from '@/lib';
 import type { ChatType } from '@/app/types';
 import type { UseMembersSelectionResult } from '@/pages/hooks';
-import { useGetUserIdQuery } from '@/api';
 
 interface MembersProps {
     chat: ChatType;
@@ -15,10 +14,6 @@ interface MembersProps {
 
 export const Members: FC<MembersProps> = (props) => {
     const { chat, selection } = props;
-    const { data: userId } = useGetUserIdQuery();
-
-    const chatMembersCountWithoutBotsAndUser =
-        chat?.chat_settings?.active_ids?.filter((item) => item > 0 && item !== userId) || [];
 
     return (
         <Wrapper
@@ -34,8 +29,8 @@ export const Members: FC<MembersProps> = (props) => {
                     gradientColor={calcInitialsAvatarColor(chat.peer.id)}
                 />
             }
-            subtitle={`${chatMembersCountWithoutBotsAndUser.length}  ${inclinationWord(
-                chat.chat_settings.members_count,
+            subtitle={`${chat?.chat_settings?.members_count - 1}  ${inclinationWord(
+                chat.chat_settings.members_count - 1,
                 ['участник', 'участника', 'участников'],
             )}`}
             onChange={(e) => {

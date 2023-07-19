@@ -190,7 +190,7 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
                 options={[
                     {
                         text: 'Продолжить',
-                        disabled: !membersCount,
+                        disabled: !membersCount || membersCount > 50,
                         counter: membersCount,
                         counterLabel: `${membersCount} / 50`,
                         onClick: onNextClick,
