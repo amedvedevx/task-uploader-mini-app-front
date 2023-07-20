@@ -120,7 +120,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const popoutDeleteMember = (fullName: string, vkUserId: number): JSX.Element => (
         <Popout
-            text={`Вы уверены, что удалить пользователя ${fullName} ?`}
+            text={`Вы уверены, что хотите удалить пользователя ${fullName} ?`}
             header='Удалить пользователя'
             action={async () => {
                 await deleteMember({ taskId: currentTask?.id, vkUserIds: [vkUserId] });
