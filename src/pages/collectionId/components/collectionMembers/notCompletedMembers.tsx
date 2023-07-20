@@ -101,6 +101,9 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
 
 const Member = styled(Cell)`
     margin-bottom: 16px;
+    .vkuiSimpleCell__main {
+        white-space: break-spaces !important;
+    }
 `;
 
 type OnClickArgs = {

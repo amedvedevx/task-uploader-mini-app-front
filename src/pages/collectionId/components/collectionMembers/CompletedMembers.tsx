@@ -128,7 +128,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                     }) => (
                         <Accordion key={vkUserId}>
                             <AccordionSummaryWidth>
-                                <Cell
+                                <CompletedMember
                                     key={vkUserId}
                                     disabled
                                     before={
@@ -156,7 +156,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                     onRemove={() => removeMemberHandler(fullName, vkUserId)}
                                 >
                                     {fullName}
-                                </Cell>
+                                </CompletedMember>
                             </AccordionSummaryWidth>
 
                             <HorizontalScroll>
@@ -191,6 +191,12 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
 const AccordionSummaryWidth = styled(AccordionSummary)`
     .vkuiSimpleCell__children {
         width: 100%;
+    }
+`;
+
+const CompletedMember = styled(Cell)`
+    .vkuiSimpleCell__main {
+        white-space: break-spaces !important;
     }
 `;
 
