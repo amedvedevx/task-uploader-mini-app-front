@@ -30,6 +30,7 @@ import { DownloadButton } from './components/DownloadButton';
 interface CompletedMembersProps {
     taskResults: TaskResults[];
     collectionId: string;
+    isTaskClosed: boolean;
     isMobileDownloading: boolean;
     isDesktopDownloading: boolean;
     removeMemberHandler: (fullName: string, vkUserId: number) => void;
@@ -43,6 +44,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     isMobileDownloading,
     isDesktopDownloading,
     removeMemberHandler,
+    isTaskClosed,
 }) => {
     const [downloadFiles, { isLoading: isDownloading, originalArgs }] = useLazyDownloadFilesQuery();
     const [downloadFilesOnMobile] = useLazyDownloadFilesOnMobileQuery();
@@ -152,7 +154,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                             />
                                         )
                                     }
-                                    mode='removable'
+                                    mode={isTaskClosed ? undefined : 'removable'}
                                     onRemove={() => removeMemberHandler(fullName, vkUserId)}
                                 >
                                     {fullName}
