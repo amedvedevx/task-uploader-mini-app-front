@@ -37,7 +37,6 @@ export const CreatePage: FC<CreatePageProps> = () => {
     const {
         control,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm<FormValues>({
         defaultValues: {
