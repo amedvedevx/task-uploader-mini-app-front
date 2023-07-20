@@ -58,7 +58,7 @@ export const DropZone: FC<DropZoneProps> = ({
                         data-automation-id='upload-page-placeholderCompleted'
                         icon={<Icon56CancelCircleOutline />}
                     >
-                        Сбор завершен
+                        Сбор завершён
                     </PlaceholderCentered>
                 </DropZoneContainer>
             ) : (
@@ -152,7 +152,7 @@ const DropZoneContainer = styled.div<DropZoneContainerProps>`
 
     &:hover {
         border-color: ${({ isDisabled }) =>
-        isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
+            isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
     }
 `;
 

@@ -111,7 +111,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
             key={id}
             disabled={deleteLoading}
             indicator={
-                status === 'DONE' ? <GrayText>завершен</GrayText> : <GreenText>открыт</GreenText>
+                status === 'DONE' ? <GrayText>завершён</GrayText> : <GreenText>открыт</GreenText>
             }
             after={
                 <IconButton

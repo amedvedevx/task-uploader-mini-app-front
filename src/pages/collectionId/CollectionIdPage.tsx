@@ -111,7 +111,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
             header='Завершить задание'
             action={async () => {
                 await updateTask({ taskId: collectionId, payload: payloadCloseTask });
-                setSnackbarText({ type: 'success', text: 'Задание по сбору завершено' });
+                setSnackbarText({ type: 'success', text: 'Задание по сбору завершёно' });
             }}
             actionText='Завершить сбор'
             setPopout={setPopout}
@@ -173,7 +173,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         };
 
         const closedTask: ButtonOption = {
-            text: 'Сбор завершен',
+            text: 'Сбор завершён',
             onClick: () => {},
             loading: false,
             disabled: true,
@@ -260,7 +260,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                 status={currentTask.name}
                                 data-automation-id='collectionId-page-headerContent'
                             >
-                                {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
+                                {isTaskClosed ? 'Завершённое задание' : 'Активное задание'}
                             </PanelHeaderContent>
                         ) : (
                             <PanelHeaderSkeleton />
