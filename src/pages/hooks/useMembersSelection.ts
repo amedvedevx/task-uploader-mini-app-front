@@ -41,6 +41,13 @@ export const useMembersSelection = (): UseMembersSelectionResult => {
 
     const membersCount = selectedMembers.length + chatMembersCount;
 
+    const chatMembersCount = selectedChats.reduce(
+        (result, number) => result + number.chat_settings.members_count - 1,
+        0,
+    );
+
+    const membersCount = selectedMembers.length + chatMembersCount;
+
     const handleSelectChat: HandleSelectChat = (e, row) => {
         e.preventDefault();
         e.stopPropagation();
