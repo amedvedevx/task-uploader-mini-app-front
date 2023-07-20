@@ -63,9 +63,9 @@ export const CollectionCell: FC<CollectionCellProps> = ({
                 autoClose
                 before={
                     platform === Platform.IOS ? (
-                        <Icon28DeleteOutline />
+                        <Icon28DeleteOutline color='var(--vkui--color_text_negative)' />
                     ) : (
-                        <Icon28DeleteOutlineAndroid />
+                        <Icon28DeleteOutlineAndroid color='var(--vkui--color_text_negative)' />
                     )
                 }
                 mode='destructive'

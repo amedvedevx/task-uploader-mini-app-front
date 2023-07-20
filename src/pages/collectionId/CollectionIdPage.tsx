@@ -168,7 +168,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
             text: 'Завершить сбор',
             onClick: () => handleUpdateTask(),
             loading: isTaskUpdating,
-            mode: 'secondary',
+            mode: 'primary',
             appearance: 'negative',
         };
 
