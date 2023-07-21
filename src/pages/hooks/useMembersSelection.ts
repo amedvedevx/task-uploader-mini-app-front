@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import type { ChatType, TesteeType } from '@/app/types';
-import { useGetUserIdQuery } from '@/api';
 
 type IsMemberActive = (row: TesteeType) => boolean;
 
@@ -30,16 +29,6 @@ export const LIMIT_MEMBERS = 50;
 export const useMembersSelection = (): UseMembersSelectionResult => {
     const [selectedMembers, setSelectedMembers] = useState<SelectedMembersType>([]);
     const [selectedChats, setSelectedChats] = useState<SelectedChatsType>([]);
-    const { data: userId } = useGetUserIdQuery();
-
-    const chatMembersCount = selectedChats.reduce(
-        (result, number) =>
-            result +
-            number.chat_settings.active_ids?.filter((item) => item > 0 && item !== userId).length,
-        0,
-    );
-
-    const membersCount = selectedMembers.length + chatMembersCount;
 
     const chatMembersCount = selectedChats.reduce(
         (result, number) => result + number.chat_settings.members_count - 1,

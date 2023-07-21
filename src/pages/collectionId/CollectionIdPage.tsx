@@ -107,6 +107,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const popoutCloseTask = (
         <Popout
+            destructiveAction
             text='Вы уверены, что хотите завершить сбор?'
             header='Завершить задание'
             action={async () => {
@@ -168,7 +169,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
             text: 'Завершить сбор',
             onClick: () => handleUpdateTask(),
             loading: isTaskUpdating,
-            mode: 'secondary',
+            mode: 'primary',
             appearance: 'negative',
         };
 
@@ -333,6 +334,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                 {normalizedTestees.completed.length > 0 && (
                                     <CompletedMembers
                                         collectionId={collectionId}
+                                        isTaskClosed={isTaskClosed}
                                         taskResults={normalizedTestees.completed}
                                         isMobileDownloading={isMobileDownloading}
                                         isDesktopDownloading={isDesktopDownloading}

@@ -28,7 +28,7 @@ export const DropZone: FC<DropZoneProps> = ({
 }) => {
     const filesValidator = (file: File) => {
         if (file.size > maxFileSize) {
-            setSnackbarText({ type: 'error', text: 'Размер файла слишком большой' });
+            setSnackbarText({ type: 'error', text: `Размер файла ${file.name} слишком большой` });
 
             return rejectFileMessage;
         }

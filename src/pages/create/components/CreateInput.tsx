@@ -30,6 +30,7 @@ export const CreateInput: FC<CreateInputProps> = ({
     const isIOSPlatform = hardWarePlatform === Platform.IOS;
 
     const maxLength = inputName === 'collectionName' ? 48 : 128;
+    const minLength = inputName === 'collectionName' ? 3 : undefined;
 
     return (
         <CreateInputContainer>
@@ -61,7 +62,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                                 value={value.trimStart()}
                                 status={errors.collectionName && 'error'}
                                 maxLength={maxLength}
-                                minLength={3}
+                                minLength={minLength}
                                 data-automation-id='create-page-titleInput'
                                 onChange={onChange}
                                 onBlur={onBlur}
@@ -83,7 +84,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                 )}
                 name={inputName}
                 control={control}
-                rules={{ required, maxLength, minLength: 3, pattern }}
+                rules={{ required, maxLength, minLength, pattern }}
             />
         </CreateInputContainer>
     );
