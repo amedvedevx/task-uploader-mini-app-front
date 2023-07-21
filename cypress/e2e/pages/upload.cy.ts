@@ -100,7 +100,7 @@ describe('User can visit upload page', () => {
     it('and see correct drop zone after closing task', () => {
         if (!isTaskClosed) {
             cy.visit('/#/upload/2d9369e7-0342-47ee-b4b5-a51d6cdaddab');
-            upload.PlaceholderCompleted.first().contains('Сбор завершен');
+            upload.PlaceholderCompleted.first().contains('Сбор завершён');
         }
     });
 
