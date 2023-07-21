@@ -1,9 +1,6 @@
 import styled from 'styled-components';
 import { Text } from '@vkontakte/vkui';
-
-interface StubImageProps {
-    border: string;
-}
+import { Icon28ErrorCircleOutline } from '@vkontakte/icons';
 
 interface StubTitleProps {
     color: string;
@@ -34,7 +31,7 @@ export const StubImageContainer = styled.div`
     display: contents;
 `;
 
-export const StubImage = styled.img<StubImageProps>`
+export const StubImage = styled(Icon28ErrorCircleOutline)`
     margin: 34px;
 `;
 
