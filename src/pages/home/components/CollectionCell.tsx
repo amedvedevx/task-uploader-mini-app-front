@@ -81,6 +81,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
 
     const popoutDeleteTask = (
         <Popout
+            destructiveAction
             text='Вы уверены, что хотите удалить сбор?'
             header='Удаление задания'
             action={() => deleteTask({ taskId: id })}
