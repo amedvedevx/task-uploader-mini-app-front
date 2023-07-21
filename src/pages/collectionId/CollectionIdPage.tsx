@@ -107,6 +107,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const popoutCloseTask = (
         <Popout
+            destructiveAction
             text='Вы уверены, что хотите завершить сбор?'
             header='Завершить задание'
             action={async () => {
@@ -120,6 +121,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const popoutDeleteMember = (fullName: string, vkUserId: number): JSX.Element => (
         <Popout
+            destructiveAction
             text={`Вы уверены, что удалить пользователя ${fullName} ?`}
             header='Удалить пользователя'
             action={async () => {
@@ -168,7 +170,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
             text: 'Завершить сбор',
             onClick: () => handleUpdateTask(),
             loading: isTaskUpdating,
-            mode: 'secondary',
+            mode: 'primary',
             appearance: 'negative',
         };
 
