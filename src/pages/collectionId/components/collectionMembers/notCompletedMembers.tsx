@@ -89,7 +89,7 @@ export const NotCompletedMembers: FC<NotCompletedMembersProps> = ({
                             />
                         )
                     }
-                    mode='removable'
+                    mode={isTaskClosed ? undefined : 'removable'}
                     onRemove={() => removeMemberHandler(fullName, vkUserId)}
                 >
                     {fullName}

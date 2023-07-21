@@ -335,6 +335,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                 {normalizedTestees.completed.length > 0 && (
                                     <CompletedMembers
                                         collectionId={collectionId}
+                                        isTaskClosed={isTaskClosed}
                                         taskResults={normalizedTestees.completed}
                                         isMobileDownloading={isMobileDownloading}
                                         isDesktopDownloading={isDesktopDownloading}
