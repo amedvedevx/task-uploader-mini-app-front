@@ -118,6 +118,8 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
         setTimer(newTimer);
     };
 
+    const isDisabled = !membersCount || membersCount > 50;
+
     const onNextClick = () => {
         if (membersCount > LIMIT_MEMBERS) {
             return;
@@ -190,7 +192,8 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
                 options={[
                     {
                         text: 'Продолжить',
-                        disabled: !membersCount || membersCount > 50,
+                        disabled: isDisabled,
+                        mode: isDisabled ? 'tertiary' : 'primary',
                         counter: membersCount,
                         counterLabel: `${membersCount} / 50`,
                         onClick: onNextClick,
