@@ -30,6 +30,7 @@ import { DownloadButton } from './components/DownloadButton';
 interface CompletedMembersProps {
     taskResults: TaskResults[];
     collectionId: string;
+    isTaskClosed: boolean;
     isMobileDownloading: boolean;
     isDesktopDownloading: boolean;
     removeMemberHandler: (fullName: string, vkUserId: number) => void;
@@ -43,6 +44,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     isMobileDownloading,
     isDesktopDownloading,
     removeMemberHandler,
+    isTaskClosed,
 }) => {
     const [downloadFiles, { isLoading: isDownloading, originalArgs }] = useLazyDownloadFilesQuery();
     const [downloadFilesOnMobile] = useLazyDownloadFilesOnMobileQuery();
@@ -128,7 +130,7 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                     }) => (
                         <Accordion key={vkUserId}>
                             <AccordionSummaryWidth>
-                                <Cell
+                                <CompletedMember
                                     key={vkUserId}
                                     disabled
                                     before={
@@ -152,11 +154,11 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                                             />
                                         )
                                     }
-                                    mode='removable'
+                                    mode={isTaskClosed ? undefined : 'removable'}
                                     onRemove={() => removeMemberHandler(fullName, vkUserId)}
                                 >
                                     {fullName}
-                                </Cell>
+                                </CompletedMember>
                             </AccordionSummaryWidth>
 
                             <HorizontalScroll>
@@ -191,6 +193,12 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
 const AccordionSummaryWidth = styled(AccordionSummary)`
     .vkuiSimpleCell__children {
         width: 100%;
+    }
+`;
+
+const CompletedMember = styled(Cell)`
+    .vkuiSimpleCell__main {
+        white-space: break-spaces !important;
     }
 `;
 

@@ -63,9 +63,9 @@ export const CollectionCell: FC<CollectionCellProps> = ({
                 autoClose
                 before={
                     platform === Platform.IOS ? (
-                        <Icon28DeleteOutline />
+                        <Icon28DeleteOutline color='var(--vkui--color_text_negative)' />
                     ) : (
-                        <Icon28DeleteOutlineAndroid />
+                        <Icon28DeleteOutlineAndroid color='var(--vkui--color_text_negative)' />
                     )
                 }
                 mode='destructive'
@@ -81,8 +81,9 @@ export const CollectionCell: FC<CollectionCellProps> = ({
 
     const popoutDeleteTask = (
         <Popout
-            text='Вы уверены, что хотите удалить сбор?'
-            header='Удаление задания'
+            destructiveAction
+            text='Сбор пропадёт из истории. Это действие нельзя отменить.'
+            header='Удалить сбор?'
             action={() => deleteTask({ taskId: id })}
             actionText='Удалить сбор'
             setPopout={setPopout}
@@ -111,7 +112,11 @@ export const CollectionCell: FC<CollectionCellProps> = ({
             key={id}
             disabled={deleteLoading}
             indicator={
-                status === 'DONE' ? <GrayText>завершен</GrayText> : <GreenText>открыт</GreenText>
+                status === 'DONE' ? (
+                    <GrayText>Завершён</GrayText>
+                ) : (
+                    <GreenText>Идет сейчас</GreenText>
+                )
             }
             after={
                 <IconButton

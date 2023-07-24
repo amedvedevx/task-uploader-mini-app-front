@@ -37,7 +37,6 @@ export const CreatePage: FC<CreatePageProps> = () => {
     const {
         control,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm<FormValues>({
         defaultValues: {
@@ -92,10 +91,10 @@ export const CreatePage: FC<CreatePageProps> = () => {
             <CreateContainer>
                 <FormWrapper>
                     <PlaceholderWidth
-                        header='Придумайте название'
+                        header='Укажите название и описание сбора'
                         data-automation-id='create-page-placeholder'
                     >
-                        Название поможет вам быстрее найти сбор среди других заданий
+                        Так вы сможете быстрее находить его среди всех сборов
                     </PlaceholderWidth>
 
                     <FormLayoutWidth
@@ -105,16 +104,16 @@ export const CreatePage: FC<CreatePageProps> = () => {
                         <CreateInput
                             required
                             control={control}
-                            label='Название*'
-                            placeholder='Например: "Документы в лагерь"'
+                            label='Название *'
+                            placeholder='Копия справок о прививке'
                             inputName='collectionName'
                             pattern={regexPattern}
                         />
 
                         <CreateInput
                             control={control}
-                            label='Описание задания'
-                            placeholder='Например: "до 3 апреля необходимо прислать документы в лагерь о прививках"'
+                            label='Описание'
+                            placeholder='Присылайте медицинские справки о прививках до 3 апреля'
                             inputName='collectionDescription'
                         />
                     </FormLayoutWidth>
@@ -131,7 +130,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
             <FooterWithButton
                 options={[
                     {
-                        text: 'Готово',
+                        text: 'Сохранить',
                         onClick: handleSubmit(onSubmit),
                         loading: isTaskCreating,
                     },

@@ -107,11 +107,12 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const popoutCloseTask = (
         <Popout
-            text='Вы уверены, что хотите завершить сбор?'
-            header='Завершить задание'
+            destructiveAction
+            text='После завершения сбора снова открыть его не получится, придётся создавать новый.'
+            header='Завершить сбор?'
             action={async () => {
                 await updateTask({ taskId: collectionId, payload: payloadCloseTask });
-                setSnackbarText({ type: 'success', text: 'Задание по сбору завершено' });
+                setSnackbarText({ type: 'success', text: 'Сбор завершен' });
             }}
             actionText='Завершить сбор'
             setPopout={setPopout}
@@ -120,7 +121,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const popoutDeleteMember = (fullName: string, vkUserId: number): JSX.Element => (
         <Popout
-            text={`Вы уверены, что удалить пользователя ${fullName} ?`}
+            text={`Вы уверены, что хотите удалить пользователя ${fullName} ?`}
             header='Удалить пользователя'
             action={async () => {
                 await deleteMember({ taskId: currentTask?.id, vkUserIds: [vkUserId] });
@@ -168,16 +169,16 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
             text: 'Завершить сбор',
             onClick: () => handleUpdateTask(),
             loading: isTaskUpdating,
-            mode: 'secondary',
+            mode: 'primary',
             appearance: 'negative',
         };
 
         const closedTask: ButtonOption = {
-            text: 'Сбор завершен',
+            text: 'Сбор завершён',
             onClick: () => {},
             loading: false,
             disabled: true,
-            mode: 'secondary',
+            mode: 'primary',
             appearance: 'negative',
         };
 
@@ -260,7 +261,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                 status={currentTask.name}
                                 data-automation-id='collectionId-page-headerContent'
                             >
-                                {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
+                                {isTaskClosed ? 'Завершённое задание' : 'Активное задание'}
                             </PanelHeaderContent>
                         ) : (
                             <PanelHeaderSkeleton />
@@ -333,6 +334,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                 {normalizedTestees.completed.length > 0 && (
                                     <CompletedMembers
                                         collectionId={collectionId}
+                                        isTaskClosed={isTaskClosed}
                                         taskResults={normalizedTestees.completed}
                                         isMobileDownloading={isMobileDownloading}
                                         isDesktopDownloading={isDesktopDownloading}
