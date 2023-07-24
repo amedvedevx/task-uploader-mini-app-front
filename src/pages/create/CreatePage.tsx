@@ -38,6 +38,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
         control,
         handleSubmit,
         formState: { errors },
+        watch,
     } = useForm<FormValues>({
         defaultValues: {
             collectionName: '',
@@ -133,6 +134,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
                         text: 'Сохранить',
                         onClick: handleSubmit(onSubmit),
                         loading: isTaskCreating,
+                        disabled: watch('collectionName').trim().length === 0,
                     },
                 ]}
             />
