@@ -58,7 +58,7 @@ export const HomePage: FC<HomePageProps> = () => {
                             size='m'
                             onClick={() => router.pushPage(PAGE_CREATE_COLLECTION)}
                         >
-                            Создать
+                            Создать сбор
                         </Button>
                     }
                     data-automation-id='home-page-placeholder'
