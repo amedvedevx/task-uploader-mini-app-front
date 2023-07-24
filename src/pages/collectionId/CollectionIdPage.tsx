@@ -108,11 +108,11 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
     const popoutCloseTask = (
         <Popout
             destructiveAction
-            text='Вы уверены, что хотите завершить сбор?'
-            header='Завершить задание'
+            text='После завершения сбора снова открыть его не получится, придётся создавать новый.'
+            header='Завершить сбор?'
             action={async () => {
                 await updateTask({ taskId: collectionId, payload: payloadCloseTask });
-                setSnackbarText({ type: 'success', text: 'Задание по сбору завершёно' });
+                setSnackbarText({ type: 'success', text: 'Сбор завершен' });
             }}
             actionText='Завершить сбор'
             setPopout={setPopout}
