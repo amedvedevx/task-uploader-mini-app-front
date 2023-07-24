@@ -177,7 +177,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
             onClick: () => {},
             loading: false,
             disabled: true,
-            mode: 'tertiary',
+            mode: 'primary',
             appearance: 'negative',
         };
 

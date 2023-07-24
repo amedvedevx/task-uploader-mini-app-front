@@ -128,11 +128,7 @@ const RemindButton: FC<RemindButtonProps> = ({
     <Button
         appearance='accent'
         size='s'
-        mode={
-            !reminds?.allowedUserIds.includes(vkUserId) || !!apiMessageError
-                ? 'tertiary'
-                : 'secondary'
-        }
+        mode='secondary'
         disabled={!reminds?.allowedUserIds.includes(vkUserId) || !!apiMessageError}
         loading={loading}
         onClick={() => onClickHandler({ vkUserId, fullName })}

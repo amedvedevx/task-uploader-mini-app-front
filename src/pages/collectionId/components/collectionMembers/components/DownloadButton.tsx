@@ -33,7 +33,7 @@ export const DownloadButton: FC<DownloadButtonProps> = ({
     <Button
         appearance='accent'
         size='s'
-        mode={originalArgs?.vkUserId === vkUserId && isDownloading ? 'tertiary' : 'secondary'}
+        mode='secondary'
         align='left'
         after={<Counter size='s'>{counter}</Counter>}
         disabled={originalArgs?.vkUserId === vkUserId && isDownloading}
