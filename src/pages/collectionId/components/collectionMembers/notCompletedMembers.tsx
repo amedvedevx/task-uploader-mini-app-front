@@ -130,7 +130,7 @@ const RemindButton: FC<RemindButtonProps> = ({
         size='s'
         mode={
             !reminds?.allowedUserIds.includes(vkUserId) || !!apiMessageError
-                ? 'primary'
+                ? 'tertiary'
                 : 'secondary'
         }
         disabled={!reminds?.allowedUserIds.includes(vkUserId) || !!apiMessageError}
