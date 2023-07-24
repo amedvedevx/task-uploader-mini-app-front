@@ -261,7 +261,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                 status={currentTask.name}
                                 data-automation-id='collectionId-page-headerContent'
                             >
-                                {isTaskClosed ? 'Завершённое задание' : 'Активное задание'}
+                                {isTaskClosed ? 'Завершённый сбор' : 'Активный сбор'}
                             </PanelHeaderContent>
                         ) : (
                             <PanelHeaderSkeleton />
