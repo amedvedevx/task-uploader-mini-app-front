@@ -82,8 +82,8 @@ export const CollectionCell: FC<CollectionCellProps> = ({
     const popoutDeleteTask = (
         <Popout
             destructiveAction
-            text='Вы уверены, что хотите удалить сбор?'
-            header='Удаление задания'
+            text='Сбор пропадёт из истории. Это действие нельзя отменить.'
+            header='Удалить сбор?'
             action={() => deleteTask({ taskId: id })}
             actionText='Удалить сбор'
             setPopout={setPopout}
@@ -112,7 +112,11 @@ export const CollectionCell: FC<CollectionCellProps> = ({
             key={id}
             disabled={deleteLoading}
             indicator={
-                status === 'DONE' ? <GrayText>завершён</GrayText> : <GreenText>открыт</GreenText>
+                status === 'DONE' ? (
+                    <GrayText>Завершён</GrayText>
+                ) : (
+                    <GreenText>Идет сейчас</GreenText>
+                )
             }
             after={
                 <IconButton

@@ -143,7 +143,7 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
                     >
                         {currentTask ? (
                             <PanelHeaderContent status={currentTask.name}>
-                                Добавьте участников
+                                Добавление участников
                             </PanelHeaderContent>
                         ) : (
                             <PanelHeaderSkeleton />
