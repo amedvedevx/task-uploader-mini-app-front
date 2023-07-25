@@ -1,7 +1,7 @@
 import type { FC } from 'react';
-import { FormItem, Input, Textarea } from '@vkontakte/vkui';
+import { FormItem, Input, Platform, Textarea as TextareaRoot, usePlatform } from '@vkontakte/vkui';
 import styled from 'styled-components';
-import type { Control } from 'react-hook-form';
+import type { Control, ValidationRule } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
 import { InputLabel } from './InputLabel';
@@ -15,6 +15,7 @@ interface CreateInputProps {
     placeholder: string;
     inputName: 'collectionName' | 'collectionDescription';
     required?: boolean;
+    pattern?: ValidationRule<RegExp>;
 }
 
 export const CreateInput: FC<CreateInputProps> = ({
@@ -23,8 +24,13 @@ export const CreateInput: FC<CreateInputProps> = ({
     placeholder,
     inputName,
     required,
+    pattern,
 }) => {
+    const hardWarePlatform = usePlatform();
+    const isIOSPlatform = hardWarePlatform === Platform.IOS;
+
     const maxLength = inputName === 'collectionName' ? 48 : 128;
+    const minLength = inputName === 'collectionName' ? 3 : undefined;
 
     return (
         <CreateInputContainer>
@@ -34,7 +40,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                         top={
                             <InputLabel
                                 label={label}
-                                curLength={value?.trim().length || 0}
+                                curLength={value?.length || 0}
                                 maxLength={maxLength}
                             />
                         }
@@ -46,7 +52,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                         bottom={
                             inputName === 'collectionName' &&
                             errors.collectionName &&
-                            'Укажите название сбора'
+                            parseErrorType(errors.collectionName.type)
                         }
                     >
                         {inputName === 'collectionName' ? (
@@ -56,6 +62,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                                 value={value.trimStart()}
                                 status={errors.collectionName && 'error'}
                                 maxLength={maxLength}
+                                minLength={minLength}
                                 data-automation-id='create-page-titleInput'
                                 onChange={onChange}
                                 onBlur={onBlur}
@@ -63,6 +70,7 @@ export const CreateInput: FC<CreateInputProps> = ({
                         ) : (
                             <Textarea
                                 grow
+                                $isIOSPlatform={isIOSPlatform}
                                 getRootRef={ref}
                                 placeholder={placeholder}
                                 value={value}
@@ -76,10 +84,24 @@ export const CreateInput: FC<CreateInputProps> = ({
                 )}
                 name={inputName}
                 control={control}
-                rules={{ required, maxLength }}
+                rules={{ required, maxLength, minLength, pattern }}
             />
         </CreateInputContainer>
     );
+};
+
+const parseErrorType = (type: string): string | false => {
+    switch (type) {
+        case 'required':
+            return 'Укажите название сбора';
+        case 'minLength':
+            return 'Название должно содержать минимум 3 символа';
+        case 'pattern':
+            return 'Названия состоящие только из спецсимволов запрещёны';
+
+        default:
+            return false;
+    }
 };
 
 const CreateInputContainer = styled.div`
@@ -89,4 +111,10 @@ const CreateInputContainer = styled.div`
 const FormItemRoot = styled(FormItem)`
     padding: 0;
     text-align: left;
+`;
+
+const Textarea = styled(TextareaRoot)<{ $isIOSPlatform: boolean }>`
+    .vkuiTextarea__el {
+        ${({ $isIOSPlatform }) => ($isIOSPlatform ? 'margin-bottom: 12px' : '')};
+    }
 `;

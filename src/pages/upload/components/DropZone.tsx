@@ -6,6 +6,7 @@ import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 
 import type { SnackBarText } from '@/app/types';
+import { getFileExtension } from '@/lib/utils';
 
 interface DropZoneProps {
     isLoading: boolean;
@@ -17,6 +18,7 @@ interface DropZoneProps {
 
 // 200 MB
 const maxFileSize = 209715200;
+const forbiddenFileExtension = ['mp3'];
 const rejectFileMessage = { code: 'reject', message: 'wrong-file' };
 
 export const DropZone: FC<DropZoneProps> = ({
@@ -27,8 +29,19 @@ export const DropZone: FC<DropZoneProps> = ({
     isMobilePlatform,
 }) => {
     const filesValidator = (file: File) => {
+        const fileExt = getFileExtension(file.name);
+
         if (file.size > maxFileSize) {
-            setSnackbarText({ type: 'error', text: 'Размер файла слишком большой' });
+            setSnackbarText({ type: 'error', text: `Размер файла ${file.name} слишком большой` });
+
+            return rejectFileMessage;
+        }
+
+        if (forbiddenFileExtension.includes(fileExt)) {
+            setSnackbarText({
+                type: 'error',
+                text: `Невозможно загрузить ${file.name}. Формат MP3 не поддерживается `,
+            });
 
             return rejectFileMessage;
         }
@@ -58,7 +71,7 @@ export const DropZone: FC<DropZoneProps> = ({
                         data-automation-id='upload-page-placeholderCompleted'
                         icon={<Icon56CancelCircleOutline />}
                     >
-                        Сбор завершен
+                        Сбор завершён
                     </PlaceholderCentered>
                 </DropZoneContainer>
             ) : (
@@ -152,7 +165,7 @@ const DropZoneContainer = styled.div<DropZoneContainerProps>`
 
     &:hover {
         border-color: ${({ isDisabled }) =>
-        isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
+            isDisabled ? 'var(--vkui--color_icon_secondary)' : 'var(--vkui--color_stroke_accent)'};
     }
 `;
 

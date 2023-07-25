@@ -150,11 +150,11 @@ export const errorParser = (errorNumber: number): string => {
             break;
 
         case 401:
-            result = 'Вы не являетесь создателем сбора. Доступ запрещен';
+            result = 'Вы не являетесь создателем сбора. Доступ запрещён';
             break;
 
         default:
-            result = 'Произошла ошибка. Попробуйте еще раз';
+            result = 'Произошла ошибка. Попробуйте ещё раз';
             break;
     }
 
@@ -192,7 +192,7 @@ export const createErrorHandler = (error: Error, resetErrorBoundary: () => void)
                 window?.location?.reload();
             }
         },
-        resetMessage: 'Попробовать еще раз',
+        resetMessage: 'Попробовать ещё раз',
     };
 
     if (error.message.includes(failedImportedError)) {

@@ -19,6 +19,8 @@ import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { PAGE_ADD_MEMBERS, PAGE_COLLECTION_HOME, PANEL_COLLECTION_ID } from '@/app/router';
 import {
     store,
+    useDeleteTaskResultsMutation,
+    useGetAllowedForRemindIdsQuery,
     useGetPlatformQuery,
     useGetTaskIdQuery,
     useGetTaskResultsQuery,
@@ -72,8 +74,14 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         { taskId: collectionId },
         { skip: !collectionId },
     );
+
+    const { data: reminds } = useGetAllowedForRemindIdsQuery(
+        { taskId: collectionId },
+        { skip: !collectionId },
+    );
     const [updateTask, { isLoading: isTaskUpdating }] = useUpdateTaskMutation();
     const [downloadFiles, { isLoading: isFileDownloading }] = useLazyDownloadFilesQuery();
+    const [deleteMember] = useDeleteTaskResultsMutation();
 
     const [popout, setPopout] = useState<JSX.Element | null>(null);
 
@@ -99,13 +107,27 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const popoutCloseTask = (
         <Popout
-            text='Вы уверены, что хотите завершить сбор?'
-            header='Завершить задание'
+            destructiveAction
+            text='После завершения сбора снова открыть его не получится, придётся создавать новый.'
+            header='Завершить сбор?'
             action={async () => {
                 await updateTask({ taskId: collectionId, payload: payloadCloseTask });
-                setSnackbarText({ type: 'success', text: 'Задание по сбору завершено' });
+                setSnackbarText({ type: 'success', text: 'Сбор завершен' });
             }}
             actionText='Завершить сбор'
+            setPopout={setPopout}
+        />
+    );
+
+    const popoutDeleteMember = (fullName: string, vkUserId: number): JSX.Element => (
+        <Popout
+            text={`Вы уверены, что хотите удалить пользователя ${fullName} ?`}
+            header='Удалить пользователя'
+            action={async () => {
+                await deleteMember({ taskId: currentTask?.id, vkUserIds: [vkUserId] });
+                setSnackbarText({ type: 'success', text: `Участник сбора ${fullName} удален` });
+            }}
+            actionText='Удалить'
             setPopout={setPopout}
         />
     );
@@ -126,6 +148,10 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         content.some((el) => isForbiddenFile(el.title)),
     );
 
+    const removeMemberHandler = (fullName: string, vkUserId: number) => {
+        setPopout(popoutDeleteMember(fullName, vkUserId));
+    };
+
     const prepareButtonsOptions = (): ButtonOption[] => {
         const downloadAllButton: ButtonOption = {
             text: 'Скачать все файлы',
@@ -143,16 +169,16 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
             text: 'Завершить сбор',
             onClick: () => handleUpdateTask(),
             loading: isTaskUpdating,
-            mode: 'secondary',
+            mode: 'primary',
             appearance: 'negative',
         };
 
         const closedTask: ButtonOption = {
-            text: 'Сбор завершен',
+            text: 'Сбор завершён',
             onClick: () => {},
             loading: false,
             disabled: true,
-            mode: 'secondary',
+            mode: 'primary',
             appearance: 'negative',
         };
 
@@ -235,7 +261,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                 status={currentTask.name}
                                 data-automation-id='collectionId-page-headerContent'
                             >
-                                {isTaskClosed ? 'Завершенное задание' : 'Активное задание'}
+                                {isTaskClosed ? 'Завершённый сбор' : 'Активный сбор'}
                             </PanelHeaderContent>
                         ) : (
                             <PanelHeaderSkeleton />
@@ -291,6 +317,8 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                             setPopout={setPopout}
                             setSnackbarText={setSnackbarText}
                             apiMessageError={apiMessageError}
+                            currentTask={currentTask}
+                            reminds={reminds}
                         />
                     )}
 
@@ -306,9 +334,11 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                 {normalizedTestees.completed.length > 0 && (
                                     <CompletedMembers
                                         collectionId={collectionId}
+                                        isTaskClosed={isTaskClosed}
                                         taskResults={normalizedTestees.completed}
                                         isMobileDownloading={isMobileDownloading}
                                         isDesktopDownloading={isDesktopDownloading}
+                                        removeMemberHandler={removeMemberHandler}
                                     />
                                 )}
                             </>
@@ -321,6 +351,9 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
                                         collectionId={collectionId}
                                         taskResults={normalizedTestees.notCompleted}
                                         apiMessageError={apiMessageError}
+                                        removeMemberHandler={removeMemberHandler}
+                                        currentTask={currentTask}
+                                        reminds={reminds}
                                     />
                                 )}
 

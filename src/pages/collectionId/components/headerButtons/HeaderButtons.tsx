@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { ButtonGroup } from '@vkontakte/vkui';
 
-import type { SnackBarText } from '@/app/types';
+import type { GetAllowedForRemindIdsResponse, SnackBarText, TaskType } from '@/app/types';
 import type { ErrorsState } from '@/api/state';
 
 import { AddTestees, RemindAll } from './components';
@@ -12,6 +12,8 @@ interface HeaderButtonsProps {
     setPopout: (arg: JSX.Element | null) => void;
     setSnackbarText: (arg: SnackBarText) => void;
     apiMessageError: ErrorsState | undefined;
+    reminds: GetAllowedForRemindIdsResponse | undefined;
+    currentTask: TaskType;
 }
 
 export const HeaderButtons: FC<HeaderButtonsProps> = ({
@@ -20,6 +22,8 @@ export const HeaderButtons: FC<HeaderButtonsProps> = ({
     setPopout,
     setSnackbarText,
     apiMessageError,
+    reminds,
+    currentTask,
 }) => (
     <ButtonGroup
         stretched
@@ -36,6 +40,8 @@ export const HeaderButtons: FC<HeaderButtonsProps> = ({
                 setPopout={setPopout}
                 setSnackbarText={setSnackbarText}
                 apiMessageError={apiMessageError}
+                reminds={reminds}
+                currentTask={currentTask}
             />
         )}
     </ButtonGroup>

@@ -23,6 +23,6 @@ describe('User can create and update task', () => {
         cy.get('.vkuiAlert__button').contains('Завершить сбор').trigger('mouseover').click();
 
         common.FooterButtons.children().first().should('not.have.attr', 'disabled');
-        common.Footer.contains('Сбор завершен');
+        common.Footer.contains('Сбор завершён');
     });
 });

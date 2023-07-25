@@ -72,6 +72,7 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
 
                                 <Button
                                     stretched
+                                    mode='tertiary'
                                     type='button'
                                     onClick={errorHandler.onReset}
                                 >
