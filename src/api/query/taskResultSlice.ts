@@ -7,25 +7,28 @@ import type {
 
 import { apiSlice } from './apiSlice';
 
-const taskResultSlice = apiSlice.enhanceEndpoints({ addTagTypes: ['TaskResult'] }).injectEndpoints({
-    endpoints: (builder) => ({
-        getTaskResults: builder.query<GetTaskResultsResponse, GetTaskResultsProps>({
-            query: ({ taskId }) => ({
-                url: `/task-result/${taskId}`,
+const taskResultSlice = apiSlice
+    .enhanceEndpoints({ addTagTypes: ['TaskResult', 'AllowedRemindIds', 'Task'] })
+    .injectEndpoints({
+        endpoints: (builder) => ({
+            getTaskResults: builder.query<GetTaskResultsResponse, GetTaskResultsProps>({
+                query: ({ taskId }) => ({
+                    url: `/task-result/${taskId}`,
+                }),
+                providesTags: ['TaskResult'],
+                transformResponse: (response: { taskResults: TaskResults[] }) => ({
+                    taskResults: response.taskResults,
+                }),
             }),
-            providesTags: ['TaskResult'],
-            transformResponse: (response: { taskResults: TaskResults[] }) => ({
-                taskResults: response.taskResults,
+            deleteTaskResults: builder.mutation<void, DeleteTaskResultProps>({
+                query: ({ taskId, vkUserIds }) => ({
+                    url: `/task-result/${taskId}`,
+                    method: 'DELETE',
+                    body: { vkUserIds },
+                }),
+                invalidatesTags: ['TaskResult', 'AllowedRemindIds', 'Task'],
             }),
         }),
-        deleteTaskResult: builder.mutation<void, DeleteTaskResultProps>({
-            query: ({ taskId }) => ({
-                url: `/task-result/${taskId}`,
-                method: 'DELETE',
-            }),
-            invalidatesTags: ['TaskResult'],
-        }),
-    }),
-});
+    });
 
-export const { useGetTaskResultsQuery, useDeleteTaskResultMutation } = taskResultSlice;
+export const { useGetTaskResultsQuery, useDeleteTaskResultsMutation } = taskResultSlice;

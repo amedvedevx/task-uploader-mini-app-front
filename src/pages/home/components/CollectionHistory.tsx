@@ -47,5 +47,5 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({
 };
 
 const CollectionHistoryWrapper = styled.div`
-    min-height: 190px;
+    min-height: 180px;
 `;

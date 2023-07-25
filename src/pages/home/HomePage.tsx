@@ -51,18 +51,21 @@ export const HomePage: FC<HomePageProps> = () => {
                             src={DocAndImageIcon}
                         />
                     }
-                    header='Создавайте централизованный сбор файлов и документов'
+                    header='Собирайте файлы и документы'
                     action={
                         <Button
-                            stretched
+                        stretched
                             size='m'
                             onClick={() => router.pushPage(PAGE_CREATE_COLLECTION)}
                         >
-                            Создать
+                            Создать сбор
                         </Button>
                     }
                     data-automation-id='home-page-placeholder'
-                />
+                >
+                    Создавайте сборы справок, домашних заданий и других документов. Вы сможете
+                    отслеживать, кто уже прислал файл, а кому стоит напомнить.
+                </PlaceholderWidth>
 
                 {data && data?.tasks?.length > 0 && (
                     <GroupWide
@@ -105,6 +108,9 @@ export const PlaceholderWidth = styled(Placeholder)`
     max-width: 372px;
     .vkuiPlaceholder__in {
         padding: 48px 0px;
+    }
+    .vkuiPlaceholder__action {
+        width: 100%;
     }
 `;
 
