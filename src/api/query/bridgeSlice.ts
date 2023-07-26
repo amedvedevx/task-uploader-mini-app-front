@@ -1,14 +1,20 @@
 import type { EGetLaunchParamsResponsePlatforms } from '@vkontakte/vk-bridge';
 
-import type { VKPlatforms } from '@/app/types';
+import type { GetMultiAccountResponse, VKPlatforms } from '@/app/types';
 
 import { apiSlice } from './apiSlice';
 import type { VKWebAppCreateHashResult } from './bridge';
-import { BridgeCreateHash, BridgeGetPlatform, BridgeGetUserId, BridgeGetAuthToken } from './bridge';
+import {
+    BridgeCreateHash,
+    BridgeGetPlatform,
+    BridgeGetUserId,
+    BridgeGetAuthToken,
+    BridgeGetMultiAccount,
+} from './bridge';
 import { setError, setToken } from '../state';
 
 const bridgeSlice = apiSlice
-    .enhanceEndpoints({ addTagTypes: ['Hash', 'Platform', 'UserId', 'AuthToken'] })
+    .enhanceEndpoints({ addTagTypes: ['Hash', 'Platform', 'UserId', 'AuthToken', 'MultiAccount'] })
     .injectEndpoints({
         endpoints: (builder) => ({
             createHash: builder.query<VKWebAppCreateHashResult, void>({
@@ -47,6 +53,18 @@ const bridgeSlice = apiSlice
                 },
                 providesTags: ['UserId'],
             }),
+            getMultiAccount: builder.query<GetMultiAccountResponse, { token: string }>({
+                queryFn: async ({ token }) => {
+                    const result = await BridgeGetMultiAccount(token);
+
+                    if (result === 'error') {
+                        return { error: 'error' };
+                    }
+
+                    return { data: result };
+                },
+                providesTags: ['MultiAccount'],
+            }),
             getAuthToken: builder.query<string, void>({
                 queryFn: async (args, { dispatch }) => {
                     const result = await BridgeGetAuthToken();
@@ -81,4 +99,5 @@ export const {
     useGetUserIdQuery,
     useLazyGetPlatformQuery,
     useGetAuthTokenQuery,
+    useGetMultiAccountQuery,
 } = bridgeSlice;

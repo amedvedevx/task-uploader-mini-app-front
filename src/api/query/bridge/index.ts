@@ -8,3 +8,4 @@ export * from './bridge.createHash';
 export * from './bridge.getPlatform';
 export * from './bridge.getUserId';
 export * from './bridge.getAuthToken';
+export * from './account.getMulti';

@@ -43,6 +43,7 @@ export type TaskType = {
         fullName: string;
         photo: string;
         createDate: string;
+        isEdu: boolean;
     };
     status: TaskStatusTypesForOrganizer & TaskStatusTypesForTestee;
     name: string;
@@ -138,6 +139,7 @@ export interface CreateTaskProps {
     description: string;
     unlimited: boolean;
     deadLine: number;
+    isEdu: boolean;
 }
 
 export interface UpdateTaskProps {
@@ -179,6 +181,20 @@ export interface GetTesteesProps {
     invitedMemberIds?: number[];
     userId: number;
 }
+
+export interface GetMultiAccountResponse {
+    count: number;
+    items: Account[];
+}
+
+type Account = {
+    id: number;
+    profile_type: number;
+    first_name: string;
+    last_name: string;
+    can_access_closed: boolean;
+    is_closed: boolean;
+};
 
 export interface GetAllowedForRemindIdsResponse {
     allowedUserIds: number[];
@@ -271,3 +287,12 @@ export type SnackBarText = {
     text: string;
     fileName?: string;
 } | null;
+
+export type Bearer = {
+    sign: string;
+    userId: number;
+    appId: number;
+    ts: number;
+    role: 'ORGANIZER' | 'TESTEE';
+    is_edu: 'true' | 'false';
+};
