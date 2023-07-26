@@ -125,8 +125,6 @@ const DeleteIcon = styled(Icon24DismissSubstract)`
     background: var(--vkui--color_background_content);
     box-shadow: none;
     appearance: none;
-    appearance: none;
-    appearance: none;
 `;
 
 const SpinnerIcon = styled(Spinner)`
@@ -157,8 +155,6 @@ const SuccessIcon = styled(Icon16DoneCircle)`
     border-radius: 9999px;
     background: #4bb34b;
     box-shadow: none;
-    appearance: none;
-    appearance: none;
     appearance: none;
 `;
 
