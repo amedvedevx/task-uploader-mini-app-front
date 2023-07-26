@@ -97,7 +97,7 @@ const parseErrorType = (type: string): string | false => {
         case 'minLength':
             return 'Название должно содержать минимум 3 символа';
         case 'pattern':
-            return 'Названия состоящие только из спецсимволов запрещёны';
+            return 'Названия состоящие только из спецсимволов запрещены';
 
         default:
             return false;

@@ -4,12 +4,15 @@ import { Div, FormLayout, Panel, PanelHeader, PanelHeaderBack, Placeholder } fro
 import { useForm } from 'react-hook-form';
 import { useRouter } from '@happysanta/router';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 import { PAGE_COLLECTION_HOME, PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } from '@/app/router';
+import type { RootState } from '@/api';
 import { useCreateTaskMutation } from '@/api';
 import { FooterWithButton } from '@/components';
 import type { SnackBarText } from '@/app/types';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
+import { getEduAccountStatus } from '@/utils';
 
 import { CreateInput } from './components';
 
@@ -33,6 +36,8 @@ export const CreatePage: FC<CreatePageProps> = () => {
 
     const [createTask, { isLoading: isTaskCreating, isError: isTaskError }] =
         useCreateTaskMutation();
+
+    const { bearer } = useSelector((state: RootState) => state.authorization);
 
     const {
         control,
@@ -59,6 +64,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
             description: data.collectionDescription.trim(),
             unlimited: true,
             deadLine: deadLineDate,
+            isEdu: getEduAccountStatus(bearer),
         };
 
         const { id } = await createTask(payload).unwrap();

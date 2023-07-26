@@ -29,7 +29,7 @@ import {
 } from '@/api';
 import { TaskStatusTypesForOrganizer, VKPlatforms } from '@/app/types';
 import type { SnackBarText, TaskType } from '@/app/types';
-import { useSearch } from '@/hooks';
+import { useEduCheck, useSearch } from '@/hooks';
 import { errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
@@ -74,6 +74,10 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         { taskId: collectionId },
         { skip: !collectionId },
     );
+
+    const taskIsEdu = currentTask?.owner?.isEdu;
+
+    useEduCheck(taskIsEdu);
 
     const { data: reminds } = useGetAllowedForRemindIdsQuery(
         { taskId: collectionId },
