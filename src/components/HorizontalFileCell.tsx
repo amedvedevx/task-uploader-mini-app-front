@@ -75,8 +75,9 @@ export const HorizontalFileCell: FC<HorizontalFileCellProps> = ({
 };
 
 const FileImage = styled(Avatar)`
-    border-radius: 10px;
     position: relative;
+
+    border-radius: 10px;
 `;
 
 const CellButton = styled(IconButton)<{ $type?: 'download' | 'delete' | 'loading' | 'success' }>`
@@ -91,70 +92,74 @@ const CellButton = styled(IconButton)<{ $type?: 'download' | 'delete' | 'loading
 
 const HorizontalCellOverflow = styled(HorizontalCell)`
     .vkuiSubhead {
-        text-overflow: ellipsis;
+        display: box;
         overflow: hidden;
+
+        text-overflow: ellipsis;
         -webkit-line-clamp: 4;
-        display: -webkit-box;
         -webkit-box-orient: vertical;
     }
 `;
 
 const DownloadIcon = styled(Icon24DoorArrowLeftOutline)`
-    transform: rotate(90deg);
-    color: var(--vkui--color_background_content);
+    padding: 3px !important;
 
-    background-clip: content-box;
+    transform: rotate(90deg);
+
+    color: var(--vkui--color_background_content);
     border: 3px solid var(--vkui--color_background_content);
     border-radius: 9999px;
-    box-shadow: none;
 
     background: var(--vkui--color_text_accent_themed);
-    padding: 3px !important;
+
+    background-clip: content-box;
+    box-shadow: none;
 `;
 
 const DeleteIcon = styled(Icon24DismissSubstract)`
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border: 3px solid var(--vkui--color_background_content);
-    border-radius: 9999px;
-    box-shadow: none;
+    padding: 0 !important;
 
     color: var(--vkui--color_accent_red--hover);
+    border: 3px solid var(--vkui--color_background_content);
+    border-radius: 9999px;
     background: var(--vkui--color_background_content);
-    padding: 0px !important;
+    box-shadow: none;
+    appearance: none;
+    appearance: none;
+    appearance: none;
 `;
 
 const SpinnerIcon = styled(Spinner)`
+    width: 24px;
+
+    height: 24px;
+    margin: 12px !important;
+
+    padding: 0 !important;
+
+    color: var(--vkui--color_background_content);
+    border-radius: 50%;
+    background-color: #808080;
+    background-clip: content-box;
+
+    box-shadow: 0 1px 4px var(--vkui--color_image_border_alpha);
+
     .vkuiIcon--24 {
         padding: 0;
     }
-
-    color: var(--vkui--color_background_content);
-
-    height: 24px;
-    width: 24px;
-
-    box-shadow: 0px 1px 4px var(--vkui--color_image_border_alpha);
-    background-clip: content-box;
-    background-color: #808080;
-    border-radius: 50%;
-
-    padding: 0px !important;
-    margin: 12px !important;
 `;
 
 const SuccessIcon = styled(Icon16DoneCircle)`
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border: 3px solid var(--vkui--color_background_content);
-    border-radius: 9999px;
-    box-shadow: none;
+    padding: 3px !important;
 
     color: var(--vkui--color_background_content);
+    border: 3px solid var(--vkui--color_background_content);
+    border-radius: 9999px;
     background: #4bb34b;
-    padding: 3px !important;
+    box-shadow: none;
+    appearance: none;
+    appearance: none;
+    appearance: none;
 `;
 
 const iconType = {

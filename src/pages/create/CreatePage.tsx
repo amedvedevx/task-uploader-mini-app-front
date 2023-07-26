@@ -10,8 +10,9 @@ import { PAGE_COLLECTION_HOME, PAGE_COLLECTION_ID, PANEL_CREATE_COLLECTION } fro
 import type { RootState } from '@/api';
 import { useCreateTaskMutation } from '@/api';
 import { FooterWithButton } from '@/components';
-import type { Bearer, SnackBarText } from '@/app/types';
+import type { SnackBarText } from '@/app/types';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
+import { getEduAccountStatus } from '@/utils';
 
 import { CreateInput } from './components';
 
@@ -145,12 +146,6 @@ export const CreatePage: FC<CreatePageProps> = () => {
             />
         </Panel>
     );
-};
-
-const getEduAccountStatus = (bearer: string) => {
-    const bearerJSON = JSON.parse(bearer.slice(6)) as Bearer;
-
-    return bearerJSON.is_edu === 'true';
 };
 
 const CreateContainer = styled(Div)`

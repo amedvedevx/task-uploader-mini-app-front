@@ -153,7 +153,7 @@ export const errorParser = (errorNumber: number): string => {
             break;
 
         case 401:
-            result = 'Вы не являетесь создателем сбора. Доступ запрещён';
+            result = 'Доступ запрещён';
             break;
 
         default:

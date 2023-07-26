@@ -15,7 +15,7 @@ export const useGenerateBearer = (token: string | undefined): boolean => {
     const userType = useUserRole();
     const dispatch = useDispatch();
 
-    const isEduAccount = () => {
+    const isEduAccount = (): 'true' | 'false' => {
         const curAcc = multiAccount?.items.find((account) => account.id === userId);
 
         return curAcc?.profile_type === 2 ? 'true' : 'false';
@@ -25,15 +25,13 @@ export const useGenerateBearer = (token: string | undefined): boolean => {
         const authorizationBearerData = vkHash && userType && userId && multiAccount;
 
         if (authorizationBearerData) {
-            dispatch(
-                setBearer(
-                    `Bearer {"sign": ${JSON.stringify(
-                        vkHash.sign,
-                    )}, "userId": ${userId.toString()}, "appId": ${APP_ID}, "ts": ${
-                        vkHash.ts
-                    }, "role": "${userType}", "is_edu": "${isEduAccount()}"}`,
-                ),
-            );
+            const bearer = `Bearer {"sign": ${JSON.stringify(
+                vkHash.sign,
+            )}, "userId": ${userId.toString()}, "appId": ${APP_ID}, "ts": ${
+                vkHash.ts
+            }, "role": "${userType}", "is_edu": "${isEduAccount()}"}`;
+
+            dispatch(setBearer(bearer));
             setIsBearerSet(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
