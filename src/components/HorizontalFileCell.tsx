@@ -92,7 +92,7 @@ const CellButton = styled(IconButton)<{ $type?: 'download' | 'delete' | 'loading
 
 const HorizontalCellOverflow = styled(HorizontalCell)`
     .vkuiSubhead {
-        display: box;
+        display: block;
         overflow: hidden;
 
         text-overflow: ellipsis;
