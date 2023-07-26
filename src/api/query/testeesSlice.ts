@@ -8,7 +8,7 @@ import type {
     UpdateAllowedForRemindIdsProps,
     TesteeType,
 } from '@/app/types';
-import { UPLOAD_URL } from '@/app/config';
+import { generateInviteMessageToTask } from '@/lib';
 
 import type { BridgeMessagesSendResponse } from './bridge';
 import {
@@ -42,8 +42,8 @@ const testeesSlice = apiSlice
                         ),
                         profiles: testees.profiles
                             ? testees.profiles.filter(
-                                (el) => !invitedMemberIds?.includes(el.id) && el.id !== userId,
-                            )
+                                  (el) => !invitedMemberIds?.includes(el.id) && el.id !== userId,
+                              )
                             : [],
                     };
 
@@ -106,11 +106,7 @@ const testeesSlice = apiSlice
                     const { token } = (getState() as RootState).authorization;
 
                     const normalizeMembers = whoToSend.join();
-                    const inviteMesage = `Вы были приглашены пользователем ${
-                        task.owner.fullName
-                    } для загрузки файлов по заданию: ${task.name}. ${
-                        task.description ? `\n Описание: ${task.description}.` : ''
-                    } \n ${UPLOAD_URL}${taskId}`;
+                    const inviteMesage = generateInviteMessageToTask(task);
 
                     const result = await BridgeMessagesSend({
                         token,

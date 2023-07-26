@@ -56,8 +56,8 @@ export const AppPages: FC = () => {
     let isFirst = useFirstPageCheck();
     isFirst = useChangeFragment({ isFirst });
 
-    useGetAuthTokenQuery();
-    const bearer = useGenerateBearer();
+    const { data: token } = useGetAuthTokenQuery();
+    const isBearerSet = useGenerateBearer(token);
 
     useEffect(() => {
         if (bridge.supports('VKWebAppSetSwipeSettings')) {
@@ -67,7 +67,7 @@ export const AppPages: FC = () => {
 
     return (
         <>
-            {bearer ? (
+            {isBearerSet ? (
                 <SplitLayout>
                     <SplitCol>
                         <Root activeView={location.getViewId()}>
