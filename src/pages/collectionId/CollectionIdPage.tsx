@@ -30,7 +30,7 @@ import {
 import { TaskStatusTypesForOrganizer, VKPlatforms } from '@/app/types';
 import type { SnackBarText, TaskType } from '@/app/types';
 import { useEduCheck, useSearch } from '@/hooks';
-import { errorParser, isForbiddenFile, normalizeTestees } from '@/lib/utils';
+import { errorParser, isForbiddenFile, normalizeTestees, parseFileSize } from '@/lib/utils';
 import type { ButtonOption } from '@/components';
 import { Popout, FooterWithButton } from '@/components';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
@@ -109,6 +109,12 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     const fixedLayoutRef = createRef<HTMLDivElement>();
 
+    const testeesFilesSize = taskResults.map(({ content }) =>
+        content.reduce((prev, { size }) => prev + size, 0),
+    );
+
+    const totalFilesSize = testeesFilesSize.reduce((prev, next) => prev + next, 0);
+
     const popoutCloseTask = (
         <Popout
             destructiveAction
@@ -168,6 +174,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
             },
             loading: isFileDownloading,
             mode: 'primary',
+            counterLabel: `${parseFileSize(totalFilesSize)}`,
         };
         const closeTaskButton: ButtonOption = {
             text: 'Завершить сбор',
