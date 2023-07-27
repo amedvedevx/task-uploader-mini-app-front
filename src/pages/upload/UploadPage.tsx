@@ -4,19 +4,22 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from '@happysanta/router';
 import styled from 'styled-components';
 import { Icon20Info } from '@vkontakte/icons';
+import { useSelector } from 'react-redux';
 
 import { PANEL_UPLOAD_ID } from '@/app/router';
+import type { RootState } from '@/api';
 import {
     useGetTaskIdQuery,
     useUploadFileMutation,
     useGetTaskResultsQuery,
     useGetPlatformQuery,
+    useAppointUsersToTaskMutation,
 } from '@/api';
 import type { SnackBarText } from '@/app/types';
 import { TaskStatusTypesForOrganizer } from '@/app/types';
 import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
-import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
+import { checkIsMobilePlatform, errorParser, getUserIdFromBearer } from '@/lib/utils';
 import { FooterWithButton } from '@/components';
 import { useEduCheck } from '@/hooks';
 
@@ -37,6 +40,9 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const { data: platform = '' } = useGetPlatformQuery();
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
+    const { bearer } = useSelector((state: RootState) => state.authorization);
+    const userId = getUserIdFromBearer(bearer);
+    const [appointUsersToTask] = useAppointUsersToTaskMutation();
     const [uploadedWithErrors, setUploadedWithErrors] = useState<boolean>(false);
 
     const taskIsEdu = data?.owner?.isEdu;
@@ -122,6 +128,20 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
         return 'delete';
     };
 
+    const AppointNewUserToTask = () => {
+        const isUserAppointedToTask =
+            (taskResults && taskResults?.taskResults?.length > 0) || false;
+
+        if (!isUserAppointedToTask && userId) {
+            const payload = {
+                taskId: uploadId,
+                vkUserIds: [userId],
+            };
+
+            appointUsersToTask({ payload });
+        }
+    };
+
     useEffect(() => {
         if (uploadedWithErrors) {
             setTimeout(() => {
@@ -129,6 +149,11 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             }, 1000);
         }
     }, [sendFiles, uploadedWithErrors]);
+
+    useEffect(() => {
+        if (uploadId && taskResults && userId) AppointNewUserToTask();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [uploadId, taskResults, userId]);
 
     if (error && 'status' in error) {
         const errorMessage = errorParser(error.status as number);

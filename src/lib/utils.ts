@@ -4,7 +4,7 @@ import copy from 'copy-to-clipboard';
 import { EGetLaunchParamsResponsePlatforms } from '@vkontakte/vk-bridge';
 
 import { UPLOAD_URL, UPLOAD_URL_EDU } from '@/app/config';
-import type { TesteeType, TaskResults, TaskType } from '@/app/types';
+import type { TesteeType, TaskResults, TaskType, Bearer } from '@/app/types';
 import { TaskStatusTypesForTestee } from '@/app/types';
 
 export const capitalizeString = (stringToCap: string): string =>
@@ -203,4 +203,10 @@ export const createErrorHandler = (error: Error, resetErrorBoundary: () => void)
     }
 
     return normalizedError;
+};
+
+export const getUserIdFromBearer = (bearer: string): number => {
+    const bearerJSON = JSON.parse(bearer.slice(6)) as Bearer;
+
+    return bearerJSON.userId;
 };
