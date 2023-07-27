@@ -62,9 +62,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
             <ActionSheetItem
                 autoClose
                 before={
-                    platform === Platform.IOS ? (
-                        <Icon28DeleteOutline color='var(--vkui--color_text_negative)' />
-                    ) : (
+                    platform !== Platform.IOS && (
                         <Icon28DeleteOutlineAndroid color='var(--vkui--color_text_negative)' />
                     )
                 }
