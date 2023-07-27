@@ -3,7 +3,7 @@ import { ru } from 'date-fns/locale';
 import copy from 'copy-to-clipboard';
 import { EGetLaunchParamsResponsePlatforms } from '@vkontakte/vk-bridge';
 
-import { UPLOAD_URL } from '@/app/config';
+import { UPLOAD_URL, UPLOAD_URL_EDU } from '@/app/config';
 import type { TesteeType, TaskResults, TaskType } from '@/app/types';
 import { TaskStatusTypesForTestee } from '@/app/types';
 
@@ -91,11 +91,7 @@ export const isForbiddenFile = (fileName: string): boolean => {
 };
 
 export const copyUploadLinkToClipboard = (task: TaskType): boolean => {
-    const link = `Вы были приглашены пользователем ${
-        task.owner.fullName
-    } для загрузки файлов по заданию: ${task.name}. ${
-        task.description ? `\n Описание: ${task.description}.` : ''
-    } \n ${UPLOAD_URL}${task.id}`;
+    const link = generateInviteMessageToTask(task);
 
     if (!navigator?.clipboard) {
         return false;
@@ -109,6 +105,13 @@ export const copyUploadLinkToClipboard = (task: TaskType): boolean => {
         return false;
     }
 };
+
+export const generateInviteMessageToTask = (task: TaskType): string =>
+    `Вы были приглашены пользователем ${task.owner.fullName} для загрузки файлов по заданию: ${
+        task.name
+    }. ${task.description && `\nОписание: ${task.description}.`} \n${
+        task.owner.isEdu ? UPLOAD_URL_EDU : UPLOAD_URL
+    }${task.id}`;
 
 export const normalizeTestees = (
     taskResultsArg: TaskResults[],
@@ -150,7 +153,7 @@ export const errorParser = (errorNumber: number): string => {
             break;
 
         case 401:
-            result = 'Вы не являетесь создателем сбора. Доступ запрещён';
+            result = 'Доступ запрещён';
             break;
 
         default:

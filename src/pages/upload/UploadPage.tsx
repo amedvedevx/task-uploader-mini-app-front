@@ -18,6 +18,7 @@ import { PanelHeaderSkeleton } from '@/components/PanelHeaderCentered';
 import { SnackBarMessage } from '@/components/SnackBarMessage';
 import { checkIsMobilePlatform, errorParser } from '@/lib/utils';
 import { FooterWithButton } from '@/components';
+import { useEduCheck } from '@/hooks';
 
 import { DropZone } from './components/DropZone';
 import { FilesReadyToUpload } from './components/FilesReadyToUpload';
@@ -37,6 +38,10 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
     const [uploadedWithErrors, setUploadedWithErrors] = useState<boolean>(false);
+
+    const taskIsEdu = data?.owner?.isEdu;
+
+    useEduCheck(taskIsEdu);
 
     const isMobilePlatform = checkIsMobilePlatform(platform);
 

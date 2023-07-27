@@ -14,6 +14,7 @@ export const HorizontalScroll: FC<HorizontalScrollProps> = ({ children }) => (
 
 const HorizontalScrollContainer = styled.div`
     display: flex;
-    padding: 18px 0px;
+
+    padding: 18px 0;
     gap: 8px;
 `;
