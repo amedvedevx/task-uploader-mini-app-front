@@ -1,7 +1,6 @@
 import { List } from '@vkontakte/vkui';
 import type { FC } from 'react';
 import { useState } from 'react';
-import styled from 'styled-components';
 
 import type { SnackBarText, TaskType } from '@/app/types';
 
@@ -22,30 +21,24 @@ export const CollectionHistory: FC<CollectionHistoryProps> = ({
     const [popout, setPopout] = useState<JSX.Element | null>(null);
 
     return (
-        <CollectionHistoryWrapper>
-            <List data-automation-id='home-page-historyList'>
-                {!isLoading && collections ? (
-                    collections.map(({ id, name, status, consolidatedData }) => (
-                        <CollectionCell
-                            key={id}
-                            id={id}
-                            name={name}
-                            status={status}
-                            consolidatedData={consolidatedData}
-                            setPopout={setPopout}
-                            setSnackbarText={setSnackbarText}
-                        />
-                    ))
-                ) : (
-                    <CollectionHistorySkeleton />
-                )}
+        <List data-automation-id='home-page-historyList'>
+            {!isLoading && collections ? (
+                collections.map(({ id, name, status, consolidatedData }) => (
+                    <CollectionCell
+                        key={id}
+                        id={id}
+                        name={name}
+                        status={status}
+                        consolidatedData={consolidatedData}
+                        setPopout={setPopout}
+                        setSnackbarText={setSnackbarText}
+                    />
+                ))
+            ) : (
+                <CollectionHistorySkeleton />
+            )}
 
-                {popout}
-            </List>
-        </CollectionHistoryWrapper>
+            {popout}
+        </List>
     );
 };
-
-const CollectionHistoryWrapper = styled.div`
-    min-height: 180px;
-`;
