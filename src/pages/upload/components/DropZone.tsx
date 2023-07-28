@@ -102,7 +102,7 @@ export const DropZone: FC<DropZoneProps> = ({
                                 </File>
                             }
                         >
-                            или перенесите его в эту область для загрузки
+                            {!isMobilePlatform && 'или перенесите его в эту область для загрузки'}
                         </PlaceholderCentered>
                     )}
                 </DropZoneContainer>
