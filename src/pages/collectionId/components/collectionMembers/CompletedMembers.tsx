@@ -57,7 +57,16 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
     const isIOSPlatform = hardWarePlatform === Platform.IOS;
 
     const onClickHandler = async ({ vkUserId, url, title, taskId, docId }: OnClickArgs) => {
-        if (isMobileDownloading) {
+        if (isDesktopDownloading) {
+            if (url && title) {
+                downloadFilesOnDesktop({ url, title });
+            } else {
+                const resultsForUser = taskResults.find(
+                    (taskResult) => taskResult.testee.vkUserId === vkUserId,
+                );
+                downloadFilesOnDesktop({ resultsData: resultsForUser });
+            }
+        } else if (isMobileDownloading) {
             if (url && title) {
                 await BridgeDownload({ url, fileName: title });
             } else {
@@ -68,15 +77,6 @@ export const CompletedMembers: FC<CompletedMembersProps> = ({
                 if (resultsForUser) {
                     downloadFilesOnMobile(resultsForUser);
                 }
-            }
-        } else if (isDesktopDownloading) {
-            if (url && title) {
-                downloadFilesOnDesktop({ url, title });
-            } else {
-                const resultsForUser = taskResults.find(
-                    (taskResult) => taskResult.testee.vkUserId === vkUserId,
-                );
-                downloadFilesOnDesktop({ resultsData: resultsForUser });
             }
         } else if (docId && title && taskId) {
             downloadSingleFile({ taskId, title, docId, vkUserId });
