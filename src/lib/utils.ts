@@ -149,7 +149,7 @@ export const errorParser = (errorNumber: number): string => {
     let result;
     switch (errorNumber) {
         case 404:
-            result = 'Такого сбора не существует';
+            result = 'Не удалось получить доступ к данным';
             break;
 
         case 401:

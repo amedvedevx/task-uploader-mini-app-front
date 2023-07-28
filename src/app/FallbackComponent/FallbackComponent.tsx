@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { useEffect } from 'react';
-import { AppRoot, Button, Div } from '@vkontakte/vkui';
+import { AppRoot, Button, Div, Spacing } from '@vkontakte/vkui';
 import { useFirstPageCheck } from '@happysanta/router';
 import bridge from '@vkontakte/vk-bridge';
 
@@ -39,44 +39,37 @@ export const FallbackComponent: FC<FallbackComponentProps> = ({ error, resetErro
                         title='Ошибка'
                         subtitle={errorHandler.message || 'Что-то пошло не так'}
                     >
-                        <br />
+                        <Spacing size={25} />
 
                         {errorHandler.onReset && (
                             <>
                                 <StubSubtitle color='var(--vkui--color_text_secondary)'>
-                                    Попробуйте очистить кэш приложения
+                                    Повторите загрузку или
                                 </StubSubtitle>
 
                                 <Div>
                                     <StubСacheSubtitle>
-                                        1. откройте
-                                        <MoreIcon />
-                                        Меню приложения
+                                        1. нажмите на «<MoreIcon />»
                                     </StubСacheSubtitle>
 
                                     <StubСacheSubtitle>
-                                        2. выберите
+                                        2. выберите «
                                         <ClearDataIcon
                                             width={20}
                                             height={20}
                                         />
-                                        Очистить кэш
+                                        Очистить кеш »
                                     </StubСacheSubtitle>
                                 </Div>
-
-                                <StubSubtitle color='var(--vkui--color_text_secondary)'>
-                                    Или обновите страницу
-                                </StubSubtitle>
-
-                                <br />
 
                                 <Button
                                     stretched
                                     mode='tertiary'
                                     type='button'
+                                    size='l'
                                     onClick={errorHandler.onReset}
                                 >
-                                    Обновить
+                                    Повторить загрузку
                                 </Button>
                             </>
                         )}

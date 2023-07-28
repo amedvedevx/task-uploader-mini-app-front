@@ -13,7 +13,6 @@ export const StubContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
 
     user-select: none;
     width: 320px;
@@ -32,7 +31,7 @@ export const StubImageContainer = styled.div`
 `;
 
 export const StubImage = styled(Icon28ErrorCircleOutline)`
-    margin: 34px;
+    margin-bottom: 20px;
 `;
 
 export const StubTitle = styled(Text)<StubTitleProps>`
