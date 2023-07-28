@@ -89,6 +89,7 @@ export const DropZone: FC<DropZoneProps> = ({
                         <Spinner size='large' />
                     ) : (
                         <PlaceholderCentered
+                            $isMobilePlatform={isMobilePlatform}
                             icon={
                                 <File
                                     data-automation-id='upload-page-placeholder'
@@ -169,9 +170,14 @@ const DropZoneContainer = styled.div<DropZoneContainerProps>`
     }
 `;
 
-const PlaceholderCentered = styled(Placeholder)`
+const PlaceholderCentered = styled(Placeholder)<{ $isMobilePlatform?: boolean }>`
     height: 100%;
     .vkuiPlaceholder__in {
         padding: 0px;
     }
+    ${({ $isMobilePlatform }) =>
+        $isMobilePlatform &&
+        `.vkuiPlaceholder__icon {
+        margin-bottom: unset;
+    }`};
 `;
