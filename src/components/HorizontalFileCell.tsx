@@ -111,8 +111,6 @@ const DownloadIcon = styled(Icon24DoorArrowLeftOutline)`
     border-radius: 9999px;
 
     background: var(--vkui--color_text_accent_themed);
-
-    background-clip: content-box;
     box-shadow: none;
 `;
 
