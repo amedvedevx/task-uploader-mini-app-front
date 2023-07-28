@@ -163,7 +163,7 @@ const FormWrapper = styled.div`
 
 const PlaceholderWidth = styled(Placeholder)`
     .vkuiPlaceholder__in {
-        padding: unset;
+        padding: 24px 20px;
     }
     .vkuiPlaceholder__header + .vkuiPlaceholder__text {
         margin-top: 12px;
@@ -172,5 +172,4 @@ const PlaceholderWidth = styled(Placeholder)`
 
 const FormLayoutWidth = styled(FormLayout)`
     width: 100%;
-    margin-top: 30px;
 `;

@@ -54,7 +54,7 @@ export const HomePage: FC<HomePageProps> = () => {
                     header='Собирайте файлы и документы'
                     action={
                         <Button
-                        stretched
+                            stretched
                             size='m'
                             onClick={() => router.pushPage(PAGE_CREATE_COLLECTION)}
                         >
@@ -107,7 +107,7 @@ const CollectionsContainer = styled(Div)`
 export const PlaceholderWidth = styled(Placeholder)`
     max-width: 372px;
     .vkuiPlaceholder__in {
-        padding: 48px 0px;
+        padding: 32px 0px;
     }
     .vkuiPlaceholder__action {
         width: 100%;

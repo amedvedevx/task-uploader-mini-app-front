@@ -12,11 +12,7 @@ import type { FC } from 'react';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useRouter } from '@happysanta/router';
-import {
-    Icon24MoreVertical,
-    Icon28DeleteOutline,
-    Icon28DeleteOutlineAndroid,
-} from '@vkontakte/icons';
+import { Icon24MoreVertical, Icon28DeleteOutlineAndroid } from '@vkontakte/icons';
 
 import { PAGE_COLLECTION_ID } from '@/app/router';
 import type {
@@ -27,7 +23,6 @@ import type {
 } from '@/app/types';
 import { useDeleteTaskMutation } from '@/api';
 import { Popout } from '@/components/Popout';
-import type { ResponseError } from '@/api/query/apiSlice';
 
 interface CollectionCellProps {
     id: string;
@@ -62,9 +57,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
             <ActionSheetItem
                 autoClose
                 before={
-                    platform === Platform.IOS ? (
-                        <Icon28DeleteOutline color='var(--vkui--color_text_negative)' />
-                    ) : (
+                    platform !== Platform.IOS && (
                         <Icon28DeleteOutlineAndroid color='var(--vkui--color_text_negative)' />
                     )
                 }
@@ -141,6 +134,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
 const SimpleCell = styled(SimpleCellRoot)`
     .vkuiSimpleCell__main {
         width: 100px;
+        white-space: break-spaces !important;
     }
 `;
 
