@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { Button, ButtonGroup, Counter, Div, FixedLayout, Separator } from '@vkontakte/vkui';
 import type { FC } from 'react';
+import styled from 'styled-components';
 
 export type ButtonOption = {
     onClick: () => void;
@@ -52,7 +53,9 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
                             appearance={appearance || 'accent'}
                             loading={loading}
                             disabled={loading || disabled}
-                            after={<Counter size='s'>{counterLabel || counter}</Counter>}
+                            after={
+                                <CounterNoWrap size='s'>{counterLabel || counter}</CounterNoWrap>
+                            }
                             data-automation-id={dataAutomationId}
                             onClick={onClick}
                         >
@@ -64,3 +67,7 @@ export const FooterWithButton: FC<FooterWithButtonProps> = ({ options }) => (
         </Div>
     </FixedLayout>
 );
+
+const CounterNoWrap = styled(Counter)`
+    white-space: nowrap !important;
+`;
