@@ -27,6 +27,8 @@ export const parseFileSize = (size: number): string => {
     }
 
     enum SizeType {
+        TB = 4,
+        GB = 3,
         MB = 2,
         KB = 1,
         B = 0,
