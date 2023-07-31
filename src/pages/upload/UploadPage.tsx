@@ -216,6 +216,7 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
 
                 {snackbarText && (
                     <SnackBarMessage
+                        isFooterOnPage
                         data-automation-id='upload-page-snackBarMessage'
                         snackbarText={snackbarText}
                         setSnackbarText={setSnackbarText}
