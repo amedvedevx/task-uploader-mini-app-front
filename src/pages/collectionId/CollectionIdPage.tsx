@@ -79,7 +79,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
     useEduCheck(taskIsEdu);
 
-    const { data: reminds } = useGetAllowedForRemindIdsQuery(
+    const { data: reminds, refetch: refetchReminds } = useGetAllowedForRemindIdsQuery(
         { taskId: collectionId },
         { skip: !collectionId },
     );
@@ -239,6 +239,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
         if (selectedTab) {
             refetchTaskResults();
             refetchTask();
+            refetchReminds();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedTab]);
