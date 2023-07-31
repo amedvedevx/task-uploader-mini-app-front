@@ -91,6 +91,8 @@ const CellButton = styled(IconButton)<{ $type?: 'download' | 'delete' | 'loading
 `;
 
 const HorizontalCellOverflow = styled(HorizontalCell)`
+    max-width: min-content;
+
     .vkuiSubhead {
         display: block;
         overflow: hidden;
