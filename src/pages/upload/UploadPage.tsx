@@ -151,9 +151,9 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     }, [sendFiles, uploadedWithErrors]);
 
     useEffect(() => {
-        if (uploadId && taskResults && userId) AppointNewUserToTask();
+        if (uploadId && taskResults && userId && !isTaskComplete) AppointNewUserToTask();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [uploadId, taskResults, userId]);
+    }, [uploadId, taskResults, userId, isTaskComplete]);
 
     if (error && 'status' in error) {
         const errorMessage = errorParser(error.status as number);
