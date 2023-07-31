@@ -34,7 +34,7 @@ export const parseFileSize = (size: number): string => {
         B = 0,
     }
 
-    return `${Math.ceil(sizeCopy)} ${SizeType[counter]}`;
+    return `${sizeCopy.toFixed(1)} ${SizeType[counter]}`;
 };
 
 export const getFileExtension = (fileName: string): string =>
