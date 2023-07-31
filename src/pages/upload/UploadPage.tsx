@@ -38,21 +38,21 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     } = useLocation();
 
     const { data: platform = '' } = useGetPlatformQuery();
-    const { data, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
+    const { data: task, error } = useGetTaskIdQuery({ taskId: uploadId }, { skip: !uploadId });
     const { data: taskResults } = useGetTaskResultsQuery({ taskId: uploadId }, { skip: !uploadId });
     const { bearer } = useSelector((state: RootState) => state.authorization);
     const userId = getUserIdFromBearer(bearer);
     const [appointUsersToTask] = useAppointUsersToTaskMutation();
     const [uploadedWithErrors, setUploadedWithErrors] = useState<boolean>(false);
 
-    const taskIsEdu = data?.owner?.isEdu;
+    const taskIsEdu = task?.owner?.isEdu;
 
     useEduCheck(taskIsEdu);
 
     const isMobilePlatform = checkIsMobilePlatform(platform);
 
     const taskId = uploadId;
-    const isTaskComplete = data?.status === TaskStatusTypesForOrganizer.DONE;
+    const isTaskComplete = task?.status === TaskStatusTypesForOrganizer.DONE;
     const [uploadFile, uploadResult] = useUploadFileMutation();
 
     const [isLoading, setLoading] = useState(false);
@@ -129,6 +129,8 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     };
 
     const AppointNewUserToTask = () => {
+        if (isTaskComplete) return;
+
         const isUserAppointedToTask =
             (taskResults && taskResults?.taskResults?.length > 0) || false;
 
@@ -151,9 +153,9 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
     }, [sendFiles, uploadedWithErrors]);
 
     useEffect(() => {
-        if (uploadId && taskResults && userId && !isTaskComplete) AppointNewUserToTask();
+        if (uploadId && taskResults && userId && task) AppointNewUserToTask();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [uploadId, taskResults, userId, isTaskComplete]);
+    }, [uploadId, taskResults, userId, task]);
 
     if (error && 'status' in error) {
         const errorMessage = errorParser(error.status as number);
@@ -167,26 +169,26 @@ export const UploadPage: FC<ListMembersPageProps> = () => {
             data-automation-id='upload-page-panel'
         >
             <PanelHeader>
-                {data ? (
+                {task ? (
                     <PanelHeaderContent
                         data-automation-id='upload-page-headerContent'
-                        status={`запрашивает ${data?.owner.firstName} ${data?.owner.lastName}`}
+                        status={`запрашивает ${task?.owner.firstName} ${task?.owner.lastName}`}
                     >
-                        {data.name}
+                        {task.name}
                     </PanelHeaderContent>
                 ) : (
                     <PanelHeaderSkeleton />
                 )}
             </PanelHeader>
 
-            {data?.description && (
+            {task?.description && (
                 <DescriptionWrapper>
                     <MiniInfoCell
                         before={<Icon20Info />}
                         textWrap='full'
                         mode='base'
                     >
-                        {data.description}
+                        {task.description}
                     </MiniInfoCell>
                 </DescriptionWrapper>
             )}
