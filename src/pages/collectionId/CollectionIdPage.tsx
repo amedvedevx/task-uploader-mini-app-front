@@ -386,6 +386,7 @@ export const CollectionIdPage: FC<CollectionIdProps> = () => {
 
             {snackbarText && (
                 <SnackBarMessage
+                    isFooterOnPage
                     snackbarText={snackbarText}
                     setSnackbarText={setSnackbarText}
                 />

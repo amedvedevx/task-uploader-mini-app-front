@@ -129,6 +129,7 @@ export const CreatePage: FC<CreatePageProps> = () => {
 
             {snackbarText && (
                 <SnackBarMessage
+                    isFooterOnPage
                     snackbarText={snackbarText}
                     setSnackbarText={setSnackbarText}
                 />

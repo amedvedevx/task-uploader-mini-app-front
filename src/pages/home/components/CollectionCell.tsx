@@ -44,7 +44,7 @@ export const CollectionCell: FC<CollectionCellProps> = ({
     const router = useRouter();
     const platform = usePlatform();
 
-    const [deleteTask, { error: deleteError, isLoading: deleteLoading }] = useDeleteTaskMutation();
+    const [deleteTask, { error: deleteError, isLoading: deleteLoading, isSuccess }] = useDeleteTaskMutation();
 
     const baseTargetRef = useRef(null);
 
@@ -99,6 +99,16 @@ export const CollectionCell: FC<CollectionCellProps> = ({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [deleteError]);
+
+    useEffect(() => {
+        if (isSuccess) {
+            setSnackbarText({
+                type: 'success',
+                text: `Сбор ${name} успешно удалён`,
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSuccess]);
 
     return (
         <SimpleCell

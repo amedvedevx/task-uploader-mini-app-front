@@ -181,6 +181,7 @@ export const AddMembersPage: FC<AddMembersPageProps> = () => {
 
             {snackbarText && (
                 <SnackBarMessage
+                    isFooterOnPage
                     snackbarText={snackbarText}
                     setSnackbarText={setSnackbarText}
                 />
